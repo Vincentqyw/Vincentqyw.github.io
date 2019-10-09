@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="这篇文章将会介绍Lytro公司在光场以及VR领域的进展。我们知道NG博士在06年创办了这家公司，曾经被誉为硅谷最优潜力的公司之一。它曾经推出了世界上第一款商用的手持式光场相机，进而推出了第二代产品。但是低调的Lytro已经许久不出现大众的视野中，难道是盛名之下其实难副？声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! 邮箱：点我">
+<meta name="keywords" content="光场,计算成像,Light Field">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lytro的光场AR之路：从巅峰到死亡">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/lytro-light-field/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="这篇文章将会介绍Lytro公司在光场以及VR领域的进展。我们知道NG博士在06年创办了这家公司，曾经被誉为硅谷最优潜力的公司之一。它曾经推出了世界上第一款商用的手持式光场相机，进而推出了第二代产品。但是低调的Lytro已经许久不出现大众的视野中，难道是盛名之下其实难副？声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! 邮箱：点我">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/lytro_cover.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/6DOF_Lytro_Color_Version-930x1024.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Yaw.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Pitch.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/roll.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/left-right.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/updown.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Forward-Backward.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/LF_Volume_Video_ScreenGrab_900W-1-678x381.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Screen-Shot-2016-09-28-at-11.17.02-AM.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Light_Field_two_planes_FINAL-1024x802.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Disparity_Light_Field_A_FINAL-1024x896.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Disparity_Light_Field_B_FINAL-631x1024.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Tracing-Explanation-Hero-678x381.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/vr1.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/10x10x10_Sequence_700px_copyright_2018.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/devices.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Tracing-Explanation-1-copyright-2018-1024x697.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Tracing-Explanation-Close-Up-2-copyright-2018-1024x697.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/lytro_vt.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/vr_experience.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Raytracing-copyright-2018-1024x729.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/cinema.jpg">
+<meta property="og:updated_time" content="2019-03-02T14:14:54.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lytro的光场AR之路：从巅峰到死亡">
+<meta name="twitter:description" content="这篇文章将会介绍Lytro公司在光场以及VR领域的进展。我们知道NG博士在06年创办了这家公司，曾经被誉为硅谷最优潜力的公司之一。它曾经推出了世界上第一款商用的手持式光场相机，进而推出了第二代产品。但是低调的Lytro已经许久不出现大众的视野中，难道是盛名之下其实难副？声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! 邮箱：点我">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/lytro_cover.jpg">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/lytro-light-field/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Lytro的光场AR之路：从巅峰到死亡 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/lytro-light-field/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Lytro的光场AR之路：从巅峰到死亡
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-03-23 09:57:02" itemprop="dateCreated datePublished" datetime="2018-03-23T09:57:02+08:00">2018-03-23</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-03-02 22:14:54" itemprop="dateModified" datetime="2019-03-02T22:14:54+08:00">2019-03-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/光场/" itemprop="url" rel="index"><span itemprop="name">光场</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/lytro-light-field/" class="post-meta-item leancloud_visitors" data-flag-title="Lytro的光场AR之路：从巅峰到死亡" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/lytro-light-field/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/lytro-light-field/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/lytro_cover.jpg" width="1000px"></p>
+<div class="note success">
+            <p>这篇文章将会介绍Lytro公司在光场以及VR领域的进展。我们知道NG博士在06年创办了这家公司，曾经被誉为硅谷最优潜力的公司之一。它曾经推出了世界上第一款商用的手持式光场相机，进而推出了第二代产品。但是低调的Lytro已经许久不出现大众的视野中，难道是盛名之下其实难副？<br><span id="inline-red">声明</span>：<u><strong>一切理解都是本人观点，如有疑问，还望在</strong>评论<strong>中留言。如需转载请与本人联系，谢谢合作</strong></u>! 邮箱：<a href="/about">点我</a></p>
+          </div>
+<a id="more"></a>
+<p>其实不然，原来人家在搞大事情，Lytro公司在用光场技术搞AR！</p>
+<h2 id="6自由度"><a href="#6自由度" class="headerlink" title="6自由度"></a>6自由度</h2><p>言归正传，提到AR首先讲下自由度的概念。人类在地球上的运动可以由6自由度来描述。6自由度描述了一个人在空间中的自然运动，6自由度会比3自由度提供两倍的自由度感受空间！具体而言，前三个自由度是大多数VR都支持的围着轴的旋转运动，后三个是沿着轴向的平移运动，这需要配套的位置跟踪设备的支持，如Oculus Rift, HTC Vive 或者Playstation VR。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/6DOF_Lytro_Color_Version-930x1024.jpg" alt></p>
+<p>接下来，详细介绍一下这六个神奇的自由度到底包括哪些。你想或者不想，我们每天都在6个自由度（6DoF）里运动着。</p>
+<h3 id="Yaw（平摇）"><a href="#Yaw（平摇）" class="headerlink" title="Yaw（平摇）"></a>Yaw（平摇）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Yaw.gif" width="1000px"></p>
+<h3 id="Pitch（俯仰）"><a href="#Pitch（俯仰）" class="headerlink" title="Pitch（俯仰）"></a>Pitch（俯仰）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Pitch.gif" width="1000px"></p>
+<h3 id="Roll（翻滚）"><a href="#Roll（翻滚）" class="headerlink" title="Roll（翻滚）"></a>Roll（翻滚）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/roll.gif" width="1000px"></p>
+<h3 id="Left-Right（左右）"><a href="#Left-Right（左右）" class="headerlink" title="Left/Right（左右）"></a>Left/Right（左右）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/left-right.gif" width="1000px"></p>
+<h3 id="Up-Down（上下）"><a href="#Up-Down（上下）" class="headerlink" title="Up/Down（上下）"></a>Up/Down（上下）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/updown.gif" width="1000px"></p>
+<h3 id="Forward-Backward（前后）"><a href="#Forward-Backward（前后）" class="headerlink" title="Forward/Backward（前后）"></a>Forward/Backward（前后）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Forward-Backward.gif" width="1000px"></p>
+<h2 id="光场与AR"><a href="#光场与AR" class="headerlink" title="光场与AR"></a>光场与AR</h2><p>我们生活在一个充满光明的世界，无论是自然光还是人造光，光无时无刻不照普照大地。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/LF_Volume_Video_ScreenGrab_900W-1-678x381.png" width="1000"></p>
+<p>光的定向传播会照射在我们周围的物体表面，从而物体才能够显示出其纹理特征。即使是在虚拟的环境中，光场也可以通过计算机图形学(CG)的模拟光线通过在虚拟场景中反射3D对象来进行创建。在光场的所有无限光线中，我们只能看到那些照在我们眼睛上光线，这些光线穿过瞳孔打在视网膜上从而让我们感知光线的存在。对于这些光线，我们的眼睛会根据光的刺激产生某种神经信号，这些信号中包括光线的颜色，强度以及方向等信息。我们的大脑正是通过这些信号来感知大千世界。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Screen-Shot-2016-09-28-at-11.17.02-AM.png" width="1000px"></p>
+<p>当我们在光场中移动时，不同的光线会通过我们的瞳孔，给我们的大脑提供额外的信息，使我们能够理解物体在空间中的位置，同时也会了解物体的其他信息例如：材质、反射、折射等等。</p>
+<h3 id="记录光线角度-方向"><a href="#记录光线角度-方向" class="headerlink" title="记录光线角度/方向"></a>记录光线角度/方向</h3><p>为了捕获和再现光场，需要记录<strong>光线的颜色及其路径（方向/角度）</strong>。确定光线的颜色和亮度很简单，那么问题在于如何记录光线的方向/角度。在一个光场内捕获的2D图像中的任何像素（实际动作或被渲染），可以提供与该像素所有相交光线的颜色和亮度信息。这通常被称为“光束”（所有的光线被一个像素捕获），但为了简单起见，我们将使用术语“光线”来描述由光线捕获的光线单个像素。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Light_Field_two_planes_FINAL-1024x802.png" width="1000px"></p>
+<p>那么如何记录光线的角度和方向呢？目前已经有很多种记录光线的角度和方向路径的技术，但这些技术都需要至少两个点来确定实际的方向/角度。一种常见的方法是使用<strong>双平面法</strong>（2PP）来计算光线路径。光线穿过两个平面并相交于两点，利用这两个交点，可以确定射线的角度和方向。</p>
+<h3 id="视差"><a href="#视差" class="headerlink" title="视差"></a>视差</h3><p><strong>视差也是记录光场的比较常用的技术</strong>。通过计算两个或者多个相邻相机之间拍摄的2D图像的差异可以得到视差信息。这些2D图像是由场景中物体光的颜色亮度组成的彩色像素组成。通过对一系列图像的显著特征进行三角测量，同时比较图像之间像素间的视差，可以计算出各个物体在空间中的位置和距相机的距离（深度）。这种方式可以从2D数据恢复光场。对3D场景的计算机图形渲染，通常会提供对象与摄像机的距离（深度信息），并作为渲染过程的一部分。在以下场景中，我们使用三个相邻的相机对苹果和橘子进行记录。每个单独的相机从不同的位置记录该场景，这会产生图像之间的差异（视差）。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Disparity_Light_Field_A_FINAL-1024x896.png" width="1000px"></p>
+<p>每个2D图像是一组彩色像素的集合，仅仅表示场景中苹果和橙色表面的颜色和亮度。视差必须通过分析这些2D图像之间的差异得到。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Disparity_Light_Field_B_FINAL-631x1024.png" width="1000px"></p>
+<p>利用三个2D图像之间的视差，可以确定苹果和橘子在空间中的位置以及与三个视点之间的距离。随后经过处理的光线角度和颜色信息会记录在光场体（Light Field Volume）中。在VR中，光场体能够为我们提供沉浸式的高质量视觉体验。为了能够达到这个水平，光场体验需要囊括多种视觉效果。例如每个方向上的完美立体感，光场体的全视差和六个自由度，以及正确的场景流，以实现视觉相关效果（镜面反射和折射）。光场无论在实景动作还是计算机渲染，都可以产生最为优秀的VR电影体验。</p>
+<h2 id="光场VR设备"><a href="#光场VR设备" class="headerlink" title="光场VR设备"></a>光场VR设备</h2><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Tracing-Explanation-Hero-678x381.png" width="1000px"></p>
+<h3 id="Lytro-VT"><a href="#Lytro-VT" class="headerlink" title="Lytro VT"></a>Lytro VT</h3><p>不安分的Lytro最近发布了名为“Lytro Volume Tracer”(Lytro VT)的产品，它作为一套强大的工具可以用于CG 3D场景的光场体的创建，同时能够为用户提供视觉高质量以及完全沉浸式的VR体验。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/vr1.jpg" width="1000px"></p>
+<p>Lytro VT可以使用任何DCC和渲染引擎（例如Maya和VRay）来生成一组3D场景的2D采样。首先，Lytro VT将虚拟相机放置于CG场景中，虚拟相机包含场景中任何可能的视角，需要注意的是这些场景已经包含在定义好的光场体中，并且虚拟相机可以根据需要调整以最大限度地提高显示质量和性能。渲染引擎用于追踪场景中的虚拟光线，并从设备中每个摄像头捕获一定数量的2D图像样本。Lytro VT通过追踪从每个被渲染的像素到其相机的原点的光线(光积跟踪)来创建<strong>视觉体</strong>，通过以上神操作就可以感受到沉浸式的光场VR体验。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/10x10x10_Sequence_700px_copyright_2018.gif" alt></p>
+<p>以上是由<strong>1000个视点组成的视觉体</strong>（图片加载慢，24.74M）。在该视觉体中，VR HMD中的观看者可以体验具有最高级别的光线追踪光学效果，每个方向上完美的视差以及六个自由度（6DOF）的重建虚拟场景。</p>
+<p>光线跟踪的样本包括对<strong>颜色和深度信息（RGBZ等数据）的跟踪</strong>。摄像机的数量及其配置取决于场景的视觉复杂程度以及播放过程中所需视图的预定大小。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/devices.jpg" width="1000px"></p>
+<p>Lytro VT处理来自于该2D样本的颜色以及深度信息，并通过Lytro Player创建用于在VR中展示的光场体。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Tracing-Explanation-1-copyright-2018-1024x697.png" width="1000px"></p>
+<p>该3D场景中的视图体由白色立方体表示。单个相机由绿色球体表示，它具有自己单独的视点。虚拟的Lytro VT摄像机包含有成百上千个独立的摄像机。2D场景样本渲染使用虚拟装备中每个独立像机进行光线追踪。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Tracing-Explanation-Close-Up-2-copyright-2018-1024x697.png" width="1000px"></p>
+<p>以上是一个相机跟踪的来自于场景中5个不同位置的光线的局部放大图，通过对每个独立相机进行光线跟踪就可以重建光场。</p>
+<h3 id="光线追迹"><a href="#光线追迹" class="headerlink" title="光线追迹"></a>光线追迹</h3><p>在将来，Lytro VT与渲染可以和并为一个无缝过程，允许光场直接进行光线跟踪，而不需要2D图像样本的中间步骤。然而这是需要代价的，这一过程需要很强的渲染器集成，并且要放弃这个如今如此灵活的Lytro VT。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/lytro_vt.jpg" width="1000px"></p>
+<p>作为从虚拟3D场景创建真实2D图像的渲染技术，光线追踪能够产生极高质量的图像。用最简单的术语来说，基于模拟光线与3D场景中的物体表面的相互作用，反映在2D图像平面就是被渲染的彩色像素。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/vr_experience.jpg" width="1000px"></p>
+<p>光线追踪适用于精确渲染某些光学效果，例如如反射，折射和散射（光度），但这些需要大量的计算时间。具有全光学效果的光线追踪对于实时帧率而言简直太慢。但是不得不说，光线追踪非常适合需要最高级别图像质量并可以脱机的应用，如电影视觉效果。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/Raytracing-copyright-2018-1024x729.png" width="1000px"></p>
+<p>上图为光线跟踪的过程：<strong>通过虚拟相机的视角可以看到，虚拟相机跟踪到了物体与物体之间的光线反复反射，并最终到达光源的位置</strong>。如果有些物体遮挡了光线，那么就会产生被遮挡的光线。这种技术的计算效率很高，因为它只需追踪相机通过虚拟镜头看到的光线路径。Lytro VT和光线追踪是相辅相成的，然而在光线追踪的概念方向上形成对比。如上所示，光线跟踪通过跟踪从固定摄像机向外看光线的路径，从而呈现图像中的彩色像素。<strong>相反，Lytro VT通过从一个视觉体内的每个视点向内朝着观察者，去追踪来自每个渲染像素的光线来重建光场体</strong>（这句话翻译的不佳，原因是我没太理解VT与光线跟踪的区别…有大神能够理解的话，请在评论区给出）。于是在Lytro Player中，观众在这些密集的光线的移动，沉浸在具有最高级视觉质量的重建CG场景中，并且在每个方向都具有完美的视差和六个自由度。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/lytro-light-field/cinema.jpg" width="1000px"></p>
+<p>在这种体验中，光线不是实时呈现，而是从大量预先渲染的光线中实时获取，为视图体积内每个位置的每只眼睛组成一张图像。</p>
+<p>PS: Lytro公司在2017年11月30号之后停止了对lytro live photo的线上支持，其相机业务至此告一段落。通过光场VR转型，不知Lytro能否再次创造辉煌？这里留下一个疑问，等待时间的检验吧！</p>
+<h2 id="从巅峰到倒闭"><a href="#从巅峰到倒闭" class="headerlink" title="从巅峰到倒闭"></a>从巅峰到倒闭</h2><p>3月29日更新。</p>
+<p>世界上第一个光场技术初创公司Lytro昨日发表声明，<strong>正式宣布倒闭</strong>！</p>
+<p>看来时间并不允许Lytro继续存活，光场进阶之路就此截止了吗？早些时间就有传闻称Lytro即将倒闭，Google或将接盘。起因是Google早前公布了一款能够显示沉浸式VR场景的App，这种VR场景据说是由多摄像机采集得到，貌似用到了第三方公司的技术。有人猜测这个第三方公司就是Lytro，这是一家以光场技术著称的公司，它利用其光场采集设备获取场景深度，并将其利用到了VR技术之中。</p>
+<p>但这只是猜测，并没有得到印证。有来源显示Lytro早前进行的属于“<strong>资产抛售</strong>”，抛售额度不超过<strong>4000万美元</strong>。也有人说，这个额度更低，不超过2500万美元。</p>
+<p>有可能接盘的公司包括Google，Facebook，Apple等。有知情人透露，Lytro内部员工已经陆续离职，与此抛售的还有Lytro公司的59项光场专利。这个抛售金额对于Lytro而言简直是低价销售，因为在其成立之初融资金额已经达到了2亿美元，并且到其2017年最后一次融资时已经达到了3.6亿美元！</p>
+<p>投资者多是科技投资巨头，例如Andreessen Horowitz，富士康，GSV，Greylock，NEA，Qualcomm Ventures等。创业艰辛，Lytro同样面对。从2006年成立之初，Lytro就面临着创业圈共同面对的问题。<strong>光场技术的硬件实现异常艰难，同时VR技术的发展并没有想像中那么快。同时，大型平台逐渐成为具有说服力的整合商，这是其发展的一大阻力</strong>。</p>
+<p>与此同时，Lytro的推出的光场相机迷之昂贵，这是VR技术的重要技术支点，同时也成为了其发展中最大的短板。如今看来，Lytro完全有足够的时间和资金提供一个面向大众更具有说服力的报价，以等待在正确的市场条件下推出正确的产品。同时，Lytro公司应该考虑把光场应用到更加广阔的领域，例如无人汽车、智能导航、地图以及游戏等。</p>
+<p>一年前Lytro CEO Jason Rosenthal 在其官方博客中写道：“我认为我们有能力重新定义下一代Lytro的产品线、技术以及品控”。仅仅时隔一年，此时或许该轮到Google来完成Lytro的雄心壮志了。虽然Google对Lytro具体有何企图不得而知，但是我们可以确定的是，借助Google这个世界上最大的移动手机系统提供商，如果光场技术能够成功整合，这将是科技界的一大奇迹！</p>
+<p>以下是Lytro官方通告原文（大意是：我虽已死，光场犹存）：<br><div class="note ">
+            <p>At Lytro, we believe that Light Field will continue to shape the course of Virtual and Augmented Reality, and we’re incredibly proud of the role we’ve been able to play in pushing the boundaries of what’s possible. We’ve uncovered challenges we never dreamed of and made breakthroughs at a seemingly impossible pace. We’ve had some spectacular successes, and built entire systems that no one thought possible. More importantly, we built a team that was singularly unified in its focus and unrivaled in its dedication. It has been an honor and a pleasure to contribute to the cinema and Virtual Reality communities, but starting today we will not be taking on new productions or providing professional services as we prepare to wind down the company. We’re excited to see what new opportunities the future brings for the Lytro team as we go our separate ways. We would like to thank the various communities that have supported us and hope that our paths will cross in the future.</p><p>Lytro was founded in 2006 by Executive Chairman Ren Ng, whose Ph.D. research on Light Field imaging won Stanford University’s prize for best thesis in computer science. In late 2015, Lytro announced the world’s first Light Field solution for Virtual Reality (VR), Lytro Immerge, that was quickly followed by the 2016 launch of Lytro Cinema, the world’s first Light Field capture system for cinematic content. With these products, Lytro pioneered the generational shift from legacy 2D imaging to 3D volumetric video.</p>
+          </div></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>光场民用领域的践行者离我们而去，不知光场的未来将何去何从？敢问Raytrix和Magic Leap你们可好？</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://blog.lytro.com/glossary/6dof/" target="_blank" rel="noopener">6DoF</a></li>
+<li><a href="http://blog.lytro.com/holiday-edition-what-are-the-six-degrees-of-freedom/" target="_blank" rel="noopener">Holiday Edition: What Are the Six Degrees of Freedom?</a></li>
+<li><a href="http://blog.lytro.com/what-is-a-light-field/" target="_blank" rel="noopener">What is a Light Field?</a></li>
+<li><a href="http://blog.lytro.com/ray-tracing-lytro-volume-tracing-and-cg-generated-light-fields-in-vr/" target="_blank" rel="noopener">Ray tracing, Lytro Volume Tracing and CG generated Light Fields in VR</a></li>
+<li><a href="http://blog.lytro.com/primer-on-360-video-for-vr/" target="_blank" rel="noopener">Primer on Types of 360° Video for VR</a></li>
+<li><a href="https://techcrunch.com/" target="_blank" rel="noopener">Homepage: Techcrunch</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/lytro-light-field/" title="Lytro的光场AR之路：从巅峰到死亡">https://www.vincentqin.tech/posts/lytro-light-field/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/光场/" rel="tag"># 光场</a>
+            
+              <a href="/tags/计算成像/" rel="tag"># 计算成像</a>
+            
+              <a href="/tags/Light-Field/" rel="tag"># Light Field</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/stephen-hawking/" rel="next" title="Stephen Hawking">
+                  <i class="fa fa-chevron-left"></i> Stephen Hawking
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/stereo-vision-overview/" rel="prev" title="立体视觉综述：Stereo Vision Overview">
+                  立体视觉综述：Stereo Vision Overview <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#6自由度"><span class="nav-number">1.</span> <span class="nav-text">6自由度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yaw（平摇）"><span class="nav-number">1.1.</span> <span class="nav-text">Yaw（平摇）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pitch（俯仰）"><span class="nav-number">1.2.</span> <span class="nav-text">Pitch（俯仰）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Roll（翻滚）"><span class="nav-number">1.3.</span> <span class="nav-text">Roll（翻滚）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Left-Right（左右）"><span class="nav-number">1.4.</span> <span class="nav-text">Left/Right（左右）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Up-Down（上下）"><span class="nav-number">1.5.</span> <span class="nav-text">Up/Down（上下）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Forward-Backward（前后）"><span class="nav-number">1.6.</span> <span class="nav-text">Forward/Backward（前后）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光场与AR"><span class="nav-number">2.</span> <span class="nav-text">光场与AR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#记录光线角度-方向"><span class="nav-number">2.1.</span> <span class="nav-text">记录光线角度/方向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视差"><span class="nav-number">2.2.</span> <span class="nav-text">视差</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光场VR设备"><span class="nav-number">3.</span> <span class="nav-text">光场VR设备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lytro-VT"><span class="nav-number">3.1.</span> <span class="nav-text">Lytro VT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#光线追迹"><span class="nav-number">3.2.</span> <span class="nav-text">光线追迹</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从巅峰到倒闭"><span class="nav-number">4.</span> <span class="nav-text">从巅峰到倒闭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后记"><span class="nav-number">5.</span> <span class="nav-text">后记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

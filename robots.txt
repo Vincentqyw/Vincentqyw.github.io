@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /categories/
+Allow: /images/
+Allow: /tags/
+Allow: /guestbook/
+Allow: /collections/
+Allow: /page/
+Allow: /2016/
+Allow: /2017/
+
+Disallow: /vendors/
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /vendors/
+Disallow: /fancybox/
+
+Sitemap: https://www.vincentqin.tech//sitemap.xml

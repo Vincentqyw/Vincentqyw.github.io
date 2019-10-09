@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="keywords" content="个人网盘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Filebrowser：一款轻量级个人网盘">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/build-filebrowser/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-banner.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-login.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-demo.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/Chevereto.png">
+<meta property="og:updated_time" content="2019-09-15T09:14:03.643Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Filebrowser：一款轻量级个人网盘">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-banner.png">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/build-filebrowser/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Filebrowser：一款轻量级个人网盘 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/build-filebrowser/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Filebrowser：一款轻量级个人网盘
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-07-14 21:48:47" itemprop="dateCreated datePublished" datetime="2019-07-14T21:48:47+08:00">2019-07-14</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-15 17:14:03" itemprop="dateModified" datetime="2019-09-15T17:14:03+08:00">2019-09-15</time>
+              </span>
+            
+          
+
+          
+            <span id="/posts/build-filebrowser/" class="post-meta-item leancloud_visitors" data-flag-title="Filebrowser：一款轻量级个人网盘" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/build-filebrowser/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/build-filebrowser/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><br><br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-banner.png" alt><br><br></p>
+<a id="more"></a>
+<h1 id="个人网盘-Filebrowser"><a href="#个人网盘-Filebrowser" class="headerlink" title="个人网盘 Filebrowser"></a>个人网盘 Filebrowser</h1><p>服务器仅仅用于科学上网未免有些浪费了，是时候尝试一下自建个人网盘和图床了。</p>
+<h2 id="如何安装"><a href="#如何安装" class="headerlink" title="如何安装"></a>如何安装</h2><p><a href="https://filebrowser.xyz/installation" target="_blank" rel="noopener">官方</a>给出了一键安装大法，进入服务器输入以下命令就可以了。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://filebrowser.xyz/get.sh | bash</span><br></pre></td></tr></table></figure></p>
+<h2 id="首次配置"><a href="#首次配置" class="headerlink" title="首次配置"></a>首次配置</h2><p>当安装好之后，你并不能立即使用它，需要修改一些配置(以下内容参考[<a href="https://www.mivm.cn/filebrowser/" target="_blank" rel="noopener">米V米</a>]的教程)。</p>
+<ul>
+<li>创建配置数据库：<code>filebrowser -d /etc/filebrowser.db config init</code></li>
+<li>设置监听地址：<code>filebrowser -d /etc/filebrowser.db config set --address 0.0.0.0</code></li>
+<li>设置监听端口：<code>filebrowser -d /etc/filebrowser.db config set --port 8088</code></li>
+<li>设置语言环境(中文)：<code>filebrowser -d /etc/filebrowser.db config set --locale zh-cn</code></li>
+<li>设置日志位置：<code>filebrowser -d /etc/filebrowser.db config set --log /var/log/filebrowser.log</code></li>
+<li>添加一个用户：<code>filebrowser -d /etc/filebrowser.db users add root password --perm.admin</code>，其中的root和password分别是用户名和密码，根据自己的需求更改。</li>
+</ul>
+<p>有关更多配置的选项，可以参考官方文档：<a href="https://docs.filebrowser.xyz/" target="_blank" rel="noopener">https://docs.filebrowser.xyz/</a><br>配置修改好以后，就可以启动FileBrowser了，使用-d参数指定配置数据库路径。示例：<code>filebrowser -d /etc/filebrowser.db</code><br>启动成功就可以使用浏览器访问FileBrowser了，在浏览器输入 <code>服务器IP:端口</code>，示例：<code>http://192.168.1.1:8088</code></p>
+<p>然后会看到 FileBrowser 的登陆界面：<br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-login.png" alt></p>
+<p>用刚刚创建的用户登陆，最后就可以放心使用啦~<br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-demo.gif" alt></p>
+<h2 id="后续配置"><a href="#后续配置" class="headerlink" title="后续配置"></a>后续配置</h2><p>完成以上过程之后已经可以正常访问个人网盘了，但是假如服务器重启之后就必须重新输入<code>filebrowser -d /etc/filebrowser.db</code>才能运行，为了省去这一步，我们需要进行设置服务器开机自动启动FileBrowser。<br>这里我们使用的是systemd 大法：<br>首先下载 FileBrowser 的 <code>service</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://cdn.mivm.cn/www.mivm.cn/archives/filebrowser/filebrowser.service -o /lib/systemd/system/filebrowser.service</span><br></pre></td></tr></table></figure>
+<p>如果你的运行命令不是<code>/usr/local/bin/filebrowser -d /etc/filebrowser.db</code>，需要对 service 文件进行修改，将文件的 ExecStart 改为你的运行命令，更改完成后需要输入<code>systemctl daemon-reload</code>。</p>
+<p>下面祭出常用的命令：</p>
+<ul>
+<li>运行：<code>systemctl start filebrowser.service</code></li>
+<li>停止运行：<code>systemctl stop filebrowser.service</code></li>
+<li>开机启动：<code>systemctl enable filebrowser.service</code></li>
+<li>取消开机启动：<code>systemctl disable filebrowser.service</code></li>
+<li>查看运行状态：<code>systemctl status filebrowser.service</code></li>
+</ul>
+<p>这里有个<a href="https://youtu.be/sE31MBvOjxk" target="_blank" rel="noopener">视频教程</a>，需要科学上网查看。</p>
+<p><br></p>
+<h1 id="个人图床Chevereto"><a href="#个人图床Chevereto" class="headerlink" title="个人图床Chevereto"></a>个人图床Chevereto</h1><p>先给出安装好的样子~<br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/Chevereto.png" alt></p>
+<p>安装教程这里<a href="https://gist.github.com/biezhi/f90923b48863c7d745481ccdd678ccab" target="_blank" rel="noopener">install_chevereto.md</a>已经写得非常详细了，在此不做详细介绍。这里有个<a href="https://youtu.be/kShgzNkXRak" target="_blank" rel="noopener">视频教程</a>，我主要按照这个教程进行配置的，需要科学上网查看。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a href="https://youtu.be/sE31MBvOjxk" target="_blank" rel="noopener">把玩我的 VPS 主机 - 分分钟搭建时尚简洁的在线网盘</a></li>
+<li><a href="https://youtu.be/kShgzNkXRak" target="_blank" rel="noopener">搭建漂亮的私人图床</a></li>
+<li><a href="https://biezhi.me/" target="_blank" rel="noopener">王爵 nice的主页</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/build-filebrowser/" title="Filebrowser：一款轻量级个人网盘">https://www.vincentqin.tech/posts/build-filebrowser/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/个人网盘/" rel="tag"># 个人网盘</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/superpoint/" rel="next" title="SuperPoint: Self-Supervised Interest Point Detection and Description">
+                  <i class="fa fa-chevron-left"></i> SuperPoint: Self-Supervised Interest Point Detection and Description
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/slam-summer-courses-CADCG-Lab/" rel="prev" title="2019年浙大CADCG暑假SLAM培训部分课件">
+                  2019年浙大CADCG暑假SLAM培训部分课件 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#个人网盘-Filebrowser"><span class="nav-number">1.</span> <span class="nav-text">个人网盘 Filebrowser</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何安装"><span class="nav-number">1.1.</span> <span class="nav-text">如何安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#首次配置"><span class="nav-number">1.2.</span> <span class="nav-text">首次配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后续配置"><span class="nav-number">1.3.</span> <span class="nav-text">后续配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#个人图床Chevereto"><span class="nav-number">2.</span> <span class="nav-text">个人图床Chevereto</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

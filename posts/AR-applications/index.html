@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="前言当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。">
+<meta name="keywords" content="AR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AR形势与应用">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/AR-applications/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="前言当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/160405_WT_HomeSlider_Image_3D-Tracking.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/wakingapp.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/realmax.jpg">
+<meta property="og:updated_time" content="2018-11-14T14:12:35.208Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AR形势与应用">
+<meta name="twitter:description" content="前言当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/AR-applications/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>AR形势与应用 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/AR-applications/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">AR形势与应用
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2016-08-09 12:37:42" itemprop="dateCreated datePublished" datetime="2016-08-09T12:37:42+08:00">2016-08-09</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-11-14 22:12:35" itemprop="dateModified" datetime="2018-11-14T22:12:35+08:00">2018-11-14</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/AR/" itemprop="url" rel="index"><span itemprop="name">AR</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/AR-applications/" class="post-meta-item leancloud_visitors" data-flag-title="AR形势与应用" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/AR-applications/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/AR-applications/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg" alt></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p id="div-border-left-red">当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。</p>
+
+<a id="more"></a>
+<h2 id="1．增强现实公司分类"><a href="#1．增强现实公司分类" class="headerlink" title="1．增强现实公司分类"></a>1．增强现实公司分类</h2><p>Augmented reality增强现实创业的公司大致可以分成如下几种公司类型[1]。（以下是翻译的国外网站的内容）</p>
+<ul>
+<li>AR平台公司（AR platform companies）。<br>这些公司为开发者提供底层的开发工具，以便于开发者能够创造更多更加高级的AR解决方案。这样的公司有：Qualcomm Vuforia, METAIO’s SDK, TotalImmersion。</li>
+<li>AR产品和游戏公司。<br>这些公司主营自己独家AR零售产品例如：书籍、游戏。包括如下公司：Sphero, POPAR, Sony, Microsoft 以及 Nintendo。</li>
+<li>自助DIY AR公司以及通用AR查看器。<br>这些公司专为快速简单的AR体验或活动而设计，提供内容管理工具和基本AR效果菜单。借助自助AR工具，精通技术的个人可以创建简单的体验，例如发布单个视频或简单的动画。AR自助服务公司非常适合发布商，教育工作者，学生和其他想要测试或创建简单的增强现实体验的用户，而无需投资于完全定制的品牌应用体验。一些DIY公司还提供AR查看器，定制服务和白标签选项。这个领域的公司包括Layar，Aurasma，DAQRI和Zappar。</li>
+<li>定制品牌应用开发公司。<br>这些公司直接与品牌营销人员和机构合作，主要为的广告活动、贸易展览和现场活动构建定制的增强现实解决方案。自定义品牌应用程序允许营销人员结合独一无二的定制增强现实体验与个性化服务和项目管理。自定义功能通常包括品牌规格，导航，用户界面，动画，复杂或大规模的AR效果等。服务可以包括3D建模，与其他软件服务或电子商务平台的集成，游戏开发，基于位置的安装，通知，复杂动画，微位置或其他高级AR效果。这个领域的公司包括Appshaker，GravityJack和Marxent。</li>
+<li>行业特定的垂直AR解决方案（Industry-specific vertical AR solutions）。<br>最新出现的AR公司类别是那些提供AR解决方案的专业服务公司，专为服务于专业领域。如奢侈品零售，医疗服务，工业应用，制药公司和化妆品公司。这个领域的公司包括用于广告的Blippar，用于豪华珠宝零售的Holition，用于家具布置的Adornably以及用于消费零售，工业和企业销售工具的Marxent的VisualCommerce®。</li>
+</ul>
+<p>做个不恰当的比喻，我觉得AR是VR的一个延伸，只是把VR的场景换成了现实场景，眼镜换成了透明的。</p>
+<h2 id="2．可行性分析"><a href="#2．可行性分析" class="headerlink" title="2．可行性分析"></a>2．可行性分析</h2><p>一个良好的AR体验，大致可以分成一下几个方面：</p>
+<ul>
+<li>1．    3D眼镜；这应该是VR或者AR最为重要的一部分；</li>
+<li>2．    手柄；可以代替人手去操纵，在一定程度上增加了使用的灵活性。（但我觉得未来手柄一定会被淘汰，因为这只是人手不能被充分利用的代替手段）。</li>
+<li>3．    3D显示屏幕，它可以跟踪用户的头的转动和手的动作，实时调整所看到的3D图像，并允许用户操控一些虚拟物体，就好比他们真正存在。</li>
+<li>4．    待补充</li>
+</ul>
+<h3 id="技术难点"><a href="#技术难点" class="headerlink" title="技术难点"></a>技术难点</h3><p>VR得益于三维游戏的发展，而AR收益于影视领域的跟踪技术（video tracking）的发展。从技术门槛的角度来说，VR、AR和移动端重合的技术有：显示器、运动传感器、处理器、储存、记忆、无线连接等。在硬件上，这些都不是技术难点。<br>VR、AR的难点都在感知和显示，感知是一种映射，VR 映射的是一个lighthouse的空间或者PS camera mapping的一个交叉；在显示上，VR如何精准地匹配用户的头部产生相应的画面，AR则在这基础上算出光照、遮挡等情况并让图像通透不干扰现实中的视线。<br>而VR硬件的难点在于光学的镜片技术和位置追踪技术（SLAM），因为以前的移动端不涉及这些技术。AR的软件难点在于：1、定位相机；2、恢复场景的三维结构。通常情况下，这一技术被称作SLAM（Simultaneous Localization And Mapping）。当然还有一些其他的技术诸如：图像追踪、云端视觉搜索、人脸和表情追踪等。</p>
+<p>目前国内外已经有多家技术公司提供了软件开发方面的AR解决方案和工具，使得全球众多开发者参与到AR应用开发中来。开发者不需要自己搭建系统架构，也不用理解底层SDK复杂的实现方式，只需要将AR模块嵌入到已有的业务逻辑中，就可以通过现成的开源代码或者平台工具，设计并开发属于自己的AR软件产品。就这个层面来讲技术是可以实现的，但就某一个特殊领域的实现方式可能有所差别。</p>
+<h3 id="技术支持"><a href="#技术支持" class="headerlink" title="技术支持"></a>技术支持</h3><p>Metaio 是由德国大众的一个项目衍生出来的一家虚拟现实初创公司，现已被苹果公司收购。 专门从事增强现实和机器视觉解决方案，产品主要包括Metaio SDK 和 Metaio Creator。 Metaio SDK 支持移动设备的AR应用开发，它在内部提供增强现实显示组件ARView，该组件将摄像机层、3D 空间计算以及POI信息的叠加等功能全部封装在一起，用户在使用增强现实功能时，只需要关注用户操作的监听器即可，摄像机层、3D 空间计算、图形识别以及空间信息叠加等逻辑，完全由ARView组件自己处理 。Metaio Creator相对Metaio SDK 来说，使用门槛更低，用户无需掌握移动开发技术，就可以通过 Metaio Creator 用户图形接口中简单的点击、拖拽、拉伸等方式，控制软件中组件的功能，以构建出自己的增强现实结果。（但是被苹果收购了，目前不提供服务）</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/160405_WT_HomeSlider_Image_3D-Tracking.png" alt="图一Wikitude 官网界面"></p>
+<p>Wikitude 是由美国 Mobilizy 公司于 2008 年秋推出的一款移动增强现实开发平台， 支持 Android、 iOS、Black Berry 以及 Windows Phone 多个手机智能操作系统Wikitude SDK 是一款优秀的增强现实开发工具包， 它能够帮助开发人员减小增强现实应用程序开发的复杂性。 目前，Wikitude SDK 支持载入真实的物理环境向 AR 环境中添加虚拟物体、支持用户与虚拟物体的交互、响应用户的位置变化、AR 环境中信息提示、从本地或网络加载资源等功能。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/wakingapp.jpg" width="1000px"></p>
+<p>ENTiTi Creator是由以色列一家创业公司 Waking App 开发的一款 AR 作品制作工具，易学易用是它的最大特色。用户可以使用ENTiTi平台上传图片和视频以及相应的动作指令， 并通过简单的逻辑串联，就可以轻松创建出包含3D图像、动画或者游戏的AR/VR 内容。该平台不需要任何编程、完全依靠鼠标拖放就能完成整个创建过程。EN-TiTi是基于云计算的平台，可以在线 3D 视角查看内容，并自动适配各种终端，比如，手机或平台电脑、三星 Gear VR 盒子、Vuzix 智能眼镜等。开发者通过它所发布出来的AR内容，只需要通过一个叫作 EN-TiTi View 软件的入口，就可以轻松访问。 这意味着全球所有开发者所开发出的成千上万的 AR 内容，只需要一个软件即可全部浏览。</p>
+<center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/AR-applications/realmax.jpg" width="1000px"></center>
+
+<p>Realmax公司是一个国际化AR生态级企业，在上海、香港、纽约、慕尼黑都设立了分公司，并建立了5个全球实验室，完成了硬件量产、软件算法、应用开发和内容制作的AR技术储备，AR操作系统“Realcast”也有可观的用户量，在工业、幼教、电商、旅游等领域积累了大量客户，是AR领域唯一的一家完成“平台+内容+终端+应用”生态链布局的企业。</p>
+<p>根据以上分析，如果想完成某一个特定的AR或者VR应用，可以使用上述公司提供的SDK，在一定程度上会加快开发速度。</p>
+<hr>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>1．    增强现实公司类型：<a href="http://www.marxentlabs.com/augmented-reality-company-primer-5-types-augmented-reality-companies/" target="_blank" rel="noopener">http://www.marxentlabs.com/augmented-reality-company-primer-5-types-augmented-reality-companies/</a><br>2．    Metaio公司主页：<a href="http://www.metaio.eu/" target="_blank" rel="noopener">http://www.metaio.eu/</a><br>3．    AR技术举例以及现有公司介绍：<a href="http://www.marxentlabs.com/what-is-virtual-reality-definition-and-examples/。" target="_blank" rel="noopener">http://www.marxentlabs.com/what-is-virtual-reality-definition-and-examples/。</a><br>4．    Layer公司AR开发SDK：<a href="https://www.layar.com/solutions/#sdk" target="_blank" rel="noopener">https://www.layar.com/solutions/#sdk</a><br>5．    Wikitude官网：<a href="http://www.metaio.eu/index.html" target="_blank" rel="noopener">http://www.metaio.eu/index.html</a><br>6．    ENTiTi Creator 官网：<a href="http://www.wakingapp.com/" target="_blank" rel="noopener">http://www.wakingapp.com/</a><br>7．    Realmax公司官网：<a href="http://www.realmax.com/或者http://www.realmax.com.hk/" target="_blank" rel="noopener">http://www.realmax.com/或者http://www.realmax.com.hk/</a></p>
+<!-- more -->
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/AR-applications/" title="AR形势与应用">https://www.vincentqin.tech/posts/AR-applications/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/AR/" rel="tag"># AR</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/learning-Markdown/" rel="next" title="Markdown 学习">
+                  <i class="fa fa-chevron-left"></i> Markdown 学习
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/build-a-website-using-hexo/" rel="prev" title="HEXO建站备忘录">
+                  HEXO建站备忘录 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1．增强现实公司分类"><span class="nav-number">1.1.</span> <span class="nav-text">1．增强现实公司分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2．可行性分析"><span class="nav-number">1.2.</span> <span class="nav-text">2．可行性分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#技术难点"><span class="nav-number">1.2.1.</span> <span class="nav-text">技术难点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#技术支持"><span class="nav-number">1.2.2.</span> <span class="nav-text">技术支持</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">1.3.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

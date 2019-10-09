@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="这里鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! )">
+<meta name="keywords" content="光场,计算成像,Light Field,Matlab光场工具包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/LightField-Toolbox/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="这里鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! )">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/91252468.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-cameras.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lfp_list.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-TB-main.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-TB-files.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-TB.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/folder-structure-raw.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/white-image-files-folders.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/folder-structure.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/white-image-macro-pixels.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/running-process.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/deer.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/deer-zoom-in.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/all-views-raw.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/all-views-freq-correction.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/all-views-freq-color-correction.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/concatImg.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lytro-desktop-1.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lytro-desktop-3.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lytro-desktop-2.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/color-depth.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/refocusing.jpg">
+<meta property="og:updated_time" content="2018-01-28T14:55:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明">
+<meta name="twitter:description" content="这里鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! )">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/91252468.png">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/LightField-Toolbox/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/LightField-Toolbox/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-02-16 10:45:54" itemprop="dateCreated datePublished" datetime="2017-02-16T10:45:54+08:00">2017-02-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-01-28 22:55:30" itemprop="dateModified" datetime="2018-01-28T22:55:30+08:00">2018-01-28</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/光场/" itemprop="url" rel="index"><span itemprop="name">光场</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/LightField-Toolbox/" class="post-meta-item leancloud_visitors" data-flag-title="Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/LightField-Toolbox/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/LightField-Toolbox/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/91252468.png" alt="Magic Leap"></p>
+<div class="note success">
+            <p><a href="https://www.vincentqin.tech/collections/">这里</a>鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。<br><span id="inline-red">声明</span>：<u><strong>一切理解都是本人观点，如有疑问，还望在</strong>评论<strong>中留言。如需转载请与本人联系，谢谢合作</strong></u>! )</p>
+          </div>
+<a id="more"></a>
+<h2 id="光场相机"><a href="#光场相机" class="headerlink" title="光场相机"></a>光场相机</h2><p>大家在刚刚入手光场领域的时候可能会用到目前消费级的手持光场相机，如Lytro或者ILLUM，如图（实验室的设备，鄙人可买不起ILLUM）：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-cameras.jpg" alt></p>
+<h2 id="获取-LFP-or-LFR-原文件"><a href="#获取-LFP-or-LFR-原文件" class="headerlink" title="获取.LFP(or .LFR)原文件"></a>获取.LFP(or .LFR)原文件</h2><p>由Lytro拍摄的图像的原格式是.lfp格式，我们要将其解码成我们需要的格式。<br>工具：<strong>Lytro Desktop</strong>，<strong>MATLAB光场工具包</strong>（很强大，推荐，本文介绍该方法）。</p>
+<p>首先用数据线把设备连接到电脑，打开Lytro Desktop，点击想要导入的图片，选中点击右上角立即处理，然后打开我的电脑图片-&gt;Lytro Desktop\Libraries\Lytro 图库.lytrolibrary*，就可以发现有很多文件夹名字是一串很长数字字母云云。点击进去可以发现里面有几个文件，以lytro为例，这几个文件如下形式：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lfp_list.png" alt></p>
+<p><strong><font color="red">raw.lfp</font></strong>就是我们需要的原文件，之后我们就要利用Matlab光场工具包对其进行解码操作。</p>
+<h2 id="Matlab-Light-Field-ToolBox-光场工具箱-的使用"><a href="#Matlab-Light-Field-ToolBox-光场工具箱-的使用" class="headerlink" title="Matlab Light Field ToolBox(光场工具箱)的使用"></a>Matlab Light Field ToolBox(光场工具箱)的使用</h2><h3 id="下载光场工具包（LFToolBox）"><a href="#下载光场工具包（LFToolBox）" class="headerlink" title="下载光场工具包（LFToolBox）"></a>下载光场工具包（LFToolBox）</h3><p>首先下载<a href="http://cn.mathworks.com/matlabcentral/fileexchange/49683-light-field-toolbox-v0-4" target="_blank" rel="noopener">光场工具箱</a>并仔细阅读说明文档，根据文档把相应的数据拷贝到工具箱的文件夹下(这一步很关键，要仔细配置)。<del>如果不想在官网下载的话我上传到了度娘的云盘链接：<a href="http://pan.baidu.com/s/1hsDo0ks" target="_blank" rel="noopener">链接</a> 密码：yykc。这是鄙人修改后的一个版本，可以直接运行。</del><strong><font color="red">另外鄙人在Github上传了一个版本，大家可以git clone<a href="https://github.com/Vincentqyw/Light_Field_TB" target="_blank" rel="noopener">链接</a></font></strong>。下载下来的工具包是这样的：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-TB-main.png" alt></p>
+<p>LFToolbox0.4就是我们需要的工具包，该工具包里包含很多函数，如下图：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-TB-files.png" alt></p>
+<p>在此，鄙人把一些比较常用的函数及文档用红色的框标注出来，其中PDF文档是该工具包的说明书。这个说明书中详细地介绍了该工具包的使用方法，我们完全可以根据该文档的介绍来实现自己想要的功能。如下是该说明书的截图：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/LF-TB.png" alt></p>
+<p>该说明文档提供了各种函数用于从LFP文件中提取出自己需要的各种信息：白图像(white image)，Raw Image，对齐后的图像，以及颜色校正，频域滤波后的图像等。<br><del>因为时间不足没有整理的，感觉大家都对这个过程比较感兴趣，鄙人觉得有必要写一下到底如何读取lfp、lfr、raw文件了。好了言归正传，开写。</del></p>
+<h3 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h3><h4 id="step-1-创建自己的工作目录"><a href="#step-1-创建自己的工作目录" class="headerlink" title="step 1: 创建自己的工作目录"></a>step 1: 创建自己的工作目录</h4><p><u>如果是直接clone鄙人在github上的<a href="https://github.com/Vincentqyw/Light_Field_TB" target="_blank" rel="noopener">工程</a>的话直接跳转<strong>step 2</strong></u>。如果没有，那就要建立自己的工作目录，便于文件的管理。这一步是必要的，如果建立的目录不一致，可能导致程序无法运行，这也是鄙人当时初次用这个工具包时常常出错的地方。好了，建立这样的目录结构：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/folder-structure-raw.png" alt></p>
+<h4 id="step-2-根据相机序列号修改文件名"><a href="#step-2-根据相机序列号修改文件名" class="headerlink" title="step 2: 根据相机序列号修改文件名"></a>step 2: 根据相机序列号修改文件名</h4><p><strong><font color="red">Sample_test</font></strong>表示我们的测试目录，里面包含了相机信息以及自己拍摄照片的图像（lfp/lfr）。<br><strong><font color="red">Cameras</font></strong> 这个目录中又包含了几个文件夹，它们分别是以“A”或者“B”开头，在其后面有一长串数字。这其实就是光场相机的serial number，我们可以从默认目录<u> c:\Users\<username>\AppData\Local\Lytro\cameras\sn- serial_number</username></u>中找到，这个数字每个相机不一样，大家根据自己的相机序列号修改这个目录哈。”A”表示的是LYTRO系列相机，“B”表示ILLUM系列相机；以上图为例，”A303134427”就是我相机的序列号。</p>
+<h4 id="step-3-把白图像文件拷贝到相应的文件夹下"><a href="#step-3-把白图像文件拷贝到相应的文件夹下" class="headerlink" title="step 3: 把白图像文件拷贝到相应的文件夹下"></a>step 3: 把白图像文件拷贝到相应的文件夹下</h4><p>在每个序列号文件夹下又有一个文件夹<strong><font color="red">WhiteImages</font></strong>，这里面放着由该相机拍摄的白图像。所谓白图像就是一张由光场相机拍摄的白色的图像，当然自己也可以拿着光场相机对着白色的墙面拍几张，但是效果并不一定很好。庆幸的是LYTRO官方提供了白图像，以Lytro为例，我们可以从以下目录找到:<u> c:\Users\ <strong>username</strong>\AppData\Local\Lytro\cameras\sn- serial_number</u>。如下图所示：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/white-image-files-folders.png" alt></p>
+<p>我们发现这里有以下4个文件：<strong>data.C.0/1/2/3</strong>，这是官方把白图像压缩成了这种格式，此时需要用工具箱进行解码。我们需要的正是这四个文件，拷贝出这4个文件，放在<strong><font color="red">WhiteImages</font></strong>文件夹里。这一步相当关键，一定要确保拷贝对了目录。<strong><font color="red">注意</font></strong>，Illum相机的白图像与Lytro的白图像的存放位置不一样，在<a href="#Whiteimage-Illum">相机的SD</a>卡里。</p>
+<h4 id="step-4-将测试文件放到Images目录"><a href="#step-4-将测试文件放到Images目录" class="headerlink" title="step 4: 将测试文件放到Images目录"></a>step 4: 将测试文件放到Images目录</h4><p><strong><font color="red">Images</font></strong>文件夹下包含我们需要处理的文件们，<strong><font color="red">F01</font></strong>下存放LYTRO系列拍摄的文件，<strong><font color="red">B01</font></strong>下存放ILLUM系列拍摄的文件。以Lytro为例，由于前面已经有了测试文件<strong><font color="red">raw.lfp</font></strong>，我们就把这个文件放在<strong><font color="red">F01</font></strong>下。经过我们上述的过程之后，最后我们的目录会变成这样（注意：<u>Sample_test与LFToolBox0.4为同级目录，各个文件夹的名字务必正确</u>）：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/folder-structure.png" alt></p>
+<h3 id="测试开始"><a href="#测试开始" class="headerlink" title="测试开始"></a>测试开始</h3><p>鄙人用的是实验室的电脑，配置是：<strong>Intel(R) Core(TM) i7-4790 CPU  @3.60GHz  3.60GHz RAM 16GB</strong>。其中的Demo文件是本人编写的一小段测试代码，已经贴在了文末。接下来的过程就是RUN CODE了。程序大致可以分为以下几个测试：</p>
+<ol>
+<li>处理白图像</li>
+<li>解码LFP文件</li>
+<li>频域滤波</li>
+<li>颜色校正</li>
+</ol>
+<h4 id="处理白图像"><a href="#处理白图像" class="headerlink" title="处理白图像"></a>处理白图像</h4><p>处理白图像的目的是得到相机的某些参数，鄙人当时是为了获得每幅光场的中心点坐标才进行的这一步。白图像拍摄的场景没有纹理，此时可以清楚的观察到微透镜成像的边界信息。如下图所示：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/white-image-macro-pixels.png" alt></p>
+<p>可以看到的是，微透镜下成像是这种正六边形的网格，类似于蜂窝的结构，感觉很酷有木有。需要注意的是，该过程不是简单地提取出一张白图像来，而是提取几十张白图像对（image pairs），这个过程运行起来有点久，以下是运行的截图：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/running-process.png" alt></p>
+<h4 id="解码LFP文件"><a href="#解码LFP文件" class="headerlink" title="解码LFP文件"></a>解码LFP文件</h4><p>如果只是单纯地读出LFP/LFR、RAW文件的数据的话可以分别用工具包提供的如下函数：LFReadLFP、LFReadRaw。注意两个函数的返回值不一样。LFReadLFP返回一个结构体类型的变量，它包含相机的各个信息，我们可以根据自己的需要保留数据。LFReadRaw返回的是一张uint16的灰度图，还没有经过demosaicing操作。去马赛克操作在malatb中有相应的函数，这点不用担心。我们在这里不是直接调用的LFReadLFP而是调用了工具箱提供的LFLytroDecodeImage函数。如果运行有问题（<u>若是直接clone鄙人github上项目的话，不需要修改</u>），将LFLytroDecodeImage中的WhiteImageDatabase路径由以下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DecodeOptions = LFDefaultField( <span class="string">'DecodeOptions'</span>, <span class="string">'WhiteImageDatabasePath'</span>...</span><br><span class="line">,fullfile(<span class="string">'Cameras'</span>,<span class="string">'WhiteImageDatabase.mat'</span>));<span class="comment">% line 71</span></span><br></pre></td></tr></table></figure>
+<p>改为：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DecodeOptions = LFDefaultField( <span class="string">'DecodeOptions'</span>, <span class="string">'WhiteImageDatabasePath'</span>...</span><br><span class="line"> ,fullfile(<span class="string">'Cameras'</span>,LFMetadata.SerialData.camera.serialNumber,<span class="string">'WhiteImageDatabase.mat'</span>));</span><br><span class="line"><span class="comment">%== 注意，这条插在  ---Select appropriate white image---上行，而不是在原来的71行修改==。</span></span><br></pre></td></tr></table></figure>
+<p>经过这样的修改之后，这下应该可以跑了。我们可以得到以下图像：</p>
+<center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/deer.jpg" width="80%"></center>
+
+
+<p>局部放大效果图：</p>
+<center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/deer-zoom-in.png" width="80%"></center>
+
+
+<p>所有视角的图像：</p>
+<center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/all-views-raw.png" width="80%"></center>
+
+<p>这时候可以看到在边界视角上的图像比较黑，所以我们接下来要进行频域滤波，以及颜色校正。</p>
+<h4 id="频域滤波以及颜色校正"><a href="#频域滤波以及颜色校正" class="headerlink" title="频域滤波以及颜色校正"></a>频域滤波以及颜色校正</h4><p>这部分分别用到了LFFilt4DFFT以及LFColourCorrect函数。以LYTRO 1.0 为例子，我们得到的光场图像一种有11*11个视角，但是这个121个视角子孔径图像的质量真的不敢恭维，尤其是边角处的视角(u=1,v=1)时，这个图像时完全变成黑色的。所以嘛，LFFilt4DFFT这个函数是将这些变成黑色的图像或者质量不好的图像进行校正的，具体原理不作展开。LFColourCorrect这个函数是利用gamma变化对原始图像进行颜色校正的，这一点比较简单。总之利用这两个函数能够让我们得到的光场图像的质量更好，当然你也可以选择不用。</p>
+<p>以下是经过滤波之后的所有子孔径图像，可以发现边界的视角相比于频域滤波之前有了很好的可视性。</p>
+<center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/all-views-freq-correction.png" width="80%"></center>
+
+<p>以下是经过颜色校正之后的所有所有子孔径图像。</p>
+<center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/all-views-freq-color-correction.png" width="80%"></center>
+
+<p>经过以上的步骤我们可以学习到白图像的处理，以及光场图像的处理等操作。当然鄙人没有列出这个工具包所有的功能介绍，大家可以根据需要建立自己工程，对自己的数据进行测试，以上！</p>
+<h2 id="注意事项及测试代码"><a href="#注意事项及测试代码" class="headerlink" title="注意事项及测试代码"></a><strong><font color="red">注意事项及测试代码</font></strong></h2><h3 id="参数设置好了再Run"><a href="#参数设置好了再Run" class="headerlink" title="参数设置好了再Run"></a><span id="Whiteimage-Illum">参数设置好了再Run</span></h3><p>不少同学是因为设置不当，导致运行错误，以下鄙人列举了可能出现错误的地方。</p>
+<ul>
+<li>务必在WhiteImagesPath处写明相机型号，确定好到底是Lytro还是Illum</li>
+<li>注意Illum相机的配对数据在相机的SD卡中，解压<code>caldata-Bxxxxxxxxx.tar</code>，将里面的文件拷贝出来放在路径<strong>Sample_test\Cameras\Bxxxxxxxxx\</strong>下即可</li>
+<li>白图像的处理过程比较久，耐心等待就行即可</li>
+<li>Lytro与Illum的频域滤波调用函数是不同的，鄙人已经把代码添加在了相应位置；这个函数用时较久，耐心等待</li>
+<li>结果存放在<strong>Results_saving</strong>文件夹下</li>
+<li>再次提醒，由于Illum图像的分辨率比较大，所以当程序运行到LFLytroDecodeImage以及频域滤波时会造成内存以及磁盘的大量使用，慎重考虑。</li>
+<li>如有Bug请及时联系鄙人，请在评论区留言。</li>
+</ul>
+<h3 id="没有图像文件怎么搞"><a href="#没有图像文件怎么搞" class="headerlink" title="没有图像文件怎么搞"></a>没有图像文件怎么搞</h3><ol>
+<li>下载整个<a href="https://github.com/Vincentqyw/light-field-TB" target="_blank" rel="noopener">工程</a>；</li>
+<li>下载数据集：可以在<a href="https://www.irisa.fr/temics/demos/lightField/index.html" target="_blank" rel="noopener">这里</a>下载Lytro数据集，该数据集包括白图像以及图像原文件；</li>
+<li>然后将工程<code>Sample_test/Cameras/</code>下的文件<code>Axxxxxxxxxxx</code>修改为<code>A303134643</code>，然后将数据集<code>LytroDataset\sn-A303134643</code>文件夹下的<code>data.C.0.1/2/3</code>放在<code>Sample_test/Cameras/A303134643</code>文件夹下；</li>
+<li>将<code>LytroDataset\raws</code>文件夹下的图像原文件放在工程<code>Sample_test/Images/A01/</code>文件夹下；</li>
+<li>修改<code>Demo.m</code>中<code>WhiteImagesPath=&#39;Sample_test\Cameras\Axxxxxxxxxx&#39;</code>，以及<code>lfpname=&#39;test&#39;</code>改成步骤4中的任何一个图像原文件即可。</li>
+<li>run起来吧~</li>
+</ol>
+<h3 id="解码效果为何不佳"><a href="#解码效果为何不佳" class="headerlink" title="解码效果为何不佳"></a>解码效果为何不佳</h3><p>另外，很多童鞋问过鄙人一些问题，例如<strong>为何光场工具包解码出来的图像质量如此之差，始终达不到Lytro Desktop导出图像的质量</strong>。其实该问题是个普遍现象，目前没有一个好的解决方法。光场工具包的发明者<strong>Donald Dansereau</strong>在<a href="https://plus.google.com/communities/114934462920613225440" target="_blank" rel="noopener">Google Plus</a>也是这么认为的，鄙人把原话附在下面：</p>
+<div class="note ">
+            <p>Q from email: there are differences between the toolbox decoded output and the Lytro Desktop’s image. The differences involve color, intensity and noise. How can I fix this?</p><p>A: Thanks for the email. There will always be important differences between the Lytro software output and the toolbox output. The toolbox tries to generate a 4D light field that is as close as possible to the raw image measured by the camera, while still being a standard two-plane parameterized 4D light field. The Lytro software has a very different goal. They do not produce a 4D light field, they produce 2D renders. These are optimized to look nice, and evidently look much nicer than any 2D slice taken from the toolbox output. They use sophisticated decoding and denoising techniques to do this.<br>The philosophy of the toolbox is to provide a 4D light field close to the raw image captured by the camera, to allow researchers to explore the characteristics of this kind of signal. It should, in theory, be possible to go from the 4D light field output by the toolbox to nice 2D renderings like those produced by the Lytro software. Making nice 2D renderings can also be accomplished by working directly from the lenslet image, as has been demonstrated in a few papers by researchers at Lytro and elsewhere.</p>
+          </div>
+<p>从上面的回复可以看到，他提供的<strong>光场工具包的目的是尽量提供光场相机采集的原汁原味的数据（raw data）用来逼近4D光场信息</strong>；然后让研究者根据数据恢复出自己想要的信息。但是Lytro公司提供<strong>Lytro desktop的目的是渲染出漂亮的2D图像，以供用户使用</strong>。这也反映了研究和商业区别，Lytro并未提供他们渲染的方式，属内部机密。</p>
+<p>此外鄙人也单独问了Donald Dansereau同样的问题，作者的建议原话祭在下面：<br><div class="note success">
+            <p>If you want to make nice 2D images, I suggest</p><p><strong>Filter before colour correction</strong>.  Try a simple planar focus filter (LFFiltShiftSum, or one of the linear filters in the LFDemoBasicFilt* examples).</p><p><strong>Don’t use the toolbox colour correction</strong>, the code is extremely simplistic and is mostly meant to show you where the metadata is.<br>Look into some <strong>4D - to - 2D rendering techniques</strong> for light fields.</p><p>Look into some <strong>2D denoising techniques</strong> and apply them to your 2D render, or to the 4D light field slices.</p><p>If you do find something that works well for you please share, as this is a common question.</p>
+          </div></p>
+<p>鄙人习惯的参数设置如下：颜色校正的参数设为<strong>Gamma=0.8或者小于0.8</strong>（这个参数你可以不停地试，满意即可）。另外，鄙人一般不用上述代码里的频域滤波，因为鄙人认为这步会很大程度地破坏原始数据。鄙人会选用中心视角邻域的几个视角，例如原来ILLUM提供的是15x15个视角，但是我们可以选用其中的11x11或者更少的视角，这样就可以不用考虑边界视角黑暗的问题了。当然大家可以尝试按照Donald Dansereau的说法进行尝试，如果各位有好的方法，也可以告诉鄙人。（PS：以上为回复@lixiaohao同学邮件部分内容）</p>
+<h3 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h3><p>以下是Demo文件的代码，仅供学习使用。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line">clc;</span><br><span class="line">clear all;</span><br><span class="line">clc;</span><br><span class="line"></span><br><span class="line">addpath(genpath(<span class="string">'Sample_test'</span>));</span><br><span class="line">addpath(genpath(<span class="string">'LFToolbox0.4'</span>));</span><br><span class="line"></span><br><span class="line">LFMatlabPathSetup;</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Step1: 解压data.C.0/1/2/3---&gt;white,结果存储在Cameras中</span></span><br><span class="line">fprintf(<span class="string">'===============Step1: Unpack Lytro Files===============\n\n '</span>);</span><br><span class="line">LFUtilUnpackLytroArchive(<span class="string">'Sample_test'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Step2: 包含刚刚解压出来的文件的目录</span></span><br><span class="line"></span><br><span class="line">fprintf(<span class="string">'===============Step2: Process WhiteImages===============\n\n'</span>);</span><br><span class="line"></span><br><span class="line">WhiteImagesPath=<span class="string">'Sample_test\Cameras\B5151500510'</span>; <span class="comment">% 务必要设置这个值 B5151500510   A303134427</span></span><br><span class="line">LFUtilProcessWhiteImages( WhiteImagesPath);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Step3: 解码光场图像.lfp</span></span><br><span class="line">fprintf(<span class="string">'=====================Step3: Decode LFP===================\n\n'</span>);</span><br><span class="line">cd(<span class="string">'Sample_test'</span>);  <span class="comment">% 进入Sample_test目录</span></span><br><span class="line"></span><br><span class="line">lfpname=<span class="string">'baby'</span>; <span class="comment">%测试图像名称，改成你自己的</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> WhiteImagesPath(<span class="number">21</span>)==<span class="string">'A'</span>    <span class="comment">%找到型号  exist('LYTRO','var')</span></span><br><span class="line">    version=<span class="string">'F01'</span>;</span><br><span class="line"><span class="keyword">elseif</span> WhiteImagesPath(<span class="number">21</span>)==<span class="string">'B'</span><span class="comment">%找到型号  exist('ILLUM','var')</span></span><br><span class="line">    version=<span class="string">'B01'</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">InputFname=[<span class="string">'Images\',version,'</span>\<span class="string">',lfpname,'</span>.lfp'];</span><br><span class="line"></span><br><span class="line">[LF, LFMetadata,WhiteImage,CorrectedLensletImage, ...</span><br><span class="line">WhiteImageMetadata, LensletGridModel, DecodeOptions]...</span><br><span class="line">                              =  LFLytroDecodeImage(InputFname);</span><br><span class="line">cd(<span class="string">'..'</span>);</span><br><span class="line"></span><br><span class="line">imshow(CorrectedLensletImage) <span class="comment">%Raw Image</span></span><br><span class="line">mkdir([<span class="string">'Results_saving\',lfpname]);</span></span><br><span class="line"><span class="string">imwrite(CorrectedLensletImage,['</span>Results_saving\<span class="string">',lfpname,'</span>\<span class="string">',lfpname,'</span>.bmp']);</span><br><span class="line">save([<span class="string">'Results_saving\',lfpname,'</span>\<span class="string">',lfpname,'</span>.mat'],<span class="string">'CorrectedLensletImage'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">%% =======================频域滤波================================</span></span><br><span class="line"><span class="comment">%---Setup for linear filters---</span></span><br><span class="line">tic</span><br><span class="line"><span class="comment">% lytro</span></span><br><span class="line"><span class="keyword">if</span> strcmp(version,<span class="string">'F01'</span>)==<span class="number">1</span></span><br><span class="line">    LFPaddedSize = [<span class="number">16</span>, <span class="number">16</span>, <span class="number">400</span>, <span class="number">400</span>];</span><br><span class="line">    BW = <span class="number">0.03</span>;</span><br><span class="line">    FiltOptions = [];</span><br><span class="line">    FiltOptions.Rolloff = <span class="string">'Butter'</span>;</span><br><span class="line">    Slope1 = <span class="number">-3</span>/<span class="number">9</span>; <span class="comment">% Lorikeet</span></span><br><span class="line">    Slope2 = <span class="number">4</span>/<span class="number">9</span>;  <span class="comment">% Building</span></span><br><span class="line">    fprintf(<span class="string">'Building 4D frequency hyperfan... '</span>);</span><br><span class="line">    [H, FiltOptionsOut] = LFBuild4DFreqHyperfan( LFPaddedSize, Slope1, Slope2, BW, FiltOptions );</span><br><span class="line">    fprintf(<span class="string">'Applying filter'</span>);</span><br><span class="line">    [LFFilt, FiltOptionsOut] = LFFilt4DFFT( LF, H, FiltOptionsOut );</span><br><span class="line"></span><br><span class="line"><span class="comment">% illum</span></span><br><span class="line"><span class="keyword">elseif</span> strcmp(version,<span class="string">'B01'</span>)==<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    LFSize = <span class="built_in">size</span>(LF);</span><br><span class="line">    LFPaddedSize = LFSize;</span><br><span class="line">    BW = <span class="number">0.04</span>;</span><br><span class="line">    FiltOptions = [];</span><br><span class="line">    <span class="comment">%---Demonstrate 4D Hyperfan filter---</span></span><br><span class="line">    Slope1 = <span class="number">-4</span>/<span class="number">15</span>; <span class="comment">% Lorikeet</span></span><br><span class="line">    Slope2 = <span class="number">15</span>/<span class="number">15</span>; <span class="comment">% Far background</span></span><br><span class="line">    fprintf(<span class="string">'Building 4D frequency hyperfan... '</span>);</span><br><span class="line">    [H, FiltOptionsOut] = LFBuild4DFreqHyperfan( LFPaddedSize, Slope1, Slope2, BW, FiltOptions );</span><br><span class="line">    fprintf(<span class="string">'Applying filter'</span>);</span><br><span class="line">    [LFFilt, FiltOptionsOut] = LFFilt4DFFT( LF, H, FiltOptionsOut );</span><br><span class="line">    title(sprintf(<span class="string">'Frequency hyperfan filter, slopes %.3g, %.3g, BW %.3g'</span>, Slope1, Slope2, BW));</span><br><span class="line">    drawnow</span><br><span class="line">    save([<span class="string">'Results_saving\',lfpname,'</span>\<span class="string">',lfpname,'</span><span class="number">5</span>D.mat'],<span class="string">'LFFilt'</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% =======================颜色校正参数设置==========================                               </span></span><br><span class="line"></span><br><span class="line">ColMatrix = DecodeOptions.ColourMatrix;</span><br><span class="line">Gamma=DecodeOptions.Gamma;</span><br><span class="line">ColBalance=DecodeOptions.ColourBalance;</span><br><span class="line"></span><br><span class="line"><span class="comment">% 对3280*3280的原始彩色图像进行颜色校正</span></span><br><span class="line">ColorCorrectedImage=LFColourCorrect(CorrectedLensletImage, ColMatrix, ColBalance, Gamma);</span><br><span class="line">imwrite(ColorCorrectedImage,[<span class="string">'Results_saving\',lfpname,'</span>\<span class="string">',lfpname,'</span>ColorCorrectedImage.bmp']);</span><br><span class="line">save([<span class="string">'Results_saving\',lfpname,'</span>\<span class="string">',lfpname,'</span>ColorCorrectedImage.mat'],<span class="string">'ColorCorrectedImage'</span>)</span><br><span class="line">imshow(ColorCorrectedImage);title(<span class="string">'Corrected Lenslet Image'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 同样是颜色矫正， 为了得到光场数据。得到5-D LFColorCorrectedImage数据</span></span><br><span class="line">LFColorCorrectedImage=<span class="built_in">zeros</span>(<span class="built_in">size</span>(LF,<span class="number">1</span>),<span class="built_in">size</span>(LF,<span class="number">2</span>),<span class="built_in">size</span>(LF,<span class="number">3</span>),<span class="built_in">size</span>(LF,<span class="number">4</span>),<span class="built_in">size</span>(LF,<span class="number">5</span>));</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">size</span>(LF,<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:<span class="built_in">size</span>(LF,<span class="number">2</span>)</span><br><span class="line">        temp =<span class="built_in">squeeze</span>(LFFilt(<span class="built_in">i</span>,<span class="built_in">j</span>,:,:,<span class="number">1</span>:<span class="number">3</span>));</span><br><span class="line">        temp = LFColourCorrect(temp, ColMatrix, ColBalance, Gamma);</span><br><span class="line">        LFColorCorrectedImage(<span class="built_in">i</span>,<span class="built_in">j</span>,:,:,<span class="number">1</span>:<span class="number">3</span>)=temp;</span><br><span class="line">        imshow(temp);</span><br><span class="line">        pause(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">LFColorCorrectedImage(:,:,:,:,<span class="number">4</span>)=LF(:,:,:,:,<span class="number">4</span>);</span><br><span class="line">save([<span class="string">'Results_saving\',lfpname,'</span>\<span class="string">',lfpname,'</span>RawLFColorCorrectedImage.mat'],<span class="string">'LFColorCorrectedImage'</span>);<span class="comment">% very important</span></span><br><span class="line"></span><br><span class="line">toc</span><br><span class="line"><span class="comment">%--------------------------------------------------------------------------------</span></span><br></pre></td></tr></table></figure>
+<hr>
+<p><del>## Lytro官网可视化工具</del></p>
+<p><del>谁让人家Lytro不开源呢，人家自己做的Demo还不错。通过鼠标就可以对以下图像进行<strong>重聚焦，变化视角，以及缩放</strong>等操作。话不多说，上图！</del> 呵，人家公司在2017年11月30号之后停止了对lytro live photo的线上支持，所以以下啥都没有了。<br><!--<center><iframe width='600' height='434' src='https://pictures.lytro.com/89268543555/pictures/1083179/embed' frameborder='0' allowfullscreen scrolling='no'></iframe></center> <center><iframe width='600' height='434' src='https://pictures.lytro.com/michaelsternoffphoto/pictures/1030057/embed' frameborder='0' allowfullscreen scrolling='no'></iframe></center> <center><iframe width='600' height='434' src='https://pictures.lytro.com/karinaguillenphoto/pictures/926574/embed' frameborder='0' allowfullscreen scrolling='no'></iframe></center> <center><iframe width='600' height='434' src='https://pictures.lytro.com/karinaguillenphoto/pictures/1004450/embed' frameborder='0' allowfullscreen scrolling='no'></iframe></center>更多图像在[这里](https://pictures.lytro.com/)。--></p>
+<h3 id="数字重聚焦"><a href="#数字重聚焦" class="headerlink" title="数字重聚焦"></a>数字重聚焦</h3><p>利用如下的重聚焦公式可以实现光场图像的重聚焦。</p>
+<script type="math/tex; mode=display">
+L_{\alpha}(x,y,u,v)=L_0(x+(1-\frac{1}{\alpha})u,y+(1-\frac{1}{\alpha})v,u,v)</script><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/concatImg.png" alt><br>左图为其中心视角图像，右图为重聚焦（参数 $\alpha$ =0.5）之后的图像。</p>
+<p>给出部分测试代码如下，全部代码见<strong><a href="https://github.com/Vincentqyw/Light-Field-Refocusing" target="_blank" rel="noopener">Github</a></strong>;</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% This is a demo of light field refocusing</span></span><br><span class="line"><span class="comment">% input: LF </span></span><br><span class="line"><span class="comment">% ouput: refocused pinhole image</span></span><br><span class="line"><span class="comment">% Writen by: Vincent Qin</span></span><br><span class="line"><span class="comment">% Data: 2018 May 17th 21:35:14</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% Note: the input is 5D LF data  decoded from Matlab Light field Toolbox</span></span><br><span class="line"></span><br><span class="line">clc;</span><br><span class="line"></span><br><span class="line">addpath(genpath(pwd));</span><br><span class="line"><span class="comment">%% mex function</span></span><br><span class="line">cd(<span class="string">'src'</span>); </span><br><span class="line">mex REMAP2REFOCUS_mex.c </span><br><span class="line">mex BLOCKMEAN_mex.c </span><br><span class="line">cd ..</span><br><span class="line"></span><br><span class="line">use_vincent_data=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> use_vincent_data</span><br><span class="line">    <span class="built_in">disp</span>(<span class="string">'Downloading LF data, please wait...'</span>);</span><br><span class="line"></span><br><span class="line">    URL=<span class="string">'http://p8vl2tjcq.bkt.clouddn.com/LF.mat'</span>;</span><br><span class="line">    [f, status] = urlwrite(URL,<span class="string">'input/LF_web.mat'</span>);</span><br><span class="line">    <span class="keyword">if</span> status == <span class="number">1</span>;</span><br><span class="line">        fprintf(<span class="number">1</span>,<span class="string">'Success！\n'</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        fprintf(<span class="number">1</span>,<span class="string">'Failed！\n'</span>);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    load(<span class="string">'input/LF_web.mat'</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    load(<span class="string">'input/your_LF_data.mat'</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">disp</span>(<span class="string">'Processing LF to Remap image...'</span>);</span><br><span class="line"></span><br><span class="line">LF=LF(:,:,:,:,<span class="number">1</span>:<span class="number">3</span>);</span><br><span class="line">[UV_diameter,~,y_size,x_size,c]=<span class="built_in">size</span>(LF);</span><br><span class="line"></span><br><span class="line"><span class="comment">%  get LF remap and pinhole image before refocusing</span></span><br><span class="line">LF_Remap = LF2Remap(LF);</span><br><span class="line"><span class="comment">% IM_Refoc_1 = zeros(y_size, x_size,3);temp = zeros(y_size, x_size);</span></span><br><span class="line"><span class="comment">% BLOCKMEAN_mex(x_size, y_size, UV_diameter, LF_Remap(:,:,1), temp);IM_Refoc_1(:,:,1)=temp;</span></span><br><span class="line"><span class="comment">% BLOCKMEAN_mex(x_size, y_size, UV_diameter, LF_Remap(:,:,2), temp);IM_Refoc_1(:,:,2)=temp;</span></span><br><span class="line"><span class="comment">% BLOCKMEAN_mex(x_size, y_size, UV_diameter, LF_Remap(:,:,3), temp);IM_Refoc_1(:,:,3)=temp;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% get params</span></span><br><span class="line">LF_x_size = x_size * UV_diameter;</span><br><span class="line">LF_y_size = y_size * UV_diameter;</span><br><span class="line">UV_radius = (UV_diameter<span class="number">-1</span>)/<span class="number">2</span>;</span><br><span class="line">UV_size   = UV_diameter*UV_diameter;</span><br><span class="line"></span><br><span class="line"><span class="comment">% collect data</span></span><br><span class="line">LF_parameters       = struct(...</span><br><span class="line">                             <span class="string">'LF_x_size'</span>,LF_x_size,...</span><br><span class="line">                             <span class="string">'LF_y_size'</span>,LF_y_size,...</span><br><span class="line">                             <span class="string">'x_size'</span>,x_size,...</span><br><span class="line">                             <span class="string">'y_size'</span>,y_size,...</span><br><span class="line">                             <span class="string">'UV_radius'</span>,(UV_diameter<span class="number">-1</span>)/<span class="number">2</span>,...</span><br><span class="line">                             <span class="string">'UV_diameter'</span>,UV_diameter,...</span><br><span class="line">                             <span class="string">'UV_size'</span>,UV_diameter*UV_diameter) ;</span><br><span class="line"></span><br><span class="line"><span class="comment">% predefine output</span></span><br><span class="line">LF_Remap_alpha   = <span class="built_in">zeros</span>(LF_y_size,LF_x_size,<span class="number">3</span>) ;</span><br><span class="line">IM_Refoc_alpha   = <span class="built_in">zeros</span>(y_size,x_size,<span class="number">3</span>)       ;</span><br><span class="line"></span><br><span class="line"><span class="comment">% here begins refocusing</span></span><br><span class="line"><span class="built_in">disp</span>(<span class="string">'Processing refocusing...'</span>);</span><br><span class="line">alpha=<span class="number">0.5</span>;    <span class="comment">%　shearing number</span></span><br><span class="line">REMAP2REFOCUS_mex(x_size,y_size,UV_diameter,UV_radius,LF_Remap,LF_Remap_alpha,IM_Refoc_alpha,alpha);  </span><br><span class="line"></span><br><span class="line"><span class="comment">% show figure</span></span><br><span class="line">central_view=<span class="built_in">squeeze</span>(LF(UV_radius+<span class="number">1</span>,UV_radius+<span class="number">1</span>,:,:,:));</span><br><span class="line"><span class="built_in">figure</span>; imshow(central_view);</span><br><span class="line">title(<span class="string">'central view'</span>);set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]);  </span><br><span class="line"><span class="built_in">figure</span>; imshow(IM_Refoc_alpha);</span><br><span class="line">title([<span class="string">'refocused image pinhole at alpha = '</span> num2str(alpha)]);</span><br><span class="line">set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]);  </span><br><span class="line"></span><br><span class="line"><span class="comment">% concat them</span></span><br><span class="line">concatImg=[central_view,IM_Refoc_alpha];</span><br><span class="line"><span class="built_in">figure</span>;imshow(concatImg);set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]); </span><br><span class="line">imwrite(concatImg,<span class="string">'concatImg.png'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="Lytro-Desktop"><a href="#Lytro-Desktop" class="headerlink" title="Lytro Desktop"></a>Lytro Desktop</h3><p>Lytro Desktop是曾经的Lytro官方提供的软件，可以处理由Lytro系列相机拍摄到的图像。利用该软件能够导出相机配对数据、重聚焦图像、全聚焦图、深度图、原始文件等。下面给出一些常用的导出文件。</p>
+<ul>
+<li>导入需要处理的图像</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lytro-desktop-1.jpg" alt></p>
+<ul>
+<li>导出配对数据</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lytro-desktop-3.jpg" alt></p>
+<ul>
+<li>导出待处理图像的各种格式</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/lytro-desktop-2.jpg" alt></p>
+<ul>
+<li>全聚焦彩色图与内置深度图</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/color-depth.jpg" alt></p>
+<ul>
+<li>重聚焦</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/refocusing.jpg" alt></p>
+<p><strong><center>以上，如有问题欢迎评论</center></strong></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/LightField-Toolbox/" title="Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明">https://www.vincentqin.tech/posts/LightField-Toolbox/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/光场/" rel="tag"># 光场</a>
+            
+              <a href="/tags/计算成像/" rel="tag"># 计算成像</a>
+            
+              <a href="/tags/Light-Field/" rel="tag"># Light Field</a>
+            
+              <a href="/tags/Matlab光场工具包/" rel="tag"># Matlab光场工具包</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/issues-Matlab/" rel="next" title="MATLAB:多个不同维度的箱线图画在一起">
+                  <i class="fa fa-chevron-left"></i> MATLAB:多个不同维度的箱线图画在一起
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/journal2JP-USA/" rel="prev" title="日本与美国之行">
+                  日本与美国之行 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#光场相机"><span class="nav-number">1.</span> <span class="nav-text">光场相机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取-LFP-or-LFR-原文件"><span class="nav-number">2.</span> <span class="nav-text">获取.LFP(or .LFR)原文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Matlab-Light-Field-ToolBox-光场工具箱-的使用"><span class="nav-number">3.</span> <span class="nav-text">Matlab Light Field ToolBox(光场工具箱)的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载光场工具包（LFToolBox）"><span class="nav-number">3.1.</span> <span class="nav-text">下载光场工具包（LFToolBox）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前期准备"><span class="nav-number">3.2.</span> <span class="nav-text">前期准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step-1-创建自己的工作目录"><span class="nav-number">3.2.1.</span> <span class="nav-text">step 1: 创建自己的工作目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step-2-根据相机序列号修改文件名"><span class="nav-number">3.2.2.</span> <span class="nav-text">step 2: 根据相机序列号修改文件名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step-3-把白图像文件拷贝到相应的文件夹下"><span class="nav-number">3.2.3.</span> <span class="nav-text">step 3: 把白图像文件拷贝到相应的文件夹下</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step-4-将测试文件放到Images目录"><span class="nav-number">3.2.4.</span> <span class="nav-text">step 4: 将测试文件放到Images目录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试开始"><span class="nav-number">3.3.</span> <span class="nav-text">测试开始</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#处理白图像"><span class="nav-number">3.3.1.</span> <span class="nav-text">处理白图像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解码LFP文件"><span class="nav-number">3.3.2.</span> <span class="nav-text">解码LFP文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#频域滤波以及颜色校正"><span class="nav-number">3.3.3.</span> <span class="nav-text">频域滤波以及颜色校正</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项及测试代码"><span class="nav-number">4.</span> <span class="nav-text">注意事项及测试代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数设置好了再Run"><span class="nav-number">4.1.</span> <span class="nav-text">参数设置好了再Run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#没有图像文件怎么搞"><span class="nav-number">4.2.</span> <span class="nav-text">没有图像文件怎么搞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解码效果为何不佳"><span class="nav-number">4.3.</span> <span class="nav-text">解码效果为何不佳</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试代码"><span class="nav-number">4.4.</span> <span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数字重聚焦"><span class="nav-number">4.5.</span> <span class="nav-text">数字重聚焦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lytro-Desktop"><span class="nav-number">4.6.</span> <span class="nav-text">Lytro Desktop</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

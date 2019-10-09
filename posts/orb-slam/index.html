@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="资料：ORB SLAM2 阅读报告">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/orb-slam/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/orb-slam/MH01-traj.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/ORB-SLAM2-CHINESE/master/papers/orb-slam2-mainflow.png">
+<meta property="og:image" content="https://www.vincentqin.tech/posts/orb-slam/MH01-traj.png">
+<meta property="og:updated_time" content="2019-09-10T14:38:52.481Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="资料：ORB SLAM2 阅读报告">
+<meta name="twitter:description" content="首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/orb-slam/MH01-traj.gif">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/orb-slam/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>资料：ORB SLAM2 阅读报告 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/orb-slam/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">资料：ORB SLAM2 阅读报告
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-11-30 23:14:30" itemprop="dateCreated datePublished" datetime="2018-11-30T23:14:30+08:00">2018-11-30</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-10 22:38:52" itemprop="dateModified" datetime="2019-09-10T22:38:52+08:00">2019-09-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/orb-slam/" class="post-meta-item leancloud_visitors" data-flag-title="资料：ORB SLAM2 阅读报告" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/orb-slam/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/orb-slam/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。</p>
+<a id="more"></a>
+<p>先来张图，下图就是利用相机作为传感器在环境中采集一系列的图像，经过SLAM系统建立的点云图以及相机轨迹。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/orb-slam/MH01-traj.gif" alt></p>
+<p>SLAM自1986年提出之后，一直以来是机器人领域的热点问题。这里总结一些常用开源SLAM方案。</p>
+<style>
+table th:nth-of-type(1) {
+    width: 150px;
+}
+table th:nth-of-type(2) {
+    width: 200px;
+}
+</style>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方案名称</th>
+<th>传感器形式</th>
+<th>地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MonoSLAM</td>
+<td>单目</td>
+<td><a href="https://github.com/hanmekim/SceneLib2" target="_blank" rel="noopener">https://github.com/hanmekim/SceneLib2</a></td>
+</tr>
+<tr>
+<td>PTAM</td>
+<td>单目</td>
+<td><a href="http://www.robots.ox.ac.uk/~gk/PTAM/" target="_blank" rel="noopener">http://www.robots.ox.ac.uk/~gk/PTAM/</a></td>
+</tr>
+<tr>
+<td>ORB-SLAM</td>
+<td>单目</td>
+<td><a href="http://webdiis.unizar.es/~raulmur/orbslam/" target="_blank" rel="noopener">http://webdiis.unizar.es/~raulmur/orbslam/</a></td>
+</tr>
+<tr>
+<td>ORB-SLAM2</td>
+<td>单目/双目/RGB-D</td>
+<td><a href="https://github.com/raulmur/ORB_SLAM2" target="_blank" rel="noopener">https://github.com/raulmur/ORB_SLAM2</a></td>
+</tr>
+<tr>
+<td>LSD-SLAM</td>
+<td>单目为主</td>
+<td><a href="http://vision.in.tum.de/research/vslam/lsdslam" target="_blank" rel="noopener">http://vision.in.tum.de/research/vslam/lsdslam</a></td>
+</tr>
+<tr>
+<td>SVO</td>
+<td>单目</td>
+<td><a href="https://github.com/uzh-rpg/rpg_svo" target="_blank" rel="noopener">https://github.com/uzh-rpg/rpg_svo</a></td>
+</tr>
+<tr>
+<td>DTAM</td>
+<td>RGB-D</td>
+<td><a href="https://github.com/anuranbaka/OpenDTAM" target="_blank" rel="noopener">https://github.com/anuranbaka/OpenDTAM</a></td>
+</tr>
+<tr>
+<td>DVO</td>
+<td>RGB-D</td>
+<td><a href="https://github.com/tum-vision/dvo_slam" target="_blank" rel="noopener">https://github.com/tum-vision/dvo_slam</a></td>
+</tr>
+<tr>
+<td>DSO</td>
+<td>单目</td>
+<td><a href="https://github.com/JakobEngel/dso" target="_blank" rel="noopener">https://github.com/JakobEngel/dso</a></td>
+</tr>
+<tr>
+<td>RTAB-MAP</td>
+<td>双目/RGB-D</td>
+<td><a href="https://github.com/introlab/rtabmap" target="_blank" rel="noopener">https://github.com/introlab/rtabmap</a></td>
+</tr>
+<tr>
+<td>RGBD-SLAM-V2</td>
+<td>RGB-D</td>
+<td><a href="https://github.com/felixendres/rgbdslam_v2" target="_blank" rel="noopener">https://github.com/felixendres/rgbdslam_v2</a></td>
+</tr>
+<tr>
+<td>Elastic Fusion</td>
+<td>RGB-D</td>
+<td><a href="https://github.com/mp3guy/ElasticFusion" target="_blank" rel="noopener">https://github.com/mp3guy/ElasticFusion</a></td>
+</tr>
+<tr>
+<td>Hector SLAM</td>
+<td>激光</td>
+<td><a href="http://wiki.ros.org/hector_slam" target="_blank" rel="noopener">http://wiki.ros.org/hector_slam</a></td>
+</tr>
+<tr>
+<td>GMapping</td>
+<td>激光</td>
+<td><a href="http://wiki.ros.org/gmapping" target="_blank" rel="noopener">http://wiki.ros.org/gmapping</a></td>
+</tr>
+<tr>
+<td>OKVIS</td>
+<td>多目+IMU</td>
+<td><a href="https://github.com/ethz-asl/okvis" target="_blank" rel="noopener">https://github.com/ethz-asl/okvis</a></td>
+</tr>
+<tr>
+<td>ROVIO</td>
+<td>多目+IMU</td>
+<td><a href="https://github.com/ethz-asl/rovio" target="_blank" rel="noopener">https://github.com/ethz-asl/rovio</a></td>
+</tr>
+<tr>
+<td>VINS</td>
+<td>单目+IMU</td>
+<td><a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono" target="_blank" rel="noopener">https://github.com/HKUST-Aerial-Robotics/VINS-Mono</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>ORB-SLAM应该是SLAM最具有代表性的算法，<a href="https://arxiv.org/abs/1610.06475" target="_blank" rel="noopener">ORB-SLAM2: an Open-Source SLAM System for Monocular, Stereo and RGB-D Cameras；</a> <a href="https://github.com/raulmur/ORB_SLAM2" target="_blank" rel="noopener"><strong>code；</strong></a> <a href="http://webdiis.unizar.es/~raulmur/orbslam/" target="_blank" rel="noopener"><strong>主页；</strong></a></p>
+<p>ORB-SLAM 是PTAM 的继承者们中非常有名的一位。它提出于 2015 年，是现代 SLAM 系统中做的非常完善，非常易用的系统之一（如果不是最完善和易用的话）。ORB-SLAM 代表着主流的特征点 SLAM 的一个高峰。相比于之前的工作，ORB-SLAM 具有以下几条明显的优势：</p>
+<ul>
+<li>支持单目、双目、RGB-D 三种模式。这使得无论我们拿到了任何一种常见的传感器，都可以先放到 ORB-SLAM 上测试一下，它具有良好的泛用性。</li>
+<li>整个系统围绕 ORB 特征进行计算，包括视觉里程计与回环检测的 ORB 字典。它体现出 ORB 特征是现阶段计算平台的一种优秀的效率与精度之间的折衷方式。ORB不像 SIFT 或 SURF 那样费时，在 CPU 上面即可实时计算；相比 Harris 角点等简单角点特征，又具有良好的旋转和缩放不变性。并且，ORB 提供描述子，使我们在大范围运动时能够进行回环检测和重定位。</li>
+<li>ORB 的回环检测是它的亮点。优秀的回环检测算法保证了 ORB-SLAM 有效地防止累计误差，并且在丢失之后还能迅速找回，这在许多现有的 SLAM 系统中都不够完善。为此，ORB-SLAM 在运行之前必须加载一个很大的 ORB 字典文件。</li>
+<li>ORB-SLAM 创新式地使用了三个线程完成 SLAM：实时跟踪特征点的 Tracking 线程，局部 Bundle Adjustment 的优化线程（Co-visibility Graph，俗称小图），以及全局 Pose Graph 的回环检测与优化线程（Essential Graph 俗称大图）。其中，Tracking线程负责对每张新来的图像提取 ORB 特征点，并与最近的关键帧进行比较，计算特征点的位置并粗略估计相机位姿。小图线程求解一个Bundle Adjustment 问题，它包括局部空间内的特征点与相机位姿。这个线程负责求解更精细的相机位姿与特征点空间位置。不过，仅有前两个线程，只完成了一个比较好的视觉里程计。第三个线程，也就是大图线程，对全局的地图与关键帧进行回环检测，消除累积误差。由于全局地图中的地图点太多，所以这个线程的优化不包括地图点，而只有相机位姿组成的位姿图。继 PTAM 的双线程结构之后，ORB-SLAM 的三线程结构取得了非常好的跟踪和建图效果，能够保证轨迹与地图的全局一致性。这种三线程结构亦将被后续的研究者认同和采用。</li>
+<li>ORB-SLAM围绕特征点进行了不少的优化。例如，在OpenCV的特征提取基础上保证了特征点的均匀分布；在优化位姿时使用了一种循环优化四遍以得到更多正确匹配的方法；比PTAM更为宽松的关键帧选取策略等等。这些细小的改进使得 ORB-SLAM 具有远超其他方案的鲁棒性：即使对于较差的场景，较差的标定内参，ORB-SLAM 都能够顺利地工作。</li>
+</ul>
+<p>整个ORB-SLAM系统包括三个部分组成，分别是跟踪（Tracking）、局部建图（Local Mapping）以及回环检测（Loop Closing）模块，它们分别被三个线程并行地进行处理。接下来对这个系统进行介绍。</p>
+<p><img src="https://raw.githubusercontent.com/Vincentqyw/ORB-SLAM2-CHINESE/master/papers/orb-slam2-mainflow.png" alt></p>
+<h1 id="理论篇"><a href="#理论篇" class="headerlink" title="理论篇"></a>理论篇</h1><h2 id="跟踪模块"><a href="#跟踪模块" class="headerlink" title="跟踪模块"></a>跟踪模块</h2><p>跟踪（Tracking）是在每帧中粗略地定位相机位姿以及决定何时插入新的关键帧。算法设计了运动模型以及跟踪参考帧模型去大致预测出相机的位姿。如相机跟踪失败（由于遮挡、大幅度运动等），就启动重定位模块对相机进行位置查找。如果已经有了初始位姿以及特征匹配，利用关键帧的Covisibility Graph恢复出局部可见图。之后，局部地图点的匹配可利用重投影实现，随后相机的位姿利用BA来优化。最后，Tracking线程决定是否插入新的关键帧。</p>
+<ul>
+<li>初始位姿估计：利用运动模型或者关键帧模型去预测相机位姿。如果运动模型已经跟踪到了当前帧，会利用引导匹配（Guided Search）在上一帧中寻找地图点。如果没有找到足够的匹配（如，运动模型不适用的情况），我们就在上一帧中更大的范围中寻找地图点。如不满足运动模型条件，导致运动模型失败，则采用参考关键帧模型利用参考帧模型对当前帧进行跟踪。通过以上两个模型即可对相机位姿进行初步定位。</li>
+<li>跟踪局部地图：一旦我们已经估计了相机位姿以及我们得到一系列匹配的特征。我们可以将地图点投影到该帧上以搜索更多的匹配地图点。为了减小计算大图的超大复杂度，我们仅将其投影局部小图。局部地图包括，一系列关键帧<script type="math/tex">K_1</script>，这些关键帧与当前帧共享着相同的地图点；还有与<script type="math/tex">K_1</script>有共视关系的关键帧<script type="math/tex">K_2</script>们。局部图还有一个参考帧<script type="math/tex">K_{ref}</script>，这个关键帧与当前帧有最多的匹配点。</li>
+<li>重定位：当运动模型以及跟踪关键帧失败时，可利用重定位来恢复得到相机位姿。应该从历史关键帧中选取和当前帧相似的图片，对当前帧进行位姿估计以及位姿优化。</li>
+</ul>
+<h2 id="局部建图模块"><a href="#局部建图模块" class="headerlink" title="局部建图模块"></a>局部建图模块</h2><p>局部建图（Local Mapping）的主要任务：当跟踪当前帧成功之后，需要利用局部建图更新其运动模型同时更新地图点。等待跟踪过程判断是否应该插入一个新的关键帧，并把关键帧插入到地图中，并对局部地图进行局部BA优化。这个线程能够获得更为精细的相机位姿以及点云。</p>
+<ul>
+<li>处理关键帧：跟踪成功之后，需要对关键帧进行处理以得到地图。具体而言：从关键帧队列中获得一帧，计算出其特征点的BoW映射向量（表示）。关键帧和其对应的地图点进行绑定，更新地图点的平均观测方向以及观测距离范围。更新关键帧之间的连接关系（共视关系），最后将关键帧插入地图中。</li>
+<li>精选地图点：由于跟踪过程引入地图点的策略较为宽松，此时需要检查最近加入的地图点，并将一些冗余的地图点从最近地图点的列表中剔除。</li>
+<li>创建新地图点：由于上一步已经剔除了一些冗余地图点，该模块需要通过当前关键帧及其共视关键帧利用三角化得到更多高质量的3D地图点并添加地图点的属性。</li>
+<li>Local BA：该步骤通过局部BA优化局部地图点以及局部关键帧的位姿。</li>
+<li>精选关键帧：剔除冗余的关键帧，这样不至于增加后期BA的压力，而且可以保证在相同的环境下，关键帧的数目不会无限制的增长，同时减小存储压力。</li>
+</ul>
+<h2 id="回环检测模块"><a href="#回环检测模块" class="headerlink" title="回环检测模块"></a>回环检测模块</h2><p>回环检测（Loop Closing）的主要目标是检测当前关键帧是否经过历史位置。如有经过，则利用回环检测得到的回环帧去修正整个SLAM长期跟踪过程中带来的累积误差、尺度漂移等。如果仅有前两个线程的话，仅仅完成了一个很好的视觉里程计（VO），这个线程会对全局地图以及关键帧进行回环检测，以消除上述累积误差。</p>
+<ul>
+<li>候选关键帧检测：当前关键帧仅有与历史关键帧足够相似才可能成为回环候选帧，该模块通过一定的筛选策略对当前关键帧进行筛选，判断其是否为闭环候选关键帧。由于在实际闭环检测过程中，回环候选帧及其共视关键帧，在一定连续的时间内都可能被观测到。该模块主要通过利用这一条件，对闭环候选关键帧进一步地筛选，通过筛选条件的候选关键帧将进行下一步的判断。</li>
+<li>相似性变换计算：考虑到单目SLAM的尺度漂移，当前帧和回环帧之间的相对位姿应是一个相似变换，并且，二者之间应具有足够多的匹配点。该模块主要是通过循环计算当前帧和上述经过筛选后的候选关键帧之间的相似变换，直到找到一个和当前帧具有足够多匹配点的相似变换，对应的候选关键帧即为最终的回环帧。</li>
+<li>回环修正：受累积误差的影响，时间越久，越接近当前帧的关键帧及相应的地图点，误差将越大。若寻找到的回环帧，当前帧位姿及其对应的地图点会更精确。该模块就是为了修正累积误差，利用回环帧及其共视关键帧，以及对应的地图点，来修正当前帧及其共视关键帧的位姿以及对应的地图点的世界坐标。紧接着进行地图点融合，更新共视图，然后通过本质图优化相机位姿，最后进行全局BA来修正整个SLAM的累积误差（相机位姿以及地图点）。</li>
+</ul>
+<p>牛吹完了，说下缺点。<br>当然，ORB-SLAM 也存在一些不足之处。首先，由于整个 SLAM 系统都采用特征点进行计算，我们必须对每张图像都计算一遍 ORB 特征，这是非常耗时的。ORB-SLAM 的三线程结构也对 CPU 带来了较重的负担，使得它只有在当前 PC 架构的 CPU 上才能实时运算，移植到嵌入式端则有一定困难。其次，ORB-SLAM 的建图为稀疏特征点，目前还没有开放存储和读取地图后重新定位的功能（虽然从实现上来讲并不困难）。根据我们在建图章节的分析，稀疏特征点地图只能满足我们对定位的需求，而无法提供导航、避障、交互等诸多功能。然而，如果我们仅用 ORB-SLAM 处理定位问题，似乎又嫌它有些过于重量级了。相比之下，另外一些方案提供了更为轻量级的定位，使我们能够在低端的处理器上运行 SLAM，或者让 CPU 有余力处理其他的事务。</p>
+<h1 id="实践篇"><a href="#实践篇" class="headerlink" title="实践篇"></a>实践篇</h1><p>在这里下载ORB-SLAM2的源码，然后参考ORB-SLAM2项目的说明文档，安装一些必要的第三方软件：</p>
+<ul>
+<li>pangolin：<a href="http://eigen.tuxfamily.org/index.php?title=Main_Page" target="_blank" rel="noopener">http://eigen.tuxfamily.org/index.php?title=Main_Page</a></li>
+<li>Eigen：<a href="http://eigen.tuxfamily.org/index.php?title=Main_Page" target="_blank" rel="noopener">http://eigen.tuxfamily.org/index.php?title=Main_Page</a></li>
+<li>opencv 3.4.2 ：<a href="https://blog.csdn.net/haoqimao_hard/article/details/82049565" target="_blank" rel="noopener">https://blog.csdn.net/haoqimao_hard/article/details/82049565</a></li>
+<li>ROS：<a href="http://wiki.ros.org/melodic/Installation/Ubuntu#Ubuntu_install_of_ROS_Melodic" target="_blank" rel="noopener">http://wiki.ros.org/melodic/Installation/Ubuntu#Ubuntu_install_of_ROS_Melodic</a></li>
+</ul>
+<p>注意，其中有坑，务必安装正确。安装好之后顺便在Euroc数据集中的MH01上测试，得到下面的轨迹地图。</p>
+<p><img src="//www.vincentqin.tech/posts/orb-slam/MH01-traj.png" alt></p>
+<h2 id="EuRoC数据集"><a href="#EuRoC数据集" class="headerlink" title="EuRoC数据集"></a>EuRoC数据集</h2><p>EuRoC数据集包含11个双目序列，这个序列由小型无人机在两个房间（V1/V2, Vicon Room）以及一个大工厂环境(MH, Machine Hall)中拍摄得到。相机的基线长约为11cm，以20Hz速度拍摄图片。序列被分成了三种（根据MAV的速度，光照以及场景纹理）easy , medium, difficult。<br>$ATE$表示绝对轨迹误差，是衡量相机位姿的标准之一。假设有真实位姿序列：<script type="math/tex">P_1,P_2,P_3,...,P_n</script>以及估计的位姿序列：<script type="math/tex">Q_1,Q_2,Q_3,...,Q_n</script> ，它们已经做了包括时间戳对齐等操作。实际场景中，这两个序列可能有不同的采样率、长度亦或数据可能丢失，此时需要进行数据关联和插值。首先得的在第i时刻的轨迹误差：</p>
+<script type="math/tex; mode=display">F_i := Q_i^{-1}SP_i</script><p>其中$S$是从<script type="math/tex">P_{1:n}</script>到<script type="math/tex">Q_{1:n}</script>的最小二乘刚体变换，通过求取以上误差在所有位置时刻的均方根我们得到APE的具体形式：</p>
+<script type="math/tex; mode=display">RMSE(F_{1:n}):=\left(\frac{1}{n}\sum_{i=1}^n||trans(F_i)||^2\right)^{\frac{1}{2}}</script><p>其中的$trans(·)$表示求取该位姿的平移分量算子。</p>
+<p>文中大部分内容来自网络以及高博十四讲。因本人水平有限，如有错误，谢谢指出。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://www.slamcn.org/index.php/%E9%A6%96%E9%A1%B5" target="_blank" rel="noopener">http://www.slamcn.org/index.php/%E9%A6%96%E9%A1%B5</a></li>
+<li><a href="https://blog.csdn.net/qinruiyan/article/details/50918504" target="_blank" rel="noopener">https://blog.csdn.net/qinruiyan/article/details/50918504</a></li>
+<li>Sturm J, Engelhard N, Endres F, et al. A benchmark for the evaluation of RGB-D SLAM systems[C]. Ieee International Conference on Intelligent Robots and Systems. IEEE, 2012:573-580.</li>
+<li>Horn B K P. Closed-form solution of absolute orientation using unit quaternions[J]. J.opt.soc.am.a, 1987, 5(7):1127-1135.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/orb-slam/" title="资料：ORB SLAM2 阅读报告">https://www.vincentqin.tech/posts/orb-slam/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/slam/" rel="next" title="资料：SLAM草稿">
+                  <i class="fa fa-chevron-left"></i> 资料：SLAM草稿
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/LieAlgebra/" rel="prev" title="笔记：李群与李代数求导">
+                  笔记：李群与李代数求导 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理论篇"><span class="nav-number">1.</span> <span class="nav-text">理论篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#跟踪模块"><span class="nav-number">1.1.</span> <span class="nav-text">跟踪模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部建图模块"><span class="nav-number">1.2.</span> <span class="nav-text">局部建图模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回环检测模块"><span class="nav-number">1.3.</span> <span class="nav-text">回环检测模块</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实践篇"><span class="nav-number">2.</span> <span class="nav-text">实践篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EuRoC数据集"><span class="nav-number">2.1.</span> <span class="nav-text">EuRoC数据集</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

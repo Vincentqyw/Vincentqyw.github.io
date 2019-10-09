@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="The post contains papers-with-code about SLAM, Pose/Object tracking, Depth/Disparity/Flow Estimation, 3D-graphic, Machine Learning, Deep Learning etc.">
+<meta name="keywords" content="SLAM,disparity,pose-tracking,object-tracking,depth-estimation,flow-estimation,3D-graphics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Awesome CV Works">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/awesome-works/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="The post contains papers-with-code about SLAM, Pose/Object tracking, Depth/Disparity/Flow Estimation, 3D-graphic, Machine Learning, Deep Learning etc.">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://img.shields.io/github/stars/Vincentqyw/Recent-Stars-2019.svg?logo=github&label=Stars">
+<meta property="og:image" content="https://github.com/alan-turing-institute/MLJ.jl/blob/master/doc/two_model_stack.png">
+<meta property="og:updated_time" content="2019-05-26T02:26:30.494Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Awesome CV Works">
+<meta name="twitter:description" content="The post contains papers-with-code about SLAM, Pose/Object tracking, Depth/Disparity/Flow Estimation, 3D-graphic, Machine Learning, Deep Learning etc.">
+<meta name="twitter:image" content="https://img.shields.io/github/stars/Vincentqyw/Recent-Stars-2019.svg?logo=github&label=Stars">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/awesome-works/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Awesome CV Works | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/awesome-works/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Awesome CV Works
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-03-31 20:15:41" itemprop="dateCreated datePublished" datetime="2019-03-31T20:15:41+08:00">2019-03-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-05-26 10:26:30" itemprop="dateModified" datetime="2019-05-26T10:26:30+08:00">2019-05-26</time>
+              </span>
+            
+          
+
+          
+            <span id="/posts/awesome-works/" class="post-meta-item leancloud_visitors" data-flag-title="Awesome CV Works" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/awesome-works/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/awesome-works/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>The post contains papers-with-code about SLAM, Pose/Object tracking, Depth/Disparity/Flow Estimation, 3D-graphic, Machine Learning, Deep Learning etc. <a href="https://github.com/Vincentqyw/Recent-Stars-2019" target="_blank" rel="noopener"><img src="https://img.shields.io/github/stars/Vincentqyw/Recent-Stars-2019.svg?logo=github&amp;label=Stars" alt="GitHub stars"></a></p>
+<a id="more"></a>
+<h2 id="SLAM-related"><a href="#SLAM-related" class="headerlink" title="SLAM related"></a>SLAM related</h2><ul>
+<li><a href="https://github.com/kiran-mohan/SLAM-Algorithms-Octave" target="_blank" rel="noopener">Solutions to assignments of Robot Mapping Course WS 2013/14 by Dr. Cyrill Stachniss at University of Freiburg</a>,SLAM算法学习课后作业答案</li>
+<li><a href="https://github.com/RonaldSun/VI-Stereo-DSO" target="_blank" rel="noopener">Direct sparse odometry combined with stereo cameras and IMU</a>,双目DSO+IMU</li>
+<li><a href="https://github.com/HorizonAD/stereo_dso" target="_blank" rel="noopener">Direct Sparse Odometry with Stereo Cameras</a>,双目DSO</li>
+<li><a href="https://github.com/uoip/g2opy" target="_blank" rel="noopener">Python binding of SLAM graph optimization framework g2o</a>,python版本的g2o实现</li>
+<li><a href="https://github.com/mihaidusmanu/d2-net" target="_blank" rel="noopener">D2-Net: A Trainable CNN for Joint Description and Detection of Local Features</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1905.03561" target="_blank" rel="noopener">Paper</a>]</strong>, <strong>[<a href="https://dsmn.ml/publications/d2-net.html" target="_blank" rel="noopener">Project Page</a>]</strong>, 深度学习描述子</li>
+<li><a href="https://github.com/ethz-asl/orb_slam_2_ros" target="_blank" rel="noopener">ROS interface for ORBSLAM2</a>,ROS版本的ORBSLAM2</li>
+<li><a href="https://github.com/yan99033/CNN-SVO" target="_blank" rel="noopener">CNN-SVO: Improving the Mapping in Semi-Direct Visual Odometry Using Single-Image Depth Prediction</a>， <strong>[<a href="https://arxiv.org/pdf/1810.01011.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/ManiiXu/VINS-Mono-Learning" target="_blank" rel="noopener">VINS-Mono-Learning</a>，代码注释版VINS-Mono，初学者学习</li>
+<li><a href="https://github.com/xdspacelab/openvslam" target="_blank" rel="noopener">OpenVSLAM: Versatile Visual SLAM Framework</a>,  <strong>[<a href="https://openvslam.readthedocs.io/" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/fabianschenk/RESLAM" target="_blank" rel="noopener">RESLAM: A real-time robust edge-based SLAM system</a>, <strong>[<a href="https://github.com/fabianschenk/fabianschenk.github.io/raw/master/files/schenk_icra_2019.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/rubengooj/pl-slam" target="_blank" rel="noopener">PL-SLAM: a Stereo SLAM System through the Combination of Points and Line Segments</a>, <strong>[<a href="https://arxiv.org/abs/1705.09479" target="_blank" rel="noopener">Paper</a>]</strong>，线特征SLAM</li>
+<li><a href="https://github.com/YipuZhao/GF_PL_SLAM" target="_blank" rel="noopener">Good Line Cutting: towards Accurate Pose Tracking of Line-assisted VO/VSLAM</a>, ECCV 2018, <strong>[<a href="https://sites.google.com/site/zhaoyipu/good-feature-visual-slam" target="_blank" rel="noopener">Project Page</a>]</strong>, 改进的PL-SLAM</li>
+<li><a href="https://github.com/leoshine/Spherical_Regression" target="_blank" rel="noopener">Spherical Regression: Learning Viewpoints, Surface Normals and 3D Rotations on n-Spheres</a>, CVPR 2019, <strong>[<a href="http://arxiv.org/abs/1904.05404" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/icsl-Jeon/traj_gen_vis" target="_blank" rel="noopener">svo_edgelet</a>, 在线轨迹生成</li>
+<li><a href="https://github.com/TimboKZ/caltech_samaritan" target="_blank" rel="noopener">Drone SLAM project for Caltech’s ME 134 Autonomy class</a>, <strong>[<a href="https://github.com/TimboKZ/caltech_samaritan/blob/master/CS134_Final_Project_Report.pdf" target="_blank" rel="noopener">PDF</a>]</strong></li>
+<li><a href="https://github.com/icsl-Jeon/traj_gen_vis" target="_blank" rel="noopener">Online Trajectory Generation of a MAV for Chasing a Moving Target in 3D Dense Environments</a>, <strong>[<a href="https://arxiv.org/pdf/1904.03421.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/AtsushiSakai/PythonRobotics" target="_blank" rel="noopener">PythonRobotics</a>,<strong>[<a href="https://arxiv.org/abs/1808.10703" target="_blank" rel="noopener">Paper</a>]</strong>, <a href="https://github.com/onlytailei/CppRobotics" target="_blank" rel="noopener">CppRobotics</a></li>
+<li><a href="https://github.com/izhengfan/ba_demo_ceres" target="_blank" rel="noopener">Bundle adjustment demo using Ceres Solver</a>,  <strong>[<a href="https://fzheng.me/2018/01/23/ba-demo-ceres/" target="_blank" rel="noopener">Blog</a>]</strong>, ceres实现BA</li>
+<li><a href="https://github.com/shichaoy/cube_slam" target="_blank" rel="noopener">CubeSLAM: Monocular 3D Object Detection and SLAM</a>, <strong>[<a href="https://arxiv.org/abs/1806.00557" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/sshaoshuai/PointRCNN" target="_blank" rel="noopener">PointRCNN: 3D Object Proposal Generation and Detection from Point Cloud</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1812.04244" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/nrupatunga/GIST-global-Image-Descripor" target="_blank" rel="noopener">GIST-Global Image Descriptor</a>, GIST描述子</li>
+<li><a href="https://github.com/ethz-asl/mav_voxblox_planning" target="_blank" rel="noopener">mav voxblox planning</a>, MAV planning tools using voxblox as the map representation.</li>
+<li><a href="https://github.com/zziz/kalman-filter" target="_blank" rel="noopener">Python Kalman Filter</a>, 30行实现卡尔曼滤波</li>
+<li><a href="https://github.com/arpg/vicalib" target="_blank" rel="noopener">vicalib</a>, 视觉惯导系统标定工具</li>
+<li><a href="https://github.com/simondlevy/BreezySLAM" target="_blank" rel="noopener">BreezySLAM</a>, 基于雷达的SLAM，支持Python(&amp;Matlab, C++, and Java)</li>
+<li><a href="https://github.com/Yvon-Shong/Probabilistic-Robotics" target="_blank" rel="noopener">Probabilistic-Robotics</a>, 《概率机器人》中文版，书和课后习题</li>
+<li><a href="https://github.com/emmjaykay/stanford_self_driving_car_code" target="_blank" rel="noopener">Stanford Self Driving Car Code</a>, <strong>[<a href="http://robots.stanford.edu/papers/junior08.pdf" target="_blank" rel="noopener">Paper</a>]</strong>, 斯坦福自动驾驶车代码</li>
+<li><a href="https://github.com/ndrplz/self-driving-car" target="_blank" rel="noopener">Udacity Self-Driving Car Engineer Nanodegree projects</a></li>
+<li><a href="https://github.com/TUMFTM/Lecture_AI_in_Automotive_Technology" target="_blank" rel="noopener">Artificial Intelligence in Automotive Technology</a>, TUM自动驾驶技术中的人工智能课程</li>
+<li><a href="https://github.com/hlzz/DeepMatchVO" target="_blank" rel="noopener">DeepMatchVO: Beyond Photometric Loss for Self-Supervised Ego-Motion Estimation</a>,ICRA 2019, <strong>[<a href="https://arxiv.org/abs/1902.09103" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/zdzhaoyong/GSLAM" target="_blank" rel="noopener">GSLAM: A General SLAM Framework and Benchmark</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1902.07995" target="_blank" rel="noopener">Paper</a>]</strong>, 集成了各种传感器输入的SLAM统一框架</li>
+<li><a href="https://github.com/izhengfan/se2lam" target="_blank" rel="noopener">Visual-Odometric Localization and Mapping for Ground Vehicles Using SE(2)-XYZ Constraints</a>，ICRA 2019,基于SE(2)-XYZ约束的VO系统</li>
+<li><a href="https://github.com/nicolov/simple_slam_loop_closure" target="_blank" rel="noopener">Simple bag-of-words loop closure for visual SLAM</a>, <strong>[<a href="https://nicolovaligi.com/bag-of-words-loop-closure-visual-slam.html" target="_blank" rel="noopener">Blog</a>]</strong>, 回环</li>
+<li><a href="https://github.com/rmsalinas/fbow" target="_blank" rel="noopener">FBOW (Fast Bag of Words), an extremmely optimized version of the DBow2/DBow3 libraries</a>,优化版本的DBow2/DBow3</li>
+<li><a href="https://github.com/tomas789/tonav" target="_blank" rel="noopener">Multi-State Constraint Kalman Filter (MSCKF) for Vision-aided Inertial Navigation(master’s thesis)</a></li>
+<li><a href="https://github.com/yuzhou42/MSCKF" target="_blank" rel="noopener">MSCKF</a>, MSCKF中文注释版</li>
+<li><a href="https://github.com/hbtang/calibcamodo" target="_blank" rel="noopener">Calibration algorithm for a camera odometry system</a>, VO系统的标定程序</li>
+<li><a href="https://github.com/cggos/vins_mono_cg" target="_blank" rel="noopener">Modified version of VINS-Mono</a>, 注释版本VINS Mono</li>
+<li><a href="https://github.com/zhenpeiyang/RelativePose" target="_blank" rel="noopener">Extreme Relative Pose Estimation for RGB-D Scans via Scene Completion</a>,<strong>[<a href="https://arxiv.org/abs/1901.00063" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/jessecw/EPnP_Eigen" target="_blank" rel="noopener">Implementation of EPnP algorithm with Eigen</a>,利用Eigen编写的EPnP</li>
+<li><a href="https://github.com/jiexiong2016/GCNv2_SLAM" target="_blank" rel="noopener">Real-time SLAM system with deep features</a>, 深度学习描述子(ORB vs. GCNv2)</li>
+<li><a href="https://github.com/Huangying-Zhan/Depth-VO-Feat" target="_blank" rel="noopener">Unsupervised Learning of Monocular Depth Estimation and Visual Odometry with Deep Feature Reconstruction</a>, CVPR 2018, 无监督单目深度恢复以及VO</li>
+<li><a href="https://github.com/Phylliida/orbslam-windows" target="_blank" rel="noopener">ORB-SLAM-windows</a>, Windows版本的ORB-SLAM</li>
+<li><a href="https://github.com/danping/structvio" target="_blank" rel="noopener">StructVIO : Visual-inertial Odometry with Structural Regularity of Man-made Environments</a>,<strong>[<a href="http://drone.sjtu.edu.cn/dpzou/project/structvio.html" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/irvingzhang/KalmanFiltering" target="_blank" rel="noopener">KalmanFiltering</a>, 各种卡尔曼滤波器的demo</li>
+<li><a href="https://github.com/ZhenghaoFei/visual_odom" target="_blank" rel="noopener">Stereo Odometry based on careful Feature selection and Tracking</a>, <strong>[<a href="https://lamor.fer.hr/images/50020776/Cvisic2017.pdf" target="_blank" rel="noopener">Paper</a>]</strong>, C++ OpenCV实现SOFT</li>
+<li><a href="https://github.com/dzunigan/zSLAM" target="_blank" rel="noopener">Visual SLAM with RGB-D Cameras based on Pose Graph Optimization</a></li>
+<li><a href="https://github.com/drsrinathsridhar/GRANSAC" target="_blank" rel="noopener">Multi-threaded generic RANSAC implemetation</a>, 多线程RANSAC</li>
+<li><a href="https://github.com/PyojinKim/OPVO" target="_blank" rel="noopener">Visual Odometry with Drift-Free Rotation Estimation Using Indoor Scene Regularities</a>, BMVC 2017, <strong>[<a href="http://pyojinkim.me/pub/Visual-Odometry-with-Drift-Free-Rotation-Estimation-Using-Indoor-Scene-Regularities/" target="_blank" rel="noopener">Project Page</a>]</strong>，利用平面正交信息进行VO</li>
+<li><a href="https://github.com/baidu/ICE-BA" target="_blank" rel="noopener">ICE-BA</a>, CVPR 2018, <strong>[<a href="http://openaccess.thecvf.com/content_cvpr_2018/papers/Liu_ICE-BA_Incremental_Consistent_CVPR_2018_paper.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/AIBluefisher/GraphSfM" target="_blank" rel="noopener">GraphSfM: Robust and Efficient Graph-based Structure from Motion</a>, <strong>[<a href="https://aibluefisher.github.io/GraphSfM/" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/cuitaixiang/LOAM_NOTED" target="_blank" rel="noopener">LOAM_NOTED</a>, loam中文注解版</li>
+<li><a href="https://github.com/Ethan-Zhou/MWO" target="_blank" rel="noopener">Divide and Conquer: Effcient Density-Based Tracking of 3D Sensors in Manhattan Worlds</a>,ACCV 2016,<strong>[<a href="http://users.cecs.anu.edu.au/~u5535909/" target="_blank" rel="noopener">Project Page</a>]</strong>,曼哈顿世界利用深度传感器进行旋转量平移量分离优化</li>
+<li><a href="https://github.com/jstraub/rtmf" target="_blank" rel="noopener">Real-time Manhattan World Rotation Estimation in 3D</a>,IROS 2015,实时曼哈顿世界旋转估计</li>
+</ul>
+<h2 id="Pose-Object-tracking"><a href="#Pose-Object-tracking" class="headerlink" title="Pose/Object tracking"></a>Pose/Object tracking</h2><ul>
+<li><a href="https://github.com/cbsudux/Human-Pose-Estimation-101" target="_blank" rel="noopener">Basics of 2D and 3D Human Pose Estimation</a>,人体姿态估计入门</li>
+<li><a href="https://github.com/OceanPang/Libra_R-CNN" target="_blank" rel="noopener">Libra R-CNN: Towards Balanced Learning for Object Detection</a></li>
+<li><a href="https://github.com/HRNet/HRNet-Object-Detection" target="_blank" rel="noopener">High-resolution networks (HRNets) for object detection</a>, <strong>[<a href="https://arxiv.org/pdf/1904.04514.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/xiaolonw/TimeCycle" target="_blank" rel="noopener">Learning Correspondence from the Cycle-Consistency of Time</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1903.07593" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/zju3dv/pvnet" target="_blank" rel="noopener">PVNet: Pixel-wise Voting Network for 6DoF Pose Estimation</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1812.11788" target="_blank" rel="noopener">Paper</a>], [<a href="https://zju3dv.github.io/pvnet" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/mkocabas/EpipolarPose" target="_blank" rel="noopener">Self-Supervised Learning of 3D Human Pose using Multi-view Geometry</a>, CVPR 2018, <strong>[<a href="https://arxiv.org/abs/1903.02330" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/vita-epfl/openpifpaf" target="_blank" rel="noopener">PifPaf: Composite Fields for Human Pose Estimation</a>, <strong>[<a href="https://arxiv.org/abs/1903.06593" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+<li><a href="https://github.com/leoxiaobin/deep-high-resolution-net.pytorch" target="_blank" rel="noopener">Deep High-Resolution Representation Learning for Human Pose Estimation</a>,CVPR 2019, <strong>[<a href="https://arxiv.org/pdf/1902.09212.pdf" target="_blank" rel="noopener">Paper</a>]</strong>, <strong>[<a href="https://jingdongwang2017.github.io/Projects/HRNet/PoseEstimation.html" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/YuliangXiu/PoseFlow" target="_blank" rel="noopener">PoseFlow: Efficient Online Pose Tracking)</a>, BMVC 2018, <strong>[<a href="https://arxiv.org/abs/1802.00977" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/vana77/Bottom-up-Clustering-Person-Re-identification" target="_blank" rel="noopener">A Bottom-Up Clustering Approach to Unsupervised Person Re-identification</a>，AAAI 2019, 重定位</li>
+<li><a href="https://github.com/foolwood/SiamMask" target="_blank" rel="noopener">Fast Online Object Tracking and Segmentation: A Unifying Approach</a>,CVPR 2019,<strong>[<a href="https://arxiv.org/abs/1812.05050" target="_blank" rel="noopener">Paper</a>] [<a href="https://youtu.be/I_iOVrcpEBw" target="_blank" rel="noopener">Video</a>] [<a href="http://www.robots.ox.ac.uk/~qwang/SiamMask" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/TuSimple/simpledet" target="_blank" rel="noopener">SimpleDet - A Simple and Versatile Framework for Object Detection and Instance Recognition</a>,<strong>[<a href="https://arxiv.org/abs/1903.05831" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+</ul>
+<h2 id="Depth-Disparity-amp-Flow-estimation"><a href="#Depth-Disparity-amp-Flow-estimation" class="headerlink" title="Depth/Disparity &amp; Flow estimation"></a>Depth/Disparity &amp; Flow estimation</h2><ul>
+<li><a href="https://github.com/muskie82/AR-Depth-cpp" target="_blank" rel="noopener">Fast Depth Densification for Occlusion-aware Augmented Reality</a>, SIGGRAPH-Asia 2018, <strong>[<a href="https://homes.cs.washington.edu/~holynski/publications/occlusion/index.html" target="_blank" rel="noopener">Project Page</a>]</strong>,<a href="https://github.com/facebookresearch/AR-Depth" target="_blank" rel="noopener">another version</a></li>
+<li><a href="https://github.com/CVLAB-Unibo/Learning2AdaptForStereo" target="_blank" rel="noopener">Learning To Adapt For Stereo</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/pdf/1904.02957" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/JiaRenChang/PSMNet" target="_blank" rel="noopener">Pyramid Stereo Matching Network</a>,<strong>[<a href="https://arxiv.org/abs/1803.08669" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+<li><a href="https://github.com/lelimite4444/BridgeDepthFlow" target="_blank" rel="noopener">Bridging Stereo Matching and Optical Flow via Spatiotemporal Correspondence</a>, <strong>[<a href="https://arxiv.org/abs/1905.09265" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/wvangansbeke/Sparse-Depth-Completion" target="_blank" rel="noopener">Sparse Depth Completion</a>, <strong>[<a href="https://arxiv.org/pdf/1902.05356.pdf" target="_blank" rel="noopener">Paper</a>]</strong>, RGB图像辅助雷达深度估计</li>
+<li><a href="https://github.com/sshan-zhao/GASDA" target="_blank" rel="noopener">GASDA</a>, CVPR 2019, <strong>[<a href="https://sshan-zhao.github.io/papers/gasda.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/xy-guo/MVSNet_pytorch" target="_blank" rel="noopener">MVSNet: Depth Inference for Unstructured Multi-view Stereo</a>, <strong>[<a href="https://arxiv.org/abs/1804.02505" target="_blank" rel="noopener">Paper</a>]</strong>, 非官方实现版本的MVSNet</li>
+<li><a href="https://github.com/HKUST-Aerial-Robotics/Stereo-RCNN" target="_blank" rel="noopener">Stereo R-CNN based 3D Object Detection for Autonomous Driving</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/pdf/1902.09738.pdf" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/CVLAB-Unibo/Real-time-self-adaptive-deep-stereo" target="_blank" rel="noopener">Real-time self-adaptive deep stereo</a>, CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1810.05424" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/ialhashim/DenseDepth" target="_blank" rel="noopener">High Quality Monocular Depth Estimation via Transfer Learning</a>,CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1812.11941" target="_blank" rel="noopener">Paper</a>]</strong>, <strong>[<a href="https://ialhashim.github.io/publications/index.html" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/xy-guo/GwcNet" target="_blank" rel="noopener">Group-wise Correlation Stereo Network</a>,CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1903.04025" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/phuang17/DeepMVS" target="_blank" rel="noopener">DeepMVS: Learning Multi-View Stereopsis</a>, CVPR 2018,<strong>[<a href="https://phuang17.github.io/DeepMVS/index.html" target="_blank" rel="noopener">Project Page</a>]</strong>,多目深度估计</li>
+<li><a href="https://github.com/sampepose/flownet2-tf" target="_blank" rel="noopener">FlowNet 2.0: Evolution of Optical Flow Estimation with Deep Networks</a>, CVPR 2017, 深度学习光流恢复</li>
+<li><a href="https://github.com/DLuensch/StereoVision-ADCensus" target="_blank" rel="noopener">StereoVision-ADCensus</a>,深度恢复代码集合(<strong>ADCensus, SGBM, BM</strong>)</li>
+<li><a href="https://github.com/yangguorun/SegStereo" target="_blank" rel="noopener">SegStereo: Exploiting Semantic Information for Disparity Estimation</a>, 探究语义信息在深度估计中的作用</li>
+<li><a href="https://github.com/kuantingchen04/Light-Field-Depth-Estimation" target="_blank" rel="noopener">Light Filed Depth Estimation using GAN</a>，利用GAN进行光场深度恢复</li>
+<li><a href="https://github.com/daniilidis-group/EV-FlowNet" target="_blank" rel="noopener">EV-FlowNet: Self-Supervised Optical Flow for Event-based Cameras</a>,Proceedings of Robotics 2018,<strong>[<a href="https://arxiv.org/abs/1802.06898" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/vt-vl-lab/DF-Net" target="_blank" rel="noopener">DF-Net: Unsupervised Joint Learning of Depth and Flow using Cross-Task Consistency</a>, ECCV 2018, <strong>[<a href="https://arxiv.org/abs/1809.01649" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/yzcjtr/GeoNet" target="_blank" rel="noopener">GeoNet: Unsupervised Learning of Dense Depth, Optical Flow and Camera Pose</a>, CVPR 2018, <strong>[<a href="https://arxiv.org/abs/1803.02276" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+</ul>
+<h2 id="3D-amp-Graphic"><a href="#3D-amp-Graphic" class="headerlink" title="3D &amp; Graphic"></a>3D &amp; Graphic</h2><ul>
+<li><a href="https://github.com/PRBonn/refusion" target="_blank" rel="noopener">ReFusion: 3D Reconstruction in Dynamic Environments for RGB-D Cameras Exploiting Residuals</a>, <strong>[<a href="https://arxiv.org/pdf/1905.02082.pdf" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+<li><a href="https://github.com/Lotayou/densebody_pytorch" target="_blank" rel="noopener">densebody_pytorch</a>, <strong>[<a href="https://arxiv.org/abs/1903.10153v3" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+<li><a href="https://github.com/svip-lab/PlanarReconstruction" target="_blank" rel="noopener">Single-Image Piece-wise Planar 3D Reconstruction via Associative Embedding</a>,CVPR 2019, <strong>[<a href="https://arxiv.org/pdf/1902.09777.pdf" target="_blank" rel="noopener">Paper</a>]</strong>, 单目3D重建</li>
+<li><a href="https://github.com/sunset1995/HorizonNet" target="_blank" rel="noopener">HorizonNet: Learning Room Layout with 1D Representation and Pano Stretch Data Augmentation</a>,CVPR 2019, <strong>[<a href="https://arxiv.org/abs/1901.03861" target="_blank" rel="noopener">Paper</a>]</strong>, 深度学习全景转3D</li>
+<li><a href="https://github.com/Microsoft/O-CNN" target="_blank" rel="noopener">Adaptive O-CNN: A Patch-based Deep Representation of 3D Shapes</a>,SIGGRAPH Asia 2018, <strong>[<a href="https://wang-ps.github.io/AO-CNN.html" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+</ul>
+<h2 id="GAN"><a href="#GAN" class="headerlink" title="GAN"></a>GAN</h2><ul>
+<li><a href="https://live.bilibili.com/7332534?visit_id=9ytrx9lpsy80" target="_blank" rel="noopener">End-to-end Adversarial Learning for Generative Conversational Agents</a>，2017，介绍了一种端到端的基于GAN的聊天机器人</li>
+<li><a href="https://github.com/yulunzhang/RNAN" target="_blank" rel="noopener">Residual Non-local Attention Networks for Image Restoration</a>,ICLR 2019.</li>
+<li><a href="https://github.com/HelenMao/MSGAN" target="_blank" rel="noopener">MSGAN: Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis</a>, CVPR 2019,<strong>[<a href="https://arxiv.org/abs/1903.05628" target="_blank" rel="noopener">Paper</a>]</strong></li>
+<li><a href="https://github.com/NVlabs/SPADE" target="_blank" rel="noopener">SPADE: Semantic Image Synthesis with Spatially-Adaptive Normalization</a>,CVPR 2019, <strong>[<a href="https://nvlabs.github.io/SPADE/" target="_blank" rel="noopener">Project Page</a>]</strong></li>
+<li><a href="https://github.com/Oldpan/Faceswap-Deepfake-Pytorch" target="_blank" rel="noopener">Faceswap with Pytorch or DeepFake with Pytorch</a>, 假脸</li>
+</ul>
+<h2 id="Machine-Learning"><a href="#Machine-Learning" class="headerlink" title="Machine Learning"></a>Machine Learning</h2><ul>
+<li><a href="https://github.com/RemoteML/bestofml" target="_blank" rel="noopener">The best resources around Machine Learning</a></li>
+<li><a href="https://github.com/cydonia999/VGGFace2-pytorch" target="_blank" rel="noopener">VGGFace2: A dataset for recognising faces across pose and age</a></li>
+<li><a href="https://github.com/SmirkCao/Lihang" target="_blank" rel="noopener">Statistical learning methods</a></li>
+</ul>
+<h2 id="Deep-Learning"><a href="#Deep-Learning" class="headerlink" title="Deep Learning"></a>Deep Learning</h2><ul>
+<li><a href="https://github.com/ZhaoJ9014/face.evoLVe.PyTorch" target="_blank" rel="noopener">High-Performance Face Recognition Library on PyTorch</a>，人脸识别库</li>
+<li><a href="https://github.com/enggen/Deep-Learning-Coursera" target="_blank" rel="noopener">Deep-Learning-Coursera</a>，深度学习教程（deeplearning.ai）</li>
+</ul>
+<h2 id="Framework"><a href="#Framework" class="headerlink" title="Framework"></a>Framework</h2><ul>
+<li><a href="https://github.com/JuliaLang/julia" target="_blank" rel="noopener">Julia</a></li>
+<li><a href="https://github.com/alan-turing-institute/MLJ.jl" target="_blank" rel="noopener">A Julia machine learning framework</a>，一种基于Julia的机器学习框架</li>
+</ul>
+<p><img src="https://github.com/alan-turing-institute/MLJ.jl/blob/master/doc/two_model_stack.png" alt></p>
+<h2 id="Collections"><a href="#Collections" class="headerlink" title="Collections"></a>Collections</h2><ul>
+<li><a href="https://github.com/wwxFromTju/awesome-reinforcement-learning-zh" target="_blank" rel="noopener">awesome-reinforcement-learning-zh</a>,强化学习从入门到放弃的资料</li>
+<li><a href="https://github.com/uzh-rpg/event-based_vision_resources" target="_blank" rel="noopener">Event-based Vision Resources</a>，关于事件相机的资源</li>
+<li><a href="https://github.com/DeepTecher/AutonomousVehiclePaper" target="_blank" rel="noopener">AutonomousVehiclePaper</a>，无人驾驶相关论文速递</li>
+<li><a href="https://github.com/wutianyiRosun/Segmentation.X" target="_blank" rel="noopener">Segmentation.X</a>, Segmentation相关论文&amp;代码</li>
+<li><a href="https://github.com/amusi/CVPR2019-Code" target="_blank" rel="noopener">CVPR-2019</a>, CVPR 2019 论文开源项目合集</li>
+<li><a href="https://github.com/kanster/awesome-slam" target="_blank" rel="noopener">awesome-slam</a>, SLAM合集</li>
+<li><a href="https://github.com/tzutalin/awesome-visual-slam" target="_blank" rel="noopener">awesome-visual-slam</a>, 视觉SLAM合集</li>
+<li><a href="https://github.com/zziz/pwc" target="_blank" rel="noopener">Papers with code</a>, 周更论文with代码</li>
+<li><a href="https://github.com/cbsudux/awesome-human-pose-estimation" target="_blank" rel="noopener">Awesome Human Pose Estimation</a>,<a href="https://github.com/nkalavak/awesome-object-pose" target="_blank" rel="noopener">awesome-object-pose</a>, 位姿估计合集</li>
+<li><a href="https://github.com/mrgloom/awesome-semantic-segmentation" target="_blank" rel="noopener">Awesome Semantic Segmentation</a>, 语义分割集合</li>
+<li><a href="https://github.com/mengyuest/iros2018-slam-papers" target="_blank" rel="noopener">IROS2018 SLAM Collections</a>, IROS 2018集合</li>
+<li><a href="https://github.com/TerenceCYJ/VP-SLAM-SC-papers" target="_blank" rel="noopener">VP-SLAM-SC-papers</a>,Visual Positioning &amp; SLAM &amp; Spatial Cognition 论文统计与分析</li>
+<li><a href="https://github.com/HuaizhengZhang/Awesome-System-for-Machine-Learning" target="_blank" rel="noopener">Awesome System for Machine Learning</a></li>
+<li><a href="https://github.com/Thinkgamer/Machine-Learning-With-Python" target="_blank" rel="noopener">Machine-Learning-With-Python</a>, 《机器学习实战》python代码实现</li>
+<li><a href="https://github.com/qqfly/how-to-learn-robotics" target="_blank" rel="noopener">How to learn robotics</a>, 开源机器人学学习指南</li>
+<li><a href="https://github.com/kjw0612/awesome-deep-vision" target="_blank" rel="noopener">Awesome Deep Vision</a>,DL在CV领域的应用</li>
+<li><a href="https://github.com/YapengTian/Single-Image-Super-Resolution" target="_blank" rel="noopener">Single-Image-Super-Resolution</a>, 一个有关<strong>图像超分辨</strong>的合集</li>
+<li><a href="https://github.com/wifity/ai-report" target="_blank" rel="noopener">ai report</a>, AI相关的研究报告</li>
+<li><a href="https://paperswithcode.com/sota" target="_blank" rel="noopener">State-of-the-art papers and code</a>,搜集了目前sota的论文以及代码</li>
+<li><a href="https://github.com/extreme-assistant/cvpr2019" target="_blank" rel="noopener">CVPR 2019 (Papers/Codes/Project/Paper reading)</a></li>
+<li><a href="https://github.com/openMVG/awesome_3DReconstruction_list" target="_blank" rel="noopener">A curated list of papers &amp; resources linked to 3D reconstruction from images</a>,有关三维重建的论文汇总</li>
+<li><a href="https://github.com/nebula-beta/SLAM-Jobs" target="_blank" rel="noopener">SLAM-Jobs</a>, SLAM/SFM求职指南</li>
+</ul>
+<h2 id="Others"><a href="#Others" class="headerlink" title="Others"></a>Others</h2><ul>
+<li><a href="https://github.com/cszn/DPSR" target="_blank" rel="noopener">Deep Plug-and-Play Super-Resolution for Arbitrary Blur Kernels</a>,CVPR 2019,超分辨</li>
+<li><a href="https://github.com/lzhbrian/Cool-Fashion-Papers" target="_blank" rel="noopener">Cool Fashion Papers</a>, Cool resources about Fashion + AI.</li>
+<li><a href="https://github.com/nbei/Deep-Flow-Guided-Video-Inpainting" target="_blank" rel="noopener">Deep Flow-Guided Video Inpainting</a>,CVPR 2019, <strong>[<a href="https://arxiv.org/pdf/1806.10447.pdf" target="_blank" rel="noopener">Paper</a>]</strong> ,图像修复</li>
+<li><a href="https://github.com/dbolya/yolact" target="_blank" rel="noopener">YOLACT: Real-time Instance Segmentation</a></li>
+<li><a href="https://github.com/lyl8213/Plate_Recognition-LPRnet" target="_blank" rel="noopener">LPRNet: License Plate Recognition via Deep Neural Networks</a>, <strong>[<a href="https://arxiv.org/pdf/1806.10447.pdf" target="_blank" rel="noopener">Paper</a>]</strong> </li>
+<li><a href="https://github.com/xiaofengShi/CHINESE-OCR" target="_blank" rel="noopener">CHINESE-OCR</a>, 运用tf实现自然场景文字检测</li>
+<li><a href="https://github.com/PerpetualSmile/BeautyCamera" target="_blank" rel="noopener">BeautyCamera</a>, 美颜相机，具有人脸检测、磨皮美白人脸、滤镜、调节图片、摄像功能</li>
+<li><a href="https://github.com/zhengzhugithub/CV-arXiv-Daily" target="_blank" rel="noopener">CV-arXiv-Daily</a>, 分享计算机视觉每天的arXiv文章</li>
+<li>Pluralistic-Inpainting, <a href="https://arxiv.org/abs/1903.04227" target="_blank" rel="noopener">ArXiv</a> | <a href="http://www.chuanxiaz.com/publication/pluralistic/" target="_blank" rel="noopener">Project Page</a> | <a href="http://www.chuanxiaz.com/project/pluralistic/" target="_blank" rel="noopener">Online Demo</a> | <a href="https://www.youtube.com/watch?v=9V7rNoLVmSs" target="_blank" rel="noopener">Video(demo)</a></li>
+<li><a href="https://github.com/Jezzamonn/fourier" target="_blank" rel="noopener">An Interactive Introduction to Fourier Transforms</a>, 超棒的傅里叶变换图形化解释</li>
+<li><a href="https://github.com/datawhalechina/pumpkin-book" target="_blank" rel="noopener">pumpkin-book</a>, 《机器学习》（西瓜书）公式推导解析</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/awesome-works/" title="Awesome CV Works">https://www.vincentqin.tech/posts/awesome-works/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+            
+              <a href="/tags/disparity/" rel="tag"># disparity</a>
+            
+              <a href="/tags/pose-tracking/" rel="tag"># pose-tracking</a>
+            
+              <a href="/tags/object-tracking/" rel="tag"># object-tracking</a>
+            
+              <a href="/tags/depth-estimation/" rel="tag"># depth-estimation</a>
+            
+              <a href="/tags/flow-estimation/" rel="tag"># flow-estimation</a>
+            
+              <a href="/tags/3D-graphics/" rel="tag"># 3D-graphics</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/build-ssr-server/" rel="next" title="开启SSR模式">
+                  <i class="fa fa-chevron-left"></i> 开启SSR模式
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/first-black-hole/" rel="prev" title="Black Hole">
+                  Black Hole <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SLAM-related"><span class="nav-number">1.</span> <span class="nav-text">SLAM related</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pose-Object-tracking"><span class="nav-number">2.</span> <span class="nav-text">Pose/Object tracking</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Depth-Disparity-amp-Flow-estimation"><span class="nav-number">3.</span> <span class="nav-text">Depth/Disparity &amp; Flow estimation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3D-amp-Graphic"><span class="nav-number">4.</span> <span class="nav-text">3D &amp; Graphic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GAN"><span class="nav-number">5.</span> <span class="nav-text">GAN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Machine-Learning"><span class="nav-number">6.</span> <span class="nav-text">Machine Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deep-Learning"><span class="nav-number">7.</span> <span class="nav-text">Deep Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Framework"><span class="nav-number">8.</span> <span class="nav-text">Framework</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Collections"><span class="nav-number">9.</span> <span class="nav-text">Collections</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Others"><span class="nav-number">10.</span> <span class="nav-text">Others</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

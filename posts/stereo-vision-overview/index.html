@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
+<meta name="keywords" content="computer vision,stereo matching">
+<meta property="og:type" content="article">
+<meta property="og:title" content="立体视觉综述：Stereo Vision Overview">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/stereo-vision-overview/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://www.vincentqin.tech/posts/stereo-vision-overview/depth-overview-cover.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p6.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p8.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p9.png">
+<meta property="og:image" content="https://www.vincentqin.tech/stereo-vision-overview/Epipolar_geometry.svg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p10.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p11.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p12.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p13.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-1.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p15.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p16.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p17.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p18.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p21.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p22.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p23.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p25.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p26.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p27.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p28.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p29.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-1.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p38.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-1.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p40.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-1.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p42.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p44.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p47.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p48.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p50.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p52.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p53.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p57.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p58.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p59.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-1.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p61.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p62.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p64.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p65.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p66.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p87.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p88.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p89.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p90.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p91.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p92.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p94.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p95.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p98-2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p99.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p101.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p102.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p103.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p109.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p111.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p115.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p122.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p127.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p135.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p139.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p166.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p167.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p168.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p169.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p170.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p181.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p183.png">
+<meta property="og:updated_time" content="2019-09-15T08:49:08.747Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="立体视觉综述：Stereo Vision Overview">
+<meta name="twitter:description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
+<meta name="twitter:image" content="https://www.vincentqin.tech/posts/stereo-vision-overview/depth-overview-cover.jpg">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/stereo-vision-overview/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>立体视觉综述：Stereo Vision Overview | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/stereo-vision-overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">立体视觉综述：Stereo Vision Overview
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-03-26 15:03:55" itemprop="dateCreated datePublished" datetime="2018-03-26T15:03:55+08:00">2018-03-26</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-15 16:49:08" itemprop="dateModified" datetime="2019-09-15T16:49:08+08:00">2019-09-15</time>
+              </span>
+            
+          
+
+          
+            <span id="/posts/stereo-vision-overview/" class="post-meta-item leancloud_visitors" data-flag-title="立体视觉综述：Stereo Vision Overview" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/stereo-vision-overview/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/stereo-vision-overview/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="//www.vincentqin.tech/posts/stereo-vision-overview/depth-overview-cover.jpg" width="1600px"></p>
+<p>本文主要翻译自<a href="www.vision.deis.unibo.it/smatt">Mattoccia</a>的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：</p>
+<ul>
+<li>Introduction to stereo vision</li>
+<li>Overview of a stereo vision system</li>
+<li>Algorithms for visual correspondence</li>
+<li>Computational optimizations</li>
+<li>Hardware implementation</li>
+<li>Applications</li>
+</ul>
+<a id="more"></a>
+<h2 id="什么是立体视觉"><a href="#什么是立体视觉" class="headerlink" title="什么是立体视觉"></a>什么是立体视觉</h2><ul>
+<li>是一个能够从双目或者多目相机中提取深度图像的技术</li>
+<li>在计算机视觉领域很火爆的研究话题</li>
+<li>这与以下几个方面的相关：双目立体视觉系统、稠密立体算法、立体视觉应用</li>
+<li>偏好能够实时或者硬件实现</li>
+</ul>
+<h2 id="单目相机"><a href="#单目相机" class="headerlink" title="单目相机"></a>单目相机</h2><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p6.png" width="1200px"></p>
+<p>如图所示的是单目摄像机的拍摄原理，右侧实际场景可以抽象成左侧的模型。可以发现场景中的P点与Q点会同时汇聚在成像平面中的一点，同样遮挡问题出现在PQ连线的所有点。</p>
+<h2 id="双目相机"><a href="#双目相机" class="headerlink" title="双目相机"></a>双目相机</h2><p>对于双目相机，$O_R$和$O_T$分别是左右相机的光学中心，对于在参考相机像平面上被汇聚的两点（p和q），在目标相机像平面上会被区分开来，那么我们可以找到双目或者多目相机中匹配的点利用三角相似原理来估计深度。那么我们怎么寻找相对应的点呢？一个直观的想法就是固定两幅图中的一幅，然后在另外一幅图中 进行2D范围的搜索匹配点。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p8.png" width="1200px"></p>
+<p>但实际情况这样做的代价非常大。不过多亏了有<strong>极线约束</strong>，我们可以在图像的<strong>1D</strong>范围上进行搜索。以下将要对极线约束进行解释。</p>
+<h3 id="极线约束-对极几何"><a href="#极线约束-对极几何" class="headerlink" title="极线约束(对极几何)"></a>极线约束(对极几何)</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p9.png" width="1200px"></p>
+<ul>
+<li>对于参考图像R而言，现实场景中的P与Q点在其像平面${\pi}_R$上被投影成为一个点p=q。</li>
+<li>极线约束规定，属于（红色）视线的点对应位于目标图像T的图像平面${\pi}_T$上的绿线上。</li>
+</ul>
+<p>我们可以在维基百科上找到更为详细的<a href="https://en.wikipedia.org/wiki/Epipolar_geometry" target="_blank" rel="noopener">介绍</a>，具体描述可见下图。特别感谢<a href="https://blog.csdn.net/lin453701006/article/details/55096777" target="_blank" rel="noopener">@岳麓吹雪同学</a>的帮忙，以下是他已经整理好的译文。下图是针孔相机模型图。两个针孔相机看向空间点，实际相机的像面位于焦点中心后面，生成了一幅关于透镜的焦点中心对称的图像。<strong>这个问题可以简化为在焦点中心前方放置一个虚拟像面来生成正立图像，而不需要对称变换得到</strong>。$O_L$和$O_R$表示两个相机透镜中心，$X$表示两个相机共同的目标点，$X_L$和$X_R$是点$X$在两像面上的投影。<br><img src="/stereo-vision-overview/Epipolar_geometry.svg" width="1600px"></p>
+<ul>
+<li><p><strong>epipolar points极点</strong><br>每一个相机的透镜中心是不同的，会投射到另一个相机像面的不同点上。这两个像点用$e_L$和$e_R$表示，被称为<strong>epipolar points极点</strong>。两个极点$e_L$、$e_R$分别与透镜中心$O_L$、$O_R$在空间中位于一条直线上。</p>
+</li>
+<li><p><strong>epipolar plane极面</strong><br>将$X$、$O_L$和$O_R$三点形成的面称为epipolar plane极面。</p>
+</li>
+<li><p><strong>epipolar line极线</strong><br>直线$O_LX$被左侧相机看做一个点，因为它和透镜中心位于一条线上。然而，从右相机看直线$O_LX$，则是像面上的一条线直线$e_RX_R$，被称为epipolar line极线。从另一个角度看，极面$XO_LO_R$与相机像面相交形成极线。极线是3D空间中点X的位置函数，随$X$变化，两幅图像会生成一组极线。直线$O_LX$通过透镜中心$O_L$，右像面中对应的极线必然通过极点$e_R$。一幅图像中的所有极线包含了该图像的所有极点。实际上，任意一条包含极点的线都是由空间中某一点$X$推导出的一条极线。</p>
+</li>
+</ul>
+<p>如果两个相机位置已知，则：<br>1.如果投影点$X_L$已知，则极线$e_RX_R$已知，点X必定投影到右像面极线上的$X_R$处。这就意味着，在一个图像中观察到的每个点，在已知的极线上观察到该点的其他图像。这就是Epipolar constraint极线约束：<strong>$X$在右像面上的投影$X_R$必然被约束在$e_RX_R$极线上</strong>。对于$O_LX_L$上的$X$，$X_1$，$X_2$，$X_3$都受该约束。极线约束可以用于测试两点是否对应同一3D点。极线约束也可以用两相机间的基本矩阵来描述。<br>2.如果$X_L$和$X_R$已知，他们的投影线已知。如果两幅图像上的点对应同一点X，则投影线必然交于$X$。这就意味着$X$可以用两个像点的坐标计算得到。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p10.png" width="1200px"><br>由极线约束可知，我们可以将原来的匹配点搜索范围由2D转换成1D，这样做可以很大程度上减少计算量。我们将左右视图摆放成更容易理解的形式，可以发现对应点的匹配问题转换成了在同一条扫描线上（极线）的匹配问题。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p11.png" width="1200px"><br>可以发现相机的摆放姿势影响着扫描线的方向。在上图A中，相机与水平呈一定角度地摆放，其扫描线为右图所示，同样是与水平倾斜的扫描线。假如两个相机平行摆放的话，其拍出来匹配对是扫描线已经对齐了的。</p>
+<h3 id="深度与视差"><a href="#深度与视差" class="headerlink" title="深度与视差"></a>深度与视差</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p12.png" width="1200px"><br>如上图所示为扫描线已经对齐了的匹配图像对（以下简称<strong>匹配对</strong>）。可以发现：$PO_RO_T$与$Ppp’$是相似三角形，由于相似三角形原理，我们可以很容易知道：</p>
+<script type="math/tex; mode=display">\frac{b}{Z}=\frac{(b+x_T)-x_R}{Z-f}</script><p>其中，$x_R-x_T$就是视差，Z表示深度，B为基线，f是焦距。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p13.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-1.png" width="1200px"></p>
+<p>所谓<strong>视差就是匹配对中对应点之间x方向上的差异</strong>，我们可以将这种差异转换成为灰度图（越近越白），如上最后一个图所示。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-2.png" width="1200px"></p>
+<p>上图展示了物体距离相机越近的话，视差就越大。其实很容易理解，将人的双眼比作成双目相机，对比将手指放在双眼前方近处与远处晃动的区别，可以发现在近处的话人眼感知到手指的晃动是比远处晃动的“程度”明显的，那么这种程度就是视差在人脑中的反映。</p>
+<h3 id="视界"><a href="#视界" class="headerlink" title="视界"></a>视界</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p15.png" width="1200px"></p>
+<p>图为双摄装置，基线为b，焦距为f，那么双摄的视界被视差范围所限定{$d_{min},d_{max}$}，如图中绿色包裹的区域。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p16.png" width="1200px"></p>
+<ul>
+<li>深度是通过利用立体匹配系统将视差离散成一系列平行的平面来测量的；每一层平面对应着一个视差。</li>
+<li>可以通过超像素的方法得到效果更好的深度图。</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p17.png" width="1200px"><br>图为5个视差{$d_{min},d_{min}+4$}组成的视场。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p18.png" width="1200px"></p>
+<ul>
+<li>图为5个视差{$\Delta+d_\{min\},\Delta+d_\{min}+4$\}组成的视场</li>
+<li>$\Delta&gt;0$时，视场收缩并向相机靠近</li>
+</ul>
+<h2 id="深度估计"><a href="#深度估计" class="headerlink" title="深度估计"></a>深度估计</h2><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p21.png" width="1200px"><br>图中为传统算法以及ICCV2011当时最好的结果。可以发现，能够达到较好的视差是具有挑战性的。下面将要展示视差估计的基本流程。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p22.png" width="1200px"><br>通过双摄设备采集图像，此时图像是存在镜头畸变的，在进行扫描线对齐之前要进行离线标定以消除镜头畸变。扫描线对齐的过程叫做<strong>镜头矫正</strong>（rectificaition），经过这步之后就可以进行1D的匹配点搜索（stereo correspondence）了。随后通过三角形相似原理得到相应的深度/视差图。</p>
+<h3 id="离线标定"><a href="#离线标定" class="headerlink" title="离线标定"></a>离线标定</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p23.png" width="1200px"><br>标定的目标是寻找：</p>
+<ul>
+<li>相机内参：焦距、图像中心、镜头畸变参数</li>
+<li>相机外参：排列相机使其对齐的参数</li>
+</ul>
+<p>注意的是，相机标定的话一般需要10对以上的图像（通常拍摄棋盘格图像，利用张氏标定法进行标定）。</p>
+<ul>
+<li>标定程序可以见Opencv<sup><a href="#fn_39" id="reffn_39">39</a></sup>和Matlab<sup><a href="#fn_40" id="reffn_40">40</a></sup>。</li>
+<li>更为详细的介绍参见<sup><a href="#fn_20" id="reffn_20">20</a></sup> <sup><a href="#fn_21" id="reffn_21">21</a></sup> <sup><a href="#fn_22" id="reffn_22">22</a></sup>。</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p25.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p26.png" width="1200px"></p>
+<h3 id="匹配矫正"><a href="#匹配矫正" class="headerlink" title="匹配矫正"></a>匹配矫正</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p27.png" width="1200px"><br>利用标定步骤得到的相机的内参对相机镜头畸变进行校正，同时对其扫描线。</p>
+<h3 id="立体匹配"><a href="#立体匹配" class="headerlink" title="立体匹配"></a>立体匹配</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p28.png" width="1200px"><br>目标：从匹配对中寻找对应的点，反映在图像中就是视差图像。</p>
+<h3 id="三角测量"><a href="#三角测量" class="headerlink" title="三角测量"></a>三角测量</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p29.png" width="1200px"><br>给定视差图像，基线长度以及焦距可以通过三角计算得到当前位置对应的3D位置。</p>
+<h2 id="立体匹配的挑战性"><a href="#立体匹配的挑战性" class="headerlink" title="立体匹配的挑战性"></a>立体匹配的挑战性</h2><h3 id="光度失真以及噪声"><a href="#光度失真以及噪声" class="headerlink" title="光度失真以及噪声"></a>光度失真以及噪声</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-1.png" width="1200px"></p>
+<h3 id="高光表面"><a href="#高光表面" class="headerlink" title="高光表面"></a>高光表面</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-2.png" width="1200px"></p>
+<h3 id="透视收缩"><a href="#透视收缩" class="headerlink" title="透视收缩"></a>透视收缩</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p38.png" width="1200px"></p>
+<h3 id="透视变形"><a href="#透视变形" class="headerlink" title="透视变形"></a>透视变形</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-1.png" width="1200px"></p>
+<h3 id="无纹理区域"><a href="#无纹理区域" class="headerlink" title="无纹理区域"></a>无纹理区域</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-2.png" width="1200px"></p>
+<h3 id="重复-混淆区域"><a href="#重复-混淆区域" class="headerlink" title="重复/混淆区域"></a>重复/混淆区域</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p40.png" width="1200px"></p>
+<h3 id="透明物体"><a href="#透明物体" class="headerlink" title="透明物体"></a>透明物体</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-1.png" width="1200px"></p>
+<h3 id="遮挡区以及不连续区域（1）"><a href="#遮挡区以及不连续区域（1）" class="headerlink" title="遮挡区以及不连续区域（1）"></a>遮挡区以及不连续区域（1）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-2.png" width="1200px"></p>
+<h3 id="遮挡区以及不连续区域（2）"><a href="#遮挡区以及不连续区域（2）" class="headerlink" title="遮挡区以及不连续区域（2）"></a>遮挡区以及不连续区域（2）</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p42.png" width="1200px"></p>
+<h2 id="Middlebury数据集"><a href="#Middlebury数据集" class="headerlink" title="Middlebury数据集"></a>Middlebury数据集</h2><p><a href="http://vision.middlebury.edu/stereo/eval3/" target="_blank" rel="noopener">Middlebury数据集</a>提供了一套可供深度估计的数据集以及评价系统，深度估计算法可在该数据集上进行测试性能。2003年的数据集提供了Tsukuba, Venus, Teddy and Cones这几个场景的匹配对。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p44.png" width="1200px"></p>
+<h2 id="匹配问题"><a href="#匹配问题" class="headerlink" title="匹配问题"></a>匹配问题</h2><p>立体匹配的算法可以分成以下几个步骤：</p>
+<ol>
+<li>匹配量/损失计算</li>
+<li>损失聚合</li>
+<li>视差计算/优化</li>
+<li>视差精化</li>
+</ol>
+<ul>
+<li>局部算法包括：<br>1-&gt;2-&gt;3（简单的WTA算法）</li>
+<li>全局算法包括：<br>1（-&gt;2）-&gt;3（全局或者半全局算法）</li>
+</ul>
+<h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><p>数据预处理是为了消除图像的光度失真。常见的操作有：</p>
+<ul>
+<li>LoG滤波器<sup><a href="#fn_41" id="reffn_41">41</a></sup></li>
+<li>消减附近像素中计算的平均值<sup><a href="#fn_42" id="reffn_42">42</a></sup></li>
+<li>双边滤波</li>
+<li>统计变换</li>
+</ul>
+<p>最简单的立体匹配算法如下图所示，逐像素地计算SAD匹配损失；然后通过WTA得到初始视差，但是此时得到的视差质量是很差的。那么如何提高深度图像的质量呢？通常来说有两种不同类别的策略。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p47.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p48.png" width="1200px"></p>
+<ul>
+<li>局部算法。同样是利用到了简单的WTA提取到初始视差，但是通过计算窗口内的损失量提高了信噪比。有时需会加入平滑项。Steps 1+2 (+ WTA)<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p50.png" width="1200px"></li>
+<li>全局/半全局算法。寻找能够使得能量函数的最小值的视差以得到逐点视差。Steps 1+ Step3。（有时，损失函数需要聚合）</li>
+</ul>
+<p>两种算法都假设了匹配对是平滑的，但有时，该假设并不成立。这个假设在局部算法中隐晦地提及，却在全局算法中明确地建模，如下形式。</p>
+<script type="math/tex; mode=display">E(d)=E_{data}(d)+E_{smooth}(d)</script><h2 id="损失量的计算"><a href="#损失量的计算" class="headerlink" title="损失量的计算"></a>损失量的计算</h2><h3 id="逐像素的匹配误差"><a href="#逐像素的匹配误差" class="headerlink" title="逐像素的匹配误差"></a>逐像素的匹配误差</h3><ul>
+<li><p>绝对值误差</p>
+<script type="math/tex; mode=display">e(x,y,d)=|I_R(x,y)-I_T(x+d,y)|</script></li>
+<li><p>平方误差</p>
+<script type="math/tex; mode=display">e(x,y,d)=(I_R(x,y)-I_T(x+d,y))^2</script></li>
+<li><p>鲁棒匹配子（M-estimators）<br>如截断绝对误差（truncated absolute differences (TAD)）可以减少离群点的干扰：</p>
+<script type="math/tex; mode=display">e(x,y,d)=min\{|I_R(x,y)-I_T(x+d,y),T\}</script></li>
+<li><p>相异性测量对于图像噪声不敏感（Birchfield and Tomasi<sup><a href="#fn_27" id="reffn_27">27</a></sup>）</p>
+</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p52.png" width="1200px"><br>视差空间图像（DSI）是一个如下图所示张量$W\times H\times(d_{max}-d_{min})$，其中的每一个元素$C(x,y,d)$表示$I_R(x_R,y)$与$I_T(x_R+d,y)$之间的匹配度。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p53.png" width="1200px"></p>
+<h3 id="区域匹配损失"><a href="#区域匹配损失" class="headerlink" title="区域匹配损失"></a>区域匹配损失</h3><ul>
+<li>绝对误差和（Sum of Absolute differences (SAD)）<script type="math/tex; mode=display">C(x,y,d)=\sum_{x\in S}|I_R(x,y)-I_T(x+d,y)|</script></li>
+<li>绝对平方和（Sum of Squared differences (SSD)）<script type="math/tex; mode=display">C(x,y,d)=\sum_{x\in S}\left(I_R(x,y)-I_T(x+d,y)\right)^2</script></li>
+<li>截断绝对误差和（Sum of truncated absolute differences (STAD)）<script type="math/tex; mode=display">C(x,y,d)=\sum_{x\in S}\{|I_R(x,y)-I_T(x+d,y),T\}</script></li>
+<li>Normalized Cross Correlation <sup><a href="#fn_57" id="reffn_57">57</a></sup></li>
+<li>Zero mean Normalized Cross Correlation <sup><a href="#fn_58" id="reffn_58">58</a></sup></li>
+<li>Gradient based MF <sup><a href="#fn_59" id="reffn_59">59</a></sup></li>
+<li>Non parametric <sup><a href="#fn_60" id="reffn_60">60</a></sup> <sup><a href="#fn_61" id="reffn_61">61</a></sup></li>
+<li>Mutual Information <sup><a href="#fn_30" id="reffn_30">30</a></sup></li>
+<li>Combination of matching costs</li>
+</ul>
+<h2 id="损失聚合"><a href="#损失聚合" class="headerlink" title="损失聚合"></a>损失聚合</h2><p>那么从最简单的固定窗口（FW）损失聚合开始，以下为利用FW聚合的TAD损失然后利用WTA得到的深度图。理想是完美的，但现实是骨感的，可以看到下图给出的结果并不佳，这是什么原因呢？<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p57.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p58.png" width="1200px"><br>a. 隐含地假设前额表面处于同一视差<br>b. 忽略了深度的非连续性<br>c. 平坦区域的处理不佳<br>d. 重复的区域</p>
+<p>对于a. 隐含地假设前额表面处于同一视差，很多即使是当前最好的损失聚合算法也会假设：在一个小的支持域里面的所有点所处的视差是相同的。但实际情况并非如此，可以观察以上两图，人体头像模型的面部是不规则的表面，展现出来的是视差的不断变化；下面的图是桌子平面，它表面是倾斜的，同样表现出来的是视差的变化。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p59.png" width="1200px"></p>
+<p>对于b. 忽略了深度的非连续性，原本假设真实场景中的正面平行表面在支持域内深度不会变化，但是这个假设在深度不连续处的附近被打破。可以看到下图中在台灯灯罩的边界处出现了深度的间断，这样经过损失聚合之后得到的深度就会出现边界误匹配的现象，表现在图中为边界没有很好的对齐。不过利用TAD可以在一定程度上减少这种现象。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-1.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-2.png" width="1200px"></p>
+<p>目前最好的损失聚合算法都在想方设法地改变支持域的形状以适应在仅在相同的已知视差上做匹配。对于FW而言，就是减小其窗口大小，来减少边界定位问题。但是与此同时，这个改变使得匹配问题变得含糊不清，特别是对于有重复区域以及平滑区域的情形。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p61.png" width="1200px"></p>
+<p>对于c与d，FW并不能很好地处理。在这两种情况下，损失聚合算法应该不断地加大支持域的尺寸以获得更多的相同深度上的点。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p62.png" width="1200px"></p>
+<p>以上为FW所面对的诸多问题。令人吃惊的是，虽然FW看起来如此不堪一击，但是其应用却是如此广泛。原因可能有以下几点：</p>
+<ol>
+<li>容易实现；</li>
+<li>快！(特别感谢增量计算框架)；</li>
+<li>可以在传统的处理器上实时完成计算；</li>
+<li>仅需要很小的内存；</li>
+<li>可硬件（FPGA）实时实现，且功率小（&lt;1W）</li>
+</ol>
+<p>在介绍更加复杂的算法之前，我们首先介绍积分图像（Integral Images (II)）以及箱滤波（Box-Filtering (BF)）。</p>
+<h3 id="积分图像"><a href="#积分图像" class="headerlink" title="积分图像"></a>积分图像</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p64.png" width="1200px"></p>
+<h3 id="箱滤波器"><a href="#箱滤波器" class="headerlink" title="箱滤波器"></a>箱滤波器</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p65.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p66.png" width="1200px"></p>
+<p>可以总结出积分图与箱滤波器的关系：</p>
+<ol>
+<li>每个点需要4个运算</li>
+<li>积分图可以支持不同的支持域尺寸</li>
+<li>积分图有溢出风险</li>
+<li>积分图对内存消耗较大</li>
+</ol>
+<p>在实际应用当中，积分图对于可变支持域的情况会有帮助。</p>
+<h2 id="立体匹配中损失聚合策略的分类及评估"><a href="#立体匹配中损失聚合策略的分类及评估" class="headerlink" title="立体匹配中损失聚合策略的分类及评估"></a>立体匹配中损失聚合策略的分类及评估</h2><p>在文献<sup><a href="#fn_1" id="reffn_1">1</a></sup>中，作者实现、分类以及评估了超过10种损失聚合算法。这些损失聚合的策略包含几种方式：</p>
+<ul>
+<li>位置</li>
+<li>方向</li>
+<li>位置与方向</li>
+<li>权重</li>
+</ul>
+<p>接下来就对文中但不限于文中提到的诸多算法进行介绍 (i.e. Fast Aggregation <sup><a href="#fn_64" id="reffn_64">64</a></sup>, Fast Bilateral Stereo (FBS) <sup><a href="#fn_65" id="reffn_65">65</a></sup> and the Locally Consistent (LC) methodology <sup><a href="#fn_66" id="reffn_66">66</a></sup>)。</p>
+<h3 id="固定窗口"><a href="#固定窗口" class="headerlink" title="固定窗口"></a>固定窗口</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p87.png" width="1200px"></p>
+<h3 id="可移动窗口11"><a href="#可移动窗口11" class="headerlink" title="可移动窗口11"></a>可移动窗口<sup><a href="#fn_11" id="reffn_11">11</a></sup></h3><p>这种方法是为了应对场景边界定位问题，这种算法不限制当前位置位于支持域中心。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p88.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p89.png" width="1200px"></p>
+<h3 id="多窗口7"><a href="#多窗口7" class="headerlink" title="多窗口7"></a>多窗口<sup><a href="#fn_7" id="reffn_7">7</a></sup></h3><p>支持域内元素个数为常数；支持域的形状不限于为矩形；支持域大小可为5、9、25（5W,9W,25W）。下图所示的为9W：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p90.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p91.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p92.png" width="1200px"></p>
+<h3 id="可变窗口12"><a href="#可变窗口12" class="headerlink" title="可变窗口12"></a>可变窗口<sup><a href="#fn_12" id="reffn_12">12</a></sup></h3><p>这种方式，支持域的形状是固定的但是尺寸是变化的。支持域的位置是可变的。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p94.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p95.png" width="1200px"></p>
+<h3 id="基于分割的窗口5"><a href="#基于分割的窗口5" class="headerlink" title="基于分割的窗口5"></a>基于分割的窗口<sup><a href="#fn_5" id="reffn_5">5</a></sup></h3><p>这种方式根据图像的颜色相似性将其分割成一系列图像块，这对于损失聚合、深度图像优化以及离群点检测都有帮助。这种算法假设：每个分割块内深度平滑变化。由于涉及到图像分割此时要求分割的精度很高，并且分割后的每个支持域的形状也是不规则的。如下图所示，对于一个可允许的最大支持域范围内，包含支持域中心点所在的分割所覆盖支持域权重赋值为1，支持域的其余部分赋值为$\lambda$，其中$\lambda&lt;<1$。 <img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p98-1.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p98-2.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p99.png" width="1200px"></1$。></p>
+<h3 id="自适应加权14-51"><a href="#自适应加权14-51" class="headerlink" title="自适应加权14 51"></a>自适应加权<sup><a href="#fn_14" id="reffn_14">14</a></sup> <sup><a href="#fn_51" id="reffn_51">51</a></sup></h3><p>首先介绍双边滤波，双边滤波是一种边缘保持滤波器，它是根据图像的邻域的颜色以及空间相关性对每个中心点进行加权。类似于双边滤波，自适应加权对其进行了简化，只考虑颜色的相关性。每一个损失都被乘以了一个这样的权重可以得到$C(p_c,q_c)$。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p101.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p102.png" width="1200px"><br>以下是自适应加权的结果：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p103.png" width="1200px"></p>
+<h3 id="可分支持域10"><a href="#可分支持域10" class="headerlink" title="可分支持域10"></a>可分支持域<sup><a href="#fn_10" id="reffn_10">10</a></sup></h3><h3 id="快速聚合64"><a href="#快速聚合64" class="headerlink" title="快速聚合64"></a>快速聚合<sup><a href="#fn_64" id="reffn_64">64</a></sup></h3><ul>
+<li>假设：在每个分割块内的深度变化平缓；</li>
+<li>损失量：TAD；</li>
+<li>只对参考图像进行聚合；</li>
+<li>对称的支持域</li>
+<li>支持域覆盖整个分割块<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p109.png" width="1200px"><script type="math/tex; mode=display">C_{agg}(p,q,d)=\frac{C_S(p,q,d)}{|S_p|}+\frac{C_W(p,q,d)}{|r^2|}</script><script type="math/tex; mode=display">C_S(p,q,d)=\sum_{p_i \in S_p}{TAD(p_i,q_{i+d})}</script><script type="math/tex; mode=display">C_W(p,q,d)=\sum_{p_i \in W_p}{TAD(p_i,q_{i+d})}</script>其中$C_W$为了消除“分割锁定”，这一项可能在纹理稠密的区域很有帮助，但是这一项有可能带来深度的不连续性。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p111.png" width="1200px"></li>
+</ul>
+<h3 id="快速双边滤波65"><a href="#快速双边滤波65" class="headerlink" title="快速双边滤波65"></a><a href="http://vision.deis.unibo.it/~smatt/fast_bilateral_stereo.htm" target="_blank" rel="noopener">快速双边滤波</a><sup><a href="#fn_65" id="reffn_65">65</a></sup></h3><p>该方法兼顾了自适应加权的精度以及传统方法的效率。通过逐块的利用双边滤波对损失进行规范化，通过这种方式可以增加对噪声的鲁棒性。可以利用前面提及的积分图或者箱滤波的方式快速计算。由于双边滤波的局部计算特性，可以利用GPU进行加速，<a href="http://vision.deis.unibo.it/~smatt/FBS_GPU.html" target="_blank" rel="noopener">GPU加速版本</a>。结果如下所示：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p115.png" width="1200px"></p>
+<h3 id="局部一致性"><a href="#局部一致性" class="headerlink" title="局部一致性"></a><a href="http://vision.deis.unibo.it/~smatt/lc_stereo.htm" target="_blank" rel="noopener">局部一致性</a></h3><p>通过对像素之间的一致性约束进行建模寻找像素之间的相关关系，这种方法对于目前最好的方法具有显著的效果提升。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p122.png" width="1200px"></p>
+<h3 id="O-1-adaptive-cost-aggregation75"><a href="#O-1-adaptive-cost-aggregation75" class="headerlink" title="O(1) adaptive cost aggregation75"></a>O(1) adaptive cost aggregation<sup><a href="#fn_75" id="reffn_75">75</a></sup></h3><p>该方法受引导滤波的启发，效果还不错，可与最佳效果相媲美。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p127.png" width="1200px"></p>
+<h2 id="视差-深度计算以及优化"><a href="#视差-深度计算以及优化" class="headerlink" title="视差/深度计算以及优化"></a>视差/深度计算以及优化</h2><p>该步骤是为了寻找可最小化损失函数的视差（或者得到DSI图像的最佳路径以最小化能量函数）。通常情况下，能量函数可以表示为以下形式</p>
+<script type="math/tex; mode=display">E(d)=E_{data}(d)+E_{smooth}(d)</script><p>其中的数据项$E_{data}(d)$为了衡量目前假定的视差能够以何等程度接近真实视差。目前已经有不少逐像素的损失构造策略，但是目前也涌现了许多基于支持域的数据项。<br>另外一项是平滑项或者叫做正则项$E_{smooth}(d)$，它可以对像素之间的连续性或者相似性进行约束：这一项对大的视差给予大的惩罚，同时对于边界处的大视差变化以及小的惩罚。也就是说，视差的变化在边界处是被允许的。</p>
+<p>以上模型的求解是个NP-hard问题，在这里可以借助几种常用的策略对其进行求解。</p>
+<ul>
+<li>Graph Cuts <sup><a href="#fn_52" id="reffn_52">52</a></sup></li>
+<li>Belief Propagation <sup><a href="#fn_53" id="reffn_53">53</a></sup></li>
+<li>Cooperative optimization <sup><a href="#fn_54" id="reffn_54">54</a></sup></li>
+</ul>
+<p>这些方法的比较在[63]中进行了详述。有意思的是，上述问题的解决可以由动态规划以及扫描线优化来解决。</p>
+<h3 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h3><ul>
+<li>高效 (polynomial time) ≈ 1 sec</li>
+<li>边界以及纹理稀疏区域有所帮助</li>
+<li>条带现象<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p135.png" width="1200px"></li>
+</ul>
+<h3 id="扫描线优化（Scanline-Optimization，SO30）"><a href="#扫描线优化（Scanline-Optimization，SO30）" class="headerlink" title="扫描线优化（Scanline Optimization，SO30）"></a>扫描线优化（Scanline Optimization，SO<sup><a href="#fn_30" id="reffn_30">30</a></sup>）</h3><ul>
+<li>高效 (polynomial time) ≈ few seconds</li>
+<li>边界以及纹理稀疏区域有所帮助</li>
+<li>条带现象</li>
+<li>高内存消耗<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p139.png" width="1200px"></li>
+</ul>
+<h2 id="视差精化"><a href="#视差精化" class="headerlink" title="视差精化"></a>视差精化</h2><p>原始视差中包含的离群点需要被检测以及被移除；同时，视差是离散的数据点，有时需要更高的精度；以下将会介绍亚像素插值、图像滤波、双向验证。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p166.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p167.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p168.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p169.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p170.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p181.png" width="1200px"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p183.png" width="1200px"></p>
+<font color="F08080" size="5">未完待续...</font>
+
+<p><strong>注：</strong>特此感谢Stefano Mattoccia给出如此良心的立体视觉综述，<a href="http://www.vision.deis.unibo.it/smatt/Seminars/StereoVision.pdf" target="_blank" rel="noopener">本文最新版本在此</a>(速度较慢)或者<a href="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/StereoVision.pdf" target="_blank" rel="noopener">这里</a>(较快，大小51.61M)。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote id="fn_1">
+<sup>1</sup>. F. Tombari, S. Mattoccia, L. Di Stefano, E. Addimanda, Classification and evaluation of cost aggregation methods for stereo correspondence, IEEE International Conference on Computer Vision and Pattern Recognition (CVPR 2008)<a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_2">
+<sup>2</sup>. Y. Boykov, O. Veksler, and R. Zabih, A variable window approach to early vision IEEE Trans. PAMI, 20(12):1283–1294, 1998<a href="#reffn_2" title="Jump back to footnote [2] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_3">
+<sup>3</sup>. S. Chan, Y. Wong, and J. Daniel, Dense stereo correspondence based on recursive adaptive size multi-windowing In Proc. Image and Vision Computing New Zealand (IVCNZ’03), volume 1, pages 256–260, 2003<a href="#reffn_3" title="Jump back to footnote [3] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_4">
+<sup>4</sup>. C. Demoulin and M. Van Droogenbroeck, A method based on multiple adaptive windows to improve the determination of disparity maps. In Proc. IEEE Workshop on Circuit, Systems and Signal Processing, pages 615–618, 2005<a href="#reffn_4" title="Jump back to footnote [4] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_5">
+<sup>5</sup>. M. Gerrits and P. Bekaert. Local Stereo Matching with Segmentation-based Outlier Rejection In Proc. Canadian Conf. on Computer and Robot Vision (CRV 2006), pages 66-66, 2006.<a href="#reffn_5" title="Jump back to footnote [5] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_6">
+<sup>6</sup>. M. Gong and R. Yang. Image-gradient-guided real-time stereo on graphics hardware In Proc. Int. Conf. 3D Digital Imaging and Modeling (3DIM), pages 548–555, 2005<a href="#reffn_6" title="Jump back to footnote [6] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_7">
+<sup>7</sup>. H. Hirschmuller, P. Innocent, and J. Garibaldi, Real-time correlation-based stereo vision with reduced border errors Int. Journ. of Computer Vision, 47:1–3, 2002<a href="#reffn_7" title="Jump back to footnote [7] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_8">
+<sup>8</sup>. S. Kang, R. Szeliski, and J. Chai, Handling occlusions in dense multi-view stereo In Proc. Conf. on Computer Vision and Pattern Recognition (CVPR 2001), pages 103–110, 2001<a href="#reffn_8" title="Jump back to footnote [8] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_9">
+<sup>9</sup>. J. Kim, K. Lee, B. Choi, and S. Lee. A dense stereo matching using two-pass dynamic programming with generalized ground control points, In Proc. Conf. on Computer Vision and Pattern Recognition (CVPR 2005), pages 1075–1082, 2005<a href="#reffn_9" title="Jump back to footnote [9] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_10">
+<sup>10</sup>. F. Tombari, S. Mattoccia, and L. Di Stefano, Segmentation-based adaptive support for accurate stereo correspondence PSIVT 2007<a href="#reffn_10" title="Jump back to footnote [10] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_11">
+<sup>11</sup>. D. Scharstein and R. Szeliski, A taxonomy and evaluation of dense two-frame stereo correspondence algorithms Int. Jour. Computer Vision, 47(1/2/3):7–42, 2002.<a href="#reffn_11" title="Jump back to footnote [11] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_12">
+<sup>12</sup>. O. Veksler. Fast variable window for stereo correspondence using integral images, In Proc. Conf. on Computer Vision and Pattern Recognition (CVPR 2003), pages 556–561, 2003<a href="#reffn_12" title="Jump back to footnote [12] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_13">
+<sup>13</sup>. Y. Xu, D. Wang, T. Feng, and H. Shum, Stereo computation using radial adaptive windows, In Proc. Int. Conf. on Pattern Recognition (ICPR 2002), volume 3, pages 595–598, 2002<a href="#reffn_13" title="Jump back to footnote [13] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_14">
+<sup>14</sup>. K. Yoon and I. Kweon, Adaptive support-weight approach for correspondence search, IEEE Trans. PAMI, 28(4):650–656,2006<a href="#reffn_14" title="Jump back to footnote [14] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_15">
+<sup>15</sup>. D. Scharstein and R. Szeliski, <a href="http://vision.middlebury.edu/stereo/eval/" target="_blank" rel="noopener">http://vision.middlebury.edu/stereo/eval/</a><a href="#reffn_15" title="Jump back to footnote [15] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_16">
+<sup>16</sup>. A. Ansar, A. Castano, L. Matthies, Enhanced real-time stereo using bilateral filtering IEEE Conference on Computer Vision and Pattern Recognition 2004<a href="#reffn_16" title="Jump back to footnote [16] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_17">
+<sup>17</sup>. D. Scharstein and R. Szeliski, 􀀃High-accuracy stereo depth maps using structured light. In IEEE Conference on Computer Vision and Pattern Recognition (CVPR 2003), volume 1, pages 195-202<a href="#reffn_17" title="Jump back to footnote [17] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_18">
+<sup>18</sup>. D. Scharstein and C. Pal. Learning conditional random fields for stereo.In IEEE Conference on Computer Vision and Pattern Recognition (CVPR 2007)<a href="#reffn_18" title="Jump back to footnote [18] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_19">
+<sup>19</sup>. H. Hirschmüller and D. Scharstein. Evaluation of cost functions for stereo matching.In IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR 2007)<a href="#reffn_19" title="Jump back to footnote [19] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_20">
+<sup>20</sup>. E. Trucco, A. Verri, Introductory Techniques for 3-D Computer Vision, Prentice Hall, 1998<a href="#reffn_20" title="Jump back to footnote [20] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_21">
+<sup>21</sup>. R.I.Hartley, A. Zisserman, Multiple View Geometry in Computer Vision, Cambridge University Press, 2000<a href="#reffn_21" title="Jump back to footnote [21] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_22">
+<sup>22</sup>. G. Bradsky, A. Kaehler, Learning Opencv, O’Reilly, 2008<a href="#reffn_22" title="Jump back to footnote [22] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_23">
+<sup>23</sup>. OpenCV Computer Vision Library, <a href="http://sourceforge.net/projects/opencvlibrary/" target="_blank" rel="noopener">http://sourceforge.net/projects/opencvlibrary/</a><a href="#reffn_23" title="Jump back to footnote [23] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_24">
+<sup>24</sup>. Jean-Yves Bouguet , Camera Calibration Toolbox for Matlab, <a href="http://www.vision.caltech.edu/bouguetj/calib_doc/" target="_blank" rel="noopener">http://www.vision.caltech.edu/bouguetj/calib_doc/</a><a href="#reffn_24" title="Jump back to footnote [24] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_25">
+<sup>25</sup>. M. A. Fischler and R. C. Bolles, Random Sample Consensus: A Paradigm for Model Fitting with Applications to Image Analysis and Automated Cartography, Comm. of the ACM 24: 381–395, June 1981<a href="#reffn_25" title="Jump back to footnote [25] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_26">
+<sup>26</sup>. Z. Wang and Z. Zheng, A region based stereo matching algorithm using cooperative optimization IEEE CVPR 2008<a href="#reffn_26" title="Jump back to footnote [26] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_27">
+<sup>27</sup>. S. Birchfield and C. Tomasi. A pixel dissimilarity measure that is insensitive to image sampling. IEEE Transactions on Pattern Analysis and Machine Intelligence, 20(4):401-406, April 1998<a href="#reffn_27" title="Jump back to footnote [27] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_28">
+<sup>28</sup>. J. Zabih, J. Woodfill, Non-parametric local transforms for computing visual correspondence. European Conf. on Computer Vision, Stockholm, Sweden, 151–158<a href="#reffn_28" title="Jump back to footnote [28] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_29">
+<sup>29</sup>. S. Mattoccia, F. Tombari, and L. Di Stefano, Stereo vision enabling precise border localization within a scanline optimization framework, ACCV 2007<a href="#reffn_29" title="Jump back to footnote [29] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_30">
+<sup>30</sup>. H. Hirschmüller. Stereo vision in structured environments by consistent semi-global matching. CVPR 2006, PAMI 30(2):328-341, 2008<a href="#reffn_30" title="Jump back to footnote [30] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_31">
+<sup>31</sup>. F. Tombari, S. Mattoccia, L. Di Stefano, F. Tonelli, Detecting motion by means of 2D and 3D information ACCV’07 Workshop on Multi-dimensional and Multi-view Image Processing (ACCV 2007 WS)<a href="#reffn_31" title="Jump back to footnote [31] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_32">
+<sup>32</sup>. P. Azzari, L. Di Stefano, F. Tombari, S. Mattoccia, Markerless augmented reality using image mosaics International Conference on Image and Signal Processing (ICISP 2008)<a href="#reffn_32" title="Jump back to footnote [32] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_33">
+<sup>33</sup>. Li Zhang, Brian Curless, and Steven M. Seitz Spacetime Stereo: Shape Recovery for Dynamic Scenes IEEE Computer Society Conference on Computer Vision and Pattern Recognition (CVPR 2003), pp. 367-374<a href="#reffn_33" title="Jump back to footnote [33] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_34">
+<sup>34</sup>. J. Davis, D. Nehab, R. Ramamoothi, S. Rusinkiewicz. Spacetime Stereo : A Unifying Framework for Depth from Triangulation, IEEE Trans. On Pattern Analysis and Machine Intelligence (PAMI), vol. 27, no. 2, Feb 2005<a href="#reffn_34" title="Jump back to footnote [34] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_35">
+<sup>35</sup>. F. Tombari, L. Di Stefano, S. Mattoccia, A. Zanetti, Graffiti detection using a Time-Of-Flight camera Advanced Concepts for Intelligent Vision Systems (ACIVS 2008)<a href="#reffn_35" title="Jump back to footnote [35] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_36">
+<sup>36</sup>. L. Di Stefano, F. Tombari, A. Lanza, S. Mattoccia, S. Monti, Graffiti detection using two views ECCV 2008 - 8th International Workshop on Visual Surveillance (VS 2008)<a href="#reffn_36" title="Jump back to footnote [36] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_37">
+<sup>37</sup>. T. Darrell, D. Demirdijan, N. Checka, P. Felzenszwalb, Plan-view trajectory estimation with dense stereo background models, International Conference on Computer Vision (ICCV 2001), 2001<a href="#reffn_37" title="Jump back to footnote [37] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_38">
+<sup>38</sup>. M. Harville, Stereo person tracking with adaptive plan-view templates of height and occupancy statistics Image and Vision Computing 22(2) pp 127-142, February 2004<a href="#reffn_38" title="Jump back to footnote [38] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_39">
+<sup>39</sup>. OpenCV Computer Vision Library, <a href="http://sourceforge.net/projects/opencvlibrary/" target="_blank" rel="noopener">http://sourceforge.net/projects/opencvlibrary/</a><a href="#reffn_39" title="Jump back to footnote [39] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_40">
+<sup>40</sup>. Jean-Yves Bouguet , Camera Calibration Toolbox for Matlab, <a href="http://www.vision.caltech.edu/bouguetj/calib_doc/" target="_blank" rel="noopener">http://www.vision.caltech.edu/bouguetj/calib_doc/</a><a href="#reffn_40" title="Jump back to footnote [40] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_41">
+<sup>41</sup>. T. Kanade, H. Kato, S. Kimura, A. Yoshida, and K. Oda, Development of a Video-Rate Stereo Machine International Robotics and Systems Conference (IROS ‘95), Human Robot Interaction and Cooperative Robots, 1995<a href="#reffn_41" title="Jump back to footnote [41] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_42">
+<sup>42</sup>. O. Faugeras, B. Hotz, H. Mathieu, T. Viville, Z. Zhang, P. Fua, E. Thron, L. Moll, G. Berry, Real-time correlation-based stereo: Algorithm. Implementation and Applications, INRIA TR n. 2013, 1993<a href="#reffn_42" title="Jump back to footnote [42] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_43">
+<sup>43</sup>. F. Crow, Summed-area tables for texture mapping, Computer Graphics, 18(3):207–212, 1984<a href="#reffn_43" title="Jump back to footnote [43] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_44">
+<sup>44</sup>. M. Mc Donnel. Box-filtering techniques, Computer Graphics and Image Processing, 17:65–70, 1981<a href="#reffn_44" title="Jump back to footnote [44] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_45">
+<sup>45</sup>. A. Goshtasby, 2-D and 3-D Image Registration for Medical, Remote Sensing and Industrial Applications New York: Wiley, 2005<a href="#reffn_45" title="Jump back to footnote [45] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_46">
+<sup>46</sup>. B. Zitova and J. Flusser, Image registration methods:A survey, Image Vision Computing, vol. 21, no. 11, pp. 977–1000, 2003<a href="#reffn_46" title="Jump back to footnote [46] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_47">
+<sup>47</sup>. Changming Sun, Recursive Algorithms for Diamond, Hexagon and General Polygonal Shaped Window Operations Pattern Recognition Letters, 27(6):556-566, April 2006<a href="#reffn_47" title="Jump back to footnote [47] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_48">
+<sup>48</sup>. L. Di Stefano, M. Marchionni, S. Mattoccia, A fast area-based stereo matching algorithm, Image and Vision Computing, 22(12), pp 983-1005, October 2004<a href="#reffn_48" title="Jump back to footnote [48] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_49">
+<sup>49</sup>. L. Di Stefano, M. Marchionni, S. Mattoccia, A PC-based real-time stereo vision system, Machine Graphics &amp; Vision, 13(3), pp. 197-220, January 2004<a href="#reffn_49" title="Jump back to footnote [49] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_50">
+<sup>50</sup>. D. Comaniciu and P. Meer, Mean shift: A robust approach toward feature space analysis, IEEE Transactions on Pattern Analysis and Machine Intelligence, 24:603–619, 2002<a href="#reffn_50" title="Jump back to footnote [50] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_51">
+<sup>51</sup>. C. Tomasi and R. Manduchi. Bilateral filtering for gray and color images. In ICCV98, pages 839–846, 1998<a href="#reffn_51" title="Jump back to footnote [51] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_52">
+<sup>52</sup>. V. Kolmogorov and R. Zabih, Computing visual correspondence with occlusions using graph cuts, ICCV 2001<a href="#reffn_52" title="Jump back to footnote [52] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_53">
+<sup>53</sup>. A. Klaus, M. Sormann and K. Karner, Segment-based stereo matching using belief propagation and a self-adapting dissimilarity measure, ICPR 2006<a href="#reffn_53" title="Jump back to footnote [53] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_54">
+<sup>54</sup>. Z. Wang and Z. Zheng, A region based stereo matching algorithm using cooperative optimization, CVPR 2008<a href="#reffn_54" title="Jump back to footnote [54] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_55">
+<sup>55</sup>. L. Di Stefano, S. Mattoccia, Real-time stereo within the VIDET project Real-Time Imaging, 8(5), pp. 439-453, Oct. 2002<a href="#reffn_55" title="Jump back to footnote [55] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_56">
+<sup>56</sup>. F. Tombari, S. Mattoccia, L. Di Stefano, Full search-equivalent pattern matching with Incremental Dissimilarity Approximations, IEEE Transactions on Pattern Analysis and Machine Intelligence, 31(1), pp 129-141, January 2009<a href="#reffn_56" title="Jump back to footnote [56] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_57">
+<sup>57</sup>. S. Mattoccia, F. Tombari, L. Di Stefano, Fast full-search equivalent template matching by Enhanced Bounded Correlation, IEEE Transactions on Image Processing, 17(4), pp 528-538, April 2008<a href="#reffn_57" title="Jump back to footnote [57] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_58">
+<sup>58</sup>. L. Di Stefano, S. Mattoccia, F. Tombari, ZNCC-based template matching using Bounded Partial Correlation Pattern Recognition Letters, 16(14), pp 2129-2134, October 2005<a href="#reffn_58" title="Jump back to footnote [58] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_59">
+<sup>59</sup>. F. Tombari, L. Di Stefano, S. Mattoccia, A. Galanti, Performance evaluation of robust matching measures 3rd International Conference on Computer Vision Theory and Applications (VISAPP 2008)<a href="#reffn_59" title="Jump back to footnote [59] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_60">
+<sup>60</sup>. R. Zabih, J John Woodll Non-parametric Local Transforms for Computing Visual Correspondence, ECCV 1994<a href="#reffn_60" title="Jump back to footnote [60] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_61">
+<sup>61</sup>. D. N. Bhat, S. K. Nayar, Ordinal measures for visual correspondence, CVPR 1996<a href="#reffn_61" title="Jump back to footnote [61] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_62">
+<sup>62</sup>. D. G. Lowe, Distinctive image features from scale-invariant keypoints, International Journal of Computer Vision, 60, 2 (2004), pp. 91-110<a href="#reffn_62" title="Jump back to footnote [62] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_63">
+<sup>63</sup>. R.Szeliski, R. Zabih, D. Scharstein, O. Veksler, V. Kolmogorov, A. Agarwala, M. Tappen, C. Rother, A Comparative Study of Energy Minimization Methods for Markov Random Fields with Smoothness-Based Priors, IEEE Transactions on Pattern Analysis and Machine Intelligence, 30, 6, June 2008, pp 1068-1080<a href="#reffn_63" title="Jump back to footnote [63] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_64">
+<sup>64</sup>. F. Tombari, S. Mattoccia, L. Di Stefano, E. Addimanda, Near real-time stereo based on effective cost aggregation International Conference on Pattern Recognition (ICPR 2008)<a href="#reffn_64" title="Jump back to footnote [64] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_65">
+<sup>65</sup>. S. Mattoccia, S. Giardino,A. Gambini, Accurate and efficient cost aggregation strategy for stereo correspondence based on approximated joint bilateral filtering, Asian Conference on Computer Vision (ACCV 2009), September 23-27 2009, Xiang, China<a href="#reffn_65" title="Jump back to footnote [65] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_66">
+<sup>66</sup>. S. Mattoccia, A locally global approach to stereo correspondence, 3D Digital Imaging and Modeling (3DIM 2009), pp 1763-1770, October 3-4, 2009, Kyoto, Japan<a href="#reffn_66" title="Jump back to footnote [66] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_67">
+<sup>67</sup>. S. Mattoccia, Improving the accuracy of fast dense stereo correspondence algorithms by enforcing local consistency of disparity fields, 3D Data Processing, Visualization, and Transmission (3DPVT 2010), 17-20 May 2010, Paris, France<a href="#reffn_67" title="Jump back to footnote [67] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_68">
+<sup>68</sup>. S. Mattoccia, Fast locally consistent dense stereo on multicore, Sixth IEEE Embedded Computer Vision Workshop (ECVW2010), CVPR workshop, June 13, 2010, San Francisco, USA<a href="#reffn_68" title="Jump back to footnote [68] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_69">
+<sup>69</sup>. S. Mattoccia, Accurate dense stereo by constraining local consistency on superpixels, 20th International Conference on Pattern Recognition (ICPR2010), August 23-26, 2010, Istanbul, Turkey<a href="#reffn_69" title="Jump back to footnote [69] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_70">
+<sup>70</sup>. L. Wang, M. Liao, M. Gong, R. Yang, and D. Nistér. High-quality real-time stereo using adaptive cost aggregation and dynamic programming. 3DPVT 2006<a href="#reffn_70" title="Jump back to footnote [70] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_71">
+<sup>71</sup>. S. Mattoccia, M. Viti, F. Ries,. Near real-time Fast Bilateral Stereo on the GPU, 7th IEEE Workshop on Embedded Computer Vision (ECVW20011), CVPR Workshop, June 20, 2011, Colorado Springs (CO), USA<a href="#reffn_71" title="Jump back to footnote [71] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_72">
+<sup>72</sup>. S. Mattoccia, L. De-Maeztu, “A fast segmentation-driven algorithm for stereo correspondence”, International Conference on 3D (IC3D 2011), December 7-8, 2011, Liege, Belgium<a href="#reffn_72" title="Jump back to footnote [72] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_73">
+<sup>73</sup>. L. De-Maeztu, S. Mattoccia, A. Villanueva, R. Cabeza, “Efficient aggregation via iterative block-based adapting support weight”,International Conference on 3D (IC3D 2011), December 7-8, 2011, Liege, Belgium<a href="#reffn_73" title="Jump back to footnote [73] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_74">
+<sup>74</sup>. D. Min, J. Lu, and M. Do, A revisit to cost aggregation in stereo matching: how far can we reduce its computational redundancy?, ICCV 2011<a href="#reffn_74" title="Jump back to footnote [74] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_75">
+<sup>75</sup>. L. De-Maeztu, S. Mattoccia, A. Villanueva, R. Cabeza, “Linear stereo matching”, International Conference on Computer Vision (ICCV 2011), November 6-13, 2011, Barcelona, Spain<a href="#reffn_75" title="Jump back to footnote [75] in the text."> &#8617;</a>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/stereo-vision-overview/" title="立体视觉综述：Stereo Vision Overview">https://www.vincentqin.tech/posts/stereo-vision-overview/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
+            
+              <a href="/tags/stereo-matching/" rel="tag"># stereo matching</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/lytro-light-field/" rel="next" title="Lytro的光场AR之路：从巅峰到死亡">
+                  <i class="fa fa-chevron-left"></i> Lytro的光场AR之路：从巅峰到死亡
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/cv-books/" rel="prev" title="CV Related References">
+                  CV Related References <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是立体视觉"><span class="nav-number">1.</span> <span class="nav-text">什么是立体视觉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单目相机"><span class="nav-number">2.</span> <span class="nav-text">单目相机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#双目相机"><span class="nav-number">3.</span> <span class="nav-text">双目相机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#极线约束-对极几何"><span class="nav-number">3.1.</span> <span class="nav-text">极线约束(对极几何)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度与视差"><span class="nav-number">3.2.</span> <span class="nav-text">深度与视差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视界"><span class="nav-number">3.3.</span> <span class="nav-text">视界</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深度估计"><span class="nav-number">4.</span> <span class="nav-text">深度估计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#离线标定"><span class="nav-number">4.1.</span> <span class="nav-text">离线标定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#匹配矫正"><span class="nav-number">4.2.</span> <span class="nav-text">匹配矫正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#立体匹配"><span class="nav-number">4.3.</span> <span class="nav-text">立体匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三角测量"><span class="nav-number">4.4.</span> <span class="nav-text">三角测量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#立体匹配的挑战性"><span class="nav-number">5.</span> <span class="nav-text">立体匹配的挑战性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#光度失真以及噪声"><span class="nav-number">5.1.</span> <span class="nav-text">光度失真以及噪声</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高光表面"><span class="nav-number">5.2.</span> <span class="nav-text">高光表面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透视收缩"><span class="nav-number">5.3.</span> <span class="nav-text">透视收缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透视变形"><span class="nav-number">5.4.</span> <span class="nav-text">透视变形</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无纹理区域"><span class="nav-number">5.5.</span> <span class="nav-text">无纹理区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重复-混淆区域"><span class="nav-number">5.6.</span> <span class="nav-text">重复/混淆区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#透明物体"><span class="nav-number">5.7.</span> <span class="nav-text">透明物体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遮挡区以及不连续区域（1）"><span class="nav-number">5.8.</span> <span class="nav-text">遮挡区以及不连续区域（1）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遮挡区以及不连续区域（2）"><span class="nav-number">5.9.</span> <span class="nav-text">遮挡区以及不连续区域（2）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Middlebury数据集"><span class="nav-number">6.</span> <span class="nav-text">Middlebury数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匹配问题"><span class="nav-number">7.</span> <span class="nav-text">匹配问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据预处理"><span class="nav-number">7.1.</span> <span class="nav-text">数据预处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失量的计算"><span class="nav-number">8.</span> <span class="nav-text">损失量的计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#逐像素的匹配误差"><span class="nav-number">8.1.</span> <span class="nav-text">逐像素的匹配误差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区域匹配损失"><span class="nav-number">8.2.</span> <span class="nav-text">区域匹配损失</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失聚合"><span class="nav-number">9.</span> <span class="nav-text">损失聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#积分图像"><span class="nav-number">9.1.</span> <span class="nav-text">积分图像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#箱滤波器"><span class="nav-number">9.2.</span> <span class="nav-text">箱滤波器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#立体匹配中损失聚合策略的分类及评估"><span class="nav-number">10.</span> <span class="nav-text">立体匹配中损失聚合策略的分类及评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#固定窗口"><span class="nav-number">10.1.</span> <span class="nav-text">固定窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可移动窗口11"><span class="nav-number">10.2.</span> <span class="nav-text">可移动窗口11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多窗口7"><span class="nav-number">10.3.</span> <span class="nav-text">多窗口7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可变窗口12"><span class="nav-number">10.4.</span> <span class="nav-text">可变窗口12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于分割的窗口5"><span class="nav-number">10.5.</span> <span class="nav-text">基于分割的窗口5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自适应加权14-51"><span class="nav-number">10.6.</span> <span class="nav-text">自适应加权14 51</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可分支持域10"><span class="nav-number">10.7.</span> <span class="nav-text">可分支持域10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速聚合64"><span class="nav-number">10.8.</span> <span class="nav-text">快速聚合64</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速双边滤波65"><span class="nav-number">10.9.</span> <span class="nav-text">快速双边滤波65</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部一致性"><span class="nav-number">10.10.</span> <span class="nav-text">局部一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#O-1-adaptive-cost-aggregation75"><span class="nav-number">10.11.</span> <span class="nav-text">O(1) adaptive cost aggregation75</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视差-深度计算以及优化"><span class="nav-number">11.</span> <span class="nav-text">视差/深度计算以及优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态规划"><span class="nav-number">11.1.</span> <span class="nav-text">动态规划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扫描线优化（Scanline-Optimization，SO30）"><span class="nav-number">11.2.</span> <span class="nav-text">扫描线优化（Scanline Optimization，SO30）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#视差精化"><span class="nav-number">12.</span> <span class="nav-text">视差精化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">13.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

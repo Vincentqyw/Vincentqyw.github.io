@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近对深度学习尤其着迷，是时候用万能的Matlab去践行我的DL学习之路了。之所以用Matlab，是因为Matlab真的太强大了！自从大学开始我就一直用这个神奇的软件，算是最熟悉的编程工具。加上最近mathworks公司一大波大佬的不懈努力，在今年下半年发行的R2017b版本中又加入了诸多新颖的特性，尤其在DL方面，可以发现：仅仅几条简单的代码，就能够实现复杂的功能。基">
+<meta name="keywords" content="Deep Learning,Matlab,CNN,CIFAR10">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matlab Deep Learning学习笔记">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/Matlab-Deep-Learning/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="最近对深度学习尤其着迷，是时候用万能的Matlab去践行我的DL学习之路了。之所以用Matlab，是因为Matlab真的太强大了！自从大学开始我就一直用这个神奇的软件，算是最熟悉的编程工具。加上最近mathworks公司一大波大佬的不懈努力，在今年下半年发行的R2017b版本中又加入了诸多新颖的特性，尤其在DL方面，可以发现：仅仅几条简单的代码，就能够实现复杂的功能。基">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-fig.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/63361958.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/weight-layer2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/weight-inf.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-images.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-weight-layer2.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/resnet34.png">
+<meta property="og:updated_time" content="2018-12-10T14:45:22.814Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Matlab Deep Learning学习笔记">
+<meta name="twitter:description" content="最近对深度学习尤其着迷，是时候用万能的Matlab去践行我的DL学习之路了。之所以用Matlab，是因为Matlab真的太强大了！自从大学开始我就一直用这个神奇的软件，算是最熟悉的编程工具。加上最近mathworks公司一大波大佬的不懈努力，在今年下半年发行的R2017b版本中又加入了诸多新颖的特性，尤其在DL方面，可以发现：仅仅几条简单的代码，就能够实现复杂的功能。基">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-fig.jpg">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/Matlab-Deep-Learning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Matlab Deep Learning学习笔记 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/Matlab-Deep-Learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Matlab Deep Learning学习笔记
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-11-19 01:22:40" itemprop="dateCreated datePublished" datetime="2017-11-19T01:22:40+08:00">2017-11-19</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-12-10 22:45:22" itemprop="dateModified" datetime="2018-12-10T22:45:22+08:00">2018-12-10</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/Matlab-Deep-Learning/" class="post-meta-item leancloud_visitors" data-flag-title="Matlab Deep Learning学习笔记" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/Matlab-Deep-Learning/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/Matlab-Deep-Learning/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-fig.jpg" alt></p>
+<div class="note ">
+            <p>最近对深度学习尤其着迷，是时候用万能的Matlab去践行我的DL学习之路了。之所以用Matlab，是因为Matlab真的太强大了！自从大学开始我就一直用这个神奇的软件，算是最熟悉的编程工具。加上最近mathworks公司一大波大佬的不懈努力，在今年下半年发行的R2017b版本中又加入了诸多新颖的<a href="https://cn.mathworks.com/products/new_products/latest_features.html?s_tid=hp_release_2017b&amp;from=timeline&amp;isappinstalled=0" target="_blank" rel="noopener">特性</a>，尤其在<a href="https://cn.mathworks.com/solutions/deep-learning.html" target="_blank" rel="noopener">DL</a>方面，可以发现：仅仅几条简单的代码，就能够实现复杂的功能。基于以上，我在本文列举了几个在Matlab上学习Deep Learning的例子：1. <a href="#example1">手写字符识别</a>；2. <a href="#example2">搭建网络对CIFAR10分类</a>；3.<a href="#example3">搭建一个Resnet</a>。务必保证主机已经安装Matlab 2017a及以上。</p>
+          </div>
+<a id="more"></a>
+<h2 id="手写字符识别"><a href="#手写字符识别" class="headerlink" title="手写字符识别"></a><span id="example1">手写字符识别</span></h2><p>利用CNN做数字分类实验。</p>
+<p>接下来的实验会阐明如何进行：</p>
+<ul>
+<li>加载图像数据</li>
+<li>设计网络结构</li>
+<li>设置网络训练参数</li>
+<li>训练网络</li>
+<li>预测新数据的类别</li>
+</ul>
+<h3 id="加载图像数据"><a href="#加载图像数据" class="headerlink" title="加载图像数据"></a>加载图像数据</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">digitDatasetPath = fullfile(matlabroot,<span class="string">'toolbox'</span>,<span class="string">'nnet'</span>,<span class="string">'nndemos'</span>,...</span><br><span class="line">    <span class="string">'nndatasets'</span>,<span class="string">'DigitDataset'</span>);</span><br><span class="line"><span class="comment">% imageDatastore函数 能够通过文件夹名自动地把数据存储成ImageDatastore 对象</span></span><br><span class="line">digitData = imageDatastore(digitDatasetPath,...</span><br><span class="line">    <span class="string">'IncludeSubfolders'</span>,<span class="built_in">true</span>,<span class="string">'LabelSource'</span>,<span class="string">'foldernames'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% Display some of the images in the datastore.</span></span><br><span class="line"><span class="built_in">figure</span>;</span><br><span class="line">perm = randperm(<span class="number">10000</span>,<span class="number">25</span>);</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="number">25</span></span><br><span class="line">    subplot(<span class="number">5</span>,<span class="number">5</span>,<span class="built_in">i</span>);</span><br><span class="line">    imshow(digitData.Files&#123;perm(<span class="built_in">i</span>)&#125;);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>以下是手写字符的部分数据：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/63361958.png" alt></p>
+<h3 id="创建训练集与验证集"><a href="#创建训练集与验证集" class="headerlink" title="创建训练集与验证集"></a>创建训练集与验证集</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">trainNumFiles = <span class="number">750</span>;</span><br><span class="line">[trainDigitData,valDigitData] = splitEachLabel(digitData,<span class="number">750</span>,<span class="string">'randomize'</span>); </span><br><span class="line"><span class="comment">% 每类有1000个，选择其中的750类作为训练集，剩下的作为验证集；此处750可以换成一个比例：75%</span></span><br></pre></td></tr></table></figure>
+<p>注意Matlab里面支持的<strong>层</strong>的类型，包括：<a href="https://cn.mathworks.com/help/nnet/ref/nnet.cnn.layer.layer.html?searchHighlight=softmaxlayer&amp;s_tid=doc_srchtitle" target="_blank" rel="noopener">CLICK THIS LINK</a>。如下所示：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>Iteration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Layer Type</td>
+<td>Function</td>
+</tr>
+<tr>
+<td>Image input layer</td>
+<td>imageInputLayer</td>
+</tr>
+<tr>
+<td>Sequence input layer</td>
+<td>sequenceInputLayer</td>
+</tr>
+<tr>
+<td>2-D convolutional layer</td>
+<td>convolution2dLayer</td>
+</tr>
+<tr>
+<td>2-D transposed convolutional layer</td>
+<td>transposedConv2dLayer</td>
+</tr>
+<tr>
+<td>Fully connected layer</td>
+<td>fullyConnectedLayer</td>
+</tr>
+<tr>
+<td>Long short-term memory (LSTM) layer</td>
+<td>LSTMLayer</td>
+</tr>
+<tr>
+<td>Rectified linear unit (ReLU) layer</td>
+<td>reluLayer</td>
+</tr>
+<tr>
+<td>Leaky rectified linear unit (ReLU) layer</td>
+<td>leakyReluLayer</td>
+</tr>
+<tr>
+<td>Clipped rectified linear unit (ReLU) layer</td>
+<td>clippedReluLayer</td>
+</tr>
+<tr>
+<td>Batch normalization layer</td>
+<td>batchNormalizationLayer</td>
+</tr>
+<tr>
+<td>Channel-wise local response normalization (LRN) layer</td>
+<td>crossChannelNormalizationLayer</td>
+</tr>
+<tr>
+<td>Dropout layer</td>
+<td>dropoutLayer</td>
+</tr>
+<tr>
+<td>Addition layer</td>
+<td>additionLayer</td>
+</tr>
+<tr>
+<td>Depth concatenation layer</td>
+<td>depthConcatenationLayer</td>
+</tr>
+<tr>
+<td>Average pooling layer</td>
+<td>averagePooling2dLayer</td>
+</tr>
+<tr>
+<td>Max pooling layer</td>
+<td>maxPooling2dLayer</td>
+</tr>
+<tr>
+<td>Max unpooling layer</td>
+<td>maxUnpooling2dLayer</td>
+</tr>
+<tr>
+<td>Softmax layer</td>
+<td>softmaxLayer</td>
+</tr>
+<tr>
+<td>Classification layer</td>
+<td>classificationLayer</td>
+</tr>
+<tr>
+<td>Regression layer</td>
+<td>regressionLayer</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="创建自己的网络结构"><a href="#创建自己的网络结构" class="headerlink" title="创建自己的网络结构"></a>创建自己的网络结构</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% Define Network Architecture</span></span><br><span class="line"><span class="comment">% Define the convolutional neural network architecture.</span></span><br><span class="line">layers = </span><br><span class="line">    [</span><br><span class="line">    imageInputLayer([<span class="number">28</span> <span class="number">28</span> <span class="number">1</span>])</span><br><span class="line">    convolution2dLayer(<span class="number">3</span>,<span class="number">16</span>,<span class="string">'Padding'</span>,<span class="number">1</span>)</span><br><span class="line">    batchNormalizationLayer()</span><br><span class="line">    reluLayer()</span><br><span class="line">    maxPooling2dLayer(<span class="number">2</span>,<span class="string">'Stride'</span>,<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    convolution2dLayer(<span class="number">3</span>,<span class="number">32</span>,<span class="string">'Padding'</span>,<span class="number">1</span>)</span><br><span class="line">    batchNormalizationLayer()</span><br><span class="line">    reluLayer()</span><br><span class="line">    </span><br><span class="line">    maxPooling2dLayer(<span class="number">2</span>,<span class="string">'Stride'</span>,<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    convolution2dLayer(<span class="number">3</span>,<span class="number">64</span>,<span class="string">'Padding'</span>,<span class="number">1</span>)</span><br><span class="line">    batchNormalizationLayer()</span><br><span class="line">    reluLayer()</span><br><span class="line">    </span><br><span class="line">    fullyConnectedLayer(<span class="number">10</span>)</span><br><span class="line">    softmaxLayer()</span><br><span class="line">    classificationLayer()</span><br><span class="line">    ];</span><br></pre></td></tr></table></figure>
+<p>以下就是该网络结构及参数设置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span>   <span class="string">''</span>   Image Input             <span class="number">28</span>x28x1 images <span class="keyword">with</span> <span class="string">'zerocenter'</span> normalization</span><br><span class="line"> <span class="number">2</span>   <span class="string">''</span>   Convolution             <span class="number">16</span> <span class="number">3</span>x3 convolutions <span class="keyword">with</span> stride [<span class="number">1</span>  <span class="number">1</span>] and padding [<span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>]</span><br><span class="line"> <span class="number">3</span>   <span class="string">''</span>   Batch Normalization     Batch normalization</span><br><span class="line"> <span class="number">4</span>   <span class="string">''</span>   ReLU                    ReLU</span><br><span class="line"> <span class="number">5</span>   <span class="string">''</span>   Max Pooling             <span class="number">2</span>x2 max pooling <span class="keyword">with</span> stride [<span class="number">2</span>  <span class="number">2</span>] and padding [<span class="number">0</span>  <span class="number">0</span>  <span class="number">0</span>  <span class="number">0</span>]</span><br><span class="line"> <span class="number">6</span>   <span class="string">''</span>   Convolution             <span class="number">32</span> <span class="number">3</span>x3 convolutions <span class="keyword">with</span> stride [<span class="number">1</span>  <span class="number">1</span>] and padding [<span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>]</span><br><span class="line"> <span class="number">7</span>   <span class="string">''</span>   Batch Normalization     Batch normalization</span><br><span class="line"> <span class="number">8</span>   <span class="string">''</span>   ReLU                    ReLU</span><br><span class="line"> <span class="number">9</span>   <span class="string">''</span>   Max Pooling             <span class="number">2</span>x2 max pooling <span class="keyword">with</span> stride [<span class="number">2</span>  <span class="number">2</span>] and padding [<span class="number">0</span>  <span class="number">0</span>  <span class="number">0</span>  <span class="number">0</span>]</span><br><span class="line"><span class="number">10</span>   <span class="string">''</span>   Convolution             <span class="number">64</span> <span class="number">3</span>x3 convolutions <span class="keyword">with</span> stride [<span class="number">1</span>  <span class="number">1</span>] and padding [<span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>]</span><br><span class="line"><span class="number">11</span>   <span class="string">''</span>   Batch Normalization     Batch normalization</span><br><span class="line"><span class="number">12</span>   <span class="string">''</span>   ReLU                    ReLU</span><br><span class="line"><span class="number">13</span>   <span class="string">''</span>   Fully Connected         <span class="number">10</span> fully connected layer</span><br><span class="line"><span class="number">14</span>   <span class="string">''</span>   Softmax                 softmax</span><br><span class="line"><span class="number">15</span>   <span class="string">''</span>   Classification Output   crossentropyex</span><br></pre></td></tr></table></figure>
+<h3 id="网络训练参数设计"><a href="#网络训练参数设计" class="headerlink" title="网络训练参数设计"></a>网络训练参数设计</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> options = trainingOptions(<span class="string">'sgdm'</span>,...</span><br><span class="line"><span class="string">'MaxEpochs'</span>,<span class="number">3</span>, ...                 <span class="comment">% 训练最大轮回</span></span><br><span class="line"><span class="string">'ValidationData'</span>,valDigitData,...  <span class="comment">% 验证集</span></span><br><span class="line"><span class="string">'ValidationFrequency'</span>,<span class="number">30</span>,...</span><br><span class="line"><span class="string">'Verbose'</span>,<span class="built_in">false</span>,...</span><br><span class="line"><span class="string">'Plots'</span>,<span class="string">'training-progress'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net = trainNetwork(trainDigitData,layers,options);</span><br></pre></td></tr></table></figure>
+<h3 id="测试新的数据"><a href="#测试新的数据" class="headerlink" title="测试新的数据"></a>测试新的数据</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">predictedLabels = classify(net,valDigitData);</span><br><span class="line">valLabels = valDigitData.Labels;</span><br><span class="line">accuracy = sum(predictedLabels == valLabels)/<span class="built_in">numel</span>(valLabels)</span><br></pre></td></tr></table></figure>
+<h3 id="查看某层参数"><a href="#查看某层参数" class="headerlink" title="查看某层参数"></a>查看某层参数</h3><p>例如查看第2层的weight参数，输入以下命令：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">montage(imresize(mat2gray(net.Layers(<span class="number">2</span>).Weights),[<span class="number">128</span> <span class="number">128</span>]));</span><br><span class="line">set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]); </span><br><span class="line">frame=getframe(gcf); <span class="comment">% get the frame</span></span><br><span class="line">image=frame.cdata;</span><br><span class="line">[image,map]     =  rgb2ind(image,<span class="number">256</span>);  </span><br><span class="line">imwrite(image,map,<span class="string">'weight-layer2.png'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>图像如下所示：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/weight-layer2.png" alt></p>
+<p>再看一下第10层的参数：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[~,~,iter,~]=<span class="built_in">size</span>(net.Layers(<span class="number">10</span>).Weights);</span><br><span class="line">name=<span class="string">'weight.gif'</span>;</span><br><span class="line">dt=<span class="number">0.4</span>;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:iter</span><br><span class="line">	montage(imresize(mat2gray(net.Layers(<span class="number">10</span>).Weights(:,:,<span class="built_in">i</span>,:)),[<span class="number">128</span> <span class="number">128</span>]));</span><br><span class="line">    set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]); <span class="comment">%变白</span></span><br><span class="line">	title([<span class="string">'Layer(10), Channel: '</span>,num2str(<span class="built_in">i</span>)]);</span><br><span class="line">	axis normal</span><br><span class="line">	<span class="built_in">true</span><span class="built_in">size</span></span><br><span class="line">	<span class="comment">%Creat GIF</span></span><br><span class="line">	frame(<span class="built_in">i</span>)=getframe(gcf); <span class="comment">% get the frame</span></span><br><span class="line">	image=frame(<span class="built_in">i</span>).cdata;</span><br><span class="line">	[image,map]     =  rgb2ind(image,<span class="number">256</span>);  </span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">i</span>==<span class="number">1</span></span><br><span class="line">		 imwrite(image,map,name,<span class="string">'gif'</span>);</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		 imwrite(image,map,name,<span class="string">'gif'</span>,<span class="string">'WriteMode'</span>,<span class="string">'append'</span>,<span class="string">'DelayTime'</span>,dt);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/weight-inf.gif" alt></p>
+<h2 id="搭建网络对CIFAR10分类"><a href="#搭建网络对CIFAR10分类" class="headerlink" title="搭建网络对CIFAR10分类"></a><span id="example2">搭建网络对CIFAR10分类</span></h2><p>CIFAR10和CIFAR100是<a href="http://groups.csail.mit.edu/vision/TinyImages/" target="_blank" rel="noopener">80 million tiny images</a>的子集，是由Geoffrey Hinton的弟子们Alex Krizhevsky和Vinod Nair共同采集。</p>
+<h3 id="CIFAR10"><a href="#CIFAR10" class="headerlink" title="CIFAR10"></a><a href="http://www.cs.toronto.edu/~kriz/cifar.html" target="_blank" rel="noopener">CIFAR10</a></h3><p>CIFAR10由60000张32*32的彩色图像组成，一种分成10类，平均每类图像6000张。共有50000张训练图像，10000张测试图像。这个数据集被分成了5个分支，其中每个分支10000张。测试集包含每类中随机选择的1000张图像。训练集就是剩下的那些图像。<br>对于每个分支的数据的大小是：10000*3072；其中3072=32*32*3。数据以行优先的顺序存储，所以前1024个数据是r通道的数据，接下来的1024个数据是g通道的数据，最后1024个数据是b通道的。<br>假如原始的数据是data，我们想要将其重新排列成我们需要的数据。首先对其进行转置，然后再用reshape函数对图像重组（可选：最后将图像前两维互换（转置），之所以这么做，可以更好的可视化）。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">XBatch = data';</span><br><span class="line">XBatch = <span class="built_in">reshape</span>(XBatch, <span class="number">32</span>,<span class="number">32</span>,<span class="number">3</span>,[]);</span><br><span class="line">XBatch = <span class="built_in">permute</span>(XBatch, [<span class="number">2</span> <span class="number">1</span> <span class="number">3</span> <span class="number">4</span>]);</span><br></pre></td></tr></table></figure>
+<p>以下是cifar10的部分数据。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-images.png" alt><br>共有10类，包括：airplane，automobile，bird，cat，deer，dog，frog，horse，ship，truck。</p>
+<h3 id="Just-run-it"><a href="#Just-run-it" class="headerlink" title="Just run it"></a>Just run it</h3><p>接下来我们就开始运行以下代码，来训练我们的网络。闲话少说，我把代码放在了<a href="https://github.com/Vincentqyw/DeepLearning/blob/master/demo_cifar10.m" target="_blank" rel="noopener">Github</a>，欢迎$star$。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>   <span class="string">'imageinput'</span>    Image Input         	<span class="number">28</span>x28x1 images <span class="keyword">with</span> <span class="string">'zerocenter'</span> normalization</span><br><span class="line"><span class="number">2</span>   <span class="string">'conv_1'</span>        Convolution         	<span class="number">16</span> <span class="number">3</span>x3x1 convolutions <span class="keyword">with</span> stride [<span class="number">1</span>  <span class="number">1</span>] and padding [<span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>]</span><br><span class="line"><span class="number">3</span>   <span class="string">'batchnorm_1'</span>   Batch Normalization 	Batch normalization <span class="keyword">with</span> <span class="number">16</span> channels</span><br><span class="line"><span class="number">4</span>   <span class="string">'relu_1'</span>        ReLU               		ReLU</span><br><span class="line"><span class="number">5</span>   <span class="string">'maxpool_1'</span>     Max Pooling         	<span class="number">2</span>x2 max pooling <span class="keyword">with</span> stride [<span class="number">2</span>  <span class="number">2</span>] and padding [<span class="number">0</span> <span class="number">0</span>  <span class="number">0</span>  <span class="number">0</span>]</span><br><span class="line"><span class="number">6</span>   <span class="string">'conv_2'</span>        Convolution         	<span class="number">32</span> <span class="number">3</span>x3x16 convolutions <span class="keyword">with</span> stride [<span class="number">1</span>  <span class="number">1</span>] and padding [<span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>]</span><br><span class="line"><span class="number">7</span>   <span class="string">'batchnorm_2'</span>   Batch Normalization 	Batch normalization <span class="keyword">with</span> <span class="number">32</span> channels</span><br><span class="line"><span class="number">8</span>   <span class="string">'relu_2'</span>        ReLU                	ReLU</span><br><span class="line"><span class="number">9</span>   <span class="string">'maxpool_2'</span>     Max Pooling         	<span class="number">2</span>x2 max pooling <span class="keyword">with</span> stride [<span class="number">2</span>  <span class="number">2</span>] and padding [<span class="number">0</span>  <span class="number">0</span>  <span class="number">0</span> <span class="number">0</span>]</span><br><span class="line"><span class="number">10</span>   <span class="string">'conv_3'</span>       Convolution         	<span class="number">64</span> <span class="number">3</span>x3x32 convolutions <span class="keyword">with</span> stride [<span class="number">1</span>  <span class="number">1</span>] and padding [<span class="number">1</span> <span class="number">1</span>  <span class="number">1</span>  <span class="number">1</span>]</span><br><span class="line"><span class="number">11</span>   <span class="string">'batchnorm_3'</span>  Batch Normalization 	Batch normalization <span class="keyword">with</span> <span class="number">64</span> channels</span><br><span class="line"><span class="number">12</span>   <span class="string">'relu_3'</span>       ReLU			ReLU</span><br><span class="line"><span class="number">13</span>   <span class="string">'fc'</span>           Fully Connected		<span class="number">10</span> fully connected layer</span><br><span class="line"><span class="number">14</span>   <span class="string">'softmax'</span>      Softmax			softmax</span><br><span class="line"><span class="number">15</span>   <span class="string">'classoutput'</span>  Classification Output	crossentropyex <span class="keyword">with</span> <span class="string">'0'</span>, <span class="string">'1'</span>, and <span class="number">8</span> other classes</span><br></pre></td></tr></table></figure>
+<p>以下是训练过程输出：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Epoch</th>
+<th>Iteration</th>
+<th style="text-align:center">Time Elapsed (seconds)</th>
+<th style="text-align:center">Mini-batch Loss</th>
+<th style="text-align:center">Mini-batch Accuracy</th>
+<th style="text-align:center">Base Learning Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td style="text-align:center">0.06</td>
+<td style="text-align:center">2.3026</td>
+<td style="text-align:center">8.59%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>50</td>
+<td style="text-align:center">1.27</td>
+<td style="text-align:center">2.3026</td>
+<td style="text-align:center">14.06%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>100</td>
+<td style="text-align:center">2.52</td>
+<td style="text-align:center">2.3024</td>
+<td style="text-align:center">7.81%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>150</td>
+<td style="text-align:center">3.73</td>
+<td style="text-align:center">2.2999</td>
+<td style="text-align:center">20.31%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>200</td>
+<td style="text-align:center">5.01</td>
+<td style="text-align:center">2.2740</td>
+<td style="text-align:center">15.63%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>250</td>
+<td style="text-align:center">6.28</td>
+<td style="text-align:center">2.1194</td>
+<td style="text-align:center">21.09%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>300</td>
+<td style="text-align:center">7.58</td>
+<td style="text-align:center">1.9100</td>
+<td style="text-align:center">23.44%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>1</td>
+<td>350</td>
+<td style="text-align:center">8.86</td>
+<td style="text-align:center">1.8892</td>
+<td style="text-align:center">28.13%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>2</td>
+<td>400</td>
+<td style="text-align:center">10.08</td>
+<td style="text-align:center">1.7490</td>
+<td style="text-align:center">29.69%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>2</td>
+<td>450</td>
+<td style="text-align:center">11.32</td>
+<td style="text-align:center">1.8377</td>
+<td style="text-align:center">31.25%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>2</td>
+<td>500</td>
+<td style="text-align:center">12.57</td>
+<td style="text-align:center">1.6073</td>
+<td style="text-align:center">39.84%</td>
+<td style="text-align:center">0.0020</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+</tr>
+<tr>
+<td>20</td>
+<td>7650</td>
+<td style="text-align:center">407.74</td>
+<td style="text-align:center">0.2858</td>
+<td style="text-align:center">93.75%</td>
+<td style="text-align:center">2.00e-05</td>
+</tr>
+<tr>
+<td>20</td>
+<td>7700</td>
+<td style="text-align:center">409.06</td>
+<td style="text-align:center">0.3127</td>
+<td style="text-align:center">89.84%</td>
+<td style="text-align:center">2.00e-05</td>
+</tr>
+<tr>
+<td>20</td>
+<td>7750</td>
+<td style="text-align:center">410.38</td>
+<td style="text-align:center">0.3254</td>
+<td style="text-align:center">87.50%</td>
+<td style="text-align:center">2.00e-05</td>
+</tr>
+<tr>
+<td>20</td>
+<td>7800</td>
+<td style="text-align:center">411.64</td>
+<td style="text-align:center">0.2456</td>
+<td style="text-align:center">92.19%</td>
+<td style="text-align:center">2.00e-05</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>最后测试我们的模型的性能，accuracy=76%左右。但是训练时，我们的batch-accuracy已经达到了90%以上，说明我们的<strong>模型过拟合</strong>了。显然这不是我们想要的结果，进一步的调参将会在此补充。</p>
+<h3 id="可视化某层的参数"><a href="#可视化某层的参数" class="headerlink" title="可视化某层的参数"></a>可视化某层的参数</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% Extract the first convolutional layer weights</span></span><br><span class="line">w = cifar10Net.Layers(<span class="number">2</span>).Weights;</span><br><span class="line"></span><br><span class="line"><span class="comment">% rescale and resize the weights for better visualization</span></span><br><span class="line">w = mat2gray(w);</span><br><span class="line">w = imresize(w, [<span class="number">100</span> <span class="number">100</span>]);</span><br><span class="line"></span><br><span class="line"><span class="built_in">figure</span></span><br><span class="line">montage(w)</span><br><span class="line">name=<span class="string">'cifar10-weight-layer2'</span>;</span><br><span class="line">set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]);</span><br><span class="line">frame=getframe(gcf); <span class="comment">% get the frame</span></span><br><span class="line">image=frame.cdata;</span><br><span class="line">[image,map]     =  rgb2ind(image,<span class="number">256</span>);  </span><br><span class="line">imwrite(image,map,[name,<span class="string">'.png'</span>]);</span><br></pre></td></tr></table></figure>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/cifar10-weight-layer2.png" alt></p>
+<h2 id="搭建一个Resnet"><a href="#搭建一个Resnet" class="headerlink" title="搭建一个Resnet"></a><span id="example3">搭建一个Resnet</span></h2><p>接下来，为了验证下这个DL工具包的强大之处，我打算纯手工建一个Resnet。为方便起见，我搭了一个Resnet34（更深的网络敬请期待吧）。这里是它的<a href="./resnet34.prototxt">prototxt</a>，我们可以用<a href="http://ethereon.github.io/netscope/#/editor" target="_blank" rel="noopener">网络可视化工具</a>进行查看resnet34的结构。以下是Resnet34的一部分（太长了没有截下全部视图）。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/Matlab-Deep-Learning/resnet34.png" alt></p>
+<h3 id="定义每一层与连接层"><a href="#定义每一层与连接层" class="headerlink" title="定义每一层与连接层"></a>定义每一层与连接层</h3><p>以从pool1到res2a为例子建立网络。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">layers_example=[</span><br><span class="line">    <span class="comment">% pool1 - res2a</span></span><br><span class="line">    maxPooling2dLayer(<span class="number">3</span>, <span class="string">'Stride'</span>, <span class="number">2</span>,<span class="string">'Name'</span>,<span class="string">'pool1'</span>);</span><br><span class="line">    <span class="comment">%  branch2a </span></span><br><span class="line">    convolution2dLayer(<span class="number">3</span>,<span class="number">64</span>,<span class="string">'Stride'</span>, <span class="number">1</span>,<span class="string">'Padding'</span>, <span class="number">1</span>,<span class="string">'Name'</span>,<span class="string">'res2a_branch2a'</span>)</span><br><span class="line">    batchNormalizationLayer(<span class="string">'Name'</span>,<span class="string">'bn2a_branch2a'</span>)</span><br><span class="line">    reluLayer(<span class="string">'Name'</span>,<span class="string">'res2a_branch2a_relu'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">%  branch2b</span></span><br><span class="line">    convolution2dLayer(<span class="number">3</span>,<span class="number">64</span>,<span class="string">'Stride'</span>, <span class="number">1</span>,<span class="string">'Padding'</span>, <span class="number">1</span>,<span class="string">'Name'</span>,<span class="string">'res2a_branch2b'</span>)</span><br><span class="line">    batchNormalizationLayer(<span class="string">'Name'</span>,<span class="string">'bn2a_branch2b'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">% add together</span></span><br><span class="line">    additionLayer(<span class="number">2</span>,<span class="string">'Name'</span>,<span class="string">'res2a'</span>)</span><br><span class="line">    reluLayer(<span class="string">'Name'</span>,<span class="string">'res2a_relu'</span>)</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<p>上述过程仅仅完成了网络的一个小分支，记下来要完成<code>res2a_branch1</code>这部分的连接。这时候要用到<strong>DAG</strong>的<a href="https://cn.mathworks.com/help/nnet/ref/dagnetwork.html" target="_blank" rel="noopener">一些方法</a>。通过添加新层同时建立新的连接即可，方式如下。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">lgraph = layerGraph(layers_example);</span><br><span class="line"><span class="built_in">figure</span></span><br><span class="line"><span class="built_in">plot</span>(lgraph)</span><br><span class="line"></span><br><span class="line"><span class="comment">%% add some connections (shortcut)</span></span><br><span class="line">layers_2a=[</span><br><span class="line">    convolution2dLayer(<span class="number">1</span>,<span class="number">64</span>,<span class="string">'Stride'</span>, <span class="number">1</span>,<span class="string">'Padding'</span>, <span class="number">0</span>,<span class="string">'Name'</span>,<span class="string">'res2a_branch1'</span>)</span><br><span class="line">    batchNormalizationLayer(<span class="string">'Name'</span>,<span class="string">'bn2a_branch1'</span>)</span><br><span class="line">];</span><br><span class="line">lgraph = addLayers(lgraph,layers_2a);</span><br><span class="line">lgraph = connectLayers(lgraph,<span class="string">'pool1'</span>,<span class="string">'res2a_branch1'</span>);</span><br><span class="line">lgraph = connectLayers(lgraph,<span class="string">'bn2a_branch1'</span>,<span class="string">'res2a/in2'</span>);</span><br><span class="line"><span class="comment">% show net</span></span><br><span class="line"><span class="built_in">plot</span>(lgraph)</span><br></pre></td></tr></table></figure>
+<p>其他部分的构建同上，经过一系列重复的工作，我们可以构建出这个不太深的Resnet34，全部代码见我的<a href="https://github.com/Vincentqyw/DeepLearning" target="_blank" rel="noopener">Github</a>。</p>
+<h2 id="一些基本问题"><a href="#一些基本问题" class="headerlink" title="一些基本问题"></a>一些基本问题</h2><ul>
+<li>参数的基本格式</li>
+</ul>
+<script type="math/tex; mode=display">Height \times Width \times (\#Channels) \times (\#Filters)</script><ul>
+<li>SGD是什么？<br>可以参见好友写的一篇<a href="https://sttomato.github.io/2017/08/13/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/#随机梯度下降" target="_blank" rel="noopener">博文</a>。</li>
+<li>什么是epoch？<br>模型训练的时候一般采用stochastic gradient descent（SGD），一次迭代选取一个batch进行update。一个epoch的意思就是迭代次数*batch的数目 和训练数据的个数一样，就是一个epoch。</li>
+<li>为什么要是用BN？<br>Batch normalization layers normalize the activations and gradients propagating through a network, making network training an easier optimization problem. Use batch normalization layers between convolutional layers and nonlinearities, such as ReLU layers, to speed up network training and reduce the sensitivity to network initialization.</li>
+<li>RELU的作用？<br><em>Max-Pooling Layer</em> Convolutional layers (with activation functions) are sometimes followed by a down-sampling operation that reduces the spatial size of the feature map and removes redundant spatial information. Down-sampling makes it possible to increase the number of filters in deeper convolutional layers without increasing the required amount of computation per layer. One way of down-sampling is using a max pooling. The max pooling layer returns the maximum values of rectangular regions of inputs.</li>
+<li><p><em>add more</em></p>
+</li>
+<li><p>Resnet中scale层是如何定义的？有什么用途？ </p>
+</li>
+<li><p>Resnet中为何残差$F(x)$比$H(x)$好学？ </p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/Matlab-Deep-Learning/" title="Matlab Deep Learning学习笔记">https://www.vincentqin.tech/posts/Matlab-Deep-Learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+            
+              <a href="/tags/Matlab/" rel="tag"># Matlab</a>
+            
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+            
+              <a href="/tags/CIFAR10/" rel="tag"># CIFAR10</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/CNN-Architectures/" rel="next" title="CNN框架(CNN Architectures)">
+                  <i class="fa fa-chevron-left"></i> CNN框架(CNN Architectures)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/depth-estimation-using-deeplearning-1/" rel="prev" title="深度学习在深度(视差)估计中的应用(1)">
+                  深度学习在深度(视差)估计中的应用(1) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#手写字符识别"><span class="nav-number">1.</span> <span class="nav-text">手写字符识别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加载图像数据"><span class="nav-number">1.1.</span> <span class="nav-text">加载图像数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建训练集与验证集"><span class="nav-number">1.2.</span> <span class="nav-text">创建训练集与验证集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自己的网络结构"><span class="nav-number">1.3.</span> <span class="nav-text">创建自己的网络结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络训练参数设计"><span class="nav-number">1.4.</span> <span class="nav-text">网络训练参数设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始训练"><span class="nav-number">1.5.</span> <span class="nav-text">开始训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试新的数据"><span class="nav-number">1.6.</span> <span class="nav-text">测试新的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看某层参数"><span class="nav-number">1.7.</span> <span class="nav-text">查看某层参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建网络对CIFAR10分类"><span class="nav-number">2.</span> <span class="nav-text">搭建网络对CIFAR10分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CIFAR10"><span class="nav-number">2.1.</span> <span class="nav-text">CIFAR10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Just-run-it"><span class="nav-number">2.2.</span> <span class="nav-text">Just run it</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可视化某层的参数"><span class="nav-number">2.3.</span> <span class="nav-text">可视化某层的参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建一个Resnet"><span class="nav-number">3.</span> <span class="nav-text">搭建一个Resnet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义每一层与连接层"><span class="nav-number">3.1.</span> <span class="nav-text">定义每一层与连接层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些基本问题"><span class="nav-number">4.</span> <span class="nav-text">一些基本问题</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

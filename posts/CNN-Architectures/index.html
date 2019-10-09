@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="本文来自于CS231N（2017 Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet比赛的冠军之作，我们将从网络结构，参数规模，运算量等来描述各个网络的特点。">
+<meta name="keywords" content="AlexNet,VGG,GoogLeNet,ResNet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CNN框架(CNN Architectures)">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/CNN-Architectures/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文来自于CS231N（2017 Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet比赛的冠军之作，我们将从网络结构，参数规模，运算量等来描述各个网络的特点。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/9721733.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/99013631.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/33818113.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/89475867.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/31257061.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/33298717.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/53626485.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/95592762.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/75689322.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/22279699.png">
+<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/resnet.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/82101608.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/40479799.png">
+<meta property="og:updated_time" content="2019-03-02T14:32:06.621Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CNN框架(CNN Architectures)">
+<meta name="twitter:description" content="本文来自于CS231N（2017 Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet比赛的冠军之作，我们将从网络结构，参数规模，运算量等来描述各个网络的特点。">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/9721733.png">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/CNN-Architectures/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>CNN框架(CNN Architectures) | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/CNN-Architectures/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">CNN框架(CNN Architectures)
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-11-07 00:24:45" itemprop="dateCreated datePublished" datetime="2017-11-07T00:24:45+08:00">2017-11-07</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-03-02 22:32:06" itemprop="dateModified" datetime="2019-03-02T22:32:06+08:00">2019-03-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/CNN-Architectures/" class="post-meta-item leancloud_visitors" data-flag-title="CNN框架(CNN Architectures)" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/CNN-Architectures/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/CNN-Architectures/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <center><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/9721733.png" width="75%" dense-net></center>
+
+<div class="note ">
+            <p>本文来自于CS231N（2017 Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet比赛的冠军之作，我们将从网络结构，参数规模，运算量等来描述各个网络的特点。</p>
+          </div>
+<a id="more"></a>
+<ul>
+<li>AlexNet</li>
+<li>VGG</li>
+<li>GoogLeNet</li>
+<li>ResNet</li>
+</ul>
+<p>后续将补充以下几种网络：</p>
+<ul>
+<li>NiN(Network in Network)</li>
+<li>wide ResNet</li>
+<li>ResNeXT</li>
+<li>stochastic Depth</li>
+<li><a href="https://github.com/liuzhuang13/DenseNet" target="_blank" rel="noopener">DenseNet</a></li>
+<li>FractalNet</li>
+<li>SqueezeNet</li>
+</ul>
+<p>以下是正文。</p>
+<h2 id="AlexNet"><a href="#AlexNet" class="headerlink" title="AlexNet"></a>AlexNet</h2><h3 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/99013631.png" alt="AlexNet"><br>网络的输入大小为：227*227*3，每一层的结构以及参数设置如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Layer Type</th>
+<th style="text-align:left">#Filters</th>
+<th style="text-align:left">Stride</th>
+<th style="text-align:left">Pading</th>
+<th style="text-align:left">OUTPUT SIZE</th>
+<th style="text-align:left">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">CONV1</td>
+<td style="text-align:left">#96 @11*11</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">55*55*96</td>
+<td style="text-align:left">11*11*3*96</td>
+</tr>
+<tr>
+<td style="text-align:left">MAXPOOL1</td>
+<td style="text-align:left">3*3</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">27*27*96</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">NORM1</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">27*27*96</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">CONV1</td>
+<td style="text-align:left">#256 @5*5</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">27*27*256</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">MAXPOOL2</td>
+<td style="text-align:left">3*3</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">13*13*256</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">NORM2</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">13*13*256</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">CONV3</td>
+<td style="text-align:left">#384 @3*3</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">13*13*384</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">CONV4</td>
+<td style="text-align:left">#384 @3*3</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">13*13*384</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">CONV5</td>
+<td style="text-align:left">#256 @3*3</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">13*13*256</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">MAXPOOL3</td>
+<td style="text-align:left">3*3</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">6*6*256</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">FC6</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">4096</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">FC7</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">4096</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+<tr>
+<td style="text-align:left">FC8</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">1000</td>
+<td style="text-align:left">55*55*96</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The size of output image is $\frac{N-Conv+2\times Pading}{stride}+1$</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/33818113.png" alt="AlexNet-details"></p>
+<p><em>后续将使用<a href="https://cn.mathworks.com/help/nnet/examples.html?s_cid=doc_flyout#bvljehw" target="_blank" rel="noopener">Matlab DL 工具包</a>补充Alexnet实验…</em></p>
+<h2 id="VGGNet"><a href="#VGGNet" class="headerlink" title="VGGNet"></a>VGGNet</h2><p>The winner of ImageNet Large Scale Visual Recognition Challenge (ILSVRC) 2014.</p>
+<h3 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h3><p><strong>small filters, deeper networks</strong>。<br>将原来8层的AlexNet扩展到了16&amp;19层。卷积层的大小仅仅有3*3，stride=1，pad=1；池化层仅仅有stride=2的2*2的MAXPOOL。以下是其与AlexNet的结构对比图。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/89475867.png" alt="VGG"></p>
+<p>更加具体的，VGG16的网络的参数个数以及内存消耗如下：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/31257061.png" alt="VGG-details"></p>
+<p>Q：为何采用更小的CONV？<br>A：几个3*3的CONV叠加后的接受域和一个7*7大小的CONV的接受域一致，但是与此同时，<strong>网络层数变深，引入了更多的非线性，参数数量更少</strong>。（Stack of three 3x3 conv (stride 1) layers has same effective receptive field as one 7x7 conv layer，But deeper, more non-linearities. And fewer parameters: $3\times3^2C^2$ vs. $7^2C^2$ for C channels per layer）</p>
+<h3 id="更多细节"><a href="#更多细节" class="headerlink" title="更多细节"></a>更多细节</h3><ul>
+<li>ILSVRC’14 2nd in classification, 1st in localization Similar training</li>
+<li>procedure as Krizhevsky 2012 No Local Response Normalisation (LRN)</li>
+<li>Use VGG16 or VGG19 (VGG19 only slightly better, more memory) </li>
+<li>Use ensembles for best results </li>
+<li>FC7 features generalize well to other tasks</li>
+</ul>
+<h2 id="GoogLeNet"><a href="#GoogLeNet" class="headerlink" title="GoogLeNet"></a>GoogLeNet</h2><p>论文地址：<a href="https://arxiv.org/pdf/1409.4842.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1409.4842.pdf</a><br>代码地址：NULL<br><strong>Deeper networks, with computational efficiency</strong>。GoogLeNet是ILSVRC’14的图像分类冠军网络，它加入了<strong>Inception</strong>模块，并且去除了全连接层，大大减少了参数的个数。</p>
+<ul>
+<li>22 layers (with weights)</li>
+<li>Efficient “Inception” module</li>
+<li>No FC layers</li>
+<li>Only 5 million parameters! 12x less than AlexNet</li>
+<li>ILSVRC’14 classification winner (6.7% top 5 error)</li>
+</ul>
+<h3 id="“Inception-module”"><a href="#“Inception-module”" class="headerlink" title="“Inception module”"></a>“Inception module”</h3><p>精心设计了一个局部网络模块，并且将这些模块叠加构成GoolgeNet。这种经过精心设计的模块就是Inception。（design a good local network topology (network within a network) and then stack these modules on top of each other）。<br>Inception包含几个接受域不同的CONV核（1*1，3*3，5*5）以及池化操作（3*3）；最终将这些操作后的输出在depth方向串联。以下是两种两种不同的实现方式，左图时原始的inception模块，右图是改进版的inception模块。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/33298717.png" alt="inception"><br>对于naive inception而言，它面临这运算量巨大的问题。由于池化层的输出会保留原始输入的depth，所以经过CONV&amp;MAXPOOL过后的输出的feature map势必比原始输入的depth更深。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/53626485.png" alt="inception-naive"><br>那么如何去解决以上问题呢，一个通常的方式就是降维。我们在每个CONV前加上1*1的CONV（“bottleneck” layers）来减少feature map的维度。所谓的1*1CONV就是在保持输入的空间分辨率不变的情况下来减小depth维度，即通过将不同depth上的feature map进行组合，从而将输入的feature map映射到更低的depth维度上。经过以上操作就可以将运算的操作次数大大降低。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/95592762.png" alt="inception-improve"></p>
+<p>于是GoogLeNet的全貌如下：<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/75689322.jpg" alt="googlenet"></p>
+<h2 id="ResNet"><a href="#ResNet" class="headerlink" title="ResNet"></a>ResNet</h2><p>利用<strong>残差</strong>连接成的超级深网络。<br>这里有一个何凯明在ICML2016的Tutorial，内容比较详细。<a href="http://kaiminghe.com/icml16tutorial/index.html" target="_blank" rel="noopener">ICML 2016 Tutorial on Deep Residual Networks</a><br>代码在这里<a href="https://github.com/KaimingHe/deep-residual-networks" target="_blank" rel="noopener">Code: deep-residual-networks</a></p>
+<h3 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h3><ul>
+<li>152-layer model for ImageNet</li>
+<li>ILSVRC’ 15 classification winner (3.57% top 5 error)</li>
+<li>Swept all classification and detection competitions in ILSVRC’ 15 and COCO’ 15!</li>
+</ul>
+<h3 id="深度增加带来的问题"><a href="#深度增加带来的问题" class="headerlink" title="深度增加带来的问题"></a>深度增加带来的问题</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/22279699.png" alt="deeper-nets-problems"><br>从上图可以发现，当网络层数增加时，训练误差和测试误差都有所下降。这并不符合以往的经验，我们会想，既然网络层数增加了，那么模型参数势必增多，此时会造成过拟合。然而过拟合的表现是：训练误差减小，测试误差增大。但是事实和分析并不吻合。<br>何凯明认为：<strong>The problem is an optimization problem, deeper models are harder to optimize</strong>。这是一个优化问题，更深的网络更难优化。并且，更深的网络应该至少比浅层网络不差，这是因为我们可以通过拷贝浅层网络+identity mapping（恒等映射）来构造一个更深的网络，这个结构化的方案表明深层网络可以达到和浅层网络一致的性能。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/resnet.png" alt="resnet-layer"><br>Use network layers to fit a residual mapping instead of directly trying to fit a desired underlying mapping.<br>作者假设：<strong>相较于最优化最初的无参照映射（残差函数以输入x作为参照），最优化残差映射是更容易的</strong>。利用网络去拟合残差$F(x)$，并非直接拟合$H(x)$。</p>
+<h3 id="整个ResNet框架"><a href="#整个ResNet框架" class="headerlink" title="整个ResNet框架"></a>整个ResNet框架</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/82101608.png" alt="resnet-structure"></p>
+<ul>
+<li>Stack residual blocks</li>
+<li>Every residual block has two 3x3 conv layers</li>
+<li>Periodically, double # of filters and downsample spatially using stride 2 (/2 in each dimension)</li>
+<li>Additional conv layer at the beginning</li>
+<li>No FC layers at the end (only FC 1000 to output classes)</li>
+</ul>
+<p>对于ImageNet比赛而言，ResNet设置的网络深度有34、50、101以及152层。对于层数较多的网络，利用“bottleneck”（类似于GoogLeNet的1*1卷积操作）来提高效率。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>论文<a href="https://arxiv.org/pdf/1605.07678.pdf" target="_blank" rel="noopener">An Analysis of Deep Neural Network Models for Practical Applications</a> 比较了2016年以来的一些神经网络的规模、运算量、能耗以及精度等项目。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/CNN-Architectures/40479799.png" alt="complexity-compare"><br>可以从上图总结出以下几点：</p>
+<ul>
+<li>GoogLeNet: most efficient</li>
+<li>VGG: Highest memory, most operations</li>
+<li>AlexNet: Smaller compute, still memory heavy, lower accuracy</li>
+<li>ResNet: Moderate efficiency depending on model, highest accuracy</li>
+</ul>
+<h2 id="其他网络变体"><a href="#其他网络变体" class="headerlink" title="其他网络变体"></a>其他网络变体</h2><p>后续补充。</p>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><ul>
+<li><strong><font color="red">ResNet为何能够使网络层数更深，应如何正确理解残差网络？He是受何启发从而发明了这种结构？</font></strong></li>
+<li>more questions will be added…</li>
+</ul>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="http://deeplearning.net/" target="_blank" rel="noopener">DeepLearning.net</a></li>
+<li><a href="http://deeplearning.net/reading-list/" target="_blank" rel="noopener">Reading List</a></li>
+<li><a href="http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf" target="_blank" rel="noopener">ImageNet Classification with Deep Convolutional Neural Networks</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/28124810" target="_blank" rel="noopener">为什么ResNet和DenseNet可以这么深？一文详解残差块为何有助于解决梯度弥散问题</a></li>
+<li><a href="https://arxiv.org/pdf/1605.07678.pdf" target="_blank" rel="noopener">An Analysis of Deep Neural Network Models for Practical Applications</a></li>
+<li><a href="http://cs231n.stanford.edu/" target="_blank" rel="noopener">CS231n: Convolutional Neural Networks for Visual Recognition</a></li>
+<li><a href="https://arxiv.org/pdf/1608.06993.pdf" target="_blank" rel="noopener">Densely Connected Convolutional Networks</a></li>
+<li><a href="http://kaiminghe.com/icml16tutorial/icml2016_tutorial_deep_residual_networks_kaiminghe.pdf" target="_blank" rel="noopener">Deep Residual Networks (Deep Learning Gets Way Deeper)</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/CNN-Architectures/" title="CNN框架(CNN Architectures)">https://www.vincentqin.tech/posts/CNN-Architectures/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/AlexNet/" rel="tag"># AlexNet</a>
+            
+              <a href="/tags/VGG/" rel="tag"># VGG</a>
+            
+              <a href="/tags/GoogLeNet/" rel="tag"># GoogLeNet</a>
+            
+              <a href="/tags/ResNet/" rel="tag"># ResNet</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/lstm/" rel="next" title="理解LSTM网络【译】">
+                  <i class="fa fa-chevron-left"></i> 理解LSTM网络【译】
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/Matlab-Deep-Learning/" rel="prev" title="Matlab Deep Learning学习笔记">
+                  Matlab Deep Learning学习笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AlexNet"><span class="nav-number">1.</span> <span class="nav-text">AlexNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络结构"><span class="nav-number">1.1.</span> <span class="nav-text">网络结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VGGNet"><span class="nav-number">2.</span> <span class="nav-text">VGGNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络结构-1"><span class="nav-number">2.1.</span> <span class="nav-text">网络结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多细节"><span class="nav-number">2.2.</span> <span class="nav-text">更多细节</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GoogLeNet"><span class="nav-number">3.</span> <span class="nav-text">GoogLeNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#“Inception-module”"><span class="nav-number">3.1.</span> <span class="nav-text">“Inception module”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ResNet"><span class="nav-number">4.</span> <span class="nav-text">ResNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概况"><span class="nav-number">4.1.</span> <span class="nav-text">概况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度增加带来的问题"><span class="nav-number">4.2.</span> <span class="nav-text">深度增加带来的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">4.3.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#整个ResNet框架"><span class="nav-number">4.4.</span> <span class="nav-text">整个ResNet框架</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他网络变体"><span class="nav-number">6.</span> <span class="nav-text">其他网络变体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#疑问"><span class="nav-number">7.</span> <span class="nav-text">疑问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

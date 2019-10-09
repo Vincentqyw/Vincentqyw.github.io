@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近一段时间一直痴迷于如何将深度学习用于深度估计，看了不少关于该方面的介绍，再次做一个简单的总结。虽说深度学习和深度估计都有深度二字，但是其意义确是完全不一样。一个是deep一个是depth，前者表示网络层纵向的延伸度，后者表示三维场景中物体距离摄像头的距离。这两个差异如此之大的名词是如何结合在一起的呢？且听我慢慢解释。">
+<meta name="keywords" content="Deep Learning,depth estimation,disparity,DispNet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习在深度(视差)估计中的应用(2)">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="最近一段时间一直痴迷于如何将深度学习用于深度估计，看了不少关于该方面的介绍，再次做一个简单的总结。虽说深度学习和深度估计都有深度二字，但是其意义确是完全不一样。一个是deep一个是depth，前者表示网络层纵向的延伸度，后者表示三维场景中物体距离摄像头的距离。这两个差异如此之大的名词是如何结合在一起的呢？且听我慢慢解释。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/wonderwomanv3.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/flow-net-structure.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/flownet-simple.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/flownet-corr.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/refinement.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/disp-flow.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/dispnet.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/dispnet-res.png">
+<meta property="og:updated_time" content="2018-11-14T15:52:35.449Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习在深度(视差)估计中的应用(2)">
+<meta name="twitter:description" content="最近一段时间一直痴迷于如何将深度学习用于深度估计，看了不少关于该方面的介绍，再次做一个简单的总结。虽说深度学习和深度估计都有深度二字，但是其意义确是完全不一样。一个是deep一个是depth，前者表示网络层纵向的延伸度，后者表示三维场景中物体距离摄像头的距离。这两个差异如此之大的名词是如何结合在一起的呢？且听我慢慢解释。">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/wonderwomanv3.jpg">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>深度学习在深度(视差)估计中的应用(2) | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">深度学习在深度(视差)估计中的应用(2)
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-12-10 17:07:19" itemprop="dateCreated datePublished" datetime="2017-12-10T17:07:19+08:00">2017-12-10</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-11-14 23:52:35" itemprop="dateModified" datetime="2018-11-14T23:52:35+08:00">2018-11-14</time>
+              </span>
+            
+          
+
+          
+            <span id="/posts/depth-estimation-using-deeplearning-2/" class="post-meta-item leancloud_visitors" data-flag-title="深度学习在深度(视差)估计中的应用(2)" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/depth-estimation-using-deeplearning-2/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/depth-estimation-using-deeplearning-2/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/wonderwomanv3.jpg" alt></p>
+<div class="note success">
+            <p>最近一段时间一直痴迷于如何将深度学习用于深度估计，看了不少关于该方面的介绍，再次做一个简单的总结。虽说<code>深度学习</code>和<code>深度估计</code>都有<code>深度</code>二字，但是其意义确是完全不一样。一个是<code>deep</code>一个是<code>depth</code>，前者表示网络层纵向的延伸度，后者表示三维场景中物体距离摄像头的距离。这两个差异如此之大的名词是如何结合在一起的呢？且听我慢慢解释。</p>
+          </div>
+<a id="more"></a>
+<p>深度学习的历史在此不做介绍，我们只关心深度学习在深度估计的方面的成果。在开始之前要到一个著名的网络<strong><a href="https://lmb.informatik.uni-freiburg.de/Publications/2015/DFIB15/" target="_blank" rel="noopener">FlowNet</a></strong>，这是<em>Dosovitskiy</em>等人发表在<strong>ICCV2015</strong>上的作品。这篇文章其实就是做了两件事情：1. 建立了两种结构的FlowNet；2. 建立了一个虚拟场景训练集（Flying Chairs）。最后的测试效果还不错，虽说仅仅在这个数据集上进行了训练，但是泛化能力能够达到业界水平。</p>
+<h2 id="FlowNet"><a href="#FlowNet" class="headerlink" title="FlowNet"></a>FlowNet</h2><p>首先大体看一下这个可以end-to-end训练的网络长得如何，如下图所示：对于输入的图像对，依次经过一个收缩（contractive）网络以及放大（expanding）网络，最后输出得到对应的光流。很难想象CNN可以用来做classification的同时，也可以做到寻找图像之间的相关信息。作者这么做的目的就是为了验证CNN这种强大的特性。原话如是说“<em>The idea is to exploit the ability of convolutional networks to learn strong features at multiple levels of scale and abstraction and to help it with finding the actual correspondences based on these features</em>”。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/flow-net-structure.png" width="60%" alt="A Encoder-Decoder Network for Disparity Estimation"></p>
+<p>接下来就是网络的设计环节，首先作者回顾了之前的网络设计策略。一种是最简单的“sliding window”方式，但这种方式的缺点在于计算量很大，它使用了各种优化包括重用网络的临时输出；另外一种对各个层的临时输出做上采样到全分辨率，然后将这些图叠起来，这行对于每一点而言，都能够得到相应的多级特征向量，这个向量可用来学习想要的信息。</p>
+<h3 id="Contrasting-Part"><a href="#Contrasting-Part" class="headerlink" title="Contrasting Part"></a>Contrasting Part</h3><p>作者受到“per-pixel prediction tasks”的相关工作的启发，设计了两种光流网络框架。一种是相对简单的实现：首先将输入的图像对叠加起来作为输入，然后输入一个网络，让网络自己学，最后提取运动信息。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/flownet-simple.png" alt></p>
+<p>另外一种方式就是将输入的图像pair（左图&amp;右图）分开训练，提取出高维丰富的信息之后再做相关性连接，即增加了<code>correlation layer</code>。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/flownet-corr.png" alt><br>这个correlation layer是为了衡量左右图相应位置的相似度而设置的。一个的很直观地理解就是，在左图选取一个patch，同时在右图中的可能的位置选择同样大小的patch进行匹配运算(点积运算或者说是卷积运算)。<br>具体而言，分别在左右<code>feature map</code>（$f_1$和$f_2$）以$x_1$和$x_2$为中心的块之间进行卷积运算。<code>correlation</code>的定义如下：</p>
+<script type="math/tex; mode=display">c(x_1,x_2)=\sum_{o \in [-k,k] \times [-k,k]}{<f_1(x_1+o),f_2(x_2+o)>}</script><p>其中<script type="math/tex">f_1</script>和<script type="math/tex">f_2</script>的维度为<script type="math/tex">w \times h \times c</script>。可以看到计算一次$c(x_1,x_2)$需要$c \times K^2$次乘法，$K:=2k+1$。而对于所有的位置则需要$w^2 \times h^2 \times c \times K^2 $次乘法，可想而知，这个计算量是巨大的。于是作者为了减少运算量，对搜素窗口进行了限制，设置了最大的搜索半径为$d$，则$x_2$就能在窗口大小是$D=2d+1$里计算<code>correlation</code>了。另外值得一提的是，我们以上的过程是在计算光流信息，所以应该在某个<strong>某个窗口</strong>内进行匹配，而不是在某个方向，而后续即将提到的<code>DispNet</code>的 <code>correlation</code> 是在某一个方向上进行搜索。那么最后得到的<code>correlation</code>的维度是$w \times h \times D^2$。</p>
+<!--![](flow-net-simple-corr.png)-->
+<h3 id="Expanding-Part"><a href="#Expanding-Part" class="headerlink" title="Expanding Part"></a>Expanding Part</h3><p>如下是优化网络的结构，大部分都是结合缩放阶段信息的<strong>反卷积</strong>操作。这里不再赘述，最后得到的结果图像大小是输入图像的$1/4$。</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/refinement.png" alt="refinement"></p>
+<p><del>最后作者利用<code>variational approach</code>对低分辨率的输出做了20次迭代以得到高分辨率的光流图，之后又对全分辨率的光流图做了进一步优化。</del></p>
+<p>很多深度估计的工作受到这一篇论文启发，特别是<code>correlation layer</code>实现了寻找图像对之间的相关性这一点，对于后续<code>DispNet</code>的诞生起到重要作用。其实<code>DispNet</code>就是在<code>FlowNet</code>的基础上进行的改进，接下来就会详细的介绍<code>DispNet</code>。</p>
+<h2 id="DispNet"><a href="#DispNet" class="headerlink" title="DispNet"></a>DispNet</h2><p>受到<strong>FlowNet</strong>的启发，另外一篇论文将光流估计拓广到了视差以及场景流的估计。2015年12月放在arxiv上的大作<em><a href="https://arxiv.org/abs/1512.02134" target="_blank" rel="noopener">A Large Dataset to Train Convolutional Networks for Disparity, Optical Flow, and Scene Flow Estimation</a></em>便是具体代表性的作品。这篇文章有两个主要贡献：</p>
+<ol>
+<li>建立了三个仿真视差数据集（3 stereo video datasets），这是当时第一个超大规模的用于视差以及光流场景流训练以及评估的数据集；</li>
+<li>设计了<strong>DispNet</strong>，<strong>SceneFlownet</strong>。</li>
+</ol>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/disp-flow.png" width="50%"></p>
+<h3 id="开篇"><a href="#开篇" class="headerlink" title="开篇"></a>开篇</h3><p>文章一开始就说估计场景流这个问题，堪称“皇家赛事”级别的任务（场景流是估计空间三维物体的运动场，相比于光流多了一个深度信息）。然后又提到没有好的数据集无法做到完美的训练，那么这么好的数据集又不是天上掉下来的，那只能自食其力，自力更生，自己造吧，于是他们的超大规模（<strong>35000</strong> stereo frames）的数据集便成功诞生！</p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>参考了前方开创性的<strong>FlowNet</strong>工作之后，他们就把<strong>FlowNet</strong>改造成<strong>DispNet</strong>，真是华丽丽的变身。然后对于场景流模型的构建，作者提到：虽然在以往的成千上万的论文中均有涉及到光流的估计，但是仅仅有极少数的工作敢去尝试估计场景流。然后作者就是厉害，他们足够相信CNN具有强大的学习与抽象能力，能够通过某种方式的组合使场景流的估计问题转化成为学习问题。文中提到“相机无关的场景流的学习可以转化成视差，光流以及光流变化学习问题”，于是在实际上文中提到的<strong>SceneFlownet</strong>就是<strong>FlowNet</strong>与<strong>DispNet</strong>的组合。以下重点介绍<strong>DispNet</strong>的实现。</p>
+<h3 id="DispNet-amp-DispNetC"><a href="#DispNet-amp-DispNetC" class="headerlink" title="DispNet &amp; DispNetC"></a>DispNet &amp; DispNetC</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/dispnet.png" alt="dispnet"><br>收缩部分从conv1到conv6b；在放大部分，upconvolutions (upconvN), convolutions (iconvN, prN)和loss layers是交替出现的。从低层提取的特征与高层的特征进行串联，增加特征的多样性。最后的网络输出是pr1。</p>
+<p>二者与<em>Dosovitskiy</em>提出的<strong>FlowNet</strong>两种结构差不多，总结起来共有3个变化：</p>
+<ol>
+<li>对原来的<strong>FLowNet</strong>进行了改造，在上卷积层之间增加了卷积层，这样可以使得最终的深度图像更加的平滑；</li>
+<li>将原来的<code>2D correlation</code> 改造成了<code>1D correlation</code>；并且发现加入<code>correlation</code> 层之后会有普遍的效果提升；原因在于左右图均进行了<code>rectify</code>，基于极线约束，我们就可以在一个方向进行搜索。所以类似于<code>FlowNet</code>，我们得到的<code>correlation</code> map的大小是$D \times w  \times h$。</li>
+<li>放大部分比Flownet多做了一次deconv，使输出为原来的$1/2$。<br>注意：DispNet对应于FlowNet的第一种实现，DispNetC对应于FlowNet的第二种实现；</li>
+</ol>
+<h3 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h3><p>虽然文中提出了一个超大的数据集，但是仍然需要一定的数据增强以获得更加多样的训练数据。具体方法：空间变化（旋转，变形，裁剪，缩放），色度变换（颜色，对比度，明暗）。</p>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/dispnet-res.png" alt><br>文中比较了Zbontar&amp;LeCun的<a href="https://github.com/jzbontar/mc-cnn" target="_blank" rel="noopener">MC-CNN</a>以及opencv中<strong>SGBM</strong>方法。<strong>DispNet</strong>是在<code>FlyingThings3D</code>数据集上做得训练，然后在<code>KITTI 2015</code>数据集上做了优化，注意“K”表示优化之后的网络。</p>
+<h2 id="其他网络"><a href="#其他网络" class="headerlink" title="其他网络"></a>其他网络</h2><p>To be continued, more depth net pls refer to this <a href="https://sites.google.com/site/yorkyuhuang/home/research/machine-learning-information-retrieval/disparityestimationbydeeplearning" target="_blank" rel="noopener">link</a>.</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li>此处对<code>correlation</code>的理解还不透彻;</li>
+<li>待补充其他类型深度/视差估计网络；</li>
+</ul>
+<h2 id="Change-Log"><a href="#Change-Log" class="headerlink" title="Change Log"></a>Change Log</h2><ul>
+<li>添加了对<code>correlation</code>的解释。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://lmb.informatik.uni-freiburg.de/resources/binaries/" target="_blank" rel="noopener">Homepage: Freiburg: Pattern Recognition and Image Processing</a></li>
+<li><a href="https://lmb.informatik.uni-freiburg.de/Publications/2015/DFIB15/" target="_blank" rel="noopener">Homepage: FlowNet: Learning Optical Flow with Convolutional Networks</a></li>
+<li><a href="FlowNet-Learning-Optical-Flow-with-Convolutional-Networks.pdf">Paper: FlowNet</a></li>
+<li><a href="A%20Large%20Dataset%20to%20Train%20Convolutional%20Networks%20for%20Disparity,%20Optical%20Flow,%20and%20Scene%20Flow%20Estimation.pdf">Paper: A Large Dataset to Train Convolutional Networks for Disparity, Optical Flow, and Scene Flow Estimation</a></li>
+<li><a href="https://github.com/jzbontar/mc-cnn" target="_blank" rel="noopener">Github: Stereo matching by training a convolutional neural network to compare image patches</a></li>
+<li><a href="https://sites.google.com/site/yorkyuhuang/home/research/machine-learning-information-retrieval/disparityestimationbydeeplearning" target="_blank" rel="noopener">Blog: Disparity Estimation by Deep Learning</a></li>
+<li><a href="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/depth-estimation-using-deeplearning-2/Unsupervised%20Adaptation%20for%20Deep%20Stereo.pdf" target="_blank" rel="noopener">Paper: Unsupervised Adaptation for Deep Stereo</a></li>
+<li><a href="https://github.com/CVLAB-Unibo/Unsupervised-Adaptation-for-Deep-Stereo" target="_blank" rel="noopener">Code: Unsupervised Adaptation for Deep Stereo</a></li>
+<li><a href="http://blog.csdn.net/hysteric314/article/details/50529804" target="_blank" rel="noopener">Blog: 【论文学习】神经光流网络——用卷积网络实现光流预测（FlowNet: Learning Optical Flow with Convolutional Networks）</a></li>
+<li><a href="http://blog.csdn.net/kongfy4307/article/details/75212800" target="_blank" rel="noopener">Blog: 论文阅读笔记之Dispnet</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/" title="深度学习在深度(视差)估计中的应用(2)">https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+            
+              <a href="/tags/depth-estimation/" rel="tag"># depth estimation</a>
+            
+              <a href="/tags/disparity/" rel="tag"># disparity</a>
+            
+              <a href="/tags/DispNet/" rel="tag"># DispNet</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/depth-estimation-using-deeplearning-1/" rel="next" title="深度学习在深度(视差)估计中的应用(1)">
+                  <i class="fa fa-chevron-left"></i> 深度学习在深度(视差)估计中的应用(1)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/some-useful-tools/" rel="prev" title="常用的生产力工具">
+                  常用的生产力工具 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FlowNet"><span class="nav-number">1.</span> <span class="nav-text">FlowNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Contrasting-Part"><span class="nav-number">1.1.</span> <span class="nav-text">Contrasting Part</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Expanding-Part"><span class="nav-number">1.2.</span> <span class="nav-text">Expanding Part</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DispNet"><span class="nav-number">2.</span> <span class="nav-text">DispNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#开篇"><span class="nav-number">2.1.</span> <span class="nav-text">开篇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型"><span class="nav-number">2.2.</span> <span class="nav-text">模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DispNet-amp-DispNetC"><span class="nav-number">2.3.</span> <span class="nav-text">DispNet &amp; DispNetC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据增强"><span class="nav-number">2.4.</span> <span class="nav-text">数据增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果"><span class="nav-number">2.5.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他网络"><span class="nav-number">3.</span> <span class="nav-text">其他网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">4.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Change-Log"><span class="nav-number">5.</span> <span class="nav-text">Change Log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

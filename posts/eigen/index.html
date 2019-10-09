@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="Eigen是一个仅仅由头函数组成的C++库，支持线性代数，矩阵和矢量运算，数值分析及其相关的算法。 Eigen中无论是矩阵还是数组、向量，无论是静态矩阵还是动态矩阵都提供默认构造函数，也就是定义这些数据结构时都可以不用提供任何参数，其大小均由运行时来确定。矩阵的构造函数中只提供行列数、元素类型的构造参数，而不提供元素值的构造，对于比较小的、固定长度的向量提供初始化元素的定义。矩阵类型：Eigen中">
+<meta name="keywords" content="SLAM,Eigen">
+<meta property="og:type" content="article">
+<meta property="og:title" content="资料：Eigen与Matlab语句之对应关系">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/eigen/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="Eigen是一个仅仅由头函数组成的C++库，支持线性代数，矩阵和矢量运算，数值分析及其相关的算法。 Eigen中无论是矩阵还是数组、向量，无论是静态矩阵还是动态矩阵都提供默认构造函数，也就是定义这些数据结构时都可以不用提供任何参数，其大小均由运行时来确定。矩阵的构造函数中只提供行列数、元素类型的构造参数，而不提供元素值的构造，对于比较小的、固定长度的向量提供初始化元素的定义。矩阵类型：Eigen中">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-12-09T15:00:29.344Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="资料：Eigen与Matlab语句之对应关系">
+<meta name="twitter:description" content="Eigen是一个仅仅由头函数组成的C++库，支持线性代数，矩阵和矢量运算，数值分析及其相关的算法。 Eigen中无论是矩阵还是数组、向量，无论是静态矩阵还是动态矩阵都提供默认构造函数，也就是定义这些数据结构时都可以不用提供任何参数，其大小均由运行时来确定。矩阵的构造函数中只提供行列数、元素类型的构造参数，而不提供元素值的构造，对于比较小的、固定长度的向量提供初始化元素的定义。矩阵类型：Eigen中">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/eigen/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>资料：Eigen与Matlab语句之对应关系 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/eigen/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">资料：Eigen与Matlab语句之对应关系
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2018-08-26 01:59:37" itemprop="dateCreated datePublished" datetime="2018-08-26T01:59:37+08:00">2018-08-26</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-12-09 23:00:29" itemprop="dateModified" datetime="2018-12-09T23:00:29+08:00">2018-12-09</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/eigen/" class="post-meta-item leancloud_visitors" data-flag-title="资料：Eigen与Matlab语句之对应关系" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/eigen/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/eigen/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>Eigen是一个仅仅由头函数组成的C++库，支持线性代数，矩阵和矢量运算，数值分析及其相关的算法。</strong></p>
+<p>Eigen中无论是矩阵还是数组、向量，无论是静态矩阵还是动态矩阵都提供默认构造函数，也就是定义这些数据结构时都可以不用提供任何参数，其大小均由运行时来确定。矩阵的构造函数中只提供行列数、元素类型的构造参数，而不提供元素值的构造，对于比较小的、固定长度的向量提供初始化元素的定义。矩阵类型：Eigen中的矩阵类型一般都是用类似<strong>MatrixXXX</strong>来表示，可以根据该名字来判断其数据类型，比如<strong>”d”表示double类型，”f”表示float类型，”i”表示整数，”c”表示复数；Matrix2f，表示的是一个2*2维的，其每个元素都是float类型</strong>。</p>
+<p>我对Matlab再熟悉不过了，这里列出Matlab与Eigen语句的对应关系，以便于快速入门。</p>
+<a id="more"></a>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><ol>
+<li><a href="https://www.cnblogs.com/newneul/p/8256803.html" target="_blank" rel="noopener">Ubuntu 16.04安装Eigen</a></li>
+<li><a href="https://blog.csdn.net/u012428169/article/details/71169546" target="_blank" rel="noopener">vs2013配置Eigen库</a></li>
+</ol>
+<h1 id="Eigen-矩阵定义"><a href="#Eigen-矩阵定义" class="headerlink" title="Eigen 矩阵定义"></a>Eigen 矩阵定义</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;Eigen/Dense&gt;</span><br><span class="line"></span><br><span class="line">Matrix&lt;double, 3, 3&gt; A;               // Fixed rows and cols. Same as Matrix3d.</span><br><span class="line">Matrix&lt;double, 3, Dynamic&gt; B;         // Fixed rows, dynamic cols.</span><br><span class="line">Matrix&lt;double, Dynamic, Dynamic&gt; C;   // Full dynamic. Same as MatrixXd.</span><br><span class="line">Matrix&lt;double, 3, 3, RowMajor&gt; E;     // Row major; default is column-major.</span><br><span class="line">Matrix3f P, Q, R;                     // 3x3 float matrix.</span><br><span class="line">Vector3f x, y, z;                     // 3x1 float matrix.</span><br><span class="line">RowVector3f a, b, c;                  // 1x3 float matrix.</span><br><span class="line">VectorXd v;                           // Dynamic column vector of doubles</span><br><span class="line">// Eigen          // Matlab           // comments</span><br><span class="line">x.size()          // length(x)        // vector size</span><br><span class="line">C.rows()          // size(C,1)        // number of rows</span><br><span class="line">C.cols()          // size(C,2)        // number of columns</span><br><span class="line">x(i)              // x(i+1)           // Matlab is 1-based</span><br><span class="line">C(i,j)            // C(i+1,j+1)       //</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-基础使用"><a href="#Eigen-基础使用" class="headerlink" title="Eigen 基础使用"></a>Eigen 基础使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// Basic usage</span><br><span class="line">// Eigen        // Matlab           // comments</span><br><span class="line">x.size()        // length(x)        // vector size</span><br><span class="line">C.rows()        // size(C,1)        // number of rows</span><br><span class="line">C.cols()        // size(C,2)        // number of columns</span><br><span class="line">x(i)            // x(i+1)           // Matlab is 1-based</span><br><span class="line">C(i, j)         // C(i+1,j+1)       //</span><br><span class="line"></span><br><span class="line">A.resize(4, 4);   // Runtime error if assertions are on.</span><br><span class="line">B.resize(4, 9);   // Runtime error if assertions are on.</span><br><span class="line">A.resize(3, 3);   // Ok; size didn&apos;t change.</span><br><span class="line">B.resize(3, 9);   // Ok; only dynamic cols changed.</span><br><span class="line">                  </span><br><span class="line">A &lt;&lt; 1, 2, 3,     // Initialize A. The elements can also be</span><br><span class="line">     4, 5, 6,     // matrices, which are stacked along cols</span><br><span class="line">     7, 8, 9;     // and then the rows are stacked.</span><br><span class="line">B &lt;&lt; A, A, A;     // B is three horizontally stacked A&apos;s.</span><br><span class="line">A.fill(10);       // Fill A with all 10&apos;s.</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵分块"><a href="#Eigen-矩阵分块" class="headerlink" title="Eigen 矩阵分块"></a>Eigen 矩阵分块</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// Matrix slicing and blocks. All expressions listed here are read/write.</span><br><span class="line">// Templated size versions are faster. Note that Matlab is 1-based (a size N</span><br><span class="line">// vector is x(1)...x(N)).</span><br><span class="line">// Eigen                           // Matlab</span><br><span class="line">x.head(n)                          // x(1:n)</span><br><span class="line">x.head&lt;n&gt;()                        // x(1:n)</span><br><span class="line">x.tail(n)                          // x(end - n + 1: end)</span><br><span class="line">x.tail&lt;n&gt;()                        // x(end - n + 1: end)</span><br><span class="line">x.segment(i, n)                    // x(i+1 : i+n)</span><br><span class="line">x.segment&lt;n&gt;(i)                    // x(i+1 : i+n)</span><br><span class="line">P.block(i, j, rows, cols)          // P(i+1 : i+rows, j+1 : j+cols)</span><br><span class="line">P.block&lt;rows, cols&gt;(i, j)          // P(i+1 : i+rows, j+1 : j+cols)</span><br><span class="line">P.row(i)                           // P(i+1, :)</span><br><span class="line">P.col(j)                           // P(:, j+1)</span><br><span class="line">P.leftCols&lt;cols&gt;()                 // P(:, 1:cols)</span><br><span class="line">P.leftCols(cols)                   // P(:, 1:cols)</span><br><span class="line">P.middleCols&lt;cols&gt;(j)              // P(:, j+1:j+cols)</span><br><span class="line">P.middleCols(j, cols)              // P(:, j+1:j+cols)</span><br><span class="line">P.rightCols&lt;cols&gt;()                // P(:, end-cols+1:end)</span><br><span class="line">P.rightCols(cols)                  // P(:, end-cols+1:end)</span><br><span class="line">P.topRows&lt;rows&gt;()                  // P(1:rows, :)</span><br><span class="line">P.topRows(rows)                    // P(1:rows, :)</span><br><span class="line">P.middleRows&lt;rows&gt;(i)              // P(i+1:i+rows, :)</span><br><span class="line">P.middleRows(i, rows)              // P(i+1:i+rows, :)</span><br><span class="line">P.bottomRows&lt;rows&gt;()               // P(end-rows+1:end, :)</span><br><span class="line">P.bottomRows(rows)                 // P(end-rows+1:end, :)</span><br><span class="line">P.topLeftCorner(rows, cols)        // P(1:rows, 1:cols)</span><br><span class="line">P.topRightCorner(rows, cols)       // P(1:rows, end-cols+1:end)</span><br><span class="line">P.bottomLeftCorner(rows, cols)     // P(end-rows+1:end, 1:cols)</span><br><span class="line">P.bottomRightCorner(rows, cols)    // P(end-rows+1:end, end-cols+1:end)</span><br><span class="line">P.topLeftCorner&lt;rows,cols&gt;()       // P(1:rows, 1:cols)</span><br><span class="line">P.topRightCorner&lt;rows,cols&gt;()      // P(1:rows, end-cols+1:end)</span><br><span class="line">P.bottomLeftCorner&lt;rows,cols&gt;()    // P(end-rows+1:end, 1:cols)</span><br><span class="line">P.bottomRightCorner&lt;rows,cols&gt;()   // P(end-rows+1:end, end-cols+1:end)</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵元素交换"><a href="#Eigen-矩阵元素交换" class="headerlink" title="Eigen 矩阵元素交换"></a>Eigen 矩阵元素交换</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// Of particular note is Eigen&apos;s swap function which is highly optimized.</span><br><span class="line">// Eigen                           // Matlab</span><br><span class="line">R.row(i) = P.col(j);               // R(i, :) = P(:, i)</span><br><span class="line">R.col(j1).swap(mat1.col(j2));      // R(:, [j1 j2]) = R(:, [j2, j1])</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵转置"><a href="#Eigen-矩阵转置" class="headerlink" title="Eigen 矩阵转置"></a>Eigen 矩阵转置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Views, transpose, etc; all read-write except for .adjoint().</span><br><span class="line">// Eigen                           // Matlab</span><br><span class="line">R.adjoint()                        // R&apos;</span><br><span class="line">R.transpose()                      // R.&apos; or conj(R&apos;)</span><br><span class="line">R.diagonal()                       // diag(R)</span><br><span class="line">x.asDiagonal()                     // diag(x)</span><br><span class="line">R.transpose().colwise().reverse(); // rot90(R)</span><br><span class="line">R.conjugate()                      // conj(R)</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵乘积"><a href="#Eigen-矩阵乘积" class="headerlink" title="Eigen 矩阵乘积"></a>Eigen 矩阵乘积</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// All the same as Matlab, but matlab doesn&apos;t have *= style operators.</span><br><span class="line">// Matrix-vector.  Matrix-matrix.   Matrix-scalar.</span><br><span class="line">y  = M*x;          R  = P*Q;        R  = P*s;</span><br><span class="line">a  = b*M;          R  = P - Q;      R  = s*P;</span><br><span class="line">a *= M;            R  = P + Q;      R  = P/s;</span><br><span class="line">                   R *= Q;          R  = s*P;</span><br><span class="line">                   R += Q;          R *= s;</span><br><span class="line">                   R -= Q;          R /= s;</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵单个元素操作"><a href="#Eigen-矩阵单个元素操作" class="headerlink" title="Eigen 矩阵单个元素操作"></a>Eigen 矩阵单个元素操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// Vectorized operations on each element independently</span><br><span class="line">// Eigen                  // Matlab</span><br><span class="line">R = P.cwiseProduct(Q);    // R = P .* Q</span><br><span class="line">R = P.array() * s.array();// R = P .* s</span><br><span class="line">R = P.cwiseQuotient(Q);   // R = P ./ Q</span><br><span class="line">R = P.array() / Q.array();// R = P ./ Q</span><br><span class="line">R = P.array() + s.array();// R = P + s</span><br><span class="line">R = P.array() - s.array();// R = P - s</span><br><span class="line">R.array() += s;           // R = R + s</span><br><span class="line">R.array() -= s;           // R = R - s</span><br><span class="line">R.array() &lt; Q.array();    // R &lt; Q</span><br><span class="line">R.array() &lt;= Q.array();   // R &lt;= Q</span><br><span class="line">R.cwiseInverse();         // 1 ./ P</span><br><span class="line">R.array().inverse();      // 1 ./ P</span><br><span class="line">R.array().sin()           // sin(P)</span><br><span class="line">R.array().cos()           // cos(P)</span><br><span class="line">R.array().pow(s)          // P .^ s</span><br><span class="line">R.array().square()        // P .^ 2</span><br><span class="line">R.array().cube()          // P .^ 3</span><br><span class="line">R.cwiseSqrt()             // sqrt(P)</span><br><span class="line">R.array().sqrt()          // sqrt(P)</span><br><span class="line">R.array().exp()           // exp(P)</span><br><span class="line">R.array().log()           // log(P)</span><br><span class="line">R.cwiseMax(P)             // max(R, P)</span><br><span class="line">R.array().max(P.array())  // max(R, P)</span><br><span class="line">R.cwiseMin(P)             // min(R, P)</span><br><span class="line">R.array().min(P.array())  // min(R, P)</span><br><span class="line">R.cwiseAbs()              // abs(P)</span><br><span class="line">R.array().abs()           // abs(P)</span><br><span class="line">R.cwiseAbs2()             // abs(P.^2)</span><br><span class="line">R.array().abs2()          // abs(P.^2)</span><br><span class="line">(R.array() &lt; s).select(P,Q);  // (R &lt; s ? P : Q)</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵化简"><a href="#Eigen-矩阵化简" class="headerlink" title="Eigen 矩阵化简"></a>Eigen 矩阵化简</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// Reductions.</span><br><span class="line">int r, c;</span><br><span class="line">// Eigen                  // Matlab</span><br><span class="line">R.minCoeff()              // min(R(:))</span><br><span class="line">R.maxCoeff()              // max(R(:))</span><br><span class="line">s = R.minCoeff(&amp;r, &amp;c)    // [s, i] = min(R(:)); [r, c] = ind2sub(size(R), i);</span><br><span class="line">s = R.maxCoeff(&amp;r, &amp;c)    // [s, i] = max(R(:)); [r, c] = ind2sub(size(R), i);</span><br><span class="line">R.sum()                   // sum(R(:))</span><br><span class="line">R.colwise().sum()         // sum(R)</span><br><span class="line">R.rowwise().sum()         // sum(R, 2) or sum(R&apos;)&apos;</span><br><span class="line">R.prod()                  // prod(R(:))</span><br><span class="line">R.colwise().prod()        // prod(R)</span><br><span class="line">R.rowwise().prod()        // prod(R, 2) or prod(R&apos;)&apos;</span><br><span class="line">R.trace()                 // trace(R)</span><br><span class="line">R.all()                   // all(R(:))</span><br><span class="line">R.colwise().all()         // all(R)</span><br><span class="line">R.rowwise().all()         // all(R, 2)</span><br><span class="line">R.any()                   // any(R(:))</span><br><span class="line">R.colwise().any()         // any(R)</span><br><span class="line">R.rowwise().any()         // any(R, 2)</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-特殊矩阵生成"><a href="#Eigen-特殊矩阵生成" class="headerlink" title="Eigen 特殊矩阵生成"></a>Eigen 特殊矩阵生成</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Eigen                            // Matlab</span><br><span class="line">MatrixXd::Identity(rows,cols)       // eye(rows,cols)</span><br><span class="line">C.setIdentity(rows,cols)            // C = eye(rows,cols)</span><br><span class="line">MatrixXd::Zero(rows,cols)           // zeros(rows,cols)</span><br><span class="line">C.setZero(rows,cols)                // C = ones(rows,cols)</span><br><span class="line">MatrixXd::Ones(rows,cols)           // ones(rows,cols)</span><br><span class="line">C.setOnes(rows,cols)                // C = ones(rows,cols)</span><br><span class="line">MatrixXd::Random(rows,cols)         // rand(rows,cols)*2-1        // MatrixXd::Random returns uniform random numbers in (-1, 1).</span><br><span class="line">C.setRandom(rows,cols)              // C = rand(rows,cols)*2-1</span><br><span class="line">VectorXd::LinSpaced(size,low,high)  // linspace(low,high,size)&apos;</span><br><span class="line">v.setLinSpaced(size,low,high)       // v = linspace(low,high,size)&apos;</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵点乘"><a href="#Eigen-矩阵点乘" class="headerlink" title="Eigen 矩阵点乘"></a>Eigen 矩阵点乘</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Dot products, norms, etc.</span><br><span class="line">// Eigen                  // Matlab</span><br><span class="line">x.norm()                  // norm(x).    Note that norm(R) doesn&apos;t work in Eigen.</span><br><span class="line">x.squaredNorm()           // dot(x, x)   Note the equivalence is not true for complex</span><br><span class="line">x.dot(y)                  // dot(x, y)</span><br><span class="line">x.cross(y)                // cross(x, y) Requires #include &lt;Eigen/Geometry&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="Eigen-矩阵特征值"><a href="#Eigen-矩阵特征值" class="headerlink" title="Eigen 矩阵特征值"></a>Eigen 矩阵特征值</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Eigenvalue problems</span><br><span class="line">// Eigen                          // Matlab</span><br><span class="line">A.eigenvalues();                  // eig(A);</span><br><span class="line">EigenSolver&lt;Matrix3d&gt; eig(A);     // [vec val] = eig(A)</span><br><span class="line">eig.eigenvalues();                // diag(val)</span><br><span class="line">eig.eigenvectors();               // vec</span><br><span class="line">// For self-adjoint matrices use SelfAdjointEigenSolver&lt;&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://eigen.tuxfamily.org/dox/" target="_blank" rel="noopener">Eigen Homepage</a></li>
+<li><a href="http://eigen.tuxfamily.org/dox/AsciiQuickReference.txt" target="_blank" rel="noopener">Eigen与Matlab对应关系</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/eigen/" title="资料：Eigen与Matlab语句之对应关系">https://www.vincentqin.tech/posts/eigen/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+            
+              <a href="/tags/Eigen/" rel="tag"># Eigen</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/tsinghua-google-ai/" rel="next" title="笔记：清华-谷歌人工智能研讨会(Tsinghua-Google AI Symposium)">
+                  <i class="fa fa-chevron-left"></i> 笔记：清华-谷歌人工智能研讨会(Tsinghua-Google AI Symposium)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/tips-for-fix-errors/" rel="prev" title="资料：那些年我们一起调过的Bug">
+                  资料：那些年我们一起调过的Bug <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵定义"><span class="nav-number">2.</span> <span class="nav-text">Eigen 矩阵定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-基础使用"><span class="nav-number">3.</span> <span class="nav-text">Eigen 基础使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵分块"><span class="nav-number">4.</span> <span class="nav-text">Eigen 矩阵分块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵元素交换"><span class="nav-number">5.</span> <span class="nav-text">Eigen 矩阵元素交换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵转置"><span class="nav-number">6.</span> <span class="nav-text">Eigen 矩阵转置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵乘积"><span class="nav-number">7.</span> <span class="nav-text">Eigen 矩阵乘积</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵单个元素操作"><span class="nav-number">8.</span> <span class="nav-text">Eigen 矩阵单个元素操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵化简"><span class="nav-number">9.</span> <span class="nav-text">Eigen 矩阵化简</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-特殊矩阵生成"><span class="nav-number">10.</span> <span class="nav-text">Eigen 特殊矩阵生成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵点乘"><span class="nav-number">11.</span> <span class="nav-text">Eigen 矩阵点乘</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Eigen-矩阵特征值"><span class="nav-number">12.</span> <span class="nav-text">Eigen 矩阵特征值</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">13.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

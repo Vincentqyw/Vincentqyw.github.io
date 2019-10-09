@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明来源，pdf版见此。">
+<meta name="keywords" content="SLAM,computer vision,李代数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="复试那些事儿">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/thu-postgraduate-exam/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明来源，pdf版见此。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-09-15T05:40:19.002Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="复试那些事儿">
+<meta name="twitter:description" content="本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明来源，pdf版见此。">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/thu-postgraduate-exam/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>复试那些事儿 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/thu-postgraduate-exam/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">复试那些事儿
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2015-03-31 18:04:28" itemprop="dateCreated datePublished" datetime="2015-03-31T18:04:28+08:00">2015-03-31</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-15 13:40:19" itemprop="dateModified" datetime="2019-09-15T13:40:19+08:00">2019-09-15</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/资料/" itemprop="url" rel="index"><span itemprop="name">资料</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/thu-postgraduate-exam/" class="post-meta-item leancloud_visitors" data-flag-title="复试那些事儿" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/thu-postgraduate-exam/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/thu-postgraduate-exam/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明<a href="https://github.com/Vincentqyw" target="_blank" rel="noopener">来源</a>，<a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/thu-postgraduate-exam/exam-questions.pdf" target="_blank" rel="noopener">pdf版</a>见此。</p>
+<a id="more"></a>
+<h1 id="Part1-复试笔试"><a href="#Part1-复试笔试" class="headerlink" title="Part1:复试笔试"></a>Part1:复试笔试</h1><p>复试笔试科目根据你选的方向有所不同，如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>专业</th>
+<th>考试科目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>控制理论与控制工程</td>
+<td>控制理论（经典控制及现代控制）</td>
+</tr>
+<tr>
+<td>控制工程</td>
+<td>控制理论、电子技术、运筹学、信号与系统四门科目中选一门</td>
+</tr>
+<tr>
+<td>检测技术与自动化装置</td>
+<td>电子技术（模电，数电）</td>
+</tr>
+<tr>
+<td>系统工程</td>
+<td>运筹学或控制理论（经典控制及现代控制）</td>
+</tr>
+<tr>
+<td>模式识别与智能系统</td>
+<td>信号与系统</td>
+</tr>
+<tr>
+<td>导航、制导与控制</td>
+<td>控制理论（经典控制及现代控制）</td>
+</tr>
+<tr>
+<td>企业信息化系统与工程</td>
+<td>电子技术（模电，数电）</td>
+</tr>
+<tr>
+<td>生物信息学</td>
+<td>信号与系统</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>我选的：控制理论。</p>
+<p>3月11号在清华大学3教3300考试。</p>
+<p>详见：清华官网，自动化系2015年硕士生招生复试和录取办法（考生）</p>
+<p>考试时间：2个小时，10：00到12：00</p>
+<p>具体题型：</p>
+<h2 id="1、判断题（2-10’）"><a href="#1、判断题（2-10’）" class="headerlink" title="1、判断题（2*10’）"></a>1、判断题（2*10’）</h2><p>可以说这部分是每年最难的！大部分是现代控制的知识，包括判断叙述的对错，并且解释原因。<br>我记得考的最多是线性系统控制器的问题，这部分和现代控制的知识结合比较紧密，一般会问：在线性定常或者离散系统完全能控/观的条件下，某某控制器是否存在；还有计算典型二阶系统在阻尼比 大于1的情况下单位阶跃响应的超调量；还有关于动态解耦的问题；开环增益 减小一定会使稳态裕度提高等等。题目很基础，注重细节（覆盖面很广），书上都能够找到，只要认真看过书就应该没有问题。我感觉这部分能够拿15分以上就很厉害了。</p>
+<h2 id="2、简单计算题（5-5’）"><a href="#2、简单计算题（5-5’）" class="headerlink" title="2、简单计算题（5*5’）"></a>2、简单计算题（5*5’）</h2><p>基础题目，很简单。包括：根据系统框图写出状态方程、结构图的化简并且写出传递函数、给定状态方程判断其能控性/能观性等。</p>
+<h2 id="3、计算题（15’-15’-15’-10’）"><a href="#3、计算题（15’-15’-15’-10’）" class="headerlink" title="3、计算题（15’+15’+15’+10’）"></a>3、计算题（15’+15’+15’+10’）</h2><p><strong>第一题</strong>：给定系统状态方程：</p>
+<script type="math/tex; mode=display">
+\left\{\begin{array}{l}{\dot{x}=A x+B u} \\ {y=C x}\end{array}\right.</script><p>, 系统矩阵$A$是6*6的矩阵，$B$是6*1的，$C$是1*6的矩阵，并给定状态量的初值。要求$u$为单位阶跃输入的情况下，系统的输出$y$ 。</p>
+<p>(注: 若用直接法做的话，根本不行，这个题目老师已经凑好，仅需写出状态方程对应的微分方程就能看出这个题目可以简化成2个状态量的题目。)</p>
+<p><strong>第二题</strong>：状态反馈，很简单。但注意的是题目给出的是：$u = f \cdot x$而不是$u = {\rm{ - }}f \cdot x{\rm{ + }}v$</p>
+<p>(注: 三阶或者二阶的都能用对比系数法做，这相对于通法来说简单不少。但注意状态反馈和状态观测器的区别。简单题，不解释了。)</p>
+<p><strong>第三题</strong>：给定系统的开环传递函数<script type="math/tex">{G_O}(s) = \frac{k}{(s +  \ldots )(s +  \ldots )}</script>，给定要求的剪切频率${\omega _c}$和相位裕量${\gamma _c}$，求$k$值。<br>(注: 根据剪切频率和相位裕量确定剪切频率的范围，然后在这个范围取一个值，根据幅值条件求出k值即可。我很怀疑我做错了，我不确定标准答案是怎么做的……)</p>
+<p><strong>第四题</strong>：有限时间状态最优控制器设计。</p>
+<p>关键要写出$Riccati$方程<script type="math/tex">\dot P{\rm{ + }}PA{\rm{ + }}{A^T}P{\rm{ + }}Q{\rm{ - }}PB{R^{ - 1}}{B^T}P{\rm{ = }}0</script>，因为题目给出的一维的，那么上述方程就变为标量的形式。整理出来是一个关于参数$p$的微分方程，解出$p$，写出最优控制<script type="math/tex">u^*</script>，再写出性能指标<script type="math/tex">J^*</script>即可。</p>
+<p>(注: 注意从$J$中直接写出矩阵$Q$和$R$时要注意$J$的系数，否则这两个矩阵就会写错。如果是标量的形式（如上题），那就相对简单多了。但是计算出 就比较麻烦，所以我只计算出了$p$，呵……)</p>
+<h1 id="Part2-复试面试"><a href="#Part2-复试面试" class="headerlink" title="Part2:复试面试"></a>Part2:复试面试</h1><p>时间：早上8：00开始，每人大概持续20分钟。</p>
+<p>流程：进门开始→自我介绍（2分钟左右）→英文文献朗读并翻译（5分钟左右）→抽题（5分钟左右）→自由提问时间（8分钟左右）→结束</p>
+<p>(注: 其实真正面试的时候就不会那么紧张了，最紧张的时刻是在会议室外等待的时间，简直就是煎熬！面试的顺序是按照初试排名，我被分到了E组（A、B、C、D、E组同时 进行）第三个)</p>
+<p>自我介绍：见《自我介绍文档》<br>英文文献：大概150词，有少量陌生单词。朗读的还不错，但是翻译的就真的醉了。记得当时老师问我什么是“multirobot system”，我说是“混合机器系统”，老师说“多机器人系统”，然后我就笑了……</p>
+<p>抽题题目如下（比较简单）：</p>
+<ol>
+<li><p>线性代数： 求<script type="math/tex">\left[ {\begin{array}{*{20}{c}}
+0&A\\
+B&0
+\end{array}} \right]^{ - 1}</script></p>
+</li>
+<li><p>高等数学：</p>
+<script type="math/tex; mode=display">
+\mathop {\lim }\limits_{a \to 0} \frac{1}{\pi {a^2}}\int\int_Df(x,y)d{\sigma}=   , 其中D{\rm{ = }}\left\{ {(x,y)|{x^2} + {y^2} \le {a^2}} \right\}</script></li>
+<li><p>自动控制原理<br>线性二阶系统的性能指标及其对系统响应的影响；什么叫欠阻尼系统？画出它的单位阶跃输入响应曲线。<br>(注: 我抽的题目很简单很简单吧。抽题题目包括数学、自动控制原理、电路原理、电力电子技术、电力拖动等。选择3道题目，答对即可。注意，每人有一次放弃的机会！一般选择数学和自控，当然选择自己最擅长的学科最好。数学多为线数和概率论，线数多为向量组线性相关还是无关的问题，还有关于矩阵的秩、行列式的值等计算；概率论多为全概率公式和贝叶斯公式的简单应用：共有3枚硬币，其中1枚5元，2枚1元，问题，共取2次，且第一次不放回，两次取得6元的概率。自动控制原理和电路原理也可以选择，但是题目的难易不敢保证。)</p>
+</li>
+<li><p>自由提问<br>就像是聊天，老师会对你的简历或者其他材料里感兴趣的地方提出问题，我的重点就是毕业设计和数模比赛。其中毕业设计占了很大的篇幅，因为我提前看过，所以对此介绍的很详细。<br>记得面试最后，一个老师问我：“有a和b两个不相等的数，不借用第三个变量的情况下，交换两个变量的数值”。然后我就写在了纸上，但是后来我就改错了（囧）……问完这个问题后面试就结束了。</p>
+</li>
+</ol>
+<p>祝大家复试成功，加油！</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/thu-postgraduate-exam/" title="复试那些事儿">https://www.vincentqin.tech/posts/thu-postgraduate-exam/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+            
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
+            
+              <a href="/tags/李代数/" rel="tag"># 李代数</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/learning-Markdown/" rel="prev" title="Markdown 学习">
+                  Markdown 学习 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Part1-复试笔试"><span class="nav-number">1.</span> <span class="nav-text">Part1:复试笔试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、判断题（2-10’）"><span class="nav-number">1.1.</span> <span class="nav-text">1、判断题（2*10’）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、简单计算题（5-5’）"><span class="nav-number">1.2.</span> <span class="nav-text">2、简单计算题（5*5’）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、计算题（15’-15’-15’-10’）"><span class="nav-number">1.3.</span> <span class="nav-text">3、计算题（15’+15’+15’+10’）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Part2-复试面试"><span class="nav-number">2.</span> <span class="nav-text">Part2:复试面试</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。所以统计学习方法有三个要素：模型、策略、算法。">
+<meta name="keywords" content="机器学习,统计学习方法,概率论,SVM,过拟合,朴素贝叶斯">
+<meta property="og:type" content="article">
+<meta property="og:title" content="统计学习方法总结">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/summary-statistical-learning/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。所以统计学习方法有三个要素：模型、策略、算法。">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/summary-statistical-learning/Captain_America.jpg">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/summary-statistical-learning/norm12.jpg">
+<meta property="og:image" content="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/359b033b5bb5c9ea238f2f6cdd39b6003bf3b3c4.jpg">
+<meta property="og:updated_time" content="2019-09-15T08:23:55.780Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="统计学习方法总结">
+<meta name="twitter:description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。所以统计学习方法有三个要素：模型、策略、算法。">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/summary-statistical-learning/Captain_America.jpg">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/summary-statistical-learning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>统计学习方法总结 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/summary-statistical-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">统计学习方法总结
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-09-23 19:47:38" itemprop="dateCreated datePublished" datetime="2017-09-23T19:47:38+08:00">2017-09-23</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-09-15 16:23:55" itemprop="dateModified" datetime="2019-09-15T16:23:55+08:00">2019-09-15</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/summary-statistical-learning/" class="post-meta-item leancloud_visitors" data-flag-title="统计学习方法总结" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/summary-statistical-learning/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/summary-statistical-learning/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/summary-statistical-learning/Captain_America.jpg" alt></p>
+<p>本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即<strong>假设空间</strong>；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由<strong>算法</strong>实现。<br>所以统计学习方法有三个要素：<strong>模型</strong>、<strong>策略</strong>、<strong>算法</strong>。</p>
+<a id="more"></a>
+<h2 id="统计学习"><a href="#统计学习" class="headerlink" title="统计学习"></a>统计学习</h2><ul>
+<li>监督学习</li>
+<li>半监督学习</li>
+<li>无监督学习</li>
+<li>强化学习</li>
+</ul>
+<h2 id="输入空间、特征空间与输出空间"><a href="#输入空间、特征空间与输出空间" class="headerlink" title="输入空间、特征空间与输出空间"></a>输入空间、特征空间与输出空间</h2><ol>
+<li>输入变量&amp;输出变量均连续-&gt; 回归问题</li>
+<li>输出空间为有限个离散变量的预测问题-&gt; 分类问题</li>
+<li>输入与输出均为变量序列的预测问题-&gt; 标注问题</li>
+</ol>
+<h2 id="风险函数"><a href="#风险函数" class="headerlink" title="风险函数"></a>风险函数</h2><ul>
+<li>期望风险：模型关于联合分布的期望损失</li>
+<li>经验风险：模型关于训练样本的平均损失<br>按照大数定律，当样本数据量区域无穷时，经验风险趋近于期望风险；<br>但是当样本容量很小时，经验风险的效果就不会太好，此时容易出现过拟合现象。<br>此时，结构风险就被提出。结构风险是在经验风险的基础上添加上表示模型复杂度的正则化项/罚项。<br>极大似然估计是经验风险最小化的一个特例。<br>最大后验概率估计是结构风险最小化的一个特例；</li>
+</ul>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>监督学习里要学习的模型就是<strong>决策函数或者条件概率分布</strong>。</p>
+<p>此时不得不提到生成方法以及判别方法。</p>
+<ul>
+<li>生成方法，由数据学习联合概率分布$P(X,Y)$，然后求出条件概率分布模型，即生成模型：<script type="math/tex; mode=display">
+P(Y|X)=\frac{P(X,Y)}{P(X)}</script></li>
+<li>判别方法是由数据直接学习决策函数或者条件概率分布作为预测模型，即判别模型。</li>
+</ul>
+<h3 id="生成模型与判别模型"><a href="#生成模型与判别模型" class="headerlink" title="生成模型与判别模型"></a>生成模型与判别模型</h3><ul>
+<li>生成模型常见的主要有：</li>
+</ul>
+<ol>
+<li>高斯混合模型</li>
+<li>朴素贝叶斯</li>
+<li>混合高斯模型GMM</li>
+<li>隐马尔可夫模型HMM</li>
+<li>马尔可夫的随机场</li>
+<li>KNN</li>
+</ol>
+<ul>
+<li>常见的判别模型有：</li>
+</ul>
+<ol>
+<li>支持向量机</li>
+<li>传统的神经网络</li>
+<li>线性判别分析</li>
+<li>线性回归</li>
+<li>条件随机场</li>
+<li>最大熵模型</li>
+<li>逻辑斯特回归</li>
+</ol>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/summary-statistical-learning/norm12.jpg" alt></p>
+<h2 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h2><p>指定策略的目的就是为了挑选出假设空间中到底哪个模型才是我们真正需要的。此时会用到损失函数以及风险函数的概念。</p>
+<ul>
+<li><p>0-1 损失函数</p>
+<script type="math/tex; mode=display">
+L(Y,f(X))=\left\{\begin{aligned}
+1,    && Y \neq f(X)\\
+0,    &&Y = f(X) 
+\end{aligned}\right.</script></li>
+<li><p>平法损失函数</p>
+<script type="math/tex; mode=display">
+L(Y,f(X))=(Y-f(X)^2</script></li>
+<li><p>绝对值损失函数</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">
+L(Y,f(X))=|Y-f(X)|</script><ul>
+<li>对数损失函数<script type="math/tex; mode=display">
+L(Y,P(Y|X))=-logP(Y|X)</script></li>
+</ul>
+<p>损失函数越小的话代表模型越好。$(X,Y)$是随机变量符合联合分布概率$P(X,Y)$，所以损失函数的期望被定义为：</p>
+<script type="math/tex; mode=display">
+R_{ref}(f)=E_p[L(Y,f(X))]=\int_{\mathcal{X} \times \mathcal{Y}}L(y,f(x))P(x,y)dxdy</script><p>以上是模型$f(X)$关于联合分布$P(X,Y)$的平均意义下的损失，称为风险函数或者<strong>期望损失</strong>（expected loss）。<br>但是呢，期望损失不易求解，我们一般用<strong>模型关于训练数据集的平均损失</strong>来逼近期望损失，即：</p>
+<script type="math/tex; mode=display">
+R_{emp}(f)=E_p[L(Y,f(X))]=\frac{1}{N} \sum_{i=1}^NL(y_i,f(x_i))</script><p><strong>经验风险最小化</strong>的策略认为，经验风险最小的模型就是最优的模型，于是按照这种定义，我们有：</p>
+<script type="math/tex; mode=display">
+f^*={argmin}_{f \in \mathcal{F} } R_{emp}</script><p>其中的$\mathcal{F}$是假设空间。<br>最大似然估计就是经验风险最小化的一个例子：当模型为条件概率，损失函数是对数损失时，经验风险最小化就等价于极大似然估计。<br>根据大数定理可知，当样本容量N趋近于无限时，经验风险趋近于期望风险。但是如果样本数量是有限时，此时会出现过拟合现象，那么这时候需要结构风险的帮助。<br>结构风险是为了防止过拟合而提出的策略，结构风险最小化等价于正则化（regularization）。其定义是</p>
+<script type="math/tex; mode=display">
+R_{srm}(f)=\frac{1}{N} \sum_{i=1}^NL(y_i,f(x_i))+\lambda J(f)</script><p>其中的$J(f)$是衡量模型复杂度的项，也叫罚项。当模型越复杂时，$J(f)$越大；模型越简单时，$J(f)$越小。<br>最大后验概率估计（MAP）就是结构风险最小化的一个例子：当模型时条件概率，损失函数是对数损失函数，模型复杂度由先验概率表示时，结构风险最小化就等价于MAP。</p>
+<p>监督学习的模型可以分为概率模型与非概率模型，由条件概率分布$P(Y|X)$或者决策函数$Y=f(X)$表示。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>算法是指学习模型的具体计算方法： <strong>find global optimization solution efficiently</strong>.</p>
+<h2 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h2><p><strong>模型选择的主要方式有：正则化与交叉验证</strong>。</p>
+<p>在经验风险最小化时已经了解到正则化的由来，正则化就是针对过拟合现象提出的解决策略。</p>
+<p><strong>过拟合</strong>是指学习模型时选择的模型包含的参数过多，以致于这一模型对已知数据的预测很好，而对未知数据的预测能力变得很差。 以下介绍两种正则化的范数：$L_1$ and $L_2$</p>
+<h3 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h3><h4 id="L2范数正则"><a href="#L2范数正则" class="headerlink" title="L2范数正则"></a>L2范数正则</h4><script type="math/tex; mode=display">
+C=C_0+ \frac{\alpha}{2n}\sum_ww^2</script><p>对$w$以及$b$求导如下：</p>
+<script type="math/tex; mode=display">
+ \frac{\partial C}{\partial w}= \frac{\partial C_0}{\partial w}+\frac{\lambda}{n}w
+
+ \frac{\partial C}{\partial b}= \frac{\partial C_0}{\partial b}</script><p>由梯度下降法可知：</p>
+<script type="math/tex; mode=display">
+w \rightarrow w-\eta\frac{\partial C}{\partial w}=\left(1-\frac{\eta\lambda}{n} \right)w-\eta\frac{\partial C_0}{\partial w}</script><p>系数$\left(1-\frac{\eta\lambda}{n} \right)$是小于1的，相比于原来的系数等于一，此时的效果相当于就是权值衰减（weight decay）。</p>
+<p>注意到<strong>过拟合</strong>的时候，我们的假设函数要顾及到每一个数据点，模型就会尝试对所有数据点进行拟合，包括一些异常点；此时形成的拟合函数的波动性会非常大，可以看到此时的拟合参数会异常大。通过L2正则化处理可以使这些参数变小，解释如下：</p>
+<blockquote>
+<p>更小的权重，表示网络的复杂组更低，对数据拟合的刚刚好（奥卡姆剃须刀原理）</p>
+</blockquote>
+<h4 id="L1范数正则"><a href="#L1范数正则" class="headerlink" title="L1范数正则"></a>L1范数正则</h4><p>L1正则假设参数的先验分布是Laplace分布，可以保证模型的稀疏性，也就是某些参数等于0；<br>L2正则假设参数的先验分布是Gaussian分布，可以保证模型的稳定性，也就是参数的值不会太大或太小</p>
+<p><img src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/359b033b5bb5c9ea238f2f6cdd39b6003bf3b3c4.jpg" alt="两种正则化的对比"></p>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization/#ed61992b37932e208ae114be75e42a3e6dc34cb3" target="_blank" rel="noopener">lasso and ridge regularization</a></p>
+<h3 id="交叉验证"><a href="#交叉验证" class="headerlink" title="交叉验证"></a>交叉验证</h3><p>就是将整个数据集切分成三个部分，分别是训练集、验证集和测试集。训练集用来训练模型，验证集用于模型 的选择，而测试集用于对学习方法的评估。</p>
+<p>但是一般情况下，训练数据是不足的，那么此时可以重复的利用数据，进行反复训练以得到最优模型。</p>
+<p>常见的方法有：</p>
+<ul>
+<li>S折交叉验证（S-fold cross validation）</li>
+<li>留一交叉验证（S=N，当S为数据集的容量时，S折交叉验证就变成了留一交叉验证）</li>
+</ul>
+<h2 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h2><p>最大似然估计提供了一种给定观察数据来评估模型参数的方法，即：“模型已定，参数未知”</p>
+<blockquote>
+<p>举个别人博客中的例子，假如有一个罐子，里面有黑白两种颜色的球，数目多少不知，两种颜色的比例也不知。我 们想知道罐中白球和黑球的比例，但我们不能把罐中的球全部拿出来数。现在我们可以每次任意从已经摇匀的罐中拿一个球出来，记录球的颜色，然后把拿出来的球 再放回罐中。这个过程可以重复，我们可以用记录的球的颜色来估计罐中黑白球的比例。假如在前面的一百次重复记录中，有七十次是白球，请问罐中白球所占的比例最有可能是多少？很多人马上就有答案了：70%。而其后的理论支撑是什么呢？</p>
+</blockquote>
+<p>我们假设罐中白球的比例是$p$，那么黑球的比例就是$1-p$。因为每抽一个球出来，在记录颜色之后，我们把抽出的球放回了罐中并摇匀，所以每次抽出来的球的颜 色服从同一独立分布。这里我们把一次抽出来球的颜色称为一次抽样。题目中在一百次抽样中，七十次是白球的概率$P(Data|M)$，这里Data是所有的数据，M是所给出的模型，表示每次抽出来的球是白色的概率为$p$。如果第一抽样的结果记为<script type="math/tex">x_1</script>，第二抽样的结果记为<script type="math/tex">x_2</script>… 那么<script type="math/tex">Data = (x_1,x_2,...,x_{100})</script>。这样，</p>
+<script type="math/tex; mode=display">
+P(Data|M)= P(x_1,x_2,...,x_{100}|M)= P(x_1|M)P(x_2|M)...P(x_{100}|M)= p^{70}(1-p)^{30}</script><p>那么p在取什么值的时候，$P(Data|M)$的值最大呢？将$p^{70}(1-p)^{30}$对$p$求导，并其等于零。</p>
+<script type="math/tex; mode=display">
+70p^{69}(1-p)^{30}-p^{70}*30(1-p)^{29}=0</script><p>解方程可以得到<script type="math/tex">p=0.7</script>。
+　　　　</p>
+<h3 id="最大熵原理"><a href="#最大熵原理" class="headerlink" title="最大熵原理"></a>最大熵原理</h3><p>最大熵原理使概率学习中的一个准则。学习概率模型时，在所有的可能概率模型（分布）中，熵最大的模型是最好的模型。最大熵原理也可以理解成在满足约束条件的模型中选择熵最大的模型！</p>
+<script type="math/tex; mode=display">
+H(p)=-\sum_x{log(P(x))P(x)}</script><p>其中$X$服从的概率分布为$P(X)$，$X$服从均匀分布时，熵最大。当没有其他已知的约束时，$\Sigma{P(x)}=1$，此时按照最大熵原理，当$P(x_1)=P(x_2)=…=P(x_n)$时，熵最大；此时等概论，等概论意味着对事实的无知，因为没有更多可能的信息，所以此时的判断也是合情合理的。</p>
+<h3 id="线性分类器"><a href="#线性分类器" class="headerlink" title="线性分类器"></a>线性分类器</h3><p>线性分类器有三大类：感知器准则函数、$SVM$、$Fisher$准则，而贝叶斯分类器不是线性分类器。</p>
+<ul>
+<li>感知器准则函数：代价函数$J=-(W*X+w_0)$，分类的准则是最小化代价函数。感知器是神经网络（$NN$）的基础，网上有很多介绍。</li>
+<li>$SVM$：支持向量机也是很经典的算法，优化目标是最大化间隔（margin），又称最大间隔分类器，是一种典型的线性分类器。（使用核函数可解决非线性问题）</li>
+<li>$Fisher$准则：更广泛的称呼是线性判别分析（$LDA$），将所有样本投影到一条远点出发的直线，使得同类样本距离尽可能小，不同类样本距离尽可能大，具体为最大化“广义瑞利商”。</li>
+</ul>
+<h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><ul>
+<li>召回率就是有多少正确的被你找回来了；准确率就是你找到的有多少是正确的；(一般情况下召回率和准确率呈负相关，所以可以用F值衡量整体效果)</li>
+<li>TP(True Positive)是你判断为正确的，实际就是正确的；</li>
+<li>FP(False Positive)是你判断是错误的，实际也是错误的；</li>
+<li>TN(True Negative)是你判断为正确的，但实际是错误的；</li>
+<li>FN(False Negative)是你判断是错误的，但实际是正确的；</li>
+</ul>
+<h2 id="朴素贝叶斯-Naive-Bayes"><a href="#朴素贝叶斯-Naive-Bayes" class="headerlink" title="朴素贝叶斯 Naive Bayes"></a>朴素贝叶斯 <script type="math/tex">Naive Bayes</script></h2><h3 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h3><p>朴素贝叶斯是基于贝叶斯定理与特征条件独立假设的分类方法。NB的核心在于它假设向量的所有分量之间是独立的。在贝叶斯理论系统中，都有一个重要的条件独立性假设：假设所有特征之间相互独立，这样才能将联合概率拆分。<br>对于由$P(X,Y)$独立产生的训练集$T=\{(x_1,y_1),(x_2,y_2),…, (x_N,y_N),\}$而言通过朴素贝叶斯的方法学习这个联合概率分布。大致分两步：</p>
+<ol>
+<li>计算先验分布：<script type="math/tex; mode=display">
+P(Y=c_k),k=1,2...,K</script></li>
+<li>条件概率分布：<script type="math/tex; mode=display">
+P(X=x|Y=c_k)=P(X^{(1)}=x^{(1)},X^{(2)}=x^{(2)},...,X^{(n)}=x^{(n)}|Y=c_k),k=1,2...,K</script>其中的$x \in  R^{n}$，$n$表示这个样本的维度。</li>
+</ol>
+<p>但是在计算条件概率时因为朴素贝叶斯做了条件独立性假设，那么该条件概率分布可以写成：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+P(X=x|Y=c_k)&=P(X^{(1)}=x^{(1)},X^{(2)}=x^{(2)},...,X^{(n)}=x^{(n)}|Y=c_k)
+\\
+&=\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)
+\end{aligned}</script><p>在实际分类时，对于给定的输入x，通过学习到的模型估计后验概率$P(Y=c_k|X=x)$将后验概率最大的类作为x的类的输出。</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+P(Y=c_k|X=x) &=\frac{P(X=x|Y=c_k)P(Y=c_k)}{\sum_{k}P(X=x|Y=c_k)P(Y=c_k)}\\
+&=\frac{P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)}{\sum_{k}P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)}
+\end{aligned}</script><p>因为分母就是$P(X=x)$的概率，这是不变的。因此我们仅需要知道分子哪个大就可以，也就是：</p>
+<script type="math/tex; mode=display">
+y={argmax}_{c_k} P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)</script><p>上式的意思是求解到底是哪些类别<script type="math/tex">c_k</script>能够让最大后验概率最大化。</p>
+<h3 id="参数估计"><a href="#参数估计" class="headerlink" title="参数估计"></a>参数估计</h3><h4 id="极大似然估计-1"><a href="#极大似然估计-1" class="headerlink" title="极大似然估计"></a>极大似然估计</h4><ol>
+<li><p>计算先验概率</p>
+<script type="math/tex; mode=display">
+P(Y=c_k)=\frac{\sum_{i=1}^NI(y_i=c_k)}{N}</script></li>
+<li><p>计算条件概率</p>
+<script type="math/tex; mode=display">
+P(X=a_{jl}|Y=c_k)=\frac{\sum_{i=1}^NI(x_i^{(j)}=a_{jl},y_i=c_k)}{\sum_{i=1}^NI(y_i=c_k)}</script><p>其中</p>
+<script type="math/tex; mode=display">
+j=1,2...n;l=1,2...S_j;k=1,2...K</script></li>
+<li><p>对于给定的实例x，计算</p>
+<script type="math/tex; mode=display">
+P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)</script></li>
+<li><p>确定实例的类别</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/summary-statistical-learning/" title="统计学习方法总结">https://www.vincentqin.tech/posts/summary-statistical-learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+            
+              <a href="/tags/统计学习方法/" rel="tag"># 统计学习方法</a>
+            
+              <a href="/tags/概率论/" rel="tag"># 概率论</a>
+            
+              <a href="/tags/SVM/" rel="tag"># SVM</a>
+            
+              <a href="/tags/过拟合/" rel="tag"># 过拟合</a>
+            
+              <a href="/tags/朴素贝叶斯/" rel="tag"># 朴素贝叶斯</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/git-notebook/" rel="next" title="Ubuntu上使用Git以及GitHub">
+                  <i class="fa fa-chevron-left"></i> Ubuntu上使用Git以及GitHub
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/SIFT-and-SURF/" rel="prev" title="SIFT和SURF特性提取总结">
+                  SIFT和SURF特性提取总结 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#统计学习"><span class="nav-number">1.</span> <span class="nav-text">统计学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入空间、特征空间与输出空间"><span class="nav-number">2.</span> <span class="nav-text">输入空间、特征空间与输出空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#风险函数"><span class="nav-number">3.</span> <span class="nav-text">风险函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型"><span class="nav-number">4.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成模型与判别模型"><span class="nav-number">4.1.</span> <span class="nav-text">生成模型与判别模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#策略"><span class="nav-number">5.</span> <span class="nav-text">策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法"><span class="nav-number">6.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型选择"><span class="nav-number">7.</span> <span class="nav-text">模型选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则化"><span class="nav-number">7.1.</span> <span class="nav-text">正则化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#L2范数正则"><span class="nav-number">7.1.1.</span> <span class="nav-text">L2范数正则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#L1范数正则"><span class="nav-number">7.1.2.</span> <span class="nav-text">L1范数正则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">7.1.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交叉验证"><span class="nav-number">7.2.</span> <span class="nav-text">交叉验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#极大似然估计"><span class="nav-number">8.</span> <span class="nav-text">极大似然估计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最大熵原理"><span class="nav-number">8.1.</span> <span class="nav-text">最大熵原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性分类器"><span class="nav-number">8.2.</span> <span class="nav-text">线性分类器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评价指标"><span class="nav-number">8.3.</span> <span class="nav-text">评价指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#朴素贝叶斯-Naive-Bayes"><span class="nav-number">9.</span> <span class="nav-text">朴素贝叶斯 Naive Bayes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本方法"><span class="nav-number">9.1.</span> <span class="nav-text">基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数估计"><span class="nav-number">9.2.</span> <span class="nav-text">参数估计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#极大似然估计-1"><span class="nav-number">9.2.1.</span> <span class="nav-text">极大似然估计</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>

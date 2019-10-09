@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="manifest" href="/images/realcat-manifest.json">
+  <meta name="msapplication-config" content="/images/browserconfig.xml">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Verdana:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="好的数据集是做出漂亮实验的必要条件.声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! 邮箱：点我">
+<meta name="keywords" content="光场,计算成像,点云Point Cloud,Light Field">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初试HCI光场数据集">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="好的数据集是做出漂亮实验的必要条件.声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! 邮箱：点我">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/buddha2.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/Buddha2Hd5.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/scenes.png">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/PCs.gif">
+<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/3d-demo.jpg">
+<meta property="og:updated_time" content="2018-12-09T15:07:53.659Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初试HCI光场数据集">
+<meta name="twitter:description" content="好的数据集是做出漂亮实验的必要条件.声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! 邮箱：点我">
+<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/buddha2.gif">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>初试HCI光场数据集 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-schedule">
+      
+    
+
+    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>Search</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="/images/qin.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">初试HCI光场数据集
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2017-04-30 14:22:20" itemprop="dateCreated datePublished" datetime="2017-04-30T14:22:20+08:00">2017-04-30</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2018-12-09 23:07:53" itemprop="dateModified" datetime="2018-12-09T23:07:53+08:00">2018-12-09</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/光场/" itemprop="url" rel="index"><span itemprop="name">光场</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/posts/new-hci-lightfield-datasets/" class="post-meta-item leancloud_visitors" data-flag-title="初试HCI光场数据集" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/new-hci-lightfield-datasets/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/new-hci-lightfield-datasets/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/buddha2.gif" width="80%"></p>
+<div class="note success">
+            <p>好的数据集是做出漂亮实验的必要条件.<br><span id="inline-red">声明</span>：<u>一切理解都是本人观点，如有疑问，还望在<strong>评论</strong>中留言。如需转载请与本人联系，谢谢合作</u>! 邮箱：<a href="/about#CONTACT INFORMATION">点我</a></p>
+          </div>
+<a id="more"></a>
+<h2 id="Wanner光场数据集"><a href="#Wanner光场数据集" class="headerlink" title="Wanner光场数据集"></a>Wanner光场数据集</h2><p>目前光场数据集有如下几种主流的数据集，</p>
+<ol>
+<li><a href="http://lightfield.stanford.edu/lfs.html" target="_blank" rel="noopener">斯坦福大学光场数据集</a>；</li>
+<li><a href="http://lightfieldgroup.iwr.uni-heidelberg.de/?page_id=713" target="_blank" rel="noopener">Wanner(HCI)数据集</a>(Old 4D Light Field Benchmark)；</li>
+<li><a href="http://hci-lightfield.iwr.uni-heidelberg.de/" target="_blank" rel="noopener">4D Light Field Dataset</a>(Konstanz大学与Heidelberg大学的HCI合作,New 4D Light Field Benchmark)。</li>
+</ol>
+<p>下面对Wanner数据集进行讨论。学习光场的同学应该很熟悉Wanner提供的数据集共有<strong>10</strong>个场景，分别是：</p>
+<ol>
+<li>Buddha</li>
+<li>Buddha2</li>
+<li>Couple</li>
+<li>Cube</li>
+<li>Mona</li>
+<li>Medieval</li>
+<li>Papillon</li>
+<li>StillLife</li>
+<li>Horses</li>
+<li>rx_watch</li>
+</ol>
+<p>其中，1-8为仿真场景，9-10是由Raytrix拍摄的场景。他们的文件后缀为 .h5, 格式是HDF5，这是一种文件组织格式，可以很好的将数据组织在一起，具体不做展开。MATLAB 提供了一系列相应的读取该文件的函数，如：h5disp，hdf5info(新版本用h5info)，hdf5read等函数，如利用h5disp就可以得到HDF5文件的内容信息，如下图：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/Buddha2Hd5.gif" alt></p>
+<p>以下给出解码HDF5文件得到子孔径图像以及重排图像的代码：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">input_file       = <span class="string">'Buddha2.h5'</span>; <span class="comment">% file name</span></span><br><span class="line">input_folder     = <span class="string">''</span>;           <span class="comment">% your datasets folder</span></span><br><span class="line"></span><br><span class="line">[pathstr,name,ext] = fileparts([input_folder <span class="string">'/'</span> input_file]);</span><br><span class="line">file_path=[pathstr,name,ext];</span><br><span class="line"></span><br><span class="line">hinfo_data = hdf5info(file_path);</span><br><span class="line"><span class="keyword">if</span> strcmp(file_path,<span class="string">'Cube'</span>) || strcmp(file_path,<span class="string">'Couple'</span>)</span><br><span class="line">	data = hdf5read(hinfo_data.GroupHierarchy.Datasets(<span class="number">3</span>));</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	data = hdf5read(hinfo_data.GroupHierarchy.Datasets(<span class="number">2</span>));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">data = <span class="built_in">permute</span>(data, [<span class="number">3</span> <span class="number">2</span> <span class="number">1</span> <span class="number">5</span> <span class="number">4</span>]);</span><br><span class="line">data = im2double(data(:, :, :, :, <span class="keyword">end</span>:<span class="number">-1</span>:<span class="number">1</span>));</span><br><span class="line"><span class="comment">% parameters from input</span></span><br><span class="line">UV_diameter = <span class="built_in">size</span>(data, <span class="number">4</span>);                   <span class="comment">% angular resolution</span></span><br><span class="line">UV_radius    = <span class="built_in">floor</span>(UV_diameter/<span class="number">2</span>);           <span class="comment">% half angular resolution</span></span><br><span class="line">h                  = <span class="built_in">size</span>(data, <span class="number">1</span>);            <span class="comment">% spatial image height</span></span><br><span class="line">w                  = <span class="built_in">size</span>(data, <span class="number">2</span>);            <span class="comment">% spatial image width</span></span><br><span class="line">y_size=h;</span><br><span class="line">x_size=w;</span><br><span class="line">UV_size=UV_diameter^<span class="number">2</span>;</span><br><span class="line">LF_y_size   = h * UV_diameter;                 <span class="comment">% total image height</span></span><br><span class="line">LF_x_size   = w * UV_diameter;                 <span class="comment">% total image width</span></span><br><span class="line">LF_Remap    = <span class="built_in">reshape</span>(<span class="built_in">permute</span>(data, ...</span><br><span class="line">	   [<span class="number">4</span> <span class="number">1</span> <span class="number">5</span> <span class="number">2</span> <span class="number">3</span>]), [LF_y_size LF_x_size <span class="number">3</span>]); <span class="comment">% the remap image</span></span><br><span class="line">IM_Pinhole = data(:,:,:,UV_radius+<span class="number">1</span>,UV_radius+<span class="number">1</span>); <span class="comment">% the pinhole image</span></span><br></pre></td></tr></table></figure>
+<p>经过以上步骤可以得到相应的中心视角图像以及Remap（重排）之后的图像，从而进一步方便接下来的工作，例如基于该数据集的深度图像估计算法估计。</p>
+<h2 id="HCI-4D光场数据集-4D-Light-Field-Benchmark"><a href="#HCI-4D光场数据集-4D-Light-Field-Benchmark" class="headerlink" title="HCI 4D光场数据集(4D Light Field Benchmark)"></a>HCI 4D光场数据集(4D Light Field Benchmark)</h2><p id="div-border-left-red">The 4D Light Field Benchmark was jointly created by the University of Konstanz and the HCI at Heidelberg University.</p>
+
+
+<p>上周整理上一篇博客的时候，想再次查看HCI数据集是否更新，结果惊喜地看到它竟然更新了！激动之余，就连夜把数据以及代码下载了下来，看看这个数据集的庐山真面目。</p>
+<h3 id="数据集概况"><a href="#数据集概况" class="headerlink" title="数据集概况"></a>数据集概况</h3><p>这个数据集共有4大类：</p>
+<ul>
+<li><p>Stratified（4）</p>
+</li>
+<li><p>training（4）</p>
+</li>
+<li><p>test（4）</p>
+</li>
+<li><p>additional（16）</p>
+<p>​</p>
+</li>
+</ul>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/scenes.png" alt></p>
+<p>总结而言这个4D光场数据集提供了如下信息：</p>
+<ul>
+<li>9x9x512x512x3 light fields as individual PNGs（角度分辨率：9×9，空间分辨率：512×512）</li>
+<li>Config files with camera settings and disparity ranges（相机配置文件以及视差范围）</li>
+<li>Per center view (except for the 4 test scenes):（除了测试类外每类的中心视角图像）<ul>
+<li>512×512 and 5120×5120 depth and disparity maps as PFMs（深度图像以及视差图：512×512低分辨率，以及5120×5120高分辨率）</li>
+<li>512×512 and 5120×5120 evaluation masks as PNGs（png格式的评价掩膜：512×512低分辨率，以及5120×5120高分辨率）</li>
+</ul>
+</li>
+<li>16组additional的每个视角的Ground Truth Depth图像（pfm格式）</li>
+</ul>
+<h3 id="数据集下载"><a href="#数据集下载" class="headerlink" title="数据集下载"></a>数据集下载</h3><p>开始下载吧！在<a href="http://hci-lightfield.iwr.uni-heidelberg.de/" target="_blank" rel="noopener">该页面</a>的<code>get the data</code>处填写自己的邮箱，然后点击<code>request download links</code>。接下来你的邮箱里就会出现这个数据集的下载链接，链接有点多，你可以选择性的下载或者全部下载。方便起见，我把邮件中提供的链接贴在了下面：</p>
+<ul>
+<li><p><a href="http://lightfield-analysis.net/benchmark/downloads/benchmark.zip" target="_blank" rel="noopener">Benchmark package with the 12 benchmark scenes</a></p>
+</li>
+<li><p><a href="http://lightfield-analysis.net/benchmark/downloads/full_data.zip" target="_blank" rel="noopener"><strong>Full package with all 28 scenes</strong></a>(这是全部的场景，共28类；注意不包含深度图像)</p>
+</li>
+</ul>
+<ul>
+<li>Packages per category:<ul>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/stratified.zip" target="_blank" rel="noopener">stratified</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/test.zip" target="_blank" rel="noopener">test</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/training.zip" target="_blank" rel="noopener">training</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/additional.zip" target="_blank" rel="noopener">additional</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Stratified scenes:<ul>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/backgammon.zip" target="_blank" rel="noopener">backgammon</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/dots.zip" target="_blank" rel="noopener">dots</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/pyramids.zip" target="_blank" rel="noopener">pyramids</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/stripes.zip" target="_blank" rel="noopener">stripes</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Test scenes:<ul>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/bedroom.zip" target="_blank" rel="noopener">bedroom</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/bicycle.zip" target="_blank" rel="noopener">bicycle</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/herbs.zip" target="_blank" rel="noopener">herbs</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/origami.zip" target="_blank" rel="noopener">origami</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Training scenes:<ul>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/boxes.zip" target="_blank" rel="noopener">boxes</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/cotton.zip" target="_blank" rel="noopener">cotton</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/dino.zip" target="_blank" rel="noopener">dino</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/sideboard.zip" target="_blank" rel="noopener">sideboard</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>Additional scenes:</p>
+<ul>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/antinous.zip" target="_blank" rel="noopener">antinous</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/boardgames.zip" target="_blank" rel="noopener">boardgames</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/dishes.zip" target="_blank" rel="noopener">dishes</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/greek.zip" target="_blank" rel="noopener">greek</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/kitchen.zip" target="_blank" rel="noopener">kitchen</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/medieval2.zip" target="_blank" rel="noopener">medieval2</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/museum.zip" target="_blank" rel="noopener">museum</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/pens.zip" target="_blank" rel="noopener">pens</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/pillows.zip" target="_blank" rel="noopener">pillows</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/platonic.zip" target="_blank" rel="noopener">platonic</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/rosemary.zip" target="_blank" rel="noopener">rosemary</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/table.zip" target="_blank" rel="noopener">table</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/tomb.zip" target="_blank" rel="noopener">tomb</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/tower.zip" target="_blank" rel="noopener">tower</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/town.zip" target="_blank" rel="noopener">town</a></li>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/vinyl.zip" target="_blank" rel="noopener">vinyl</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><a href="http://lightfield-analysis.net/benchmark/downloads/additional_depth_disp_all_views.zip" target="_blank" rel="noopener">Depth and disparity maps for all views of the additional scenes</a></li>
+</ul>
+<h3 id="数据集初体验"><a href="#数据集初体验" class="headerlink" title="数据集初体验"></a>数据集初体验</h3><h4 id="测试代码下载"><a href="#测试代码下载" class="headerlink" title="测试代码下载"></a>测试代码下载</h4><p>在其官方给出的<a href="https://github.com/lightfield-analysis/matlab-tools" target="_blank" rel="noopener">代码页面</a>下载测试程序，下载完毕后将convert*.m以及lib文件夹其放置在与上述数据集同级目录。例如：TEST目录下同时包括：convert.m 以及 lib/， 同样也包含 additional/, stratified/, test/, 以及 training/。</p>
+<h4 id="生成LF-mat"><a href="#生成LF-mat" class="headerlink" title="生成LF.mat"></a>生成LF.mat</h4><ul>
+<li>convertAll. 对于每一个场景都声称一个<code>LF.mat</code>文件</li>
+</ul>
+<p>如果我们仅仅下载了几个场景我们可以利用如下函数得到相应的<code>LF.mat</code></p>
+<ul>
+<li>convertBlenderTo5D(‘FOLDER’)</li>
+</ul>
+<p>这个LF.mat中包含该场景的光场信息诸如：</p>
+<ul>
+<li>光场数据 (LF.LF)</li>
+<li>真实值 (LF.depth/disp_high/lowres)</li>
+<li>评价掩膜（mask）</li>
+<li>中心视角图像</li>
+</ul>
+<p><span id="inline-red">注意</span>：生成LF.mat的过程用到的参数通过加载相应文件夹下parameters.cfg得到，并将其存储在了LF.parameters中；H变换矩阵存储在了LF.H中（可以参考论文<a href="http://www-personal.acfr.usyd.edu.au/ddan1654/PlenCal.pdf" target="_blank" rel="noopener">“Decoding, Calibration and Rectification for Lenselet-Based Plenoptic Cameras” </a>）；两个平面的距离存储在LF.f, 单位 [mm]； 相机焦距：LF.parameters.intrinsics.focal_length_mm.</p>
+<h4 id="生成点云（Point-Cloud）"><a href="#生成点云（Point-Cloud）" class="headerlink" title="生成点云（Point Cloud）"></a>生成点云（Point Cloud）</h4><p>接下来我以<strong>additional</strong>文件下的<strong><code>antinous</code></strong>为例子展示如何利用深度图像（官方利用视差）与纹理图像生成点云。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">filename=<span class="string">'antinous'</span>;</span><br><span class="line">addpath(<span class="string">'lib'</span>);</span><br><span class="line"><span class="comment">% 得到antinous的LF.mat</span></span><br><span class="line">convertBlenderTo5D([<span class="string">'additional/'</span>,filename])</span><br><span class="line">load([<span class="string">'additional/'</span>,filename,<span class="string">'/LF.mat'</span>]);</span><br><span class="line"></span><br><span class="line">img=LF.LF(<span class="number">5</span>,<span class="number">5</span>,:,:,:); <span class="comment">%中心视角，用于着色</span></span><br><span class="line">r=img(:,:,<span class="number">1</span>);</span><br><span class="line">g=img(:,:,<span class="number">2</span>);</span><br><span class="line">b=img(:,:,<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% 深度图读取</span></span><br><span class="line">d=pfmread([<span class="string">'additional_depth_disp_all_views\',filename,'</span>\gt_disp_lowres_Cam025.pfm']);</span><br><span class="line">d=mat2gray(d);</span><br><span class="line"></span><br><span class="line">mkdir([<span class="string">'PointClouds-color/'</span>,filename]);建立一个文件夹存储图片</span><br><span class="line"></span><br><span class="line">[ X,Y,Z ] = getPointcloud(LF,<span class="string">'disp'</span>,d);</span><br><span class="line">ptCloud1 = pointCloud([X(:),Y(:),Z(:)],<span class="string">'color'</span>,[r(:) g(:) b(:)]);</span><br><span class="line"></span><br><span class="line">h1=<span class="built_in">figure</span>(<span class="number">1</span>);</span><br><span class="line">pcshow(ptCloud1);</span><br><span class="line"></span><br><span class="line">axis off</span><br><span class="line">set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>])</span><br><span class="line">set(gcf,<span class="string">'Position'</span>,[<span class="number">800</span>,<span class="number">300</span>,<span class="number">600</span>,<span class="number">600</span>], <span class="string">'color'</span>,<span class="string">'w'</span>)</span><br><span class="line">view(<span class="number">90.6338</span>,  <span class="number">88.5605</span>);</span><br><span class="line">zoom(<span class="number">1.2</span>)</span><br></pre></td></tr></table></figure>
+<p>结果如下所示：</p>
+<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/PCs.gif" alt></p>
+<p><span id="inline-red">注意</span>：生成点云这一步，低版本的MATLAB（如R2014a）由于没有加入相应的函数所以不能够生成点云，高版本（R2016b）可以正常生成。另外，在此提供另外一个函数<code>visualizeZ_3D</code>，该函数将depth map当做彩色图像的z向延伸，然后构图。<br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/new-hci-lightfield-datasets/3d-demo.jpg" width="1200px"></p>
+<figure class="highlight matlab"><figcaption><span>文件名: visualizeZ_3D.m</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--The <span class="function"><span class="keyword">function</span> <span class="title">visualizeZ_3D</span>--&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">visualizeZ_3D</span><span class="params">(Z,im)</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (im == <span class="number">0</span>)</span><br><span class="line">    surf(Z, visualizeZ(Z), <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>); imtight; axis image ij; <span class="comment">%view(-180, 91);</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    surf(Z, im, <span class="string">'EdgeColor'</span>, <span class="string">'none'</span>); imtight; axis image ij; <span class="comment">%view(-180, 91);</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">imtight</span></span></span><br><span class="line">axis image off;</span><br><span class="line">xMult = <span class="number">1</span>;</span><br><span class="line">yMult = <span class="number">1</span>;</span><br><span class="line">borderSize = <span class="number">0</span>;</span><br><span class="line">PLOTBASESIZE = <span class="number">500</span>;</span><br><span class="line">set(gca, <span class="string">'PlotBoxAspectRatio'</span>, [xMult yMult <span class="number">1</span>])</span><br><span class="line">set(gcf, <span class="string">'Position'</span>, get(gcf, <span class="string">'Position'</span>) .* [<span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span>] + [<span class="number">0</span> <span class="number">0</span> PLOTBASESIZE*xMult PLOTBASESIZE*yMult]);</span><br><span class="line">set(gca, <span class="string">'Position'</span>, [borderSize borderSize <span class="number">1</span><span class="number">-2</span>*borderSize <span class="number">1</span><span class="number">-2</span>*borderSize]);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/" title="初试HCI光场数据集">https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/光场/" rel="tag"># 光场</a>
+            
+              <a href="/tags/计算成像/" rel="tag"># 计算成像</a>
+            
+              <a href="/tags/点云Point-Cloud/" rel="tag"># 点云Point Cloud</a>
+            
+              <a href="/tags/Light-Field/" rel="tag"># Light Field</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/internship/" rel="next" title="实习季到了，大家又浮躁了起来">
+                  <i class="fa fa-chevron-left"></i> 实习季到了，大家又浮躁了起来
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/machine-learning/" rel="prev" title="机器学习修炼手册">
+                  机器学习修炼手册 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Wanner光场数据集"><span class="nav-number">1.</span> <span class="nav-text">Wanner光场数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HCI-4D光场数据集-4D-Light-Field-Benchmark"><span class="nav-number">2.</span> <span class="nav-text">HCI 4D光场数据集(4D Light Field Benchmark)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集概况"><span class="nav-number">2.1.</span> <span class="nav-text">数据集概况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集下载"><span class="nav-number">2.2.</span> <span class="nav-text">数据集下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据集初体验"><span class="nav-number">2.3.</span> <span class="nav-text">数据集初体验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#测试代码下载"><span class="nav-number">2.3.1.</span> <span class="nav-text">测试代码下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成LF-mat"><span class="nav-number">2.3.2.</span> <span class="nav-text">生成LF.mat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成点云（Point-Cloud）"><span class="nav-number">2.3.3.</span> <span class="nav-text">生成点云（Point Cloud）</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/qin.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">95</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/273224402" title="Weibo &rarr; https://weibo.com/273224402" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/tensorboy" title="https://github.com/tensorboy" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://qianli666.com/" title="http://qianli666.com/" rel="noopener" target="_blank">QianLi</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yqchen.com/" title="http://yqchen.com/" rel="noopener" target="_blank">Yanqin</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+</body>
+</html>
