@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.vincentqin.tech/posts/bygones/</loc>
+    <lastmod>2019-11-14</lastmod>
+  </url>  <url>
     <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
     <lastmod>2019-10-09</lastmod>
   </url>  <url>
@@ -60,9 +63,6 @@
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/slam-summer-courses-CADCG-Lab/</loc>
     <lastmod>2019-07-30</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/bygones/</loc>
-    <lastmod>2019-07-14</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
     <lastmod>2019-05-26</lastmod>

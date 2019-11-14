@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/bygones/</loc>
+    
+    <lastmod>2019-11-14T14:28:31.669Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
     
     <lastmod>2019-10-09T15:42:03.095Z</lastmod>
@@ -145,13 +152,6 @@
     <loc>https://www.vincentqin.tech/posts/slam-summer-courses-CADCG-Lab/</loc>
     
     <lastmod>2019-07-30T14:14:55.980Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/bygones/</loc>
-    
-    <lastmod>2019-07-14T16:24:31.668Z</lastmod>
     
   </url>
   

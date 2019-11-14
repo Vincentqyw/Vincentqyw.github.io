@@ -226,13 +226,13 @@ A = U \Sigma V^T&lt;/script&gt;&lt;p&gt;其中，$U \in \mathbb{R}^{m \times m}$
     <link href="https://www.vincentqin.tech/posts/bygones/"/>
     <id>https://www.vincentqin.tech/posts/bygones/</id>
     <published>2019-05-28T16:57:39.000Z</published>
-    <updated>2019-07-14T16:24:31.668Z</updated>
+    <updated>2019-11-14T14:28:31.669Z</updated>
     
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"loop":true,"video":{"url":"http://149.248.20.168:888/api/public/dl/upnblj7S/Billie_Eilish_bad_guy.mp4"},"danmaku":{"id":"bbe4286bf164ef6a1497f18a7b42ff944e684b821","api":"https://api.prprpr.me/dplayer/"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script><a id="more"></a><p><strong><center>致我们逝去的青春！</center></strong></p>]]></content>
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"loop":true,"video":{"url":"http://108.61.224.13:888/api/public/dl/upnblj7S/Billie_Eilish_bad_guy.mp4"},"danmaku":{"id":"bbe4286bf164ef6a1497f18a7b42ff944e684b821","api":"https://api.prprpr.me/dplayer/"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script><a id="more"></a><p><strong><center>致我们逝去的青春！</center></strong></p>]]></content>
     
     <summary type="html">
     
-      &lt;div id=&quot;dplayer1&quot; class=&quot;dplayer hexo-tag-dplayer-mark&quot; style=&quot;margin-bottom: 20px;&quot;&gt;&lt;/div&gt;&lt;script&gt;(function(){var player = new DPlayer({&quot;container&quot;:document.getElementById(&quot;dplayer1&quot;),&quot;loop&quot;:true,&quot;video&quot;:{&quot;url&quot;:&quot;http://149.248.20.168:888/api/public/dl/upnblj7S/Billie_Eilish_bad_guy.mp4&quot;},&quot;danmaku&quot;:{&quot;id&quot;:&quot;bbe4286bf164ef6a1497f18a7b42ff944e684b821&quot;,&quot;api&quot;:&quot;https://api.prprpr.me/dplayer/&quot;}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()&lt;/script&gt;
+      &lt;div id=&quot;dplayer0&quot; class=&quot;dplayer hexo-tag-dplayer-mark&quot; style=&quot;margin-bottom: 20px;&quot;&gt;&lt;/div&gt;&lt;script&gt;(function(){var player = new DPlayer({&quot;container&quot;:document.getElementById(&quot;dplayer0&quot;),&quot;loop&quot;:true,&quot;video&quot;:{&quot;url&quot;:&quot;http://108.61.224.13:888/api/public/dl/upnblj7S/Billie_Eilish_bad_guy.mp4&quot;},&quot;danmaku&quot;:{&quot;id&quot;:&quot;bbe4286bf164ef6a1497f18a7b42ff944e684b821&quot;,&quot;api&quot;:&quot;https://api.prprpr.me/dplayer/&quot;}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()&lt;/script&gt;
     
     </summary>
     
