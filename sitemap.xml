@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/</loc>
+    
+    <lastmod>2020-01-14T15:30:47.102Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/bygones/</loc>
     
     <lastmod>2019-11-14T14:28:31.669Z</lastmod>
@@ -229,13 +236,6 @@
     <loc>https://www.vincentqin.tech/collections/index.html</loc>
     
     <lastmod>2018-12-09T15:20:58.113Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/</loc>
-    
-    <lastmod>2018-12-09T15:07:53.659Z</lastmod>
     
   </url>
   
