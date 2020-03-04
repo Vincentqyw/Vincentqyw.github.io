@@ -72,7 +72,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/alita_origin.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/alita_svd1.png">
 <meta property="og:image" content="https://www.vincentqin.tech/posts/slam-common-issues-SVD/alita_svd_quality.svg">
-<meta property="og:updated_time" content="2020-02-26T02:14:52.425Z">
+<meta property="og:updated_time" content="2020-03-04T15:08:41.179Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SLAM常见问题(五)：Singular Value Decomposition（SVD）分解">
 <meta name="twitter:description" content="SVD分解就是一种矩阵拆解术，它能够把任意矩阵$A \in \mathbb{R}^{m \times n}$拆解成3个矩阵的乘积形式，即：  A = U \Sigma V^T其中，$U \in \mathbb{R}^{m \times m}$，$V \in \mathbb{R}^{n \times n}$都是正交矩阵，即列向量是正交的单位向量，$\Sigma \in \mathbb{R}^{m \">
@@ -350,7 +350,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-26 10:14:52" itemprop="dateModified" datetime="2020-02-26T10:14:52+08:00">2020-02-26</time>
+                <time title="Modified: 2020-03-04 23:08:41" itemprop="dateModified" datetime="2020-03-04T23:08:41+08:00">2020-03-04</time>
               </span>
             
           
@@ -390,9 +390,11 @@
       
         <p>SVD分解就是一种矩阵拆解术，它能够把<strong>任意</strong>矩阵$A \in \mathbb{R}^{m \times n}$拆解成3个矩阵的乘积形式，即：</p>
 <script type="math/tex; mode=display">
-A = U \Sigma V^T</script><p>其中，$U \in \mathbb{R}^{m \times m}$，$V \in \mathbb{R}^{n \times n}$都是正交矩阵，即列向量是正交的单位向量，$\Sigma \in \mathbb{R}^{m \times n}$的对角阵（奇异值）。搬运了来自MIT OpenCourseWare的在线课程，讲解得很清晰。</p>
+A = U \Sigma V^T</script><p>其中，$U \in \mathbb{R}^{m \times m}$，$V \in \mathbb{R}^{n \times n}$都是正交矩阵，即列向量是正交的单位向量，$\Sigma \in \mathbb{R}^{m \times n}$的对角阵（奇异值）。搬运了来自MIT OpenCourseWare的在线课程并放在了B站，讲解得很清晰。</p>
 <a id="more"></a>
-<div id="dplayer1" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer1"),"loop":true,"video":{"url":"http://45.76.197.98:888/api/public/dl/0hkAga3Z/Singular-Value-Decomposition.mp4"},"danmaku":{"id":"bbe4286bf164ef6w1497f18a7b42ff944e6r4b821","api":"https://api.prprpr.me/dplayer/"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+<!-- <div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"loop":true,"video":{"url":"http://45.76.197.98:888/api/public/dl/0hkAga3Z/Singular-Value-Decomposition.mp4"},"danmaku":{"id":"bbe4286bf164ef6w1497f18a7b42ff944e6r4b821","api":"https://api.prprpr.me/dplayer/"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script> -->
+<iframe src="//player.bilibili.com/player.html?aid=93275447&cid=159253510&page=15" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
 <p>刚才说了矩阵$U, \Sigma, V$的形式，视频中还提到了这三个矩阵的物理意义，即SVD分解可以理解为：任意矩阵都可以分解为<strong>(rotation)*(Stretch)*(rotation)</strong>的形式。接下来说明一下这三个矩阵是如何来的。</p>
 <h2 id="计算-A-TA"><a href="#计算-A-TA" class="headerlink" title="计算 $A^TA$"></a>计算 $A^TA$</h2><script type="math/tex; mode=display">
 A^TA = (U \Sigma V^T)^TU \Sigma V^T = V{\Sigma}^TU^TU \Sigma V^T = V{\Sigma}^T \Sigma V^T</script><p>可见，$V$正是矩阵$A^TA$的特征向量，而${\Sigma}^T \Sigma $为矩阵$A^TA$的特征值。</p>
@@ -716,10 +718,6 @@ A^TA = \left[
       
         <li class="links-of-blogroll-item">
           <a href="https://www.fi-ads.com/" title="https://www.fi-ads.com/" rel="noopener" target="_blank">Future iDeal</a>
-        </li>
-      
-        <li class="links-of-blogroll-item">
-          <a href="https://www.fi-forex.com/" title="https://www.fi-forex.com/" rel="noopener" target="_blank">Forex Trading</a>
         </li>
       
     </ul>
