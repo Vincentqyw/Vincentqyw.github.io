@@ -68,15 +68,15 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。 多个不同维度的箱线图画在一起123456789101112131415161718192021222324252627282930%%  GENERATE RANDOM DATAdataA = 10 *rand(100,1);% subplot(121);boxplot(dataA)dataB = 10 *rand(20">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg">
+<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg">
 <meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/multi-boxplot.png">
-<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-1.png">
-<meta property="og:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-2.png">
-<meta property="og:updated_time" content="2019-08-22T14:51:04.619Z">
+<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-1.png">
+<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-2.png">
+<meta property="og:updated_time" content="2020-03-27T14:09:08.160Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MATLAB:多个不同维度的箱线图画在一起">
 <meta name="twitter:description" content="以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。 多个不同维度的箱线图画在一起123456789101112131415161718192021222324252627282930%%  GENERATE RANDOM DATAdataA = 10 *rand(100,1);% subplot(121);boxplot(dataA)dataB = 10 *rand(20">
-<meta name="twitter:image" content="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg">
+<meta name="twitter:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/issues-Matlab/">
 
 
@@ -350,7 +350,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-08-22 22:51:04" itemprop="dateModified" datetime="2019-08-22T22:51:04+08:00">2019-08-22</time>
+                <time title="Modified: 2020-03-27 22:09:08" itemprop="dateModified" datetime="2020-03-27T22:09:08+08:00">2020-03-27</time>
               </span>
             
           
@@ -401,7 +401,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg" width="1000px"></p>
+        <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg" width="1000px"></p>
 <p>以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。</p>
 <h2 id="多个不同维度的箱线图画在一起"><a href="#多个不同维度的箱线图画在一起" class="headerlink" title="多个不同维度的箱线图画在一起"></a>多个不同维度的箱线图画在一起</h2><figure class="highlight m"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">%%  GENERATE RANDOM DATA</span></span><br><span class="line"></span><br><span class="line">dataA <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">100</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(121);boxplot(dataA)</span></span><br><span class="line"></span><br><span class="line">dataB <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">200</span>,<span class="number">1</span>) - <span class="number">5</span>*rand(<span class="number">200</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(122);boxplot(dataB)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% CONSTRUCT MPGs</span></span><br><span class="line"></span><br><span class="line">MPGs&#123;<span class="number">1</span>&#125; <span class="built_in">=</span> dataA;</span><br><span class="line">MPGs&#123;<span class="number">2</span>&#125; <span class="built_in">=</span> dataB;</span><br><span class="line"></span><br><span class="line">figure;</span><br><span class="line">data <span class="built_in">=</span> [MPGs&#123;<span class="number">1</span>&#125; ;MPGs&#123;<span class="number">2</span>&#125; ];</span><br><span class="line"></span><br><span class="line">s_groupA <span class="built_in">=</span> repmat(&#123;<span class="string">'item 1'</span>&#125;,numel(MPGs&#123;<span class="number">1</span>&#125;),<span class="number">1</span>);</span><br><span class="line">s_groupB <span class="built_in">=</span> repmat(&#123;<span class="string">'item 2'</span>&#125;,numel(MPGs&#123;<span class="number">2</span>&#125;),<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">group <span class="built_in">=</span> [s_groupA;s_groupB];</span><br><span class="line"></span><br><span class="line"><span class="comment">%% BEGIN DRAW</span></span><br><span class="line">boxplot(data,group);</span><br><span class="line"></span><br><span class="line">FONTSIZE <span class="built_in">=</span> <span class="number">30</span>;</span><br><span class="line">set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>])</span><br><span class="line">ylabel(<span class="string">'items value'</span>);</span><br><span class="line">set(gca,<span class="string">'fontsize'</span>,FONTSIZE)</span><br><span class="line">set(gcf,<span class="string">'pos'</span>,[ <span class="number">986</span>,  <span class="number">414</span>, <span class="number">1274</span>, <span class="number">826</span>])</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/multi-boxplot.png" alt></p>
@@ -415,7 +415,7 @@
 </blockquote>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error using xlswrite (line <span class="number">220</span>) Error: 服务器出现意外情况。</span><br></pre></td></tr></table></figure>
 <h3 id="解决之道"><a href="#解决之道" class="headerlink" title="解决之道"></a>解决之道</h3><p>xlswrite函数在调用时会占用Excel的com端口，所以要保证在调用时这个端口是开放的，也就是没有被其他程序占用。打开任意一个Excel（我的是16版）文档，点击<strong>文件</strong>—<strong>选项</strong>，弹出Excel选项卡，在<strong>加载项</strong>中可以看到，活动应用程序加载项，以及非活动应用程序加载项；<br>由于我的系统中装了一个福昕阅读器，该程序占用了Excel的com端口，所以当Matlab再去调用这个端口时就会出现异常。具体解决方法：点击管理旁边的下拉菜单，选择COM加载项，点击转到，把福昕阅读器的前面的勾去掉，然后确定。</p>
-<p><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-1.png" width="100%"><br><img src="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-2.png" width="100%"></p>
+<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-1.png" width="100%"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/issue-matlab-2.png" width="100%"></p>
 <h2 id="Matlab设置绘图坐标轴信息"><a href="#Matlab设置绘图坐标轴信息" class="headerlink" title="Matlab设置绘图坐标轴信息"></a>Matlab设置绘图坐标轴信息</h2><h3 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h3><blockquote>
 <p>Matlab 作图时更改纵轴刻度为科学计数法，指数放在框左上方</p>
 </blockquote>
@@ -441,9 +441,9 @@
 <h2 id="彩蛋"><a href="#彩蛋" class="headerlink" title="彩蛋"></a>彩蛋</h2><ul>
 <li>大神教我们怎么画图，#MATLAB无所不能#，<a href="http://blogs.mathworks.com/graphics/" target="_blank" rel="noopener">戳戳这里</a>~</li>
 <li>Matlab 字体困扰了我很长时间，终于在网上找到了一个比较好的组合，<a href="http://pan.baidu.com/s/1geIRi2R" target="_blank" rel="noopener">猛戳这里</a>！<a href="http://blog.csdn.net/whoispo/article/details/50383362" target="_blank" rel="noopener">原文地址</a></li>
-<li><a href="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/cv-books/matlab-cmex.pdf" target="_blank" rel="noopener">Matlab与C混合编程</a></li>
-<li><a href="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/cv-books/matlab-parallel.pdf" target="_blank" rel="noopener">Matlab并行</a></li>
-<li><a href="https://qcloud.coding.net/u/vincentqin/p/blogResource/git/raw/master/cv-books/Writing-Fast-Matlab-Code.pdf" target="_blank" rel="noopener">Matlab代码优化：教你写出漂亮的Matlab代码</a></li>
+<li><a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/cv-books/matlab-cmex.pdf" target="_blank" rel="noopener">Matlab与C混合编程</a></li>
+<li><a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/cv-books/matlab-parallel.pdf" target="_blank" rel="noopener">Matlab并行</a></li>
+<li><a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/cv-books/Writing-Fast-Matlab-Code.pdf" target="_blank" rel="noopener">Matlab代码优化：教你写出漂亮的Matlab代码</a></li>
 </ul>
 
     </div>

@@ -2,6 +2,202 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
+    
+    <lastmod>2020-03-27T14:31:00.584Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/light-field-depth-estimation/</loc>
+    
+    <lastmod>2020-03-27T14:30:37.931Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/lstm/</loc>
+    
+    <lastmod>2020-03-27T14:30:27.462Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/news/</loc>
+    
+    <lastmod>2020-03-27T14:30:19.177Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/tsinghua-google-ai/</loc>
+    
+    <lastmod>2020-03-27T14:29:54.370Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/summary-statistical-learning/</loc>
+    
+    <lastmod>2020-03-27T14:29:46.286Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
+    
+    <lastmod>2020-03-27T14:29:42.685Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/stephen-hawking/</loc>
+    
+    <lastmod>2020-03-27T14:28:30.512Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/some-useful-tools/</loc>
+    
+    <lastmod>2020-03-27T14:28:27.467Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/slam/</loc>
+    
+    <lastmod>2020-03-27T14:28:23.066Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/SIFT-and-SURF/</loc>
+    
+    <lastmod>2020-03-27T14:28:12.945Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/pca/</loc>
+    
+    <lastmod>2020-03-27T14:28:07.913Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/orb-slam/</loc>
+    
+    <lastmod>2020-03-27T14:28:04.744Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/new-pc/</loc>
+    
+    <lastmod>2020-03-27T14:27:53.215Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/</loc>
+    
+    <lastmod>2020-03-27T14:27:50.734Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/machine-learning/</loc>
+    
+    <lastmod>2020-03-27T14:27:46.876Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/Matlab-Deep-Learning/</loc>
+    
+    <lastmod>2020-03-27T14:27:45.125Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/lytro-light-field/</loc>
+    
+    <lastmod>2020-03-27T14:26:58.736Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/learning-Markdown/</loc>
+    
+    <lastmod>2020-03-27T14:10:56.541Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/issues-Matlab/</loc>
+    
+    <lastmod>2020-03-27T14:09:08.160Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/internship/</loc>
+    
+    <lastmod>2020-03-27T14:09:05.376Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/git-notebook/</loc>
+    
+    <lastmod>2020-03-27T14:09:02.704Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</loc>
+    
+    <lastmod>2020-03-27T14:08:54.309Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-1/</loc>
+    
+    <lastmod>2020-03-27T14:08:50.953Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/cv-books/</loc>
+    
+    <lastmod>2020-03-27T14:08:47.603Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    
+    <lastmod>2020-03-27T14:08:37.540Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/journal2JP-USA/</loc>
+    
+    <lastmod>2020-03-27T14:08:11.986Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/CNN-Architectures/</loc>
+    
+    <lastmod>2020-03-27T14:04:09.264Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-SVD/</loc>
     
     <lastmod>2020-03-04T15:08:41.179Z</lastmod>
@@ -12,20 +208,6 @@
     <loc>https://www.vincentqin.tech/posts/bygones/</loc>
     
     <lastmod>2020-03-02T15:15:31.025Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/new-hci-lightfield-datasets/</loc>
-    
-    <lastmod>2020-01-14T15:30:47.102Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
-    
-    <lastmod>2019-10-09T15:42:03.095Z</lastmod>
     
   </url>
   
@@ -65,58 +247,9 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/light-field-depth-estimation/</loc>
-    
-    <lastmod>2019-09-15T09:01:22.313Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
-    
-    <lastmod>2019-09-15T08:49:08.747Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/stephen-hawking/</loc>
-    
-    <lastmod>2019-09-15T08:47:49.859Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/pca/</loc>
-    
-    <lastmod>2019-09-15T08:25:38.122Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/summary-statistical-learning/</loc>
-    
-    <lastmod>2019-09-15T08:23:55.780Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/posts/thu-postgraduate-exam/</loc>
     
     <lastmod>2019-09-15T05:40:19.002Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/news/</loc>
-    
-    <lastmod>2019-09-11T15:53:18.581Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/orb-slam/</loc>
-    
-    <lastmod>2019-09-10T14:38:52.481Z</lastmod>
     
   </url>
   
@@ -138,13 +271,6 @@
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-relocalisation/</loc>
     
     <lastmod>2019-09-10T13:50:17.457Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/issues-Matlab/</loc>
-    
-    <lastmod>2019-08-22T14:51:04.619Z</lastmod>
     
   </url>
   
@@ -184,34 +310,6 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/SIFT-and-SURF/</loc>
-    
-    <lastmod>2019-03-02T14:37:45.758Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/CNN-Architectures/</loc>
-    
-    <lastmod>2019-03-02T14:32:06.621Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-1/</loc>
-    
-    <lastmod>2019-03-02T14:23:13.749Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/lytro-light-field/</loc>
-    
-    <lastmod>2019-03-02T14:14:54.810Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/guestbook/index.html</loc>
     
     <lastmod>2019-03-02T13:59:10.500Z</lastmod>
@@ -226,13 +324,6 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/Matlab-Deep-Learning/</loc>
-    
-    <lastmod>2018-12-10T14:45:22.814Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/collections/index.html</loc>
     
     <lastmod>2018-12-09T15:20:58.113Z</lastmod>
@@ -243,13 +334,6 @@
     <loc>https://www.vincentqin.tech/posts/line-segments-detection/</loc>
     
     <lastmod>2018-12-09T15:05:49.466Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/slam/</loc>
-    
-    <lastmod>2018-12-09T15:00:49.691Z</lastmod>
     
   </url>
   
@@ -271,90 +355,6 @@
     <loc>https://www.vincentqin.tech//404.html</loc>
     
     <lastmod>2018-12-07T15:12:13.702Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/new-pc/</loc>
-    
-    <lastmod>2018-12-04T17:32:36.496Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/lstm/</loc>
-    
-    <lastmod>2018-11-14T16:04:16.019Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</loc>
-    
-    <lastmod>2018-11-14T15:52:35.449Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/some-useful-tools/</loc>
-    
-    <lastmod>2018-11-14T15:52:02.536Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/tsinghua-google-ai/</loc>
-    
-    <lastmod>2018-11-14T15:30:30.997Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/machine-learning/</loc>
-    
-    <lastmod>2018-11-14T15:05:49.721Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/learning-Markdown/</loc>
-    
-    <lastmod>2018-11-14T14:50:25.975Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/journal2JP-USA/</loc>
-    
-    <lastmod>2018-11-14T14:42:14.853Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/internship/</loc>
-    
-    <lastmod>2018-11-14T14:33:59.595Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/git-notebook/</loc>
-    
-    <lastmod>2018-11-14T14:33:06.939Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/cv-books/</loc>
-    
-    <lastmod>2018-11-14T14:23:12.129Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
-    
-    <lastmod>2018-11-14T14:12:35.208Z</lastmod>
     
   </url>
   
