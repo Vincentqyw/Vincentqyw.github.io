@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    
+    <lastmod>2020-03-29T13:20:06.600Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
+    
+    <lastmod>2020-03-27T16:14:52.644Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
     
     <lastmod>2020-03-27T14:34:06.389Z</lastmod>
@@ -40,13 +54,6 @@
     <loc>https://www.vincentqin.tech/posts/summary-statistical-learning/</loc>
     
     <lastmod>2020-03-27T14:29:46.286Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
-    
-    <lastmod>2020-03-27T14:29:42.685Z</lastmod>
     
   </url>
   
@@ -173,13 +180,6 @@
     <loc>https://www.vincentqin.tech/posts/cv-books/</loc>
     
     <lastmod>2020-03-27T14:08:47.603Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
-    
-    <lastmod>2020-03-27T14:08:37.540Z</lastmod>
     
   </url>
   
