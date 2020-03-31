@@ -534,7 +534,7 @@ mathjax: true
 <p>然后文章中的写法：</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% dplayer url="https://<span class="strong">*****</span><span class="emphasis">*.mp4" "http://*</span><span class="strong">*****</span>.jpg" "api=https://api.prprpr.me/dplayer/" "id=" "loop=false" %&#125;</span><br></pre></td></tr></table></figure>
 <p>要使用弹幕，必须有api和id两项。id 的值自己随便取，唯一要求就是前面这点。可以通过<a href="http://tool.oschina.net/encrypt?type=2" target="_blank" rel="noopener">这里</a>获取id，保证每次都不一样。</p>
-<p>献上<strong>Maddi Jane</strong> 翻唱的<strong>Jessie J</strong>的<strong>Price Tag</strong>。<br><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"video":{"url":"http://oofx6tpf6.bkt.clouddn.com/Maddi-Jane-Price-Tag.mp4"},"danmaku":{"id":"bbe4286bf164ef6a1497f18a7b42ff944e684b82","api":"https://api.prprpr.me/dplayer/"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script></p>
+<p>献上<strong>Maddi Jane</strong> 翻唱的<strong>Jessie J</strong>的<strong>Price Tag</strong>。<br><div id="dplayer3" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer3"),"video":{"url":"http://oofx6tpf6.bkt.clouddn.com/Maddi-Jane-Price-Tag.mp4"},"danmaku":{"id":"bbe4286bf164ef6a1497f18a7b42ff944e684b82","api":"https://api.prprpr.me/dplayer/"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script></p>
 <h2 id="同时部署"><a href="#同时部署" class="headerlink" title="同时部署"></a>同时部署</h2><p>接下来主要涉及到以hexo框架搭建博客的版本管理。同时部署其实很简单，仅仅修改<strong>站点配置文件</strong>的<code>_config.yml</code>即可。在最后的deploy底下新增一项：</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">repo:</span> </span><br><span class="line"><span class="attr">github:</span> <span class="attr">https://github.com/Your_Github_ID/Github_ID.github.io.git</span> </span><br><span class="line"><span class="attr">coding:</span> <span class="attr">https://git.coding.net/Your_Coding_ID/Your_Repo_Name.coding.me.git</span></span><br></pre></td></tr></table></figure>
 <p>以后<code>hexo d</code>时，就会同时部署到github和coding。</p>
@@ -604,8 +604,8 @@ mathjax: true
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/posts/AR-applications/" rel="next" title="AR形势与应用">
-                  <i class="fa fa-chevron-left"></i> AR形势与应用
+                <a href="/posts/learning-Markdown/" rel="next" title="Markdown 学习">
+                  <i class="fa fa-chevron-left"></i> Markdown 学习
                 </a>
               
             </div>
@@ -614,8 +614,8 @@ mathjax: true
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/posts/issues-Matlab/" rel="prev" title="MATLAB:多个不同维度的箱线图画在一起">
-                  MATLAB:多个不同维度的箱线图画在一起 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/AR-applications/" rel="prev" title="AR形势与应用">
+                  AR形势与应用 <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
