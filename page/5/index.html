@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -343,7 +343,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-27 22:08:11" itemprop="dateModified" datetime="2020-03-27T22:08:11+08:00">2020-03-27</time>
+                <time title="Modified: 2020-03-31 22:53:41" itemprop="dateModified" datetime="2020-03-31T22:53:41+08:00">2020-03-31</time>
               </span>
             
           
@@ -394,7 +394,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/journal2JP-USA/Deer_in_Nara.jpg" alt></p>
+          <p><img src="https://vincentqin.gitee.io/blogresource-1/journal2JP-USA/Deer_in_Nara.jpg" alt></p>
           <!--noindex-->
           
             <div class="post-button text-center">
@@ -518,7 +518,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/LightField-Toolbox/91252468.png" alt="Magic Leap"></p>
+          <p><img src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/91252468.png" alt="Magic Leap"></p>
 <div class="note success">
             <p><a href="https://www.vincentqin.tech/collections/">这里</a>鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。<br><span id="inline-red">声明</span>：<u><strong>一切理解都是本人观点，如有疑问，还望在</strong>评论<strong>中留言。如需转载请与本人联系，谢谢合作</strong></u>! )</p>
           </div>
@@ -594,7 +594,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-27 22:09:08" itemprop="dateModified" datetime="2020-03-27T22:09:08+08:00">2020-03-27</time>
+                <time title="Modified: 2020-03-31 23:39:51" itemprop="dateModified" datetime="2020-03-31T23:39:51+08:00">2020-03-31</time>
               </span>
             
           
@@ -645,10 +645,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/issues-Matlab/matlab-logo.jpg" width="1000px"></p>
-<p>以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。</p>
-<h2 id="多个不同维度的箱线图画在一起"><a href="#多个不同维度的箱线图画在一起" class="headerlink" title="多个不同维度的箱线图画在一起"></a>多个不同维度的箱线图画在一起</h2><figure class="highlight m"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">%%  GENERATE RANDOM DATA</span></span><br><span class="line"></span><br><span class="line">dataA <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">100</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(121);boxplot(dataA)</span></span><br><span class="line"></span><br><span class="line">dataB <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">200</span>,<span class="number">1</span>) - <span class="number">5</span>*rand(<span class="number">200</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(122);boxplot(dataB)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% CONSTRUCT MPGs</span></span><br><span class="line"></span><br><span class="line">MPGs&#123;<span class="number">1</span>&#125; <span class="built_in">=</span> dataA;</span><br><span class="line">MPGs&#123;<span class="number">2</span>&#125; <span class="built_in">=</span> dataB;</span><br><span class="line"></span><br><span class="line">figure;</span><br><span class="line">data <span class="built_in">=</span> [MPGs&#123;<span class="number">1</span>&#125; ;MPGs&#123;<span class="number">2</span>&#125; ];</span><br><span class="line"></span><br><span class="line">s_groupA <span class="built_in">=</span> repmat(&#123;<span class="string">'item 1'</span>&#125;,numel(MPGs&#123;<span class="number">1</span>&#125;),<span class="number">1</span>);</span><br><span class="line">s_groupB <span class="built_in">=</span> repmat(&#123;<span class="string">'item 2'</span>&#125;,numel(MPGs&#123;<span class="number">2</span>&#125;),<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">group <span class="built_in">=</span> [s_groupA;s_groupB];</span><br><span class="line"></span><br><span class="line"><span class="comment">%% BEGIN DRAW</span></span><br><span class="line">boxplot(data,group);</span><br><span class="line"></span><br><span class="line">FONTSIZE <span class="built_in">=</span> <span class="number">30</span>;</span><br><span class="line">set(gcf,<span class="string">'color'</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>])</span><br><span class="line">ylabel(<span class="string">'items value'</span>);</span><br><span class="line">set(gca,<span class="string">'fontsize'</span>,FONTSIZE)</span><br><span class="line">set(gcf,<span class="string">'pos'</span>,[ <span class="number">986</span>,  <span class="number">414</span>, <span class="number">1274</span>, <span class="number">826</span>])</span><br></pre></td></tr></table></figure>
-<p><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/multi-boxplot.png" alt></p>
+          <p><img src="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/matlab-logo.jpg" width="1000px"></p>
+<p>以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。<br></p>
           <!--noindex-->
           
             <div class="post-button text-center">
@@ -721,7 +719,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-27 22:34:06" itemprop="dateModified" datetime="2020-03-27T22:34:06+08:00">2020-03-27</time>
+                <time title="Modified: 2020-03-31 22:54:43" itemprop="dateModified" datetime="2020-03-31T22:54:43+08:00">2020-03-31</time>
               </span>
             
           
@@ -772,7 +770,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg" alt></p>
+          <p><img src="https://vincentqin.gitee.io/blogresource-2/AR-applications/AR.jpg" alt></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p id="div-border-left-red">当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。</p>
           <!--noindex-->
           
@@ -846,7 +844,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-29 23:38:54" itemprop="dateModified" datetime="2020-03-29T23:38:54+08:00">2020-03-29</time>
+                <time title="Modified: 2020-03-31 22:56:44" itemprop="dateModified" datetime="2020-03-31T22:56:44+08:00">2020-03-31</time>
               </span>
             
           
@@ -899,7 +897,7 @@
       
           <!-- <meta http-equiv="refresh" content="0; url=https://www.vincentqin.tech/2016/08/09/build-a-website-using-hexo">
 <link rel="canonical" href="https://www.vincentqin.tech/2016/08/09/build-a-website-using-hexo" /> -->
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-a-website-using-hexo/hexo-cover.png" alt></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/build-a-website-using-hexo/hexo-cover.png" alt></p>
 <div class="note success">
             <p><strong>Hexo</strong>作为建立Blog利器，为我们没有JS基础的小白们提供了建立专属自己博客的机会！经常使用的语法很简单，我们完全可以在10min分钟之内建立自己的Blog，后期的优化才是最耗费时间的。好了，直接进入正文。</p>
           </div>
@@ -975,7 +973,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-27 22:10:56" itemprop="dateModified" datetime="2020-03-27T22:10:56+08:00">2020-03-27</time>
+                <time title="Modified: 2020-03-31 22:53:38" itemprop="dateModified" datetime="2020-03-31T22:53:38+08:00">2020-03-31</time>
               </span>
             
           
@@ -1026,7 +1024,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/learning-Markdown/guide-to-markdown-writing.png" alt></p>
+          <p><img src="https://vincentqin.gitee.io/blogresource-1/learning-Markdown/guide-to-markdown-writing.png" alt></p>
 <!--<a href="https://www.vincentqin.tech"><img border="0" src="i-love-markdown.png" /></a>-->
 <p>本文涉及学习Markdown文本标记语言的一些练习笔记。</p>
           <!--noindex-->
@@ -1101,7 +1099,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-09-15 13:40:19" itemprop="dateModified" datetime="2019-09-15T13:40:19+08:00">2019-09-15</time>
+                <time title="Modified: 2020-03-31 22:12:38" itemprop="dateModified" datetime="2020-03-31T22:12:38+08:00">2020-03-31</time>
               </span>
             
           
@@ -1152,7 +1150,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明<a href="https://github.com/Vincentqyw" target="_blank" rel="noopener">来源</a>，<a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/thu-postgraduate-exam/exam-questions.pdf" target="_blank" rel="noopener">pdf版</a>见此。</p>
+          <p>本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明<a href="https://github.com/Vincentqyw" target="_blank" rel="noopener">来源</a>，<a href="https://gitee.com/vincentqin/BlogResource-1/raw/master/thu-postgraduate-exam/exam-questions.pdf" target="_blank" rel="noopener">pdf版</a>见此。</p>
           <!--noindex-->
           
             <div class="post-button text-center">

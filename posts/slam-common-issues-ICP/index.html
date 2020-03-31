@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -68,7 +68,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="今天讲一篇关于利用SVD方法求解ICP问题的文献《Least-Squares Rigid Motion Using SVD》，这篇文章非常精彩地推导出将$3D$点对齐问题的解析解，同时总结了求解该问题的统一范式。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-10T14:15:24.643Z">
+<meta property="og:updated_time" content="2020-03-31T15:05:16.626Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵">
 <meta name="twitter:description" content="今天讲一篇关于利用SVD方法求解ICP问题的文献《Least-Squares Rigid Motion Using SVD》，这篇文章非常精彩地推导出将$3D$点对齐问题的解析解，同时总结了求解该问题的统一范式。">
@@ -345,7 +345,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-09-10 22:15:24" itemprop="dateModified" datetime="2019-09-10T22:15:24+08:00">2019-09-10</time>
+                <time title="Modified: 2020-03-31 23:05:16" itemprop="dateModified" datetime="2020-03-31T23:05:16+08:00">2020-03-31</time>
               </span>
             
           
@@ -383,7 +383,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>今天讲一篇关于利用<code>SVD</code>方法求解<code>ICP</code>问题的文献<a href="https://igl.ethz.ch/projects/ARAP/svd_rot.pdf" target="_blank" rel="noopener">《Least-Squares Rigid Motion Using SVD》</a>，这篇文章非常精彩地推导出将$3D$点对齐问题的解析解，同时总结了求解该问题的统一范式。</p>
+        <p>今天讲一篇关于利用<code>SVD</code>方法求解<code>ICP</code>问题的文献<a href="https://vincentqin.gitee.io/blogresource-3/slam-common-issues-ICP/svd_rot.pdf" target="_blank" rel="noopener">《Least-Squares Rigid Motion Using SVD》</a>，这篇文章非常精彩地推导出将$3D$点对齐问题的解析解，同时总结了求解该问题的统一范式。</p>
 <a id="more"></a>
 <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>已知<script type="math/tex">{\mathcal{P}=\left\{\mathbf{p}_{1}, \mathbf{p}_{2}, \ldots, \mathbf{p}_{n}\right\}}</script>以及<script type="math/tex">{\mathcal{Q}=\left\{\mathbf{q}_{1}, \mathbf{q}_{2}, \ldots, \mathbf{q}_{n}\right\}}</script>是空间中（文中说的更加普适，<script type="math/tex">\mathbf{p}_i , \mathbf{q}_i \in \mathbb{R}^{d}</script>，可以表示$d$维空间）的匹配点集，我们试图找到这样的旋转矩阵$R$和平移向量$\mathbf{t}$最小化如下对齐误差（即<code>ICP</code>问题的形式）：</p>
 <script type="math/tex; mode=display">

@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -68,86 +68,86 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://www.vincentqin.tech/posts/stereo-vision-overview/depth-overview-cover.jpg">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p6.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p8.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p9.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/depth-overview-cover.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p6.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p8.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p9.png">
 <meta property="og:image" content="https://www.vincentqin.tech/stereo-vision-overview/Epipolar_geometry.svg">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p10.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p11.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p12.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p13.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-1.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-2.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p15.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p16.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p17.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p18.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p21.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p22.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p23.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p25.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p26.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p27.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p28.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p29.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-1.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-2.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p38.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-1.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-2.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p40.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-1.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-2.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p42.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p44.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p47.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p48.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p50.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p52.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p53.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p57.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p58.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p59.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-1.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-2.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p61.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p62.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p64.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p65.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p66.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p87.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p88.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p89.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p90.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p91.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p92.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p94.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p95.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p98-2.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p99.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p101.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p102.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p103.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p109.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p111.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p115.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p122.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p127.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p135.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p139.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p166.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p167.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p168.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p169.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p170.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p181.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p183.png">
-<meta property="og:updated_time" content="2020-03-27T16:14:52.644Z">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p10.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p11.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p12.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p13.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p14-1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p14-2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p15.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p16.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p17.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p18.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p21.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p22.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p23.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p25.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p26.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p27.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p28.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p29.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p37-1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p37-2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p38.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p39-1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p39-2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p40.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p41-1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p41-2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p42.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p44.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p47.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p48.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p50.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p52.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p53.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p57.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p58.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p59.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p60-1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p60-2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p61.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p62.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p64.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p65.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p66.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p87.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p88.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p89.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p90.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p91.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p92.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p94.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p95.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p98-2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p99.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p101.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p102.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p103.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p109.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p111.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p115.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p122.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p127.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p135.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p139.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p166.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p167.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p168.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p169.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p170.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p181.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p183.png">
+<meta property="og:updated_time" content="2020-03-31T15:46:14.708Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="立体视觉综述：Stereo Vision Overview">
 <meta name="twitter:description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
-<meta name="twitter:image" content="https://www.vincentqin.tech/posts/stereo-vision-overview/depth-overview-cover.jpg">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/depth-overview-cover.jpg">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/stereo-vision-overview/">
 
 
@@ -421,7 +421,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-28 00:14:52" itemprop="dateModified" datetime="2020-03-28T00:14:52+08:00">2020-03-28</time>
+                <time title="Modified: 2020-03-31 23:46:14" itemprop="dateModified" datetime="2020-03-31T23:46:14+08:00">2020-03-31</time>
               </span>
             
           
@@ -459,7 +459,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="//www.vincentqin.tech/posts/stereo-vision-overview/depth-overview-cover.jpg" width="1600px"></p>
+        <p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/depth-overview-cover.jpg" width="1600px"></p>
 <p>本文主要翻译自<a href="www.vision.deis.unibo.it/smatt">Mattoccia</a>的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：</p>
 <ul>
 <li>Introduction to stereo vision</li>
@@ -476,11 +476,11 @@
 <li>这与以下几个方面的相关：双目立体视觉系统、稠密立体算法、立体视觉应用</li>
 <li>偏好能够实时或者硬件实现</li>
 </ul>
-<h2 id="单目相机"><a href="#单目相机" class="headerlink" title="单目相机"></a>单目相机</h2><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p6.png" width="1200px"></p>
+<h2 id="单目相机"><a href="#单目相机" class="headerlink" title="单目相机"></a>单目相机</h2><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p6.png" width="1200px"></p>
 <p>如图所示的是单目摄像机的拍摄原理，右侧实际场景可以抽象成左侧的模型。可以发现场景中的P点与Q点会同时汇聚在成像平面中的一点，同样遮挡问题出现在PQ连线的所有点。</p>
-<h2 id="双目相机"><a href="#双目相机" class="headerlink" title="双目相机"></a>双目相机</h2><p>对于双目相机，$O_R$和$O_T$分别是左右相机的光学中心，对于在参考相机像平面上被汇聚的两点（p和q），在目标相机像平面上会被区分开来，那么我们可以找到双目或者多目相机中匹配的点利用三角相似原理来估计深度。那么我们怎么寻找相对应的点呢？一个直观的想法就是固定两幅图中的一幅，然后在另外一幅图中 进行2D范围的搜索匹配点。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p8.png" width="1200px"></p>
+<h2 id="双目相机"><a href="#双目相机" class="headerlink" title="双目相机"></a>双目相机</h2><p>对于双目相机，$O_R$和$O_T$分别是左右相机的光学中心，对于在参考相机像平面上被汇聚的两点（p和q），在目标相机像平面上会被区分开来，那么我们可以找到双目或者多目相机中匹配的点利用三角相似原理来估计深度。那么我们怎么寻找相对应的点呢？一个直观的想法就是固定两幅图中的一幅，然后在另外一幅图中 进行2D范围的搜索匹配点。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p8.png" width="1200px"></p>
 <p>但实际情况这样做的代价非常大。不过多亏了有<strong>极线约束</strong>，我们可以在图像的<strong>1D</strong>范围上进行搜索。以下将要对极线约束进行解释。</p>
-<h3 id="极线约束-对极几何"><a href="#极线约束-对极几何" class="headerlink" title="极线约束(对极几何)"></a>极线约束(对极几何)</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p9.png" width="1200px"></p>
+<h3 id="极线约束-对极几何"><a href="#极线约束-对极几何" class="headerlink" title="极线约束(对极几何)"></a>极线约束(对极几何)</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p9.png" width="1200px"></p>
 <ul>
 <li>对于参考图像R而言，现实场景中的P与Q点在其像平面${\pi}_R$上被投影成为一个点p=q。</li>
 <li>极线约束规定，属于（红色）视线的点对应位于目标图像T的图像平面${\pi}_T$上的绿线上。</li>
@@ -495,29 +495,29 @@
 </li>
 </ul>
 <p>如果两个相机位置已知，则：<br>1.如果投影点$X_L$已知，则极线$e_RX_R$已知，点X必定投影到右像面极线上的$X_R$处。这就意味着，在一个图像中观察到的每个点，在已知的极线上观察到该点的其他图像。这就是Epipolar constraint极线约束：<strong>$X$在右像面上的投影$X_R$必然被约束在$e_RX_R$极线上</strong>。对于$O_LX_L$上的$X$，$X_1$，$X_2$，$X_3$都受该约束。极线约束可以用于测试两点是否对应同一3D点。极线约束也可以用两相机间的基本矩阵来描述。<br>2.如果$X_L$和$X_R$已知，他们的投影线已知。如果两幅图像上的点对应同一点X，则投影线必然交于$X$。这就意味着$X$可以用两个像点的坐标计算得到。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p10.png" width="1200px"><br>由极线约束可知，我们可以将原来的匹配点搜索范围由2D转换成1D，这样做可以很大程度上减少计算量。我们将左右视图摆放成更容易理解的形式，可以发现对应点的匹配问题转换成了在同一条扫描线上（极线）的匹配问题。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p11.png" width="1200px"><br>可以发现相机的摆放姿势影响着扫描线的方向。在上图A中，相机与水平呈一定角度地摆放，其扫描线为右图所示，同样是与水平倾斜的扫描线。假如两个相机平行摆放的话，其拍出来匹配对是扫描线已经对齐了的。</p>
-<h3 id="深度与视差"><a href="#深度与视差" class="headerlink" title="深度与视差"></a>深度与视差</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p12.png" width="1200px"><br>如上图所示为扫描线已经对齐了的匹配图像对（以下简称<strong>匹配对</strong>）。可以发现：$PO_RO_T$与$Ppp’$是相似三角形，由于相似三角形原理，我们可以很容易知道：</p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p10.png" width="1200px"><br>由极线约束可知，我们可以将原来的匹配点搜索范围由2D转换成1D，这样做可以很大程度上减少计算量。我们将左右视图摆放成更容易理解的形式，可以发现对应点的匹配问题转换成了在同一条扫描线上（极线）的匹配问题。</p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p11.png" width="1200px"><br>可以发现相机的摆放姿势影响着扫描线的方向。在上图A中，相机与水平呈一定角度地摆放，其扫描线为右图所示，同样是与水平倾斜的扫描线。假如两个相机平行摆放的话，其拍出来匹配对是扫描线已经对齐了的。</p>
+<h3 id="深度与视差"><a href="#深度与视差" class="headerlink" title="深度与视差"></a>深度与视差</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p12.png" width="1200px"><br>如上图所示为扫描线已经对齐了的匹配图像对（以下简称<strong>匹配对</strong>）。可以发现：$PO_RO_T$与$Ppp’$是相似三角形，由于相似三角形原理，我们可以很容易知道：</p>
 <script type="math/tex; mode=display">\frac{b}{Z}=\frac{(b+x_T)-x_R}{Z-f}</script><p>其中，$x_R-x_T$就是视差，Z表示深度，B为基线，f是焦距。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p13.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-1.png" width="1200px"></p>
-<p>所谓<strong>视差就是匹配对中对应点之间x方向上的差异</strong>，我们可以将这种差异转换成为灰度图（越近越白），如上最后一个图所示。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p14-2.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p13.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p14-1.png" width="1200px"></p>
+<p>所谓<strong>视差就是匹配对中对应点之间x方向上的差异</strong>，我们可以将这种差异转换成为灰度图（越近越白），如上最后一个图所示。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p14-2.png" width="1200px"></p>
 <p>上图展示了物体距离相机越近的话，视差就越大。其实很容易理解，将人的双眼比作成双目相机，对比将手指放在双眼前方近处与远处晃动的区别，可以发现在近处的话人眼感知到手指的晃动是比远处晃动的“程度”明显的，那么这种程度就是视差在人脑中的反映。</p>
-<h3 id="视界"><a href="#视界" class="headerlink" title="视界"></a>视界</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p15.png" width="1200px"></p>
+<h3 id="视界"><a href="#视界" class="headerlink" title="视界"></a>视界</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p15.png" width="1200px"></p>
 <p>图为双摄装置，基线为b，焦距为f，那么双摄的视界被视差范围所限定{$d_{min},d_{max}$}，如图中绿色包裹的区域。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p16.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p16.png" width="1200px"></p>
 <ul>
 <li>深度是通过利用立体匹配系统将视差离散成一系列平行的平面来测量的；每一层平面对应着一个视差。</li>
 <li>可以通过超像素的方法得到效果更好的深度图。</li>
 </ul>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p17.png" width="1200px"><br>图为5个视差{$d_{min},d_{min}+4$}组成的视场。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p18.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p17.png" width="1200px"><br>图为5个视差{$d_{min},d_{min}+4$}组成的视场。</p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p18.png" width="1200px"></p>
 <ul>
 <li>图为5个视差{$\Delta+d_\{min\},\Delta+d_\{min}+4$\}组成的视场</li>
 <li>$\Delta&gt;0$时，视场收缩并向相机靠近</li>
 </ul>
-<h2 id="深度估计"><a href="#深度估计" class="headerlink" title="深度估计"></a>深度估计</h2><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p21.png" width="1200px"><br>图中为传统算法以及ICCV2011当时最好的结果。可以发现，能够达到较好的视差是具有挑战性的。下面将要展示视差估计的基本流程。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p22.png" width="1200px"><br>通过双摄设备采集图像，此时图像是存在镜头畸变的，在进行扫描线对齐之前要进行离线标定以消除镜头畸变。扫描线对齐的过程叫做<strong>镜头矫正</strong>（rectificaition），经过这步之后就可以进行1D的匹配点搜索（stereo correspondence）了。随后通过三角形相似原理得到相应的深度/视差图。</p>
-<h3 id="离线标定"><a href="#离线标定" class="headerlink" title="离线标定"></a>离线标定</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p23.png" width="1200px"><br>标定的目标是寻找：</p>
+<h2 id="深度估计"><a href="#深度估计" class="headerlink" title="深度估计"></a>深度估计</h2><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p21.png" width="1200px"><br>图中为传统算法以及ICCV2011当时最好的结果。可以发现，能够达到较好的视差是具有挑战性的。下面将要展示视差估计的基本流程。</p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p22.png" width="1200px"><br>通过双摄设备采集图像，此时图像是存在镜头畸变的，在进行扫描线对齐之前要进行离线标定以消除镜头畸变。扫描线对齐的过程叫做<strong>镜头矫正</strong>（rectificaition），经过这步之后就可以进行1D的匹配点搜索（stereo correspondence）了。随后通过三角形相似原理得到相应的深度/视差图。</p>
+<h3 id="离线标定"><a href="#离线标定" class="headerlink" title="离线标定"></a>离线标定</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p23.png" width="1200px"><br>标定的目标是寻找：</p>
 <ul>
 <li>相机内参：焦距、图像中心、镜头畸变参数</li>
 <li>相机外参：排列相机使其对齐的参数</li>
@@ -527,21 +527,21 @@
 <li>标定程序可以见Opencv<sup><a href="#fn_39" id="reffn_39">39</a></sup>和Matlab<sup><a href="#fn_40" id="reffn_40">40</a></sup>。</li>
 <li>更为详细的介绍参见<sup><a href="#fn_20" id="reffn_20">20</a></sup> <sup><a href="#fn_21" id="reffn_21">21</a></sup> <sup><a href="#fn_22" id="reffn_22">22</a></sup>。</li>
 </ul>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p25.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p26.png" width="1200px"></p>
-<h3 id="匹配矫正"><a href="#匹配矫正" class="headerlink" title="匹配矫正"></a>匹配矫正</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p27.png" width="1200px"><br>利用标定步骤得到的相机的内参对相机镜头畸变进行校正，同时对其扫描线。</p>
-<h3 id="立体匹配"><a href="#立体匹配" class="headerlink" title="立体匹配"></a>立体匹配</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p28.png" width="1200px"><br>目标：从匹配对中寻找对应的点，反映在图像中就是视差图像。</p>
-<h3 id="三角测量"><a href="#三角测量" class="headerlink" title="三角测量"></a>三角测量</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p29.png" width="1200px"><br>给定视差图像，基线长度以及焦距可以通过三角计算得到当前位置对应的3D位置。</p>
-<h2 id="立体匹配的挑战性"><a href="#立体匹配的挑战性" class="headerlink" title="立体匹配的挑战性"></a>立体匹配的挑战性</h2><h3 id="光度失真以及噪声"><a href="#光度失真以及噪声" class="headerlink" title="光度失真以及噪声"></a>光度失真以及噪声</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-1.png" width="1200px"></p>
-<h3 id="高光表面"><a href="#高光表面" class="headerlink" title="高光表面"></a>高光表面</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p37-2.png" width="1200px"></p>
-<h3 id="透视收缩"><a href="#透视收缩" class="headerlink" title="透视收缩"></a>透视收缩</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p38.png" width="1200px"></p>
-<h3 id="透视变形"><a href="#透视变形" class="headerlink" title="透视变形"></a>透视变形</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-1.png" width="1200px"></p>
-<h3 id="无纹理区域"><a href="#无纹理区域" class="headerlink" title="无纹理区域"></a>无纹理区域</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p39-2.png" width="1200px"></p>
-<h3 id="重复-混淆区域"><a href="#重复-混淆区域" class="headerlink" title="重复/混淆区域"></a>重复/混淆区域</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p40.png" width="1200px"></p>
-<h3 id="透明物体"><a href="#透明物体" class="headerlink" title="透明物体"></a>透明物体</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-1.png" width="1200px"></p>
-<h3 id="遮挡区以及不连续区域（1）"><a href="#遮挡区以及不连续区域（1）" class="headerlink" title="遮挡区以及不连续区域（1）"></a>遮挡区以及不连续区域（1）</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p41-2.png" width="1200px"></p>
-<h3 id="遮挡区以及不连续区域（2）"><a href="#遮挡区以及不连续区域（2）" class="headerlink" title="遮挡区以及不连续区域（2）"></a>遮挡区以及不连续区域（2）</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p42.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p25.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p26.png" width="1200px"></p>
+<h3 id="匹配矫正"><a href="#匹配矫正" class="headerlink" title="匹配矫正"></a>匹配矫正</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p27.png" width="1200px"><br>利用标定步骤得到的相机的内参对相机镜头畸变进行校正，同时对其扫描线。</p>
+<h3 id="立体匹配"><a href="#立体匹配" class="headerlink" title="立体匹配"></a>立体匹配</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p28.png" width="1200px"><br>目标：从匹配对中寻找对应的点，反映在图像中就是视差图像。</p>
+<h3 id="三角测量"><a href="#三角测量" class="headerlink" title="三角测量"></a>三角测量</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p29.png" width="1200px"><br>给定视差图像，基线长度以及焦距可以通过三角计算得到当前位置对应的3D位置。</p>
+<h2 id="立体匹配的挑战性"><a href="#立体匹配的挑战性" class="headerlink" title="立体匹配的挑战性"></a>立体匹配的挑战性</h2><h3 id="光度失真以及噪声"><a href="#光度失真以及噪声" class="headerlink" title="光度失真以及噪声"></a>光度失真以及噪声</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p37-1.png" width="1200px"></p>
+<h3 id="高光表面"><a href="#高光表面" class="headerlink" title="高光表面"></a>高光表面</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p37-2.png" width="1200px"></p>
+<h3 id="透视收缩"><a href="#透视收缩" class="headerlink" title="透视收缩"></a>透视收缩</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p38.png" width="1200px"></p>
+<h3 id="透视变形"><a href="#透视变形" class="headerlink" title="透视变形"></a>透视变形</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p39-1.png" width="1200px"></p>
+<h3 id="无纹理区域"><a href="#无纹理区域" class="headerlink" title="无纹理区域"></a>无纹理区域</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p39-2.png" width="1200px"></p>
+<h3 id="重复-混淆区域"><a href="#重复-混淆区域" class="headerlink" title="重复/混淆区域"></a>重复/混淆区域</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p40.png" width="1200px"></p>
+<h3 id="透明物体"><a href="#透明物体" class="headerlink" title="透明物体"></a>透明物体</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p41-1.png" width="1200px"></p>
+<h3 id="遮挡区以及不连续区域（1）"><a href="#遮挡区以及不连续区域（1）" class="headerlink" title="遮挡区以及不连续区域（1）"></a>遮挡区以及不连续区域（1）</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p41-2.png" width="1200px"></p>
+<h3 id="遮挡区以及不连续区域（2）"><a href="#遮挡区以及不连续区域（2）" class="headerlink" title="遮挡区以及不连续区域（2）"></a>遮挡区以及不连续区域（2）</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p42.png" width="1200px"></p>
 <h2 id="Middlebury数据集"><a href="#Middlebury数据集" class="headerlink" title="Middlebury数据集"></a>Middlebury数据集</h2><p><a href="http://vision.middlebury.edu/stereo/eval3/" target="_blank" rel="noopener">Middlebury数据集</a>提供了一套可供深度估计的数据集以及评价系统，深度估计算法可在该数据集上进行测试性能。2003年的数据集提供了Tsukuba, Venus, Teddy and Cones这几个场景的匹配对。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p44.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p44.png" width="1200px"></p>
 <h2 id="匹配问题"><a href="#匹配问题" class="headerlink" title="匹配问题"></a>匹配问题</h2><p>立体匹配的算法可以分成以下几个步骤：</p>
 <ol>
 <li>匹配量/损失计算</li>
@@ -560,9 +560,9 @@
 <li>双边滤波</li>
 <li>统计变换</li>
 </ul>
-<p>最简单的立体匹配算法如下图所示，逐像素地计算SAD匹配损失；然后通过WTA得到初始视差，但是此时得到的视差质量是很差的。那么如何提高深度图像的质量呢？通常来说有两种不同类别的策略。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p47.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p48.png" width="1200px"></p>
+<p>最简单的立体匹配算法如下图所示，逐像素地计算SAD匹配损失；然后通过WTA得到初始视差，但是此时得到的视差质量是很差的。那么如何提高深度图像的质量呢？通常来说有两种不同类别的策略。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p47.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p48.png" width="1200px"></p>
 <ul>
-<li>局部算法。同样是利用到了简单的WTA提取到初始视差，但是通过计算窗口内的损失量提高了信噪比。有时需会加入平滑项。Steps 1+2 (+ WTA)<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p50.png" width="1200px"></li>
+<li>局部算法。同样是利用到了简单的WTA提取到初始视差，但是通过计算窗口内的损失量提高了信噪比。有时需会加入平滑项。Steps 1+2 (+ WTA)<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p50.png" width="1200px"></li>
 <li>全局/半全局算法。寻找能够使得能量函数的最小值的视差以得到逐点视差。Steps 1+ Step3。（有时，损失函数需要聚合）</li>
 </ul>
 <p>两种算法都假设了匹配对是平滑的，但有时，该假设并不成立。这个假设在局部算法中隐晦地提及，却在全局算法中明确地建模，如下形式。</p>
@@ -576,8 +576,8 @@
 <li><p>相异性测量对于图像噪声不敏感（Birchfield and Tomasi<sup><a href="#fn_27" id="reffn_27">27</a></sup>）</p>
 </li>
 </ul>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p52.png" width="1200px"><br>视差空间图像（DSI）是一个如下图所示张量$W\times H\times(d_{max}-d_{min})$，其中的每一个元素$C(x,y,d)$表示$I_R(x_R,y)$与$I_T(x_R+d,y)$之间的匹配度。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p53.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p52.png" width="1200px"><br>视差空间图像（DSI）是一个如下图所示张量$W\times H\times(d_{max}-d_{min})$，其中的每一个元素$C(x,y,d)$表示$I_R(x_R,y)$与$I_T(x_R+d,y)$之间的匹配度。</p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p53.png" width="1200px"></p>
 <h3 id="区域匹配损失"><a href="#区域匹配损失" class="headerlink" title="区域匹配损失"></a>区域匹配损失</h3><ul>
 <li>绝对误差和（Sum of Absolute differences (SAD)）<script type="math/tex; mode=display">C(x,y,d)=\sum_{x\in S}|I_R(x,y)-I_T(x+d,y)|</script></li>
 <li>绝对平方和（Sum of Squared differences (SSD)）<script type="math/tex; mode=display">C(x,y,d)=\sum_{x\in S}\left(I_R(x,y)-I_T(x+d,y)\right)^2</script></li>
@@ -589,13 +589,13 @@
 <li>Mutual Information <sup><a href="#fn_30" id="reffn_30">30</a></sup></li>
 <li>Combination of matching costs</li>
 </ul>
-<h2 id="损失聚合"><a href="#损失聚合" class="headerlink" title="损失聚合"></a>损失聚合</h2><p>那么从最简单的固定窗口（FW）损失聚合开始，以下为利用FW聚合的TAD损失然后利用WTA得到的深度图。理想是完美的，但现实是骨感的，可以看到下图给出的结果并不佳，这是什么原因呢？<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p57.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p58.png" width="1200px"><br>a. 隐含地假设前额表面处于同一视差<br>b. 忽略了深度的非连续性<br>c. 平坦区域的处理不佳<br>d. 重复的区域</p>
+<h2 id="损失聚合"><a href="#损失聚合" class="headerlink" title="损失聚合"></a>损失聚合</h2><p>那么从最简单的固定窗口（FW）损失聚合开始，以下为利用FW聚合的TAD损失然后利用WTA得到的深度图。理想是完美的，但现实是骨感的，可以看到下图给出的结果并不佳，这是什么原因呢？<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p57.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p58.png" width="1200px"><br>a. 隐含地假设前额表面处于同一视差<br>b. 忽略了深度的非连续性<br>c. 平坦区域的处理不佳<br>d. 重复的区域</p>
 <p>对于a. 隐含地假设前额表面处于同一视差，很多即使是当前最好的损失聚合算法也会假设：在一个小的支持域里面的所有点所处的视差是相同的。但实际情况并非如此，可以观察以上两图，人体头像模型的面部是不规则的表面，展现出来的是视差的不断变化；下面的图是桌子平面，它表面是倾斜的，同样表现出来的是视差的变化。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p59.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p59.png" width="1200px"></p>
 <p>对于b. 忽略了深度的非连续性，原本假设真实场景中的正面平行表面在支持域内深度不会变化，但是这个假设在深度不连续处的附近被打破。可以看到下图中在台灯灯罩的边界处出现了深度的间断，这样经过损失聚合之后得到的深度就会出现边界误匹配的现象，表现在图中为边界没有很好的对齐。不过利用TAD可以在一定程度上减少这种现象。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-1.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p60-2.png" width="1200px"></p>
-<p>目前最好的损失聚合算法都在想方设法地改变支持域的形状以适应在仅在相同的已知视差上做匹配。对于FW而言，就是减小其窗口大小，来减少边界定位问题。但是与此同时，这个改变使得匹配问题变得含糊不清，特别是对于有重复区域以及平滑区域的情形。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p61.png" width="1200px"></p>
-<p>对于c与d，FW并不能很好地处理。在这两种情况下，损失聚合算法应该不断地加大支持域的尺寸以获得更多的相同深度上的点。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p62.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p60-1.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p60-2.png" width="1200px"></p>
+<p>目前最好的损失聚合算法都在想方设法地改变支持域的形状以适应在仅在相同的已知视差上做匹配。对于FW而言，就是减小其窗口大小，来减少边界定位问题。但是与此同时，这个改变使得匹配问题变得含糊不清，特别是对于有重复区域以及平滑区域的情形。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p61.png" width="1200px"></p>
+<p>对于c与d，FW并不能很好地处理。在这两种情况下，损失聚合算法应该不断地加大支持域的尺寸以获得更多的相同深度上的点。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p62.png" width="1200px"></p>
 <p>以上为FW所面对的诸多问题。令人吃惊的是，虽然FW看起来如此不堪一击，但是其应用却是如此广泛。原因可能有以下几点：</p>
 <ol>
 <li>容易实现；</li>
@@ -605,8 +605,8 @@
 <li>可硬件（FPGA）实时实现，且功率小（&lt;1W）</li>
 </ol>
 <p>在介绍更加复杂的算法之前，我们首先介绍积分图像（Integral Images (II)）以及箱滤波（Box-Filtering (BF)）。</p>
-<h3 id="积分图像"><a href="#积分图像" class="headerlink" title="积分图像"></a>积分图像</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p64.png" width="1200px"></p>
-<h3 id="箱滤波器"><a href="#箱滤波器" class="headerlink" title="箱滤波器"></a>箱滤波器</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p65.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p66.png" width="1200px"></p>
+<h3 id="积分图像"><a href="#积分图像" class="headerlink" title="积分图像"></a>积分图像</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p64.png" width="1200px"></p>
+<h3 id="箱滤波器"><a href="#箱滤波器" class="headerlink" title="箱滤波器"></a>箱滤波器</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p65.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p66.png" width="1200px"></p>
 <p>可以总结出积分图与箱滤波器的关系：</p>
 <ol>
 <li>每个点需要4个运算</li>
@@ -623,22 +623,22 @@
 <li>权重</li>
 </ul>
 <p>接下来就对文中但不限于文中提到的诸多算法进行介绍 (i.e. Fast Aggregation <sup><a href="#fn_64" id="reffn_64">64</a></sup>, Fast Bilateral Stereo (FBS) <sup><a href="#fn_65" id="reffn_65">65</a></sup> and the Locally Consistent (LC) methodology <sup><a href="#fn_66" id="reffn_66">66</a></sup>)。</p>
-<h3 id="固定窗口"><a href="#固定窗口" class="headerlink" title="固定窗口"></a>固定窗口</h3><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p87.png" width="1200px"></p>
-<h3 id="可移动窗口11"><a href="#可移动窗口11" class="headerlink" title="可移动窗口11"></a>可移动窗口<sup><a href="#fn_11" id="reffn_11">11</a></sup></h3><p>这种方法是为了应对场景边界定位问题，这种算法不限制当前位置位于支持域中心。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p88.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p89.png" width="1200px"></p>
-<h3 id="多窗口7"><a href="#多窗口7" class="headerlink" title="多窗口7"></a>多窗口<sup><a href="#fn_7" id="reffn_7">7</a></sup></h3><p>支持域内元素个数为常数；支持域的形状不限于为矩形；支持域大小可为5、9、25（5W,9W,25W）。下图所示的为9W：<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p90.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p91.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p92.png" width="1200px"></p>
-<h3 id="可变窗口12"><a href="#可变窗口12" class="headerlink" title="可变窗口12"></a>可变窗口<sup><a href="#fn_12" id="reffn_12">12</a></sup></h3><p>这种方式，支持域的形状是固定的但是尺寸是变化的。支持域的位置是可变的。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p94.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p95.png" width="1200px"></p>
-<h3 id="基于分割的窗口5"><a href="#基于分割的窗口5" class="headerlink" title="基于分割的窗口5"></a>基于分割的窗口<sup><a href="#fn_5" id="reffn_5">5</a></sup></h3><p>这种方式根据图像的颜色相似性将其分割成一系列图像块，这对于损失聚合、深度图像优化以及离群点检测都有帮助。这种算法假设：每个分割块内深度平滑变化。由于涉及到图像分割此时要求分割的精度很高，并且分割后的每个支持域的形状也是不规则的。如下图所示，对于一个可允许的最大支持域范围内，包含支持域中心点所在的分割所覆盖支持域权重赋值为1，支持域的其余部分赋值为$\lambda$，其中$\lambda&lt;<1$。 <img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p98-1.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p98-2.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p99.png" width="1200px"></1$。></p>
-<h3 id="自适应加权14-51"><a href="#自适应加权14-51" class="headerlink" title="自适应加权14 51"></a>自适应加权<sup><a href="#fn_14" id="reffn_14">14</a></sup> <sup><a href="#fn_51" id="reffn_51">51</a></sup></h3><p>首先介绍双边滤波，双边滤波是一种边缘保持滤波器，它是根据图像的邻域的颜色以及空间相关性对每个中心点进行加权。类似于双边滤波，自适应加权对其进行了简化，只考虑颜色的相关性。每一个损失都被乘以了一个这样的权重可以得到$C(p_c,q_c)$。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p101.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p102.png" width="1200px"><br>以下是自适应加权的结果：<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p103.png" width="1200px"></p>
+<h3 id="固定窗口"><a href="#固定窗口" class="headerlink" title="固定窗口"></a>固定窗口</h3><p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p87.png" width="1200px"></p>
+<h3 id="可移动窗口11"><a href="#可移动窗口11" class="headerlink" title="可移动窗口11"></a>可移动窗口<sup><a href="#fn_11" id="reffn_11">11</a></sup></h3><p>这种方法是为了应对场景边界定位问题，这种算法不限制当前位置位于支持域中心。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p88.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p89.png" width="1200px"></p>
+<h3 id="多窗口7"><a href="#多窗口7" class="headerlink" title="多窗口7"></a>多窗口<sup><a href="#fn_7" id="reffn_7">7</a></sup></h3><p>支持域内元素个数为常数；支持域的形状不限于为矩形；支持域大小可为5、9、25（5W,9W,25W）。下图所示的为9W：<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p90.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p91.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p92.png" width="1200px"></p>
+<h3 id="可变窗口12"><a href="#可变窗口12" class="headerlink" title="可变窗口12"></a>可变窗口<sup><a href="#fn_12" id="reffn_12">12</a></sup></h3><p>这种方式，支持域的形状是固定的但是尺寸是变化的。支持域的位置是可变的。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p94.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p95.png" width="1200px"></p>
+<h3 id="基于分割的窗口5"><a href="#基于分割的窗口5" class="headerlink" title="基于分割的窗口5"></a>基于分割的窗口<sup><a href="#fn_5" id="reffn_5">5</a></sup></h3><p>这种方式根据图像的颜色相似性将其分割成一系列图像块，这对于损失聚合、深度图像优化以及离群点检测都有帮助。这种算法假设：每个分割块内深度平滑变化。由于涉及到图像分割此时要求分割的精度很高，并且分割后的每个支持域的形状也是不规则的。如下图所示，对于一个可允许的最大支持域范围内，包含支持域中心点所在的分割所覆盖支持域权重赋值为1，支持域的其余部分赋值为$\lambda$，其中$\lambda&lt;<1$。 <img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p98-1.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p98-2.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p99.png" width="1200px"></1$。></p>
+<h3 id="自适应加权14-51"><a href="#自适应加权14-51" class="headerlink" title="自适应加权14 51"></a>自适应加权<sup><a href="#fn_14" id="reffn_14">14</a></sup> <sup><a href="#fn_51" id="reffn_51">51</a></sup></h3><p>首先介绍双边滤波，双边滤波是一种边缘保持滤波器，它是根据图像的邻域的颜色以及空间相关性对每个中心点进行加权。类似于双边滤波，自适应加权对其进行了简化，只考虑颜色的相关性。每一个损失都被乘以了一个这样的权重可以得到$C(p_c,q_c)$。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p101.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p102.png" width="1200px"><br>以下是自适应加权的结果：<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p103.png" width="1200px"></p>
 <h3 id="可分支持域10"><a href="#可分支持域10" class="headerlink" title="可分支持域10"></a>可分支持域<sup><a href="#fn_10" id="reffn_10">10</a></sup></h3><h3 id="快速聚合64"><a href="#快速聚合64" class="headerlink" title="快速聚合64"></a>快速聚合<sup><a href="#fn_64" id="reffn_64">64</a></sup></h3><ul>
 <li>假设：在每个分割块内的深度变化平缓；</li>
 <li>损失量：TAD；</li>
 <li>只对参考图像进行聚合；</li>
 <li>对称的支持域</li>
-<li>支持域覆盖整个分割块<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p109.png" width="1200px"><script type="math/tex; mode=display">C_{agg}(p,q,d)=\frac{C_S(p,q,d)}{|S_p|}+\frac{C_W(p,q,d)}{|r^2|}</script><script type="math/tex; mode=display">C_S(p,q,d)=\sum_{p_i \in S_p}{TAD(p_i,q_{i+d})}</script><script type="math/tex; mode=display">C_W(p,q,d)=\sum_{p_i \in W_p}{TAD(p_i,q_{i+d})}</script>其中$C_W$为了消除“分割锁定”，这一项可能在纹理稠密的区域很有帮助，但是这一项有可能带来深度的不连续性。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p111.png" width="1200px"></li>
+<li>支持域覆盖整个分割块<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p109.png" width="1200px"><script type="math/tex; mode=display">C_{agg}(p,q,d)=\frac{C_S(p,q,d)}{|S_p|}+\frac{C_W(p,q,d)}{|r^2|}</script><script type="math/tex; mode=display">C_S(p,q,d)=\sum_{p_i \in S_p}{TAD(p_i,q_{i+d})}</script><script type="math/tex; mode=display">C_W(p,q,d)=\sum_{p_i \in W_p}{TAD(p_i,q_{i+d})}</script>其中$C_W$为了消除“分割锁定”，这一项可能在纹理稠密的区域很有帮助，但是这一项有可能带来深度的不连续性。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p111.png" width="1200px"></li>
 </ul>
-<h3 id="快速双边滤波65"><a href="#快速双边滤波65" class="headerlink" title="快速双边滤波65"></a><a href="http://vision.deis.unibo.it/~smatt/fast_bilateral_stereo.htm" target="_blank" rel="noopener">快速双边滤波</a><sup><a href="#fn_65" id="reffn_65">65</a></sup></h3><p>该方法兼顾了自适应加权的精度以及传统方法的效率。通过逐块的利用双边滤波对损失进行规范化，通过这种方式可以增加对噪声的鲁棒性。可以利用前面提及的积分图或者箱滤波的方式快速计算。由于双边滤波的局部计算特性，可以利用GPU进行加速，<a href="http://vision.deis.unibo.it/~smatt/FBS_GPU.html" target="_blank" rel="noopener">GPU加速版本</a>。结果如下所示：<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p115.png" width="1200px"></p>
-<h3 id="局部一致性"><a href="#局部一致性" class="headerlink" title="局部一致性"></a><a href="http://vision.deis.unibo.it/~smatt/lc_stereo.htm" target="_blank" rel="noopener">局部一致性</a></h3><p>通过对像素之间的一致性约束进行建模寻找像素之间的相关关系，这种方法对于目前最好的方法具有显著的效果提升。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p122.png" width="1200px"></p>
-<h3 id="O-1-adaptive-cost-aggregation75"><a href="#O-1-adaptive-cost-aggregation75" class="headerlink" title="O(1) adaptive cost aggregation75"></a>O(1) adaptive cost aggregation<sup><a href="#fn_75" id="reffn_75">75</a></sup></h3><p>该方法受引导滤波的启发，效果还不错，可与最佳效果相媲美。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p127.png" width="1200px"></p>
+<h3 id="快速双边滤波65"><a href="#快速双边滤波65" class="headerlink" title="快速双边滤波65"></a><a href="http://vision.deis.unibo.it/~smatt/fast_bilateral_stereo.htm" target="_blank" rel="noopener">快速双边滤波</a><sup><a href="#fn_65" id="reffn_65">65</a></sup></h3><p>该方法兼顾了自适应加权的精度以及传统方法的效率。通过逐块的利用双边滤波对损失进行规范化，通过这种方式可以增加对噪声的鲁棒性。可以利用前面提及的积分图或者箱滤波的方式快速计算。由于双边滤波的局部计算特性，可以利用GPU进行加速，<a href="http://vision.deis.unibo.it/~smatt/FBS_GPU.html" target="_blank" rel="noopener">GPU加速版本</a>。结果如下所示：<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p115.png" width="1200px"></p>
+<h3 id="局部一致性"><a href="#局部一致性" class="headerlink" title="局部一致性"></a><a href="http://vision.deis.unibo.it/~smatt/lc_stereo.htm" target="_blank" rel="noopener">局部一致性</a></h3><p>通过对像素之间的一致性约束进行建模寻找像素之间的相关关系，这种方法对于目前最好的方法具有显著的效果提升。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p122.png" width="1200px"></p>
+<h3 id="O-1-adaptive-cost-aggregation75"><a href="#O-1-adaptive-cost-aggregation75" class="headerlink" title="O(1) adaptive cost aggregation75"></a>O(1) adaptive cost aggregation<sup><a href="#fn_75" id="reffn_75">75</a></sup></h3><p>该方法受引导滤波的启发，效果还不错，可与最佳效果相媲美。<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p127.png" width="1200px"></p>
 <h2 id="视差-深度计算以及优化"><a href="#视差-深度计算以及优化" class="headerlink" title="视差/深度计算以及优化"></a>视差/深度计算以及优化</h2><p>该步骤是为了寻找可最小化损失函数的视差（或者得到DSI图像的最佳路径以最小化能量函数）。通常情况下，能量函数可以表示为以下形式</p>
 <script type="math/tex; mode=display">E(d)=E_{data}(d)+E_{smooth}(d)</script><p>其中的数据项$E_{data}(d)$为了衡量目前假定的视差能够以何等程度接近真实视差。目前已经有不少逐像素的损失构造策略，但是目前也涌现了许多基于支持域的数据项。<br>另外一项是平滑项或者叫做正则项$E_{smooth}(d)$，它可以对像素之间的连续性或者相似性进行约束：这一项对大的视差给予大的惩罚，同时对于边界处的大视差变化以及小的惩罚。也就是说，视差的变化在边界处是被允许的。</p>
 <p>以上模型的求解是个NP-hard问题，在这里可以借助几种常用的策略对其进行求解。</p>
@@ -651,19 +651,19 @@
 <h3 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h3><ul>
 <li>高效 (polynomial time) ≈ 1 sec</li>
 <li>边界以及纹理稀疏区域有所帮助</li>
-<li>条带现象<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p135.png" width="1200px"></li>
+<li>条带现象<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p135.png" width="1200px"></li>
 </ul>
 <h3 id="扫描线优化（Scanline-Optimization，SO30）"><a href="#扫描线优化（Scanline-Optimization，SO30）" class="headerlink" title="扫描线优化（Scanline Optimization，SO30）"></a>扫描线优化（Scanline Optimization，SO<sup><a href="#fn_30" id="reffn_30">30</a></sup>）</h3><ul>
 <li>高效 (polynomial time) ≈ few seconds</li>
 <li>边界以及纹理稀疏区域有所帮助</li>
 <li>条带现象</li>
-<li>高内存消耗<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p139.png" width="1200px"></li>
+<li>高内存消耗<br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p139.png" width="1200px"></li>
 </ul>
 <h2 id="视差精化"><a href="#视差精化" class="headerlink" title="视差精化"></a>视差精化</h2><p>原始视差中包含的离群点需要被检测以及被移除；同时，视差是离散的数据点，有时需要更高的精度；以下将会介绍亚像素插值、图像滤波、双向验证。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p166.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p167.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p168.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p169.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p170.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p181.png" width="1200px"><br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/p183.png" width="1200px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p166.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p167.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p168.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p169.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p170.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p181.png" width="1200px"><br><img src="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/p183.png" width="1200px"></p>
 <font color="F08080" size="5">未完待续...</font>
 
-<p><strong>注：</strong>特此感谢Stefano Mattoccia给出如此良心的立体视觉综述，<a href="http://www.vision.deis.unibo.it/smatt/Seminars/StereoVision.pdf" target="_blank" rel="noopener">本文最新版本在此</a>(速度较慢)或者<a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/stereo-vision-overview/StereoVision.pdf" target="_blank" rel="noopener">这里</a>(较快，大小51.61M)。</p>
+<p><strong>注：</strong>特此感谢Stefano Mattoccia给出如此良心的立体视觉综述，<a href="http://www.vision.deis.unibo.it/smatt/Seminars/StereoVision.pdf" target="_blank" rel="noopener">本文最新版本在此</a>(速度较慢)或者<a href="https://vincentqin.gitee.io/blogresource-1/stereo-vision-overview/StereoVision.pdf" target="_blank" rel="noopener">这里</a>(较快，大小51.61M)。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><blockquote id="fn_1">
 <sup>1</sup>. F. Tombari, S. Mattoccia, L. Di Stefano, E. Addimanda, Classification and evaluation of cost aggregation methods for stereo correspondence, IEEE International Conference on Computer Vision and Pattern Recognition (CVPR 2008)<a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#8617;</a>
 </blockquote>

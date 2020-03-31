@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -66,14 +66,14 @@
 <meta property="og:url" content="https://www.vincentqin.tech/posts/build-filebrowser/index.html">
 <meta property="og:site_name" content="RealCat">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-banner.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-login.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-demo.gif">
-<meta property="og:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/Chevereto.png">
-<meta property="og:updated_time" content="2019-09-15T09:14:03.643Z">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-banner.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-login.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-demo.gif">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/Chevereto.png">
+<meta property="og:updated_time" content="2020-03-31T15:27:36.717Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Filebrowser：一款轻量级个人网盘">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-banner.png">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-banner.png">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/build-filebrowser/">
 
 
@@ -347,7 +347,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-09-15 17:14:03" itemprop="dateModified" datetime="2019-09-15T17:14:03+08:00">2019-09-15</time>
+                <time title="Modified: 2020-03-31 23:27:36" itemprop="dateModified" datetime="2020-03-31T23:27:36+08:00">2020-03-31</time>
               </span>
             
           
@@ -385,7 +385,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><br><br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-banner.png" alt><br><br></p>
+        <p><br><br><img src="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-banner.png" alt><br><br></p>
 <a id="more"></a>
 <h1 id="个人网盘-Filebrowser"><a href="#个人网盘-Filebrowser" class="headerlink" title="个人网盘 Filebrowser"></a>个人网盘 Filebrowser</h1><p>服务器仅仅用于科学上网未免有些浪费了，是时候尝试一下自建个人网盘和图床了。</p>
 <h2 id="如何安装"><a href="#如何安装" class="headerlink" title="如何安装"></a>如何安装</h2><p><a href="https://filebrowser.xyz/installation" target="_blank" rel="noopener">官方</a>给出了一键安装大法，进入服务器输入以下命令就可以了。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://filebrowser.xyz/get.sh | bash</span><br></pre></td></tr></table></figure></p>
@@ -399,8 +399,8 @@
 <li>添加一个用户：<code>filebrowser -d /etc/filebrowser.db users add root password --perm.admin</code>，其中的root和password分别是用户名和密码，根据自己的需求更改。</li>
 </ul>
 <p>有关更多配置的选项，可以参考官方文档：<a href="https://docs.filebrowser.xyz/" target="_blank" rel="noopener">https://docs.filebrowser.xyz/</a><br>配置修改好以后，就可以启动FileBrowser了，使用-d参数指定配置数据库路径。示例：<code>filebrowser -d /etc/filebrowser.db</code><br>启动成功就可以使用浏览器访问FileBrowser了，在浏览器输入 <code>服务器IP:端口</code>，示例：<code>http://192.168.1.1:8088</code></p>
-<p>然后会看到 FileBrowser 的登陆界面：<br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-login.png" alt></p>
-<p>用刚刚创建的用户登陆，最后就可以放心使用啦~<br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/filebrowser-demo.gif" alt></p>
+<p>然后会看到 FileBrowser 的登陆界面：<br><img src="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-login.png" alt></p>
+<p>用刚刚创建的用户登陆，最后就可以放心使用啦~<br><img src="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/filebrowser-demo.gif" alt></p>
 <h2 id="后续配置"><a href="#后续配置" class="headerlink" title="后续配置"></a>后续配置</h2><p>完成以上过程之后已经可以正常访问个人网盘了，但是假如服务器重启之后就必须重新输入<code>filebrowser -d /etc/filebrowser.db</code>才能运行，为了省去这一步，我们需要进行设置服务器开机自动启动FileBrowser。<br>这里我们使用的是systemd 大法：<br>首先下载 FileBrowser 的 <code>service</code>文件：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://cdn.mivm.cn/www.mivm.cn/archives/filebrowser/filebrowser.service -o /lib/systemd/system/filebrowser.service</span><br></pre></td></tr></table></figure>
 <p>如果你的运行命令不是<code>/usr/local/bin/filebrowser -d /etc/filebrowser.db</code>，需要对 service 文件进行修改，将文件的 ExecStart 改为你的运行命令，更改完成后需要输入<code>systemctl daemon-reload</code>。</p>
@@ -414,7 +414,7 @@
 </ul>
 <p>这里有个<a href="https://youtu.be/sE31MBvOjxk" target="_blank" rel="noopener">视频教程</a>，需要科学上网查看。</p>
 <p><br></p>
-<h1 id="个人图床Chevereto"><a href="#个人图床Chevereto" class="headerlink" title="个人图床Chevereto"></a>个人图床Chevereto</h1><p>先给出安装好的样子~<br><img src="https://raw.githubusercontent.com/Vincentqyw/blog-resources/master/img/Chevereto.png" alt></p>
+<h1 id="个人图床Chevereto"><a href="#个人图床Chevereto" class="headerlink" title="个人图床Chevereto"></a>个人图床Chevereto</h1><p>先给出安装好的样子~<br><img src="https://vincentqin.gitee.io/blogresource-1/build-filebrowser/Chevereto.png" alt></p>
 <p>安装教程这里<a href="https://gist.github.com/biezhi/f90923b48863c7d745481ccdd678ccab" target="_blank" rel="noopener">install_chevereto.md</a>已经写得非常详细了，在此不做详细介绍。这里有个<a href="https://youtu.be/kShgzNkXRak" target="_blank" rel="noopener">视频教程</a>，我主要按照这个教程进行配置的，需要科学上网查看。</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
 <li><a href="https://youtu.be/sE31MBvOjxk" target="_blank" rel="noopener">把玩我的 VPS 主机 - 分分钟搭建时尚简洁的在线网盘</a></li>

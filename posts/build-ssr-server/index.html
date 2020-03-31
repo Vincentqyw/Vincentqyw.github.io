@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -68,19 +68,19 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="关于科学上网，食用别人调配的酸酸乳总觉味道不对，自食其力心里才会感到踏实。受Newdee老贼指点，鄙人成功在服务器上开启了酸酸乳服务。详细过程Newdee已经在博文“SS服务器搭建”介绍地相当详细。本人记性不好，遂本文将记录几个关键步骤，以备后续不时之需。注意：本文仅供个人学习使用，不可用于商业或者违法行为！">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/vultr.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/buy-vultr.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/vultr-backend.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/account.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/ban-mails.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/bbr.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/snapshots-step1.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/snapshots-step2.png">
-<meta property="og:updated_time" content="2019-09-21T13:08:37.525Z">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/vultr.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/buy-vultr.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/vultr-backend.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/account.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/ban-mails.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/bbr.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/snapshots-step1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/snapshots-step2.png">
+<meta property="og:updated_time" content="2020-03-31T14:54:53.742Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="开启SSR模式">
 <meta name="twitter:description" content="关于科学上网，食用别人调配的酸酸乳总觉味道不对，自食其力心里才会感到踏实。受Newdee老贼指点，鄙人成功在服务器上开启了酸酸乳服务。详细过程Newdee已经在博文“SS服务器搭建”介绍地相当详细。本人记性不好，遂本文将记录几个关键步骤，以备后续不时之需。注意：本文仅供个人学习使用，不可用于商业或者违法行为！">
-<meta name="twitter:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/vultr.png">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/vultr.png">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/build-ssr-server/">
 
 
@@ -354,7 +354,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-09-21 21:08:37" itemprop="dateModified" datetime="2019-09-21T21:08:37+08:00">2019-09-21</time>
+                <time title="Modified: 2020-03-31 22:54:53" itemprop="dateModified" datetime="2020-03-31T22:54:53+08:00">2020-03-31</time>
               </span>
             
           
@@ -397,32 +397,32 @@
 <h2 id="购买服务器"><a href="#购买服务器" class="headerlink" title="购买服务器"></a>购买服务器</h2><ul>
 <li>购买服务器(支持alipay &amp; wechat pay)，地址: <a href="https://www.vultr.com/?ref=7996819" target="_blank" rel="noopener">https://www.vultr.com/</a></li>
 </ul>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/vultr.png" alt></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/vultr.png" alt></p>
 <ul>
 <li>经过几个步骤：1. Server Location, 2. Server Type, 3. Server Size, 4. Additional Features,5,6,7可以忽略，最后点击右下角的<strong>Deploy New</strong>即可部署。</li>
 </ul>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/buy-vultr.png" alt></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/buy-vultr.png" alt></p>
 <p>后台是这样的：</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/vultr-backend.png" alt></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/vultr-backend.png" alt></p>
 <p>然后根据IP以及用户名利用SSH在本地进行远程连接，进行以下步骤。</p>
 <h2 id="安装SSR"><a href="#安装SSR" class="headerlink" title="安装SSR"></a>安装SSR</h2><p>如果是单用户使用，进入服务器直接执行下述命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https://raw.githubusercontent.com/Vincentqyw/doubi/master/ssr.sh &amp;&amp; chmod +x ssr.sh &amp;&amp; bash ssr.sh</span><br></pre></td></tr></table></figure>
-<p>关于加密协议以及混淆的设置参见下图：<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/account.png" alt></p>
+<p>关于加密协议以及混淆的设置参见下图：<br><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/account.png" alt></p>
 <p>多用户使用的版本（可配置多个账号）：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh &amp;&amp; chmod +x ssrmu.sh &amp;&amp; bash ssrmu.sh</span><br></pre></td></tr></table></figure>
 <p>设置完毕之后，后续进行管理直接运行<code>bash ssrmu.sh</code>选择不同的功能项即可。</p>
 <h2 id="封禁某些端口-可选"><a href="#封禁某些端口-可选" class="headerlink" title="封禁某些端口(可选)"></a>封禁某些端口(可选)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https://raw.githubusercontent.com/Vincentqyw/doubi/master/ban_iptables.sh &amp;&amp; chmod +x ban_iptables.sh &amp;&amp; bash ban_iptables.sh</span><br></pre></td></tr></table></figure>
-<p>选择封禁垃圾邮件端口就行。<br><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/ban-mails.png" alt></p>
-<h2 id="BBR加速-可选"><a href="#BBR加速-可选" class="headerlink" title="BBR加速(可选)"></a>BBR加速(可选)</h2><p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/bbr.png" alt></p>
+<p>选择封禁垃圾邮件端口就行。<br><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/ban-mails.png" alt></p>
+<h2 id="BBR加速-可选"><a href="#BBR加速-可选" class="headerlink" title="BBR加速(可选)"></a>BBR加速(可选)</h2><p><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/bbr.png" alt></p>
 <h2 id="安装SSRR-可选"><a href="#安装SSRR-可选" class="headerlink" title="安装SSRR(可选)"></a>安装SSRR(可选)</h2><p>接下来的链接给出了SSRR的安装教程，不再赘述，<a href="https://gist.github.com/biezhi/45fac901f02f7c867e46aecd41076d70#kcp-%E5%AE%A2%E6%88%B7%E7%AB%AF" target="_blank" rel="noopener">Link</a>。</p>
 <h2 id="建立快照"><a href="#建立快照" class="headerlink" title="建立快照"></a>建立快照</h2><p>建立系统快照就是将系统某个状态下的各种数据记录在一个文件里，下一次新建完主机后恢复快照就能够恢复成之前系统的样子。</p>
 <p>若已有了主机，点击下图所示的<code>Snapshots</code>对该系统建立快照。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/snapshots-step1.png" alt></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/snapshots-step1.png" alt></p>
 <p>随后就会出现下图所示的页面，在<code>Label</code>一栏输入这个快照的标签，方便区分不同的快照。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/snapshots-step2.png" alt></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/snapshots-step2.png" alt></p>
 <p>若想对新建的系统恢复以前建立的快照，可以点击上图中的类似于<code>循环</code>的标志。</p>
 <h2 id="不可描述"><a href="#不可描述" class="headerlink" title="不可描述"></a>不可描述</h2><ul>
-<li><a href="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/build-ssr-server/SSR-WIN-ANDROID-IOS.7z" target="_blank" rel="noopener">不可描述</a></li>
+<li><a href="https://vincentqin.gitee.io/blogresource-2/build-ssr-server/SSR-WIN-ANDROID-IOS.7z" target="_blank" rel="noopener">不可描述</a></li>
 <li>PC终端可自行挑选，鄙人推荐<a href="https://www.termius.com/windows" target="_blank" rel="noopener">termius</a>, <a href="https://git-scm.com/downloads" target="_blank" rel="noopener">Git Bash</a></li>
 <li>参考链接：<a href="https://gist.github.com/biezhi/45fac901f02f7c867e46aecd41076d70" target="_blank" rel="noopener">ShadowsocksR 协议插件文档</a></li>
 </ul>

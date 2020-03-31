@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -68,12 +68,12 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="最近一段时间在推$Jacobian$，会用到一些关于李代数求导的知识。参考高博《视觉slam十四讲》一书，在此总结一些常用的关于李群与李代数相关的知识点。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://www.vincentqin.tech/posts/LieAlgebra/lieGroup.png">
-<meta property="og:updated_time" content="2019-09-15T09:06:33.535Z">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-3/LieAlgebra/lieGroup.png">
+<meta property="og:updated_time" content="2020-03-31T15:37:28.963Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="笔记：李群与李代数求导">
 <meta name="twitter:description" content="最近一段时间在推$Jacobian$，会用到一些关于李代数求导的知识。参考高博《视觉slam十四讲》一书，在此总结一些常用的关于李群与李代数相关的知识点。">
-<meta name="twitter:image" content="https://www.vincentqin.tech/posts/LieAlgebra/lieGroup.png">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-3/LieAlgebra/lieGroup.png">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/LieAlgebra/">
 
 
@@ -347,7 +347,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-09-15 17:06:33" itemprop="dateModified" datetime="2019-09-15T17:06:33+08:00">2019-09-15</time>
+                <time title="Modified: 2020-03-31 23:37:28" itemprop="dateModified" datetime="2020-03-31T23:37:28+08:00">2020-03-31</time>
               </span>
             
           
@@ -430,7 +430,7 @@ SE(3) = \left\{ \mathbf{T} = \left[ {\begin{array}{*{20}{c}} \mathbf{R} & \mathb
 \mathfrak{se}(3) = \left\{ \mathbf{ \xi } = \left[ \begin{array}{l}     \mathbf{\rho} \\     \mathbf{\phi}      \end{array} \right] \in \mathbb{R}^{6}, \mathbf{\rho} \in \mathbb{R}^{3},\mathbf{\phi} \in \mathfrak{so}(3),\mathbf{\xi}^\wedge  = \left[ {\begin{array}{*{20}{c}}     \mathbf{\phi} ^ \wedge &\mathbf{\rho} \\ \mathbf{0}^T&0 \end{array}} \right] \in \mathbb{R}^{4 \times 4} \right\}
 }</script><p>$\mathfrak{se}(3)$是一个这样的六维向量，前三维表示平移，记作$\mathbf{\rho}$；后三维表示旋转，记作$\mathbf{\phi}$（有时候这两个参数会反过来，可也可以的）。</p>
 <h2 id="指数映射"><a href="#指数映射" class="headerlink" title="指数映射"></a>指数映射</h2><p>$\mathfrak{so}(3)$以及$\mathfrak{se}(3)$的指数映射分别对应于$SO(3)$以及$SE(3)$，它们之间的转换关系可以由下图表示：</p>
-<p><img src="//www.vincentqin.tech/posts/LieAlgebra/lieGroup.png" alt="lieGroup"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-3/LieAlgebra/lieGroup.png" alt="lieGroup"></p>
 <h2 id="李代数求导"><a href="#李代数求导" class="headerlink" title="李代数求导"></a>李代数求导</h2><h3 id="对旋转矩阵李代数求导"><a href="#对旋转矩阵李代数求导" class="headerlink" title="对旋转矩阵李代数求导"></a>对旋转矩阵李代数求导</h3><p>对$\mathbf{R}$进行一次扰动$\Delta \mathbf{R}$，假设左扰动$\Delta \mathbf{R}$对应的李代数为$ {\boldsymbol \varphi}$，对$ {\boldsymbol \varphi}$求导，得到：</p>
 <script type="math/tex; mode=display">
 \begin{aligned}

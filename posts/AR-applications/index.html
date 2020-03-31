@@ -34,7 +34,7 @@
     version: '7.4.0',
     exturl: false,
     sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
-    copycode: {"enable":true,"show_result":false,"style":"mac"},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
     back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
@@ -68,15 +68,15 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="前言当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/160405_WT_HomeSlider_Image_3D-Tracking.png">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/wakingapp.jpg">
-<meta property="og:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/realmax.jpg">
-<meta property="og:updated_time" content="2020-03-27T14:34:06.389Z">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/AR-applications/AR.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/AR-applications/160405_WT_HomeSlider_Image_3D-Tracking.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/AR-applications/wakingapp.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-2/AR-applications/realmax.jpg">
+<meta property="og:updated_time" content="2020-03-31T14:54:43.578Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AR形势与应用">
 <meta name="twitter:description" content="前言当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。">
-<meta name="twitter:image" content="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-2/AR-applications/AR.jpg">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/AR-applications/">
 
 
@@ -350,7 +350,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-27 22:34:06" itemprop="dateModified" datetime="2020-03-27T22:34:06+08:00">2020-03-27</time>
+                <time title="Modified: 2020-03-31 22:54:43" itemprop="dateModified" datetime="2020-03-31T22:54:43+08:00">2020-03-31</time>
               </span>
             
           
@@ -401,7 +401,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/AR.jpg" alt></p>
+        <p><img src="https://vincentqin.gitee.io/blogresource-2/AR-applications/AR.jpg" alt></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p id="div-border-left-red">当前，微软、谷歌、苹果、Facebook 等 IT 巨头都在布局虚拟现实Virtual Reality简称 VR）虚拟现实也许是下一个颠覆人类生活的新技术之一。增强现实Augmented Reality简称 AR）是虚拟现实技术的延伸它可以用来模拟对象让学习者在现实环境背景中看到虚拟生成的模型对象 而且这一模型可以快速生成、操纵和旋转。</p>
 
 <a id="more"></a>
@@ -424,11 +424,11 @@
 <h3 id="技术难点"><a href="#技术难点" class="headerlink" title="技术难点"></a>技术难点</h3><p>VR得益于三维游戏的发展，而AR收益于影视领域的跟踪技术（video tracking）的发展。从技术门槛的角度来说，VR、AR和移动端重合的技术有：显示器、运动传感器、处理器、储存、记忆、无线连接等。在硬件上，这些都不是技术难点。<br>VR、AR的难点都在感知和显示，感知是一种映射，VR 映射的是一个lighthouse的空间或者PS camera mapping的一个交叉；在显示上，VR如何精准地匹配用户的头部产生相应的画面，AR则在这基础上算出光照、遮挡等情况并让图像通透不干扰现实中的视线。<br>而VR硬件的难点在于光学的镜片技术和位置追踪技术（SLAM），因为以前的移动端不涉及这些技术。AR的软件难点在于：1、定位相机；2、恢复场景的三维结构。通常情况下，这一技术被称作SLAM（Simultaneous Localization And Mapping）。当然还有一些其他的技术诸如：图像追踪、云端视觉搜索、人脸和表情追踪等。</p>
 <p>目前国内外已经有多家技术公司提供了软件开发方面的AR解决方案和工具，使得全球众多开发者参与到AR应用开发中来。开发者不需要自己搭建系统架构，也不用理解底层SDK复杂的实现方式，只需要将AR模块嵌入到已有的业务逻辑中，就可以通过现成的开源代码或者平台工具，设计并开发属于自己的AR软件产品。就这个层面来讲技术是可以实现的，但就某一个特殊领域的实现方式可能有所差别。</p>
 <h3 id="技术支持"><a href="#技术支持" class="headerlink" title="技术支持"></a>技术支持</h3><p>Metaio 是由德国大众的一个项目衍生出来的一家虚拟现实初创公司，现已被苹果公司收购。 专门从事增强现实和机器视觉解决方案，产品主要包括Metaio SDK 和 Metaio Creator。 Metaio SDK 支持移动设备的AR应用开发，它在内部提供增强现实显示组件ARView，该组件将摄像机层、3D 空间计算以及POI信息的叠加等功能全部封装在一起，用户在使用增强现实功能时，只需要关注用户操作的监听器即可，摄像机层、3D 空间计算、图形识别以及空间信息叠加等逻辑，完全由ARView组件自己处理 。Metaio Creator相对Metaio SDK 来说，使用门槛更低，用户无需掌握移动开发技术，就可以通过 Metaio Creator 用户图形接口中简单的点击、拖拽、拉伸等方式，控制软件中组件的功能，以构建出自己的增强现实结果。（但是被苹果收购了，目前不提供服务）</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/160405_WT_HomeSlider_Image_3D-Tracking.png" alt="图一Wikitude 官网界面"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/AR-applications/160405_WT_HomeSlider_Image_3D-Tracking.png" alt="图一Wikitude 官网界面"></p>
 <p>Wikitude 是由美国 Mobilizy 公司于 2008 年秋推出的一款移动增强现实开发平台， 支持 Android、 iOS、Black Berry 以及 Windows Phone 多个手机智能操作系统Wikitude SDK 是一款优秀的增强现实开发工具包， 它能够帮助开发人员减小增强现实应用程序开发的复杂性。 目前，Wikitude SDK 支持载入真实的物理环境向 AR 环境中添加虚拟物体、支持用户与虚拟物体的交互、响应用户的位置变化、AR 环境中信息提示、从本地或网络加载资源等功能。</p>
-<p><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/wakingapp.jpg" width="1000px"></p>
+<p><img src="https://vincentqin.gitee.io/blogresource-2/AR-applications/wakingapp.jpg" width="1000px"></p>
 <p>ENTiTi Creator是由以色列一家创业公司 Waking App 开发的一款 AR 作品制作工具，易学易用是它的最大特色。用户可以使用ENTiTi平台上传图片和视频以及相应的动作指令， 并通过简单的逻辑串联，就可以轻松创建出包含3D图像、动画或者游戏的AR/VR 内容。该平台不需要任何编程、完全依靠鼠标拖放就能完成整个创建过程。EN-TiTi是基于云计算的平台，可以在线 3D 视角查看内容，并自动适配各种终端，比如，手机或平台电脑、三星 Gear VR 盒子、Vuzix 智能眼镜等。开发者通过它所发布出来的AR内容，只需要通过一个叫作 EN-TiTi View 软件的入口，就可以轻松访问。 这意味着全球所有开发者所开发出的成千上万的 AR 内容，只需要一个软件即可全部浏览。</p>
-<center><img src="https://dev.tencent.com/u/vincentqin/p/blogResource/git/raw/master/AR-applications/realmax.jpg" width="1000px"></center>
+<center><img src="https://vincentqin.gitee.io/blogresource-2/AR-applications/realmax.jpg" width="1000px"></center>
 
 <p>Realmax公司是一个国际化AR生态级企业，在上海、香港、纽约、慕尼黑都设立了分公司，并建立了5个全球实验室，完成了硬件量产、软件算法、应用开发和内容制作的AR技术储备，AR操作系统“Realcast”也有可观的用户量，在工业、幼教、电商、旅游等领域积累了大量客户，是AR领域唯一的一家完成“平台+内容+终端+应用”生态链布局的企业。</p>
 <p>根据以上分析，如果想完成某一个特定的AR或者VR应用，可以使用上述公司提供的SDK，在一定程度上会加快开发速度。</p>
