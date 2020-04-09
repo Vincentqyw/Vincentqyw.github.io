@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/cv-books/</loc>
+    
+    <lastmod>2020-04-09T14:03:24.843Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/orb-slam/</loc>
     
     <lastmod>2020-03-31T15:50:48.086Z</lastmod>
@@ -117,13 +124,6 @@
     <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-1/</loc>
     
     <lastmod>2020-03-31T14:55:04.019Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/cv-books/</loc>
-    
-    <lastmod>2020-03-31T14:55:01.140Z</lastmod>
     
   </url>
   
