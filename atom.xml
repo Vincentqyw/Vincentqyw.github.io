@@ -359,9 +359,9 @@ A = U \Sigma V^T&lt;/script&gt;&lt;p&gt;其中，$U \in \mathbb{R}^{m \times m}$
     
       <category term="SLAM" scheme="https://www.vincentqin.tech/tags/SLAM/"/>
     
-      <category term="李代数" scheme="https://www.vincentqin.tech/tags/%E6%9D%8E%E4%BB%A3%E6%95%B0/"/>
-    
       <category term="computer vision" scheme="https://www.vincentqin.tech/tags/computer-vision/"/>
+    
+      <category term="李代数" scheme="https://www.vincentqin.tech/tags/%E6%9D%8E%E4%BB%A3%E6%95%B0/"/>
     
   </entry>
   
@@ -416,11 +416,11 @@ A = U \Sigma V^T&lt;/script&gt;&lt;p&gt;其中，$U \in \mathbb{R}^{m \times m}$
     
       <category term="SLAM" scheme="https://www.vincentqin.tech/tags/SLAM/"/>
     
-      <category term="AR" scheme="https://www.vincentqin.tech/tags/AR/"/>
+      <category term="cv" scheme="https://www.vincentqin.tech/tags/cv/"/>
     
       <category term="computer vision" scheme="https://www.vincentqin.tech/tags/computer-vision/"/>
     
-      <category term="cv" scheme="https://www.vincentqin.tech/tags/cv/"/>
+      <category term="AR" scheme="https://www.vincentqin.tech/tags/AR/"/>
     
   </entry>
   
