@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/slam-summer-courses-CADCG-Lab/</loc>
+    
+    <lastmod>2020-04-17T13:35:50.309Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/build-ssr-server/</loc>
+    
+    <lastmod>2020-04-15T14:39:28.955Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/cv-books/</loc>
     
     <lastmod>2020-04-09T14:03:24.843Z</lastmod>
@@ -86,13 +100,6 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/slam-summer-courses-CADCG-Lab/</loc>
-    
-    <lastmod>2020-03-31T14:57:45.041Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
     
     <lastmod>2020-03-31T14:56:44.332Z</lastmod>
@@ -131,13 +138,6 @@
     <loc>https://www.vincentqin.tech/posts/CNN-Architectures/</loc>
     
     <lastmod>2020-03-31T14:54:58.116Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/build-ssr-server/</loc>
-    
-    <lastmod>2020-03-31T14:54:53.742Z</lastmod>
     
   </url>
   
