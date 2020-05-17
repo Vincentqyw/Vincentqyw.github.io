@@ -61,13 +61,13 @@
   };
 </script>
 
-  <meta name="description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。   谷歌公布2020图像匹配挑战以及数据集，官网，博客，文末有排行榜。">
+  <meta name="description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。   为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 UVI">
 <meta name="keywords" content="SLAM,ORB,特征匹配,SuperPoint,SIFT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CVPR2020图像匹配挑战赛，新数据集+新评测方法，打脸sota！">
+<meta property="og:title" content="CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/index.html">
 <meta property="og:site_name" content="RealCat">
-<meta property="og:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。   谷歌公布2020图像匹配挑战以及数据集，官网，博客，文末有排行榜。">
+<meta property="og:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。   为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 UVI">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/image_sfm.gif">
 <meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig1.png">
@@ -88,10 +88,10 @@
 <meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig18.png">
 <meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superglue.png">
 <meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superpoint.png">
-<meta property="og:updated_time" content="2020-05-17T10:49:12.706Z">
+<meta property="og:updated_time" content="2020-05-17T13:36:12.233Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CVPR2020图像匹配挑战赛，新数据集+新评测方法，打脸sota！">
-<meta name="twitter:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。   谷歌公布2020图像匹配挑战以及数据集，官网，博客，文末有排行榜。">
+<meta name="twitter:title" content="CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！">
+<meta name="twitter:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。   为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 UVI">
 <meta name="twitter:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/image_sfm.gif">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/">
 
@@ -107,7 +107,7 @@
   };
 </script>
 
-  <title>CVPR2020图像匹配挑战赛，新数据集+新评测方法，打脸sota！ | RealCat</title>
+  <title>CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！ | RealCat</title>
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
   <script>
@@ -339,7 +339,7 @@
       <meta itemprop="name" content="RealCat">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">CVPR2020图像匹配挑战赛，新数据集+新评测方法，打脸sota！
+        <h1 class="post-title" itemprop="name headline">CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！
 
           
         </h1>
@@ -355,7 +355,7 @@
                 
               
 
-              <time title="Created: 2020-05-17 12:23:09 / Modified: 18:49:12" itemprop="dateCreated datePublished" datetime="2020-05-17T12:23:09+08:00">2020-05-17</time>
+              <time title="Created: 2020-05-17 12:23:09 / Modified: 21:36:12" itemprop="dateCreated datePublished" datetime="2020-05-17T12:23:09+08:00">2020-05-17</time>
             </span>
           
             
@@ -364,7 +364,7 @@
           
 
           
-            <span id="/posts/2020-image-matching-cvpr/" class="post-meta-item leancloud_visitors" data-flag-title="CVPR2020图像匹配挑战赛，新数据集+新评测方法，打脸sota！" title="Views">
+            <span id="/posts/2020-image-matching-cvpr/" class="post-meta-item leancloud_visitors" data-flag-title="CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -399,11 +399,11 @@
         <p>从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。</p>
 <!-- ![A 3D reconstruction generated from over 3000 images, including those from the previous figure](https://1.bp.blogspot.com/-loSqCB3NnM0/XoTiOGP9SYI/AAAAAAAAFlE/rs8iCTq63FYapA7HbljF8iWa7fyHvh3UgCLcBGAsYHQ/s400/image3.gif) -->
 <p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/image_sfm.gif" alt></p>
-<p>谷歌公布2020图像匹配挑战以及数据集，<a href="https://image-matching-workshop.github.io/" target="_blank" rel="noopener">官网</a>，<a href="http://ai.googleblog.com/2020/04/announcing-2020-image-matching.html" target="_blank" rel="noopener">博客</a>，文末有排行榜。</p>
+<p>为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 <a href="https://www.uvic.ca/" target="_blank" rel="noopener">UVIC</a>, <a href="https://www.cvut.cz/en" target="_blank" rel="noopener">CTU</a>以及EPFL发表了这篇文章 “<a href="https://arxiv.org/abs/2003.01587" target="_blank" rel="noopener">Image Matching across Wide Baselines: From Paper to Practice</a>”，[<strong><a href="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/2003.01587v2.pdf" target="_blank" rel="noopener">PDF</a></strong>]，旨在公布一种新的衡量用于3D重建方法的标准模块+数据集，这里主要是指2D图像间的匹配。这个评价模块可以很方便地集成并评估现有流行的特征匹配算法，包括传统方法或者基于机器学习的方法。</p>
+<p>谷歌公布2020图像匹配挑战的数据集：<a href="https://image-matching-workshop.github.io/" target="_blank" rel="noopener">官网</a>，<a href="http://ai.googleblog.com/2020/04/announcing-2020-image-matching.html" target="_blank" rel="noopener">博客</a>，文末有排行榜。</p>
 <a id="more"></a>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 <a href="https://www.uvic.ca/" target="_blank" rel="noopener">UVIC</a>, <a href="https://www.cvut.cz/en" target="_blank" rel="noopener">CTU</a> and [EPFL发表了这篇文章 “<a href="https://arxiv.org/abs/2003.01587" target="_blank" rel="noopener">Image Matching across Wide Baselines: From Paper to Practice</a>”，[<strong><a href="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/2003.01587v2.pdf" target="_blank" rel="noopener">PDF</a></strong>]，旨在公布一种新的衡量用于3D重建方法的标准模块，这里主要是指2D图像图像间的匹配。这个评价模块可以很方便地集成并评估现有流行的特征匹配算法，包括传统方法或者基于机器学习的方法。</p>
-<p>再谈一下图像特征匹配，这是计算机视觉的基础+核心问题之一，包括image retrieval <sup><a href="#fn_48" id="reffn_48">48</a></sup> <sup><a href="#fn_7" id="reffn_7">7</a></sup> <sup><a href="#fn_69" id="reffn_69">69</a></sup> <sup><a href="#fn_91" id="reffn_91">91</a></sup> <sup><a href="#fn_63" id="reffn_63">63</a></sup>, 3D reconstruction<sup><a href="#fn_3" id="reffn_3">3</a></sup> <sup><a href="#fn_43" id="reffn_43">43</a></sup> <sup><a href="#fn_79" id="reffn_79">79</a></sup> <sup><a href="#fn_106" id="reffn_106">106</a></sup>，re-localization <sup><a href="#fn_74" id="reffn_74">74</a></sup> <sup><a href="#fn_75" id="reffn_75">75</a></sup> <sup><a href="#fn_51" id="reffn_51">51</a></sup>以及 SLAM <sup><a href="#fn_61" id="reffn_61">61</a></sup> <sup><a href="#fn_30" id="reffn_30">30</a></sup> <sup><a href="#fn_31" id="reffn_31">31</a></sup>等在内的诸多研究领域都会用到特征匹配。这个问题已经研究了几十年，但仍未被很好地解决。特征匹配面临的问题很多，主要包括以下挑战：视角，尺度，旋转，光照，遮挡以及相机渲染等。</p>
-<p>近些年来，研究者开始将视线转移到端到端的学习方法（图像-&gt;位姿），但是这些方法甚至没有达到传统的方法（图像-&gt;匹配-&gt;BA优化）的性能。我们可以看到，传统的方法将3D重建问题拆分成为2个子问题：特征匹配与位姿解算。解决每个子问题的新方法，诸如特征匹配/位姿解算，都使用了“临时指标”，但是单独地评价单个子问题的性能不足以说明整体性能。例如，一些研究仅在某个数据集上展现了相较于手工特征SIFT的优势，但是这些算法是否能够在真实应用中仍然展现出优势呢？我们通过后续实验说明传统算法经过调整之后也可匹敌甚至超越现有的标称“sota”的算法（着实打脸）。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>图像特征匹配是计算机视觉的基础+核心问题之一，包括image retrieval <sup><a href="#fn_48" id="reffn_48">48</a></sup> <sup><a href="#fn_7" id="reffn_7">7</a></sup> <sup><a href="#fn_69" id="reffn_69">69</a></sup> <sup><a href="#fn_91" id="reffn_91">91</a></sup> <sup><a href="#fn_63" id="reffn_63">63</a></sup>, 3D reconstruction<sup><a href="#fn_3" id="reffn_3">3</a></sup> <sup><a href="#fn_43" id="reffn_43">43</a></sup> <sup><a href="#fn_79" id="reffn_79">79</a></sup> <sup><a href="#fn_106" id="reffn_106">106</a></sup>，re-localization <sup><a href="#fn_74" id="reffn_74">74</a></sup> <sup><a href="#fn_75" id="reffn_75">75</a></sup> <sup><a href="#fn_51" id="reffn_51">51</a></sup>以及 SLAM <sup><a href="#fn_61" id="reffn_61">61</a></sup> <sup><a href="#fn_30" id="reffn_30">30</a></sup> <sup><a href="#fn_31" id="reffn_31">31</a></sup>等在内的诸多研究领域都会用到特征匹配。这个问题已经研究了几十年，但仍未被很好地解决。特征匹配面临的问题很多，主要包括以下挑战：视角，尺度，旋转，光照，遮挡以及相机渲染等。</p>
+<p>近些年来，研究者开始将视线转移到端到端的学习方法（图像-&gt;位姿），但是这些方法甚至没有达到传统的方法（图像-&gt;匹配-&gt;BA优化）的性能。我们可以看到，传统的方法将3D重建问题拆分成为2个子问题：特征匹配与位姿解算。解决每个子问题的新方法，诸如特征匹配/位姿解算，都使用了“临时指标”，但是单独地评价单个子问题的性能不足以说明整体性能。例如，一些研究仅在某个数据集上展现了相较于手工特征SIFT的优势，但是这些算法是否能够在真实应用中仍然展现出优势呢？我们通过后续实验说明传统算法经过调整之后也可匹敌现有的标称“sota”的算法（着实打脸）。</p>
 <p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig1.png" alt></p>
 <p>是时候换一种方式进行评价了，本文不去过多关注在临时指标上的表现，而关注在下游任务上的表现。本文贡献：</p>
 <ol>
@@ -477,11 +477,11 @@
 <li>整体来说基于学习的特征KeyNet, SuperPoint, R2D2, LF-Net在multi-view任务配置下比stereo任务配置下表现更好；(作者的假设是它们的鲁棒性好，但定位精度低)</li>
 </ol>
 <h3 id="光照变化"><a href="#光照变化" class="headerlink" title="光照变化"></a>光照变化</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig26.png" alt></p>
-<p>作者用了直方图均衡化（CLAHE<sup><a href="#fn_66" id="reffn_66">66</a></sup>）去调整图像光度，结果如上图，可以看到几乎所有的基于学习的方法的测试效果都下降了，这可能由于没有专门地在这种场景中进行训练。而SIFT也没有得到明显提升，可能在于SIFT描述子是在某些假设下实际上最佳表现。</p>
+<p>作者用了直方图均衡化（CLAHE<sup><a href="#fn_66" id="reffn_66">66</a></sup>）去调整图像光度，结果如上图，可以看到几乎所有的基于学习的方法的测试效果都下降了，这可能由于没有专门地在这种场景中进行训练。而SIFT也没有得到明显提升，可能在于SIFT描述子是在某些假设条件下最佳表现。</p>
 <h3 id="新指标-vs-传统指标"><a href="#新指标-vs-传统指标" class="headerlink" title="新指标 vs. 传统指标"></a>新指标 vs. 传统指标</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig18.png" alt></p>
-<p>这里要说明的是传统的评价方式与目前使用的方式的关系。</p>
+<p>这里要说明的是传统的评价方式与本文提出方式的关系。</p>
 <ol>
-<li>matching score的选择还是比较明智的，它似乎于mAA相关，但也很难保证高的匹配得分就一定有助于提升mAA，例如RootSIFT vs ContextDesc；</li>
+<li>matching score的选择还是比较明智的，它似乎与mAA相关，但也很难保证高的匹配得分就一定有助于提升mAA，例如RootSIFT vs ContextDesc；</li>
 <li>repeatability则比较难去诠释它对最后位姿解算的效果。AKAZE的repeatability最好但是matching score和pose mAA都非常差，作者的原话(arxiv版本1)就是<strong>descriptor may hurt its performance</strong>。</li>
 <li>Key.Net获得最好的repeatability，但是在mAA指标上弱于DoG的方法，即使使用了相同的描述子HardNet;</li>
 </ol>
@@ -832,7 +832,7 @@
     <strong>Post author:  </strong>Vincent Qin</li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/" title="CVPR2020图像匹配挑战赛，新数据集+新评测方法，打脸sota！">https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</a>
+    <a href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/" title="CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！">https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
