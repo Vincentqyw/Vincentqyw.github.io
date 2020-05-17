@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
+    
+    <lastmod>2020-05-17T10:49:12.706Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
     
-    <lastmod>2020-04-18T11:03:59.975Z</lastmod>
+    <lastmod>2020-04-29T16:45:02.154Z</lastmod>
     
   </url>
   
