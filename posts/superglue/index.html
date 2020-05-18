@@ -38,7 +38,7 @@
     bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
     mediumzoom: false,
-    lazyload: false,
+    lazyload: true,
     pangu: false,
     algolia: {
       appID: '',
@@ -67,41 +67,10 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="ETHZ ASL与Magicleap联名之作，CVPR 2020 Oral（论文见文末），一作是来自ETHZ的实习生，二作是当年CVPR2018 SuperPoint的作者Daniel DeTone。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://www.vincentqin.tech/posts/superglue/freiburg_matches.gif">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_front.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_arch.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_4.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_7.jpg">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_15_1.jpg">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_1.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_2.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_3.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_11.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_3.jpg">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_1.jpg">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_2.jpg">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_01.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_02.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_03.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_04.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_05.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_06.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_07.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_08.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_09.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_10.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_11.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_12.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_13.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_14.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_15.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_16.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_17.png">
-<meta property="og:updated_time" content="2020-05-18T15:15:35.393Z">
+<meta property="og:updated_time" content="2020-05-18T16:31:35.433Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SuperGlue:Learning Feature Matching with Graph Neural Networks">
 <meta name="twitter:description" content="ETHZ ASL与Magicleap联名之作，CVPR 2020 Oral（论文见文末），一作是来自ETHZ的实习生，二作是当年CVPR2018 SuperPoint的作者Daniel DeTone。">
-<meta name="twitter:image" content="https://www.vincentqin.tech/posts/superglue/freiburg_matches.gif">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/superglue/">
 
 
@@ -375,7 +344,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-18 23:15:35" itemprop="dateModified" datetime="2020-05-18T23:15:35+08:00">2020-05-18</time>
+                <time title="Modified: 2020-05-19 00:31:35" itemprop="dateModified" datetime="2020-05-19T00:31:35+08:00">2020-05-19</time>
               </span>
             
           
@@ -426,8 +395,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>ETHZ ASL与Magicleap联名之作，CVPR 2020 Oral（论文见文末），一作是来自ETHZ的实习生，二作是当年CVPR2018 SuperPoint的作者Daniel DeTone。</p>
-<p><img src="/posts/superglue/freiburg_matches.gif" alt></p>
+        <p>ETHZ ASL与Magicleap联名之作，CVPR 2020 Oral（论文见文末），一作是来自ETHZ的实习生，二作是当年CVPR2018 SuperPoint的作者Daniel DeTone。<br><!-- ![](/posts/superglue/freiburg_matches.gif) --></p>
+<p><img alt data-src="https://vincentqin.gitee.io/posts/superglue/freiburg_matches.gif"></p>
 <a id="more"></a>
 <p>注：</p>
 <ol>
@@ -436,7 +405,7 @@
 <li>本人知识水平有限，如有错误请在评论区指出。当然，没有问题也可刷刷评论。</li>
 </ol>
 <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本文提出了一种能够同时进行特征匹配以及滤除外点的网络。其中特征匹配是通过求解可微分最优化转移问题（ optimal transport problem）来解决，损失函数由GNN来构建；本文基于注意力机制提出了一种灵活的内容聚合机制，这使得SuperGlue能够同时感知潜在的3D场景以及进行特征匹配。该算法与传统的，手工设计的特征相比，能够在室内外环境中位姿估计任务中取得最好的结果，该网络能够在GPU上达到实时，预期能够集成到sfm以及slam算法中。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_front.png" alt="superglue_front"></p>
+<p><img alt="superglue_front" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_front.png"></p>
 <p>SuperGlue是一种特征匹配网络，它的输入是2张图像中特征点以及描述子（手工特征或者深度学习特征均可），输出是图像特征之间的匹配关系。</p>
 <p>作者认为学习特征匹配可以被视为找到两簇点的局部分配关系。作者受到了Transformer的启发，同时将self-和cross-attention利用特征点位置以及其视觉外观进行匹配。</p>
 <h2 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h2><h3 id="局部特征匹配"><a href="#局部特征匹配" class="headerlink" title="局部特征匹配"></a>局部特征匹配</h3><p>传统的特征可分5步走：1)提取特征点；2)计算描述子；3)最近邻匹配；4)滤除外点；5)求解几何约束；其中滤除外点一步包括点方法有：计算最优次优比，RANSAC，交叉验证以及neighborhood consensus。</p>
@@ -444,7 +413,7 @@
 <h3 id="图匹配"><a href="#图匹配" class="headerlink" title="图匹配"></a>图匹配</h3><p>这类方法将特征的匹配问题描述成“quadratic assignment problems”，这是一个NP-hard问题，求解这类问题需要复杂不切实际的算子。后来的研究者将这个问题化简成“linear assignment problems”，但仅仅用了一个浅层模型，相比之下SuperGlue利用深度神经网络构建了一种合适的代价进行求解。此处需要说明的是图匹配问题可以认为是一种“<em>optimal transport</em>”问题，<strong>它是一种有效但简单的近似解的广义线性分配，即Sinkhorn算法</strong>。</p>
 <h3 id="深度点云匹配"><a href="#深度点云匹配" class="headerlink" title="深度点云匹配"></a>深度点云匹配</h3><p>点云匹配的目的是通过在元素之间聚集信息来设计置换等价或不变函数。一些算法同等的对待这些元素，还有一些算法主要关注于元素的局部坐标或者特征空间。注意力机制可以通过关注特定的元素和属性来实现全局以及依赖于数据的局部聚合，因而更加全面和灵活。SuperGlue借鉴了这种注意力机制。</p>
 <h2 id="框架以及原理"><a href="#框架以及原理" class="headerlink" title="框架以及原理"></a>框架以及原理</h2><p>特征匹配必须满足的硬性要求是：i)至多有1个匹配点；ii)有些点由于遮挡等原因并没有匹配点。一个成熟的特征匹配模型应该做到：既能够找到特征之间的正确匹配，又可以鉴别错误匹配。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_arch.png" alt="superglue_arch"></p>
+<p><img alt="superglue_arch" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_arch.png"></p>
 <p>整个框架由两个主要模块组成：注意力GNN以及最优匹配层。其中注意力GNN将特征点以及描述子编码成为一个向量（该向量可以理解为特征匹配向量），随后利用自我注意力以及交叉注意力来回增强（重复$L$次）这个向量$\mathbf{f}$的特征匹配性能；随后进入最优匹配层，通过计算特征匹配向量的内积得到匹配度得分矩阵，然后通过Sinkhorn算法（迭代$T$次）解算出最优特征分配矩阵。 </p>
 <h3 id="公式化"><a href="#公式化" class="headerlink" title="公式化"></a>公式化</h3><p>该部分对特征匹配问题建模。给定两张图片$A,B$，每张图片上都有特征点位置$\mathbf{p}$以及对应的描述子$\mathbf{d}$，所以我们经常用$(\mathbf{p},\mathbf{d})$来表示图像特征。第$i$个特征可以表示为$\mathbf{p}_i:=(x,y,c)$，其中$c$表示特征点提取置信度，$(x,y)$表示特征坐标；描述子可以表示为$\mathbf{d}_i \in \mathbb{R}^{D}$，其中$D$表示特征维度，这里的特征可以是CNN特征，如SuperPoint，或者是传统特征SIFT。假设图像$A,B$分别有$M,N$个特征，可以表示为$\mathcal{A}:=\{1, \ldots, M\}$以及$\mathcal{B}:=\{1, \ldots, N\}$。</p>
 <p><strong>部分分配矩阵</strong>：约束i）和ii）意味着对应关系来自两组关键点之间的部分分配。我们给出一个软分配矩阵$\mathbf{P} \in[0,1]^{M \times N}$，根据上述约束，我们有如下关系：</p>
@@ -466,10 +435,10 @@
 <script type="math/tex; mode=display">
 \begin{aligned} \mathbf{q}_{i} &=\mathbf{W}_{1}^{(\ell)} \mathbf{x}_{i}^{Q}+\mathbf{b}_{1} \\\left[\begin{array}{l}\mathbf{k}_{j} \\ \mathbf{v}_{j}\end{array}\right] &=\left[\begin{array}{l}\mathbf{W}_{2} \\ \mathbf{W}_{3}\end{array}\right](\ell) \mathbf{x}_{i}^{S}+\left[\begin{array}{l}\mathbf{b}_{2} \\ \mathbf{b}_{3}\end{array}\right] \end{aligned}</script><p>每一层$\ell$都有其对应的一套投影参数，这些参数被所有的特征点共享。理解一下：此处的$\mathbf{q}_i$对应于待查询图像上某个特征点$i$的一种表示（self-attention映射），$\mathbf{k}_j$以及$\mathbf{v}_j$都是来自于召回的图像特征点$j$的一种表示（映射）；$\alpha_{i j}$表示这两个特征相似度，它是由$\mathbf{q}_i$以及$\mathbf{k}_j$计算得到（在这里体现了cross-attention的思想？），越大就表示这两个特征越相似，然后利用该相似度对$\mathbf{v}_j$加权求和得到$\mathbf{m}_{\mathcal{E} \rightarrow i}$，这就是所谓的<strong>特征聚合</strong>。</p>
 <p>上面提到的这些概念有些难以理解，作者特意对上述过程进行了可视化，self-attention就是一张图像内部的边相连进行聚合，它能够更加关注具有特异性的所有点，且并不仅局限于其邻域位置特征（心心相依，何惧千里，逃…）；cross-attention做的就是匹配那些外观相似的两张图像见的特征。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_4.png" alt="superglue_fig_4"></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_7.jpg" alt="superglue_fig_7"></p>
+<p><img alt="superglue_fig_4" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_4.png"></p>
+<p><img alt="superglue_fig_7" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_7.jpg"></p>
 <p>下图展示了每层self-attention以及across-attention中权重${\alpha_{i j}}$的结果。按照匹配从难到易，文中画出了3个不同的特征点作为演示，绿色特征点（容易），蓝色特征点（中等）以及红色特征点（困难）。对于self-attention，初始时它（某个特征）关联了图像上所有的点（首行），然后逐渐地关注在与该特征相邻近的特征点（尾行）。同样地，cross-attention主要关注去匹配可能的特征点，随着层的增加，它逐渐减少匹配点集直到收敛。绿色特征点在第9层就已经趋近收敛，而红色特征直到最后才能趋紧收敛（匹配）。可以看到无论是self还是cross，它们关注的区域都会随着网络层深度的增加而逐渐缩小。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_15_1.jpg" alt="superglue_fig_15"></p>
+<p><img alt="superglue_fig_15" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_15_1.jpg"></p>
 <p>经过了$L$次self/cross-attention后就可以得到注意力GNN的输出，对于图像$A$我们有：</p>
 <script type="math/tex; mode=display">
 \mathbf{f}_{i}^{A}=\mathbf{W} \cdot^{(L)} \mathbf{x}_{i}^{A}+\mathbf{b}, \quad \forall i \in \mathcal{A}</script><p>我们可以把$\mathbf{f}_{i}^{A}$理解为<strong>匹配描述子</strong>（类比特征描述子），专门为特征匹配服务，对于图像$B$具有类似的形式。</p>
@@ -487,16 +456,16 @@
 \begin{aligned} \operatorname{Loss}=&-\sum_{(i, j) \in \mathcal{M}} \log \overline{\mathbf{P}}_{i, j} \\ &-\sum_{i \in \mathcal{I}} \log \overline{\mathbf{P}}_{i, N+1}-\sum_{j \in \mathcal{J}} \log \overline{\mathbf{P}}_{M+1, j} \end{aligned}</script><p>这个监督学习的目标是同时最大化精度以及匹配的召回率，接下来的训练过程略过，直接开始实验阶段的介绍。</p>
 <h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>特征匹配的目的是为了解算出两帧之间的相对位姿，所以实验对比的一个指标就是<strong>单应矩阵</strong>估计，另外还有室内外的位姿估计。只能说SuperGlue的效果太好了，直接放结果吧（本来论文7页就写完了，作者放了10页附录大招）。</p>
 <h3 id="单应矩阵估计"><a href="#单应矩阵估计" class="headerlink" title="单应矩阵估计"></a>单应矩阵估计</h3><p>能够获得非常高的匹配召回率（98.3%）同时获得超高的精度，比传统的暴力匹配都好了一大截。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_1.png" alt="superglue_tb_1"></p>
+<p><img alt="superglue_tb_1" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_1.png"></p>
 <h3 id="室内外位姿估计"><a href="#室内外位姿估计" class="headerlink" title="室内外位姿估计"></a>室内外位姿估计</h3><p>下表看来，大基线室内位姿估计也是相当棒，完胜传统算法。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_2.png" alt="superglue_tb_2"></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_3.png" alt="superglue_tb_3"></p>
+<p><img alt="superglue_tb_2" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_2.png"></p>
+<p><img alt="superglue_tb_3" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_tb_3.png"></p>
 <h3 id="网络耗时"><a href="#网络耗时" class="headerlink" title="网络耗时"></a>网络耗时</h3><p>接下来放出大家比较关心的网络耗时，下图是在NVIDIA GeForce GTX 1080 GPU跑了500次的结果，512个点69ms（14.5fps），1024个点87ms（11.5fps）。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_11.png" alt="superglue_tb_3"></p>
+<p><img alt="superglue_tb_3" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_fig_11.png"></p>
 <h3 id="更多匹配结果"><a href="#更多匹配结果" class="headerlink" title="更多匹配结果"></a>更多匹配结果</h3><p>第一列是SuperPoint+暴力匹配结果，第二列是SuperPoint+OAnet（ICCV 2019）结果，第三列是SuperPoint+SuperGlue结果。能看到SuperGlue惊人的特征匹配能力，尤其是在大视角变化时优势明显（红线表示错误匹配，绿线表示正确匹配）。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_3.jpg" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_1.jpg" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_2.jpg" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_3.jpg"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_1.jpg"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_res_2.jpg"></p>
 <h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>本文展示了基于注意力的图神经网络对局部特征匹配的强大功能。 SuperGlue的框架使用两种注意力：（i）自我注意力，可以增强局部描述符的接受力；以及（ii）交叉注意力，可以实现跨图像交流，并受到人类来回观察方式的启发进行匹配图像。文中方法通过解决<strong>最优运输问题</strong>，优雅地处理了特征分配问题以及遮挡点。实验表明，SuperGlue与现有方法相比有了显着改进，可以在极宽的基线室内和室外图像对上进行高精度的相对姿势估计。此外，SuperGlue可以实时运行，并且可以同时使用经典和深度学习特征。</p>
 <p>总而言之，论文提出的可学习的中后端（middle-end）算法以功能强大的神经网络模型替代了手工启发式技术，该模型同时在单个统一体系结构中执行上下文聚合，匹配和过滤外点。作者最后提到：若与深度学习前端结合使用，SuperGlue是迈向端到端深度学习SLAM的重要里程碑。（when combined with a deep front-end, SuperGlue is a major milestone towards end-to-end deep SLAM）</p>
 <p>这真是鼓舞SLAM研究人员的士气！</p>
@@ -506,7 +475,7 @@
 <li>*<a href="https://image-matching-workshop.github.io/" target="_blank" rel="noopener">Image Matching: Local Features &amp; Beyond CVPR 2020 Workshop</a></li>
 </ul>
 <hr>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_01.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_02.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_03.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_04.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_05.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_06.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_07.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_08.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_09.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_10.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_11.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_12.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_13.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_14.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_15.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_16.png" alt><br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_17.png" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_01.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_02.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_03.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_04.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_05.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_06.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_07.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_08.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_09.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_10.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_11.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_12.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_13.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_14.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_15.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_16.png"><br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/superglue/superglue_paper/SuperGlue.pdf_page_17.png"></p>
 
     </div>
 
@@ -870,6 +839,7 @@
   <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
 <script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
 <script src="/js/schemes/pisces.js?v=7.4.0"></script>
 
