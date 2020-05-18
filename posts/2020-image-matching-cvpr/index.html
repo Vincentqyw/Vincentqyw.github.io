@@ -67,30 +67,10 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。    为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 UV">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/image_sfm.gif">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig1.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig2.jpg">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab1.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab2.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig7.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig3.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig8.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig9.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab5.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab6.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab7.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab8.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig16.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig17.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig26.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig18.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superglue.png">
-<meta property="og:image" content="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superpoint.png">
-<meta property="og:updated_time" content="2020-05-18T15:15:58.825Z">
+<meta property="og:updated_time" content="2020-05-18T17:13:18.747Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！">
 <meta name="twitter:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。    为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 UV">
-<meta name="twitter:image" content="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/image_sfm.gif">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/">
 
 
@@ -330,7 +310,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Vincent Qin">
       <meta itemprop="description" content="Keep Your Curiosity">
-      <meta itemprop="image" content="https://vincentqin.gitee.io//images/qin_small.png">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -364,7 +344,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-18 23:15:58" itemprop="dateModified" datetime="2020-05-18T23:15:58+08:00">2020-05-18</time>
+                <time title="Modified: 2020-05-19 01:13:18" itemprop="dateModified" datetime="2020-05-19T01:13:18+08:00">2020-05-19</time>
               </span>
             
           
@@ -405,13 +385,13 @@
         <p>从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。</p>
 <!-- ![A 3D reconstruction generated from over 3000 images, including those from the previous figure](https://1.bp.blogspot.com/-loSqCB3NnM0/XoTiOGP9SYI/AAAAAAAAFlE/rs8iCTq63FYapA7HbljF8iWa7fyHvh3UgCLcBGAsYHQ/s400/image3.gif) -->
 <!-- ![](https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/image_sfm.gif) -->
-<p><img src="/posts/2020-image-matching-cvpr/image_sfm.gif" alt></p>
+<p><img alt data-src="https://vincentqin.gitee.io/posts/2020-image-matching-cvpr/image_sfm.gif"></p>
 <p>为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 <a href="https://www.uvic.ca/" target="_blank" rel="noopener">UVIC</a>, <a href="https://www.cvut.cz/en" target="_blank" rel="noopener">CTU</a>以及EPFL发表了这篇文章 “<a href="https://arxiv.org/abs/2003.01587" target="_blank" rel="noopener">Image Matching across Wide Baselines: From Paper to Practice</a>”，[<strong><a href="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/2003.01587v2.pdf" target="_blank" rel="noopener">PDF</a></strong>]，旨在公布一种新的衡量用于3D重建方法的标准模块+数据集，这里主要是指2D图像间的匹配。这个评价模块可以很方便地集成并评估现有流行的特征匹配算法，包括传统方法或者基于机器学习的方法。</p>
 <p>谷歌公布2020图像匹配挑战的数据集：<a href="https://image-matching-workshop.github.io/" target="_blank" rel="noopener">官网</a>，<a href="http://ai.googleblog.com/2020/04/announcing-2020-image-matching.html" target="_blank" rel="noopener">博客</a>，文末有排行榜。</p>
 <a id="more"></a>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>图像特征匹配是计算机视觉的基础+核心问题之一，包括image retrieval <sup><a href="#fn_48" id="reffn_48">48</a></sup> <sup><a href="#fn_7" id="reffn_7">7</a></sup> <sup><a href="#fn_69" id="reffn_69">69</a></sup> <sup><a href="#fn_91" id="reffn_91">91</a></sup> <sup><a href="#fn_63" id="reffn_63">63</a></sup>, 3D reconstruction<sup><a href="#fn_3" id="reffn_3">3</a></sup> <sup><a href="#fn_43" id="reffn_43">43</a></sup> <sup><a href="#fn_79" id="reffn_79">79</a></sup> <sup><a href="#fn_106" id="reffn_106">106</a></sup>，re-localization <sup><a href="#fn_74" id="reffn_74">74</a></sup> <sup><a href="#fn_75" id="reffn_75">75</a></sup> <sup><a href="#fn_51" id="reffn_51">51</a></sup>以及 SLAM <sup><a href="#fn_61" id="reffn_61">61</a></sup> <sup><a href="#fn_30" id="reffn_30">30</a></sup> <sup><a href="#fn_31" id="reffn_31">31</a></sup>等在内的诸多研究领域都会用到特征匹配。这个问题已经研究了几十年，但仍未被很好地解决。特征匹配面临的问题很多，主要包括以下挑战：视角，尺度，旋转，光照，遮挡以及相机渲染等。</p>
 <p>近些年来，研究者开始将视线转移到端到端的学习方法（图像-&gt;位姿），但是这些方法甚至没有达到传统的方法（图像-&gt;匹配-&gt;BA优化）的性能。我们可以看到，传统的方法将3D重建问题拆分成为2个子问题：特征匹配与位姿解算。解决每个子问题的新方法，诸如特征匹配/位姿解算，都使用了“临时指标”，但是单独地评价单个子问题的性能不足以说明整体性能。例如，一些研究仅在某个数据集上展现了相较于手工特征SIFT的优势，但是这些算法是否能够在真实应用中仍然展现出优势呢？我们通过后续实验说明传统算法经过调整之后也可匹敌现有的标称“sota”的算法（着实打脸）。</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig1.png" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig1.png"></p>
 <p>是时候换一种方式进行评价了，本文不去过多关注在临时指标上的表现，而关注在下游任务上的表现。本文贡献：</p>
 <ol>
 <li>30k图像+深度图+真实位姿（posed image）</li>
@@ -425,7 +405,7 @@
 <p>另外还有一些方法将特征点以及描述子进行单独训练，例如TILDE <sup><a href="#fn_95" id="reffn_95">95</a></sup>, TCDet <sup><a href="#fn_103" id="reffn_103">103</a></sup>, QuadNet <sup><a href="#fn_78" id="reffn_78">78</a></sup>, and Key.Net <sup><a href="#fn_13" id="reffn_13">13</a></sup>。当前还有一些算法将二者联合起来训练，例如LIFT <sup><a href="#fn_99" id="reffn_99">99</a></sup>,DELF <sup><a href="#fn_63" id="reffn_63">63</a></sup>, SuperPoint <sup><a href="#fn_31" id="reffn_31">31</a></sup>, LF-Net <sup><a href="#fn_64" id="reffn_64">64</a></sup>, D2-Net <sup><a href="#fn_33" id="reffn_33">33</a></sup>,R2D2 <sup><a href="#fn_72" id="reffn_72">72</a></sup>。</p>
 <h3 id="鲁棒匹配"><a href="#鲁棒匹配" class="headerlink" title="鲁棒匹配"></a>鲁棒匹配</h3><p>大基线的双目匹配的外点内点率可低至10%，甚至更低。要做匹配的话需要从中选择出能够解算出位姿的算法。常用的方式包括基于随机一致采样RANSAC的5-<sup><a href="#fn_62" id="reffn_62">62</a></sup>，7-<sup><a href="#fn_41" id="reffn_41">41</a></sup>，8-point<sup><a href="#fn_39" id="reffn_39">39</a></sup>算法。它的改进算法包括local optimization <sup><a href="#fn_24" id="reffn_24">24</a></sup>, MLESAC <sup><a href="#fn_92" id="reffn_92">92</a></sup>, PROSAC <sup><a href="#fn_23" id="reffn_23">23</a></sup>, DEGENSAC <sup><a href="#fn_26" id="reffn_26">26</a></sup>, GC-RANSAC <sup><a href="#fn_12" id="reffn_12">12</a></sup>,  MAGSAC <sup><a href="#fn_29" id="reffn_29">29</a></sup>，CNe (Context Networks) <sup><a href="#fn_100" id="reffn_100">100</a></sup>+RANSAC，同样还有<sup><a href="#fn_70" id="reffn_70">70</a></sup> <sup><a href="#fn_104" id="reffn_104">104</a></sup> <sup><a href="#fn_85" id="reffn_85">85</a></sup> <sup><a href="#fn_102" id="reffn_102">102</a></sup>。作者最后加了一句“Despite their promise, it remains unclear how well they perform in real settings”（质疑中，哈哈）。</p>
 <h3 id="运动恢复结构（SfM）"><a href="#运动恢复结构（SfM）" class="headerlink" title="运动恢复结构（SfM）"></a>运动恢复结构（SfM）</h3><p>方法 <sup><a href="#fn_3" id="reffn_3">3</a></sup> <sup><a href="#fn_43" id="reffn_43">43</a></sup> <sup><a href="#fn_27" id="reffn_27">27</a></sup> <sup><a href="#fn_37" id="reffn_37">37</a></sup> <sup><a href="#fn_106" id="reffn_106">106</a></sup>，最流行的包括VisualSFM <sup><a href="#fn_98" id="reffn_98">98</a></sup>以及COLMAP <sup><a href="#fn_79" id="reffn_79">79</a></sup>（作为真值）。</p>
-<h3 id="数据集和标准"><a href="#数据集和标准" class="headerlink" title="数据集和标准"></a>数据集和标准</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig2.jpg" alt></p>
+<h3 id="数据集和标准"><a href="#数据集和标准" class="headerlink" title="数据集和标准"></a>数据集和标准</h3><p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig2.jpg"></p>
 <p>以前的特征匹配数据集如下：</p>
 <ul>
 <li>Oxford dataset <sup><a href="#fn_54" id="reffn_54">54</a></sup>, 48张图像+真值单应矩阵</li>
@@ -435,9 +415,9 @@
 <p>上述数据集都有其限制：窄基线，真值噪声大，图像数量少。基于学习的描述子通常在<sup><a href="#fn_21" id="reffn_21">21</a></sup>上进行训练，它们之所以比SIFT好的原因可能在于过拟合了（作者看到会不会脸红）。<br>另外，用于导航/重定位以及slam的数据集包括Kitti <sup><a href="#fn_38" id="reffn_38">38</a></sup>, Aachen <sup><a href="#fn_76" id="reffn_76">76</a></sup>, Robotcar <sup><a href="#fn_52" id="reffn_52">52</a></sup>以及CMU seasons <sup><a href="#fn_75" id="reffn_75">75</a></sup> <sup><a href="#fn_8" id="reffn_8">8</a></sup>，但并不包含Phototourism数据中的多种变换。</p>
 <h2 id="Phototourism-数据集"><a href="#Phototourism-数据集" class="headerlink" title="Phototourism 数据集"></a>Phototourism 数据集</h2><p>上述数据集这么“烂”，于是作者搞出了他们心目中最好的公开数据集——Phototourism 数据集。作者从<sup><a href="#fn_43" id="reffn_43">43</a></sup> <sup><a href="#fn_88" id="reffn_88">88</a></sup>中选择的25个受欢迎的地标集合（共30k）为基础，每个地标都有成百上千的图像。论文中，作者从中选择出11个场景，其中9个测试集和2个验证集做实验。将它们缩减为最大尺寸为1024像素，并使用COLMAP <sup><a href="#fn_79" id="reffn_79">79</a></sup>对其进行求解位姿以及点云和深度，通过建立好的模型去除遮挡物。</p>
 <p>具体地，如下2个表格所示：</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab1.png" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab2.png" alt></p>
-<h2 id="处理流程图Pipeline"><a href="#处理流程图Pipeline" class="headerlink" title="处理流程图Pipeline"></a>处理流程图Pipeline</h2><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig7.png" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab1.png"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab2.png"></p>
+<h2 id="处理流程图Pipeline"><a href="#处理流程图Pipeline" class="headerlink" title="处理流程图Pipeline"></a>处理流程图Pipeline</h2><p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig7.png"></p>
 <p>流程如上图，蓝色框就是要进行的几个处理，分别介绍一下。</p>
 <h3 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h3><p>作者选择了3大类特征：</p>
 <ol>
@@ -447,18 +427,18 @@
 </ol>
 <h3 id="特征匹配"><a href="#特征匹配" class="headerlink" title="特征匹配"></a>特征匹配</h3><p>此处用的是最近邻。</p>
 <h3 id="外点滤除"><a href="#外点滤除" class="headerlink" title="外点滤除"></a>外点滤除</h3><p>Context Networks <sup><a href="#fn_100" id="reffn_100">100</a></sup>+RANSAC<sup><a href="#fn_100" id="reffn_100">100</a></sup> <sup><a href="#fn_85" id="reffn_85">85</a></sup>，简称CNe，效果如下：</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig3.png" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig3.png"></p>
 <h3 id="Stereo-task"><a href="#Stereo-task" class="headerlink" title="Stereo task"></a>Stereo task</h3><p>给定图像$\mathbf{I}_i$以及$\mathbf{I}_j$，解算基础矩阵 $\mathbf{F}_{i,j}$，除了现有的OpenCV<sup><a href="#fn_19" id="reffn_19">19</a></sup>以及sklearn<sup><a href="#fn_65" id="reffn_65">65</a></sup>中实现的RANSAC <sup><a href="#fn_36" id="reffn_36">36</a></sup> <sup><a href="#fn_25" id="reffn_25">25</a></sup>，作者也用到了DEGENSAC <sup><a href="#fn_26" id="reffn_26">26</a></sup>, GC-RANSAC <sup><a href="#fn_12" id="reffn_12">12</a></sup> and MAGSAC <sup><a href="#fn_29" id="reffn_29">29</a></sup>。最后通过OpenCV的<code>recoverPose</code>函数解算位姿。</p>
 <h3 id="Multi-view-task"><a href="#Multi-view-task" class="headerlink" title="Multi-view task"></a>Multi-view task</h3><p>由于是评价<strong>特征的好坏</strong>而不是SfM算法，作者从几个大场景中<strong>随机选择</strong>出图片构成几个小的数据集，称为”bags”。其中包含3/5张图像的各有100bags，10张图像的各有50bags，25张图像的各有25bags，总共275个bags。将外点滤除后的结果送入COLMAP <sup><a href="#fn_79" id="reffn_79">79</a></sup>作为输入进行SfM重建。</p>
 <h3 id="误差指标"><a href="#误差指标" class="headerlink" title="误差指标"></a>误差指标</h3><ol>
 <li>mAA(mean Average Accuracy): Stereo task/Multi-view task</li>
 <li>ATE(Absolute Trajectory Error): Multi-view task</li>
 </ol>
-<h2 id="实验开始——配置细节很重要"><a href="#实验开始——配置细节很重要" class="headerlink" title="实验开始——配置细节很重要"></a>实验开始——配置细节很重要</h2><p>首先比较了RANSAC在不同参数配置（置信度，极线对齐误差阈值以及最大迭代次数）下的表现：<br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig8.png" alt><br>总体来说，MAGSAC表现最好，DEGENSAC表现次之。另外，作者提到“default settings can be woefully inadequate. For example, OpenCV sets τ = 0.99 and η = 3 pixels, which results in a mAP at 10o of 0.5292 on the validation set – a performance drop of 23.9% relative.” 所以在日常使用OpenCV的RANSAC函数时需要自己调整下参数。</p>
-<p>作者认为RANSAC的内点阈值对于每种局部特征也是不同的，作者做了如下实验。<br><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig9.png" alt="Figure 5. RANSAC – Inlier threshold $\eta$"><br>上图可以直观看到从DOG学习的特征都聚集在了一起，其它特征比较分散，这也是太难选择了，于是作者使用了其他论文作者推荐的配置参数或者一些合理的参数作为内点阈值。</p>
+<h2 id="实验开始——配置细节很重要"><a href="#实验开始——配置细节很重要" class="headerlink" title="实验开始——配置细节很重要"></a>实验开始——配置细节很重要</h2><p>首先比较了RANSAC在不同参数配置（置信度，极线对齐误差阈值以及最大迭代次数）下的表现：<br><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig8.png"><br>总体来说，MAGSAC表现最好，DEGENSAC表现次之。另外，作者提到“default settings can be woefully inadequate. For example, OpenCV sets τ = 0.99 and η = 3 pixels, which results in a mAP at 10o of 0.5292 on the validation set – a performance drop of 23.9% relative.” 所以在日常使用OpenCV的RANSAC函数时需要自己调整下参数。</p>
+<p>作者认为RANSAC的内点阈值对于每种局部特征也是不同的，作者做了如下实验。<br><img alt="Figure 5. RANSAC – Inlier threshold $\eta$" data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig9.png"><br>上图可以直观看到从DOG学习的特征都聚集在了一起，其它特征比较分散，这也是太难选择了，于是作者使用了其他论文作者推荐的配置参数或者一些合理的参数作为内点阈值。</p>
 <h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>作者列出了很多结果以及结论，我们仅去关注几个感兴趣的。</p>
-<h3 id="8k特征"><a href="#8k特征" class="headerlink" title="8k特征"></a>8k特征</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab5.png" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab6.png" alt></p>
+<h3 id="8k特征"><a href="#8k特征" class="headerlink" title="8k特征"></a>8k特征</h3><p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab5.png"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab6.png"></p>
 <p>大家期待已久的真的sota到底是谁呢？作者在以上特征的超参调整到最优后进行了实验，测试结果如下：</p>
 <ol>
 <li>mAA指标上DoG特征点占据了Top的位置，其中SOSNet排名#1，紧随其后的是HardNet。</li>
@@ -469,23 +449,23 @@
 <li>适当调整参数后的SIFT尤其是RootSIFT能够在stereo任务中排名#9，multi-view任务中排名#9，与所谓sota相差13.1%以及4.9%.（真为咱传统特征争气！）</li>
 </ol>
 <h3 id="2k特征"><a href="#2k特征" class="headerlink" title="2k特征"></a>2k特征</h3><p>这样做的理由是能够与LF-Net与Superpoint进行比较，结果如下图：</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab7.png" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab8.png" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab7.png"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/tab8.png"></p>
 <p>结论：</p>
 <ol>
 <li>Key.Net+HardNet获得最好的表现，第二名是LogPolarDesc；</li>
 <li>R2D2在stereo任务中排名#2，multi-view任务中排名#7</li>
 </ol>
-<h3 id="8k-vs-2k"><a href="#8k-vs-2k" class="headerlink" title="8k vs. 2k"></a>8k vs. 2k</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig16.png" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig17.png" alt></p>
+<h3 id="8k-vs-2k"><a href="#8k-vs-2k" class="headerlink" title="8k vs. 2k"></a>8k vs. 2k</h3><p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig16.png"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig17.png"></p>
 <p>结论：</p>
 <ol>
 <li><strong>基于DoG的方法容易受益于多个特征，而学习的方法收益于重新训练</strong>（该结论来自于Key.Net+Hardnet的组合，作者进行了重新训练，表现优异）</li>
 <li>整体来说基于学习的特征KeyNet, SuperPoint, R2D2, LF-Net在multi-view任务配置下比stereo任务配置下表现更好；(作者的假设是它们的鲁棒性好，但定位精度低)</li>
 </ol>
-<h3 id="光照变化"><a href="#光照变化" class="headerlink" title="光照变化"></a>光照变化</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig26.png" alt></p>
+<h3 id="光照变化"><a href="#光照变化" class="headerlink" title="光照变化"></a>光照变化</h3><p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig26.png"></p>
 <p>作者用了直方图均衡化（CLAHE<sup><a href="#fn_66" id="reffn_66">66</a></sup>）去调整图像光度，结果如上图，可以看到几乎所有的基于学习的方法的测试效果都下降了，这可能由于没有专门地在这种场景中进行训练。而SIFT也没有得到明显提升，可能在于SIFT描述子是在某些假设条件下最佳表现。</p>
-<h3 id="新指标-vs-传统指标"><a href="#新指标-vs-传统指标" class="headerlink" title="新指标 vs. 传统指标"></a>新指标 vs. 传统指标</h3><p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig18.png" alt></p>
+<h3 id="新指标-vs-传统指标"><a href="#新指标-vs-传统指标" class="headerlink" title="新指标 vs. 传统指标"></a>新指标 vs. 传统指标</h3><p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/fig18.png"></p>
 <p>这里要说明的是传统的评价方式与本文提出方式的关系。</p>
 <ol>
 <li>matching score的选择还是比较明智的，它似乎与mAA相关，但也很难保证高的匹配得分就一定有助于提升mAA，例如RootSIFT vs ContextDesc；</li>
@@ -494,8 +474,8 @@
 </ol>
 <p><strong>注意</strong>，以上结果都是论文发布在arxiv平台时给出的结果，最新结果参考这个官网<a href="https://vision.uvic.ca/image-matching-challenge/leaderboard/" target="_blank" rel="noopener">排行榜</a>。</p>
 <p>由于目前正在使用superpoint特征（SuperPoint (2k features, NMS=4), DEGENSAC），所以比较关注它的表现。感觉在2k特征阵营，它的表现并不好（屈居#35,目前共52个算法），然而SuperPoint + SuperGlue + DEGENSAC以及SuperPoint+GIFT+Graph Motion Coherence Network+DEGENSAC分别位列#1以及#2，这也是结果很让人欣慰！</p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superglue.png" alt></p>
-<p><img src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superpoint.png" alt></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superglue.png"></p>
+<p><img alt data-src="https://gitee.com/vincentqin/BlogResource-5/raw/master/2020-image-matching-cvpr/leadboard_superpoint.png"></p>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><blockquote id="fn_1">
 <sup>1</sup>. H. Aanaes, A. L. Dahl, and K. Steenstrup Pedersen. Interesting Interest Points. IJCV, 97:18–35, 2012. 2<a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#8617;</a>
 </blockquote>
@@ -940,7 +920,7 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image"
-      src="https://vincentqin.gitee.io//images/qin_small.png"
+      src="https://vincentqin.gitee.io/images/qin_small.png"
       alt="Vincent Qin">
   <p class="site-author-name" itemprop="name">Vincent Qin</p>
   <div class="site-description" itemprop="description">Keep Your Curiosity</div>
