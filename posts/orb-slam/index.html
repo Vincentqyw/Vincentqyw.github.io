@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -66,14 +66,10 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/orb-slam/MH01-traj.gif">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/orb-slam/orb-slam2-mainflow.png">
-<meta property="og:image" content="https://www.vincentqin.tech/posts/orb-slam/MH01-traj.png">
 <meta property="og:updated_time" content="2020-03-31T15:50:48.086Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="资料：ORB SLAM2 阅读报告">
 <meta name="twitter:description" content="首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/orb-slam/MH01-traj.gif">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/orb-slam/">
 
 
@@ -401,7 +397,7 @@
         <p>首先，解释下SLAM的概念，借鉴高博《视觉 SLAM 十四讲》中的一句话：SLAM 是 Simultaneous Localization and Mapping 的缩写，中文译作“同时定位与地图构建”。它是指搭载特定传感器的主体，在没有环境先验信息的情况下，于运动过程中建立环境的模型，同时估计自己的运动。如果这里的传感器主要为相机，那就称为“视觉 SLAM”。</p>
 <a id="more"></a>
 <p>先来张图，下图就是利用相机作为传感器在环境中采集一系列的图像，经过SLAM系统建立的点云图以及相机轨迹。</p>
-<p><img src="https://vincentqin.gitee.io/blogresource-1/orb-slam/MH01-traj.gif" alt></p>
+<p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/orb-slam/MH01-traj.gif"></p>
 <p>SLAM自1986年提出之后，一直以来是机器人领域的热点问题。这里总结一些常用开源SLAM方案。</p>
 <style>
 table th:nth-of-type(1) {
@@ -520,7 +516,7 @@ table th:nth-of-type(2) {
 <li>ORB-SLAM围绕特征点进行了不少的优化。例如，在OpenCV的特征提取基础上保证了特征点的均匀分布；在优化位姿时使用了一种循环优化四遍以得到更多正确匹配的方法；比PTAM更为宽松的关键帧选取策略等等。这些细小的改进使得 ORB-SLAM 具有远超其他方案的鲁棒性：即使对于较差的场景，较差的标定内参，ORB-SLAM 都能够顺利地工作。</li>
 </ul>
 <p>整个ORB-SLAM系统包括三个部分组成，分别是跟踪（Tracking）、局部建图（Local Mapping）以及回环检测（Loop Closing）模块，它们分别被三个线程并行地进行处理。接下来对这个系统进行介绍。</p>
-<p><img src="https://vincentqin.gitee.io/blogresource-1/orb-slam/orb-slam2-mainflow.png" alt></p>
+<p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/orb-slam/orb-slam2-mainflow.png"></p>
 <h1 id="理论篇"><a href="#理论篇" class="headerlink" title="理论篇"></a>理论篇</h1><h2 id="跟踪模块"><a href="#跟踪模块" class="headerlink" title="跟踪模块"></a>跟踪模块</h2><p>跟踪（Tracking）是在每帧中粗略地定位相机位姿以及决定何时插入新的关键帧。算法设计了运动模型以及跟踪参考帧模型去大致预测出相机的位姿。如相机跟踪失败（由于遮挡、大幅度运动等），就启动重定位模块对相机进行位置查找。如果已经有了初始位姿以及特征匹配，利用关键帧的Covisibility Graph恢复出局部可见图。之后，局部地图点的匹配可利用重投影实现，随后相机的位姿利用BA来优化。最后，Tracking线程决定是否插入新的关键帧。</p>
 <ul>
 <li>初始位姿估计：利用运动模型或者关键帧模型去预测相机位姿。如果运动模型已经跟踪到了当前帧，会利用引导匹配（Guided Search）在上一帧中寻找地图点。如果没有找到足够的匹配（如，运动模型不适用的情况），我们就在上一帧中更大的范围中寻找地图点。如不满足运动模型条件，导致运动模型失败，则采用参考关键帧模型利用参考帧模型对当前帧进行跟踪。通过以上两个模型即可对相机位姿进行初步定位。</li>
@@ -550,7 +546,7 @@ table th:nth-of-type(2) {
 <li>ROS：<a href="http://wiki.ros.org/melodic/Installation/Ubuntu#Ubuntu_install_of_ROS_Melodic" target="_blank" rel="noopener">http://wiki.ros.org/melodic/Installation/Ubuntu#Ubuntu_install_of_ROS_Melodic</a></li>
 </ul>
 <p>注意，其中有坑，务必安装正确。安装好之后顺便在Euroc数据集中的MH01上测试，得到下面的轨迹地图。</p>
-<p><img src="//www.vincentqin.tech/posts/orb-slam/MH01-traj.png" alt></p>
+<p><img alt data-src="//www.vincentqin.tech/posts/orb-slam/MH01-traj.png"></p>
 <h2 id="EuRoC数据集"><a href="#EuRoC数据集" class="headerlink" title="EuRoC数据集"></a>EuRoC数据集</h2><p>EuRoC数据集包含11个双目序列，这个序列由小型无人机在两个房间（V1/V2, Vicon Room）以及一个大工厂环境(MH, Machine Hall)中拍摄得到。相机的基线长约为11cm，以20Hz速度拍摄图片。序列被分成了三种（根据MAV的速度，光照以及场景纹理）easy , medium, difficult。<br>$ATE$表示绝对轨迹误差，是衡量相机位姿的标准之一。假设有真实位姿序列：<script type="math/tex">P_1,P_2,P_3,...,P_n</script>以及估计的位姿序列：<script type="math/tex">Q_1,Q_2,Q_3,...,Q_n</script> ，它们已经做了包括时间戳对齐等操作。实际场景中，这两个序列可能有不同的采样率、长度亦或数据可能丢失，此时需要进行数据关联和插值。首先得的在第i时刻的轨迹误差：</p>
 <script type="math/tex; mode=display">F_i := Q_i^{-1}SP_i</script><p>其中$S$是从<script type="math/tex">P_{1:n}</script>到<script type="math/tex">Q_{1:n}</script>的最小二乘刚体变换，通过求取以上误差在所有位置时刻的均方根我们得到APE的具体形式：</p>
 <script type="math/tex; mode=display">RMSE(F_{1:n}):=\left(\frac{1}{n}\sum_{i=1}^n||trans(F_i)||^2\right)^{\frac{1}{2}}</script><p>其中的$trans(·)$表示求取该位姿的平移分量算子。</p>

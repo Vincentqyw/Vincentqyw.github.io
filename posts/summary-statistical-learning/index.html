@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -67,14 +67,10 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。所以统计学习方法有三个要素：模型、策略、算法。">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/Captain_America.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/norm12.jpg">
-<meta property="og:image" content="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/359b033b5bb5c9ea238f2f6cdd39b6003bf3b3c4.jpg">
 <meta property="og:updated_time" content="2020-03-31T14:48:33.204Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="统计学习方法总结">
 <meta name="twitter:description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。所以统计学习方法有三个要素：模型、策略、算法。">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/Captain_America.jpg">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/summary-statistical-learning/">
 
 
@@ -399,7 +395,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/Captain_America.jpg" alt></p>
+        <p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/Captain_America.jpg"></p>
 <p>本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即<strong>假设空间</strong>；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由<strong>算法</strong>实现。<br>所以统计学习方法有三个要素：<strong>模型</strong>、<strong>策略</strong>、<strong>算法</strong>。</p>
 <a id="more"></a>
 <h2 id="统计学习"><a href="#统计学习" class="headerlink" title="统计学习"></a>统计学习</h2><ul>
@@ -447,7 +443,7 @@ P(Y|X)=\frac{P(X,Y)}{P(X)}</script></li>
 <li>最大熵模型</li>
 <li>逻辑斯特回归</li>
 </ol>
-<p><img src="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/norm12.jpg" alt></p>
+<p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/norm12.jpg"></p>
 <h2 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h2><p>指定策略的目的就是为了挑选出假设空间中到底哪个模型才是我们真正需要的。此时会用到损失函数以及风险函数的概念。</p>
 <ul>
 <li><p>0-1 损失函数</p>
@@ -494,7 +490,7 @@ w \rightarrow w-\eta\frac{\partial C}{\partial w}=\left(1-\frac{\eta\lambda}{n} 
 <p>更小的权重，表示网络的复杂组更低，对数据拟合的刚刚好（奥卡姆剃须刀原理）</p>
 </blockquote>
 <h4 id="L1范数正则"><a href="#L1范数正则" class="headerlink" title="L1范数正则"></a>L1范数正则</h4><p>L1正则假设参数的先验分布是Laplace分布，可以保证模型的稀疏性，也就是某些参数等于0；<br>L2正则假设参数的先验分布是Gaussian分布，可以保证模型的稳定性，也就是参数的值不会太大或太小</p>
-<p><img src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/359b033b5bb5c9ea238f2f6cdd39b6003bf3b3c4.jpg" alt="两种正则化的对比"></p>
+<p><img alt="两种正则化的对比" data-src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/359b033b5bb5c9ea238f2f6cdd39b6003bf3b3c4.jpg"></p>
 <h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization/#ed61992b37932e208ae114be75e42a3e6dc34cb3" target="_blank" rel="noopener">lasso and ridge regularization</a></p>
 <h3 id="交叉验证"><a href="#交叉验证" class="headerlink" title="交叉验证"></a>交叉验证</h3><p>就是将整个数据集切分成三个部分，分别是训练集、验证集和测试集。训练集用来训练模型，验证集用于模型 的选择，而测试集用于对学习方法的评估。</p>
 <p>但是一般情况下，训练数据是不足的，那么此时可以重复的利用数据，进行反复训练以得到最优模型。</p>

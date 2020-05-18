@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -67,12 +67,10 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="ECCV 2018 视觉定位综述以下是今年ECCV上几位大牛介绍SLAM技术的tutorial pdfs，涉及基于特征点以及基于学习的SLAM算法介绍，并在最后探究了SLAM领域的主要问题以及未来的发展趋势。  Feature-based vs. Learned Approaches Current State of Feature-based Localization Learning-base">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-4/slam/g2o.png">
 <meta property="og:updated_time" content="2020-03-31T14:59:59.921Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="资料：SLAM草稿">
 <meta name="twitter:description" content="ECCV 2018 视觉定位综述以下是今年ECCV上几位大牛介绍SLAM技术的tutorial pdfs，涉及基于特征点以及基于学习的SLAM算法介绍，并在最后探究了SLAM领域的主要问题以及未来的发展趋势。  Feature-based vs. Learned Approaches Current State of Feature-based Localization Learning-base">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-4/slam/g2o.png">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/slam/">
 
 
@@ -422,7 +420,7 @@
 <li><a href="http://www.360doc.com/content/17/0718/14/44420101_672315705.shtml" target="_blank" rel="noopener">Graph slam学习</a></li>
 </ul>
 <h2 id="g2o漫谈"><a href="#g2o漫谈" class="headerlink" title="g2o漫谈"></a><a href="https://openslam-org.github.io/g2o.html" target="_blank" rel="noopener">g2o</a>漫谈</h2><p>g2o里面有各种各样的求解器，而它的顶点、边的类型多种多样。通过自定义顶点和边，事实上，只要一个优化问题能够表达成图，就可以用g2o去求解它。常见的，比如bundle adjustment，ICP，数据拟合等。g2o是一个C++项目，其中矩阵数据结构多来自Eigen。</p>
-<p><img src="https://vincentqin.gitee.io/blogresource-4/slam/g2o.png" alt></p>
+<p><img alt data-src="https://vincentqin.gitee.io/blogresource-4/slam/g2o.png"></p>
 <p>先看上部分，SparseOptimizer是我们需要维护的东西，是一个Optimizable Graph，也是一个Hyper Graph。一个SparseOptimizer含有很多个顶点（继承与Base Vertex）和多条边（继承自BaseUnaryEdge，BaseBinaryEdge或BaseMultiEdge）。这些Base Vertex和Base Edge都是抽象的基类，而实际用的顶点和边，都是它们的派生类。</p>
 <p>我们用SparseOptimizer.addVertex 和 SparseOptimizer.addEdge 向图中添加顶点和边，然后调用SpaseOptimizer.optimize来优化。</p>
 <p>在优化前，需要指定我们用的求解器和迭代算法。从图下半部分来看，一个SparseOptimization拥有一个Optimization Algorithm,继承自Gusss-Newton，Levernberg-Marquardt，Powell’s dogleg 三者之一，同时拥有一个Solver，含有俩个部分。一个是SparseBlockMatrix，用于计算稀疏的雅克比和海塞；一个用于计算 <script type="math/tex">H\Delta x = -b</script>，需要一个线性方程的求解器。而这个求解器，可以从PCG，CSparse，Choldmod三者选一。<br>则一共三个步骤：</p>
