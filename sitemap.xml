@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/manifest.json</loc>
+    
+    <lastmod>2020-05-18T15:59:21.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/superpoint/</loc>
     
     <lastmod>2020-05-18T15:17:42.554Z</lastmod>
