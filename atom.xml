@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.vincentqin.tech/"/>
-  <updated>2020-05-18T17:15:17.966Z</updated>
+  <updated>2020-05-20T15:10:05.192Z</updated>
   <id>https://www.vincentqin.tech/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>国内加速访问arxiv</title>
+    <link href="https://www.vincentqin.tech/posts/redirect-arxiv/"/>
+    <id>https://www.vincentqin.tech/posts/redirect-arxiv/</id>
+    <published>2020-05-20T14:44:56.000Z</published>
+    <updated>2020-05-20T15:10:05.192Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>国内访问论文预发布平台<code>arxiv</code>巨慢无比，让人闹心！网上找了一个很好用的方法，按照这个方法配置之后<code>arxiv</code>就秒开了。原理就是将<code>arxiv</code>重定向到<code>xxx.itp.ac.cn</code>（中科院理论物理研究所镜像）。<br>如果此时你找到了一篇文章，地址是<code>arxiv.org/abs/1905.00537</code>，只需要把<code>arxiv.org</code>换成<code>xxx.itp.ac.cn</code>即可。但每次都手动配置就很麻烦，为了贯彻将懒惰进行到底的精神，我们需要将上述过程自动化。配置如下：</p><a id="more"></a><ol><li><p>安装<a href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en" target="_blank" rel="noopener">Tampermonkey</a>油猴插件，自行google。</p></li><li><p>添加如下脚本</p></li></ol><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ==UserScript==</span></span><br><span class="line"><span class="comment">// @name        redirect_arxiv</span></span><br><span class="line"><span class="comment">// @namespace   redirect_arxiv</span></span><br><span class="line"><span class="comment">// @include     *</span></span><br><span class="line"><span class="comment">// @include     https://*github.io*</span></span><br><span class="line"><span class="comment">// @include     https://*arxiv.org/*</span></span><br><span class="line"><span class="comment">// @include     https://*google.c*</span></span><br><span class="line"><span class="comment">// @include     https://*semanticscholar.org/*</span></span><br><span class="line"><span class="comment">// @include     https://*github.com*</span></span><br><span class="line"><span class="comment">// @include     https://*zhihu.com*</span></span><br><span class="line"><span class="comment">// @include     https://*brainpp.cn*</span></span><br><span class="line"><span class="comment">// @include     https://*outlook.cn*</span></span><br><span class="line"><span class="comment">// @version     1.0</span></span><br><span class="line"><span class="comment">// @grant       none</span></span><br><span class="line"><span class="comment">// ==/UserScript==</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 重定向 arxiv.org 到 xxx.itp.ac.cn（中科院理论物理研究所镜像）</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">findFatherNode</span>(<span class="params">node, nodeName=<span class="string">'A'</span>, maxDeep=<span class="number">1000</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; maxDeep; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (! node)&#123;<span class="keyword">return</span> node&#125;</span><br><span class="line">        <span class="keyword">if</span> (node.nodeName == nodeName)&#123;</span><br><span class="line">            <span class="keyword">return</span> node</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            node = node.parentElement</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">'mousedown'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> targ = e.target || e.srcElement;</span><br><span class="line">    <span class="keyword">var</span> aTag = findFatherNode(targ, <span class="string">'A'</span>, <span class="number">10</span>);</span><br><span class="line">    <span class="keyword">if</span> (!aTag || !(aTag.href))&#123;<span class="keyword">return</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> headN = <span class="number">17</span>;</span><br><span class="line">    <span class="keyword">var</span> hrefHead = aTag.href.slice(<span class="number">0</span>, headN);</span><br><span class="line">    <span class="keyword">var</span> hrefTail = aTag.href.slice(headN);</span><br><span class="line">    <span class="keyword">if</span> ( (hrefHead.indexOf(<span class="string">'arxiv.org'</span>)==<span class="number">-1</span>))&#123;<span class="keyword">return</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ( hrefHead.match(<span class="regexp">/https?:\/\/arxiv\.org/</span>) ) &#123;</span><br><span class="line">        hrefHead = hrefHead.replace(<span class="regexp">/https?:\/\/arxiv\.org/</span>, <span class="string">'http://xxx.itp.ac.cn'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    aTag.href = hrefHead + hrefTail</span><br><span class="line">    <span class="comment">// console.log(targ, targ.href);</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><ul><li><a href="https://www.zhihu.com/question/58912862/answer/695125360" target="_blank" rel="noopener">参考来自小磊知乎的回答</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;国内访问论文预发布平台&lt;code&gt;arxiv&lt;/code&gt;巨慢无比，让人闹心！网上找了一个很好用的方法，按照这个方法配置之后&lt;code&gt;arxiv&lt;/code&gt;就秒开了。原理就是将&lt;code&gt;arxiv&lt;/code&gt;重定向到&lt;code&gt;xxx.itp.ac.cn&lt;/code&gt;（中科院理论物理研究所镜像）。&lt;br&gt;如果此时你找到了一篇文章，地址是&lt;code&gt;arxiv.org/abs/1905.00537&lt;/code&gt;，只需要把&lt;code&gt;arxiv.org&lt;/code&gt;换成&lt;code&gt;xxx.itp.ac.cn&lt;/code&gt;即可。但每次都手动配置就很麻烦，为了贯彻将懒惰进行到底的精神，我们需要将上述过程自动化。配置如下：&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="arxiv" scheme="https://www.vincentqin.tech/tags/arxiv/"/>
+    
+      <category term="redirect" scheme="https://www.vincentqin.tech/tags/redirect/"/>
+    
+  </entry>
   
   <entry>
     <title>CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！</title>
@@ -516,27 +539,6 @@ A = U \Sigma V^T&lt;/script&gt;&lt;p&gt;其中，$U \in \mathbb{R}^{m \times m}$
       <category term="line segment" scheme="https://www.vincentqin.tech/tags/line-segment/"/>
     
       <category term="detection" scheme="https://www.vincentqin.tech/tags/detection/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>装机只是为了换种心情</title>
-    <link href="https://www.vincentqin.tech/posts/new-pc/"/>
-    <id>https://www.vincentqin.tech/posts/new-pc/</id>
-    <published>2018-10-16T15:25:22.000Z</published>
-    <updated>2020-03-31T14:51:17.816Z</updated>
-    
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>上周配了一台中档主机，具体配置如下。<br><a id="more"></a></p><div class="table-container"><table><thead><tr><th>配件</th><th>品牌型号</th><th>价格（元）</th></tr></thead><tbody><tr><td>CPU+主板</td><td>AMD R5-2600X 六核盒装处理器搭华硕B450台式机电脑主板CPU套装</td><td>2199</td></tr><tr><td>散热器</td><td>九州风神（ DEEPCOOL） 玄冰400幻彩版CPU风冷散热器</td><td>129</td></tr><tr><td>内存</td><td>影驰 （Galaxy）GAMER DDR4 8GB 2400 频率单条台式机四代内存条</td><td>427</td></tr><tr><td>机械硬盘</td><td>WD/西部数据 WD10SPZX 蓝盘1TB</td><td>289</td></tr><tr><td>固态硬盘</td><td>Teclast/台电 240G M.2 幻影 NVME PCI-E笔记本台式机SSD固态硬盘</td><td>339</td></tr><tr><td>主机箱</td><td>AIGO/爱国者炫影2全侧透水冷电竞机箱DIY组装整机电脑游戏主机箱</td><td>219</td></tr><tr><td>电源</td><td>酷冷至尊（CoolerMaster）额定500W MWE450机箱电源(80PLUS铜牌)</td><td>269</td></tr><tr><td>显卡</td><td>影驰 (Galaxy)GTX 1060 大将 6GB大显存台式机独立电脑显卡</td><td>1539</td></tr><tr><td>显示器</td><td>翔野27英寸144hz电竞显示器2K台式液晶电脑显示屏幕</td><td>1288</td></tr><tr><td>键盘</td><td>IKBC C87c104机械键盘吃鸡游戏 cherry樱桃 青轴</td><td>387</td></tr><tr><td>无线网卡</td><td>TP-LINK TL-WN725N免驱版 迷你USB无线网卡mini</td><td>45</td></tr><tr><td>合计</td><td>-</td><td>7130</td></tr></tbody></table></div><p>就是这些无疑了，上一张全家福：<br><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/family.jpg"></p><!--more--><p>B450-PLUS大主板</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/matherboard.jpg"></p><p>CPU选用了性价比更高的AMD 2600X，对标于Intel的i7-6900K，详情见<a href="http://www.mydrivers.com/zhuanti/tianti/cpu/" target="_blank" rel="noopener">CPU天梯图</a>。</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/amd.jpg"></p><p>第一次装机，主机箱和主板之间连接的开机控制线接错了一根，没能一次点亮。幸好我火眼金睛，及时纠正。说到最关心的性能，还行吧，鲁大师跑分32W+。夜深了。下面就是闪亮主机箱：</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/pc-box.jpg"></p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/pc-part.jpg"></p><p>po一张壁纸，嘿嘿~</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/desktop.png"></p><p>远远地望去就是这样了：</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/desktop-all.jpg"></p><p>凑个数：</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-1/new-pc/wall-st.jpg"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;上周配了一台中档主机，具体配置如下。&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="装机" scheme="https://www.vincentqin.tech/tags/%E8%A3%85%E6%9C%BA/"/>
     
   </entry>
   
