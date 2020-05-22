@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/guestbook/index.html</loc>
+    
+    <lastmod>2020-05-22T16:09:38.843Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/schedule/index.html</loc>
+    
+    <lastmod>2020-05-22T16:06:18.770Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
     
     <lastmod>2020-05-22T16:01:08.675Z</lastmod>
@@ -345,13 +359,6 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/guestbook/index.html</loc>
-    
-    <lastmod>2019-03-02T13:59:10.500Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/collections/index.html</loc>
     
     <lastmod>2018-12-09T15:20:58.113Z</lastmod>
@@ -369,13 +376,6 @@
     <loc>https://www.vincentqin.tech/posts/eigen/</loc>
     
     <lastmod>2018-12-09T15:00:29.344Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/schedule/index.html</loc>
-    
-    <lastmod>2018-12-08T15:58:08.808Z</lastmod>
     
   </url>
   
