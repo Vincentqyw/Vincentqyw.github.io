@@ -49,7 +49,7 @@
     },
     localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
     path: 'search.xml',
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},
     translation: {
       copy_button: 'Copy',
       copy_success: 'Copied',
@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="ECCV 2018 视觉定位综述以下是今年ECCV上几位大牛介绍SLAM技术的tutorial pdfs，涉及基于特征点以及基于学习的SLAM算法介绍，并在最后探究了SLAM领域的主要问题以及未来的发展趋势。  Feature-based vs. Learned Approaches Current State of Feature-based Localization Learning-base">
-<meta name="keywords" content="SLAM,cv,computer vision,AR">
+<meta name="keywords" content="SLAM,cv,AR,computer vision">
 <meta property="og:type" content="article">
 <meta property="og:title" content="资料：SLAM草稿">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/slam/index.html">
@@ -496,9 +496,9 @@
             
               <a href="/tags/cv/" rel="tag"># cv</a>
             
-              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
-            
               <a href="/tags/AR/" rel="tag"># AR</a>
+            
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
             
           </div>
         
@@ -895,6 +895,19 @@ if (document.querySelectorAll('div.pdf').length) {
 </script>
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 

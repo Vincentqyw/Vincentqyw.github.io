@@ -49,7 +49,7 @@
     },
     localsearch: {"enable":true,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
     path: 'search.xml',
-    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},
     translation: {
       copy_button: 'Copy',
       copy_success: 'Copied',
@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明来源，pdf版见此。">
-<meta name="keywords" content="SLAM,computer vision,李代数">
+<meta name="keywords" content="SLAM,李代数,computer vision">
 <meta property="og:type" content="article">
 <meta property="og:title" content="复试那些事儿">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/thu-postgraduate-exam/index.html">
@@ -512,9 +512,9 @@ B&0
             
               <a href="/tags/SLAM/" rel="tag"># SLAM</a>
             
-              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
-            
               <a href="/tags/李代数/" rel="tag"># 李代数</a>
+            
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
             
           </div>
         
@@ -907,6 +907,19 @@ if (document.querySelectorAll('div.pdf').length) {
 </script>
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
 
