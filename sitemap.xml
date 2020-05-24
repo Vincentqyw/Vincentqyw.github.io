@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
+    
+    <lastmod>2020-05-24T15:10:25.432Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
+    
+    <lastmod>2020-05-24T15:00:05.764Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/guestbook/index.html</loc>
     
     <lastmod>2020-05-22T16:09:38.843Z</lastmod>
@@ -16,16 +30,16 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
+    <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
     
-    <lastmod>2020-05-22T16:01:08.675Z</lastmod>
+    <lastmod>2020-05-22T16:05:50.192Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
+    <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
     
-    <lastmod>2020-05-22T16:00:47.451Z</lastmod>
+    <lastmod>2020-05-22T16:01:08.675Z</lastmod>
     
   </url>
   
@@ -180,13 +194,6 @@
     <loc>https://www.vincentqin.tech/posts/CNN-Architectures/</loc>
     
     <lastmod>2020-03-31T14:54:58.116Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
-    
-    <lastmod>2020-03-31T14:54:43.578Z</lastmod>
     
   </url>
   
