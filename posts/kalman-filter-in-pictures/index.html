@@ -59,17 +59,17 @@
   };
 </script>
 
-  <meta name="description" content="我必须告诉大家有关卡尔曼滤波器的详细信息，因为它的功能实在是太强大了！  译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波全过程。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
+  <meta name="description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【译】图解卡尔曼滤波">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/index.html">
 <meta property="og:site_name" content="RealCat">
-<meta property="og:description" content="我必须告诉大家有关卡尔曼滤波器的详细信息，因为它的功能实在是太强大了！  译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波全过程。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
+<meta property="og:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-05-25T13:18:05.298Z">
+<meta property="og:updated_time" content="2020-05-27T16:47:05.579Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【译】图解卡尔曼滤波">
-<meta name="twitter:description" content="我必须告诉大家有关卡尔曼滤波器的详细信息，因为它的功能实在是太强大了！  译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波全过程。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
+<meta name="twitter:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/">
 
 
@@ -343,7 +343,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-25 21:18:05" itemprop="dateModified" datetime="2020-05-25T21:18:05+08:00">2020-05-25</time>
+                <time title="Modified: 2020-05-28 00:47:05" itemprop="dateModified" datetime="2020-05-28T00:47:05+08:00">2020-05-28</time>
               </span>
             
           
@@ -381,13 +381,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <blockquote>
-<p>我必须告诉大家有关卡尔曼滤波器的详细信息，因为它的功能实在是太强大了！</p>
-</blockquote>
-<p>译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波全过程。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！</p>
+        <p><strong>译者注</strong>：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！</p>
 <p>本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。</p>
 <a id="more"></a>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>卡尔曼滤波是如解决问题的呢？</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="关于滤波"><a href="#关于滤波" class="headerlink" title="关于滤波"></a>关于滤波</h3><p>首先援引来自知乎大神的解释。</p>
+<div class="note info">
+            <p>一位专业课的教授给我们上课的时候，曾谈到：filtering is weighting（滤波即加权）。滤波的作用就是给不同的信号分量不同的权重。最简单的loss pass filter， 就是直接把低频的信号给1权重，而给高频部分0权重。对于更复杂的滤波，比如维纳滤波, 则要根据信号的统计知识来设计权重。</p><p>从统计信号处理的角度，降噪可以看成滤波的一种。降噪的目的在于突出信号本身而抑制噪声影响。从这个角度，降噪就是给信号一个高的权重而给噪声一个低的权重。维纳滤波就是一个典型的降噪滤波器。</p>
+          </div>
+<h3 id="关于卡尔曼滤波"><a href="#关于卡尔曼滤波" class="headerlink" title="关于卡尔曼滤波"></a>关于卡尔曼滤波</h3><p>Kalman Filter 算法，是一种递推预测滤波算法，算法中涉及到滤波，也涉及到对下一时刻数据的预测。Kalman Filter 由一系列递归数学公式描述。它提供了一种高效可计算的方法来估计过程的状态，并使估计均方误差最小。卡尔曼滤波器应用广泛且功能强大：它可以估计信号的过去和当前状态，甚至能估计将来的状态，即使并不知道模型的确切性质。</p>
+<p>Kalman Filter 也可以被认为是一种数据融合算法（Data fusion algorithm），已有50多年的历史，是当今使用最重要和最常见的数据融合算法之一。Kalman Filter 的巨大成功归功于其小的计算需求，优雅的递归属性以及作为具有高斯误差统计的一维线性系统的最优估计器的状态<sup><a href="#fn_4" id="reffn_4">4</a></sup>。</p>
+<p>Kalman Filter 只能减小均值为0的测量噪声带来的影响。只要噪声期望为0，那么不管方差多大，只要迭代次数足够多，那效果都很好。反之，噪声期望不为0，那么估计值就还是与实际值有偏差。</p>
+<h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>上面的描述可能把大家绕晕了，下面来点轻松的。</p>
+<p>我们会有一个疑问：卡尔曼滤波到底是如何解决实际问题的呢？</p>
 <p>我们以机器人为例介绍卡尔曼滤波的原理，我们的任务是要预测机器人的状态$\vec{x}$，包括位置$p$与速度$v$，即可表示为：</p>
 <script type="math/tex; mode=display">
 \vec{x} = \begin{bmatrix}  p\\  v  \end{bmatrix}</script><p>某个时刻，我们不知道真实的位置与速度到底是多少，二者存在一个所有可能性的组合，大致如下图所示。</p>
@@ -432,7 +437,7 @@ Cov(\color{firebrick}{\mathbf{A}}x) &= \color{firebrick}{\mathbf{A}} \Sigma \col
 \color{deeppink}{\mathbf{P}_k} &= \mathbf{F_k} \color{royalblue}{\mathbf{P}_{k-1}} \mathbf{F}_k^T 
 \end{split} 
 \end{equation}</script><h3 id="External-influence"><a href="#External-influence" class="headerlink" title="External influence"></a>External influence</h3><p>不过我们并没有考虑到所有的影响因素。可能有一些与状态本身无关的变化——如外界因素可能正在影响系统。</p>
-<p>例如，我们用状态对列车的运动进行建模，如果列车长加大油门，火车就加速。同样，在我们的机器人示例中，导航系统软件可能会发出使车轮转动或停止的命令。如果我们很明确地知道这些因素，我们可以将其放放在一起构成一个向量$\color{darkorange}{\vec{\mathbf{u}_k}}$，对这个量进行处理，然后将其添加到我们的预测中对状态进行更正。</p>
+<p>例如，我们用状态对列车的运动进行建模，如果列车长加大油门，火车就加速。同样，在我们的机器人示例中，导航系统软件可能会发出使车轮转动或停止的命令。如果我们很明确地知道这些因素，我们可以将其放在一起构成一个向量$\color{darkorange}{\vec{\mathbf{u}_k}}$，对这个量进行处理，然后将其添加到我们的预测中对状态进行更正。</p>
 <p>假设我们知道由于油门设置或控制命令而产生的预期加速度$\color{darkorange}{a}$。根据基本运动学，我们得到下式：</p>
 <script type="math/tex; mode=display">\begin{split} 
 \color{deeppink}{p_k} &= \color{royalblue}{p_{k-1}} + {\Delta t} &\color{royalblue}{v_{k-1}} + &\frac{1}{2} \color{darkorange}{a} {\Delta t}^2 \\ 
@@ -446,7 +451,7 @@ Cov(\color{firebrick}{\mathbf{A}}x) &= \color{firebrick}{\mathbf{A}} \Sigma \col
 \end{bmatrix} \color{darkorange}{a} \\ 
 &= \mathbf{F}_k \color{royalblue}{\mathbf{\hat{x}}_{k-1}} + \mathbf{B}_k \color{darkorange}{\vec{\mathbf{u}_k}} 
 \end{split} 
-\end{equation}</script><p>其中$\mathbf{B}_k$被成为<strong>控制矩阵</strong>，$\color{darkorange}{\vec{\mathbf{u}_k}}$被称为<strong>控制向量</strong>。（注意：对于没有外部影响的简单系统，可以忽略该控制项）。</p>
+\end{equation}</script><p>其中$\mathbf{B}_k$被称为<strong>控制矩阵</strong>，$\color{darkorange}{\vec{\mathbf{u}_k}}$被称为<strong>控制向量</strong>。（注意：对于没有外部影响的简单系统，可以忽略该控制项）。</p>
 <p>如果我们的预测并不是100％准确模型，这会发生什么呢？</p>
 <h3 id="External-uncertainty"><a href="#External-uncertainty" class="headerlink" title="External uncertainty"></a>External uncertainty</h3><p>如果状态仅仅依赖其自身的属性进行演进，那一切都很好。如果状态受到外部因素进行演进，我们只要知道那些外部因素是什么，那么一切仍然很好。</p>
 <p>但在实际使用中，我们有时不知道的那些外部因素到底是如何被建模的。例如，我们要跟踪四轴飞行器，它可能会随风摇晃；如果我们跟踪的是轮式机器人，则车轮可能会打滑，或者因地面颠簸导致其减速。我们无法跟踪这些外部因素，如果发生任何这些情况，我们的预测可能会出错，因为我们并没有考虑这些因素。</p>
@@ -540,6 +545,18 @@ Cov(\color{firebrick}{\mathbf{A}}x) &= \color{firebrick}{\mathbf{A}} \Sigma \col
 <blockquote id="fn_2">
 <sup>2</sup>. <a href="https://www.visiondummy.com/2014/04/geometric-interpretation-covariance-matrix/" target="_blank" rel="noopener">A geometric interpretation of the covariance matrix, 协方差矩阵的几何解释</a><a href="#reffn_2" title="Jump back to footnote [2] in the text."> &#8617;</a>
 </blockquote>
+<blockquote id="fn_3">
+<sup>3</sup>. <a href="https://sikasjc.github.io/2018/05/08/kalman_filter" target="_blank" rel="noopener">Kalman Filter 卡尔曼滤波</a><a href="#reffn_3" title="Jump back to footnote [3] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_4">
+<sup>4</sup>. R. Faragher, “Understanding the Basis of the Kalman Filter Via a Simple and Intuitive Derivation [Lecture Notes]”, IEEE Signal Processing Magazine, vol. 29, no. 5, pp. 128–132, Sep. 2012.<a href="#reffn_4" title="Jump back to footnote [4] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_5">
+<sup>5</sup>. G. Welch and G. Bishop, “<a href="http://www.cs.unc.edu/~welch/media/pdf/kalman_intro.pdf" target="_blank" rel="noopener">An Introduction to the Kalman Filter</a>”, p. 16, 2006.<a href="#reffn_5" title="Jump back to footnote [5] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_6">
+<sup>6</sup>. Fitzgerald, Robert J. “Divergence of the Kalman filter”, Automatic Control IEEE Transactions on 16.6(1971):736-747.<a href="#reffn_6" title="Jump back to footnote [6] in the text."> &#8617;</a>
+</blockquote>
 
     </div>
 
@@ -632,7 +649,7 @@ Cov(\color{firebrick}{\mathbf{A}}x) &= \color{firebrick}{\mathbf{A}} \Sigma \col
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态预测"><span class="nav-number">2.</span> <span class="nav-text">状态预测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题的矩阵形式表示"><span class="nav-number">2.1.</span> <span class="nav-text">问题的矩阵形式表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#External-influence"><span class="nav-number">2.2.</span> <span class="nav-text">External influence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#External-uncertainty"><span class="nav-number">2.3.</span> <span class="nav-text">External uncertainty</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态更新"><span class="nav-number">3.</span> <span class="nav-text">状态更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用测量进一步修正状态"><span class="nav-number">3.1.</span> <span class="nav-text">利用测量进一步修正状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并两个高斯分布"><span class="nav-number">3.2.</span> <span class="nav-text">合并两个高斯分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公式汇总"><span class="nav-number">3.3.</span> <span class="nav-text">公式汇总</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图说"><span class="nav-number">4.</span> <span class="nav-text">图说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于滤波"><span class="nav-number">1.1.</span> <span class="nav-text">关于滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于卡尔曼滤波"><span class="nav-number">1.2.</span> <span class="nav-text">关于卡尔曼滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题描述"><span class="nav-number">1.3.</span> <span class="nav-text">问题描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态预测"><span class="nav-number">2.</span> <span class="nav-text">状态预测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题的矩阵形式表示"><span class="nav-number">2.1.</span> <span class="nav-text">问题的矩阵形式表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#External-influence"><span class="nav-number">2.2.</span> <span class="nav-text">External influence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#External-uncertainty"><span class="nav-number">2.3.</span> <span class="nav-text">External uncertainty</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态更新"><span class="nav-number">3.</span> <span class="nav-text">状态更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#利用测量进一步修正状态"><span class="nav-number">3.1.</span> <span class="nav-text">利用测量进一步修正状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#合并两个高斯分布"><span class="nav-number">3.2.</span> <span class="nav-text">合并两个高斯分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公式汇总"><span class="nav-number">3.3.</span> <span class="nav-text">公式汇总</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图说"><span class="nav-number">4.</span> <span class="nav-text">图说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
