@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="ETHZ ASL与Magicleap联名之作，CVPR 2020 Oral（论文见文末），一作是来自ETHZ的实习生，二作是当年CVPR2018 SuperPoint的作者Daniel DeTone。">
-<meta name="keywords" content="SLAM,Deep Learning,特征提取,MagicLeap,深度学习,SuperGlue">
+<meta name="keywords" content="Deep Learning,SLAM,特征提取,MagicLeap,深度学习,SuperGlue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SuperGlue:Learning Feature Matching with Graph Neural Networks">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/superglue/index.html">
@@ -480,9 +480,9 @@
           
           <div class="post-tags">
             
-              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
-            
               <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
             
               <a href="/tags/特征提取/" rel="tag"># 特征提取</a>
             
@@ -628,7 +628,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -654,7 +654,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-count">101</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -1029,31 +1029,6 @@ if (document.querySelectorAll('pre.mermaid').length) {
 
   
 
-
-<script>
-NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-  var GUEST = ['nick', 'mail', 'link'];
-  var guest = 'nick,mail,link';
-  guest = guest.split(',').filter(item => {
-    return GUEST.includes(item);
-  });
-  new Valine({
-    el: '#comments',
-    verify: true,
-    notify: false,
-    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
-    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
-    placeholder: 'Just go go',
-    avatar: 'wavatar',
-    meta: guest,
-    pageSize: '10' || 10,
-    visitor: true,
-    lang: '' || 'zh-cn',
-    path: location.pathname
-  });
-}, window.Valine);
-</script>
-
 <script>
   function disqus_config() {
     this.page.url = "https://www.vincentqin.tech/posts/superglue/";
@@ -1093,6 +1068,31 @@ NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
       }
     })();
   
+</script>
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
 </script>
 
 

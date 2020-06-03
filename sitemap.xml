@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
+    
+    <lastmod>2020-06-03T16:42:44.490Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
+    
+    <lastmod>2020-06-03T16:04:43.997Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
     
     <lastmod>2020-05-27T16:47:05.579Z</lastmod>
@@ -33,13 +47,6 @@
     <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
     
     <lastmod>2020-05-22T16:05:50.192Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
-    
-    <lastmod>2020-05-22T16:01:08.675Z</lastmod>
     
   </url>
   

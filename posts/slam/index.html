@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="ECCV 2018 视觉定位综述以下是今年ECCV上几位大牛介绍SLAM技术的tutorial pdfs，涉及基于特征点以及基于学习的SLAM算法介绍，并在最后探究了SLAM领域的主要问题以及未来的发展趋势。  Feature-based vs. Learned Approaches Current State of Feature-based Localization Learning-base">
-<meta name="keywords" content="SLAM,cv,computer vision,AR">
+<meta name="keywords" content="cv,SLAM,computer vision,AR">
 <meta property="og:type" content="article">
 <meta property="og:title" content="资料：SLAM草稿">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/slam/index.html">
@@ -465,9 +465,9 @@
           
           <div class="post-tags">
             
-              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
-            
               <a href="/tags/cv/" rel="tag"># cv</a>
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
             
               <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
             
@@ -609,7 +609,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -635,7 +635,7 @@
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-count">101</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -1010,31 +1010,6 @@ if (document.querySelectorAll('pre.mermaid').length) {
 
   
 
-
-<script>
-NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-  var GUEST = ['nick', 'mail', 'link'];
-  var guest = 'nick,mail,link';
-  guest = guest.split(',').filter(item => {
-    return GUEST.includes(item);
-  });
-  new Valine({
-    el: '#comments',
-    verify: true,
-    notify: false,
-    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
-    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
-    placeholder: 'Just go go',
-    avatar: 'wavatar',
-    meta: guest,
-    pageSize: '10' || 10,
-    visitor: true,
-    lang: '' || 'zh-cn',
-    path: location.pathname
-  });
-}, window.Valine);
-</script>
-
 <script>
   function disqus_config() {
     this.page.url = "https://www.vincentqin.tech/posts/slam/";
@@ -1074,6 +1049,31 @@ NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
       }
     })();
   
+</script>
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
 </script>
 
 

@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="本文出自近几年备受瞩目的创业公司MagicLeap，发表在CVPR 2018,一作Daniel DeTone，[paper]，[slides]，[code]。 这篇文章设计了一种自监督网络框架，能够同时提取特征点的位置以及描述子。相比于patch-based方法，本文提出的算法能够在原始图像提取到像素级精度的特征点的位置及其描述子。本文提出了一种单映性适应（Homographic Adaptati">
-<meta name="keywords" content="SLAM,Deep Learning,特征提取,SuperPoint,MagicLeap,深度学习">
+<meta name="keywords" content="Deep Learning,SLAM,特征提取,SuperPoint,MagicLeap,深度学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SuperPoint: Self-Supervised Interest Point Detection and Description">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/superpoint/index.html">
@@ -467,9 +467,9 @@ s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} & {\text { if }\left\
           
           <div class="post-tags">
             
-              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
-            
               <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
             
               <a href="/tags/特征提取/" rel="tag"># 特征提取</a>
             
@@ -615,7 +615,7 @@ s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} & {\text { if }\left\
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -641,7 +641,7 @@ s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} & {\text { if }\left\
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-count">101</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -1016,31 +1016,6 @@ if (document.querySelectorAll('pre.mermaid').length) {
 
   
 
-
-<script>
-NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-  var GUEST = ['nick', 'mail', 'link'];
-  var guest = 'nick,mail,link';
-  guest = guest.split(',').filter(item => {
-    return GUEST.includes(item);
-  });
-  new Valine({
-    el: '#comments',
-    verify: true,
-    notify: false,
-    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
-    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
-    placeholder: 'Just go go',
-    avatar: 'wavatar',
-    meta: guest,
-    pageSize: '10' || 10,
-    visitor: true,
-    lang: '' || 'zh-cn',
-    path: location.pathname
-  });
-}, window.Valine);
-</script>
-
 <script>
   function disqus_config() {
     this.page.url = "https://www.vincentqin.tech/posts/superpoint/";
@@ -1080,6 +1055,31 @@ NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
       }
     })();
   
+</script>
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: 'Just go go',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname
+  });
+}, window.Valine);
 </script>
 
 
