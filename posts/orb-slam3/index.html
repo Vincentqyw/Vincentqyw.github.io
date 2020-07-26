@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-07-26T08:11:32.920Z">
+<meta property="og:updated_time" content="2020-07-26T08:29:07.570Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="时隔多年，ORB-SLAM3终于来了">
 <meta name="twitter:description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
@@ -317,7 +317,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-26 16:11:32" itemprop="dateModified" datetime="2020-07-26T16:11:32+08:00">2020-07-26</time>
+                <time title="Modified: 2020-07-26 16:29:07" itemprop="dateModified" datetime="2020-07-26T16:29:07+08:00">2020-07-26</time>
               </span>
             
           
@@ -390,7 +390,7 @@
 \mathbf{r}_{\Delta \mathrm{p}_{i, i+1}} &=\mathbf{R}_{i}^{\mathrm{T}}\left(\mathbf{p}_{j}-\mathbf{p}_{i}-\mathbf{v}_{i} \Delta t-\frac{1}{2} \mathbf{g} \Delta t^{2}\right)-\Delta \mathbf{p}_{i, i+1}
 \end{aligned}</script><p>此外，除了IMU残差还有帧$i$与3D点$\mathbf{x}_j$之间的视觉残差，即重投影误差$\mathbf{r}_{i j}$：</p>
 <script type="math/tex; mode=display">
-\mathbf{r}_{i j}=\mathbf{u}_{i j}-\Pi\left(\mathbf{T}_{\mathrm{CB}} \mathbf{T}_{i}^{-1} \oplus \mathbf{x}_{j}\right)</script><p>其中$\mathbf{u}_{i j}$是3D路标点$\mathbf{x}_j$在当前帧上的投影，信息矩阵为$\Sigma_{i, j}$，$\mathbf{T}_{CB} \in \operatorname{SE}(3)$表示机体系到相机的刚体变换。给定$k+1$个关键帧及其状态量$\bar{S}_{k} \doteq\left\{\mathcal{S}_{0} \ldots \mathcal{S}_{k}\right\}$，同时给定$l$个3D点集，它的状态量为$\mathcal{X} \doteq\left\{\mathbf{x}_{0} \ldots \mathbf{x}_{l-1}\right\}$，于是该优化问题可表示为IMU残差以及重投因误差的组合，具体如下形式：</p>
+\mathbf{r}_{i j}=\mathbf{u}_{i j}-\Pi\left(\mathbf{T}_{\mathrm{CB}} \mathbf{T}_{i}^{-1} \oplus \mathbf{x}_{j}\right)</script><p>其中$\mathbf{u}_{i j}$是3D路标点$\mathbf{x}_j$在当前帧上的投影，信息矩阵为$\Sigma_{i, j}$，$\mathbf{T}_{CB} \in \operatorname{SE}(3)$表示机体系到相机的刚体变换。给定$k+1$个关键帧及其状态量$\bar{S}_{k} \doteq\left\{\mathcal{S}_{0} \ldots \mathcal{S}_{k}\right\}$，同时给定$l$个3D点集，它的状态量为$\mathcal{X} \doteq\left\{\mathbf{x}_{0} \ldots \mathbf{x}_{l-1}\right\}$，于是该优化问题可表示为IMU残差以及重投影误差的组合，具体如下形式：</p>
 <script type="math/tex; mode=display">
 \min _{\overline{\mathcal{S}}_{k}, \mathcal{X}}\left(\sum_{i=1}^{k}\left\|\mathbf{r}_{\mathcal{I}_{i-1, i}}\right\|_{\Sigma_{\mathcal{I}_{i, i+1}}^{2}}+\sum_{j=0}^{l-1} \sum_{i \in \mathcal{K}^{j}} \rho_{\text {Hub }}\left(\left\|\mathbf{r}_{i j}\right\|_{\Sigma_{i j}}\right)\right)</script><p>其中$\mathcal{K}^{j}$表示观测到第$j$个3D点的关键帧集合。这个优化可以用因子图进行表示，如图2a。</p>
 <p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-2.png"></p>
