@@ -60,16 +60,16 @@
 </script>
 
   <meta name="description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
-<meta name="keywords" content="SLAM,CV">
+<meta name="keywords" content="SLAM,CV,笔记,论文">
 <meta property="og:type" content="article">
-<meta property="og:title" content="时隔多年，ORB-SLAM3终于来了">
+<meta property="og:title" content="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/orb-slam3/index.html">
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-07-26T09:50:39.542Z">
+<meta property="og:updated_time" content="2020-07-28T15:22:03.306Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="时隔多年，ORB-SLAM3终于来了">
+<meta name="twitter:title" content="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读">
 <meta name="twitter:description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/orb-slam3/">
 
@@ -85,7 +85,7 @@
   };
 </script>
 
-  <title>时隔多年，ORB-SLAM3终于来了 | RealCat</title>
+  <title>笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读 | RealCat</title>
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
   <script>
@@ -290,7 +290,7 @@
       <meta itemprop="name" content="RealCat">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">时隔多年，ORB-SLAM3终于来了
+        <h1 class="post-title" itemprop="name headline">笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读
 
           
         </h1>
@@ -317,13 +317,26 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-26 17:50:39" itemprop="dateModified" datetime="2020-07-26T17:50:39+08:00">2020-07-26</time>
+                <time title="Modified: 2020-07-28 23:22:03" itemprop="dateModified" datetime="2020-07-28T23:22:03+08:00">2020-07-28</time>
               </span>
             
           
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a></span>
+
+                
+                
+              
+            </span>
+          
 
           
-            <span id="/posts/orb-slam3/" class="post-meta-item leancloud_visitors" data-flag-title="时隔多年，ORB-SLAM3终于来了" title="Views">
+            <span id="/posts/orb-slam3/" class="post-meta-item leancloud_visitors" data-flag-title="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -363,7 +376,7 @@
 <p>本文第二个主要创新点在于提出了<strong>多地图复用系统</strong>，这套系统使用了一种高召回率的场景识别算法。正是依赖于这一点，ORB-SLAM3能够有效应对长时弱纹理的环境：若系统丢失，它重新开始建图并在当经过之前走过的地点时与原来的地图无缝融合。另外，相比于其它仅用到之前一段时间内信息的VO方案，本文提出的方案用到之前所有时刻的信息。这样可以利用到很久之前或者来自不同地图的信息。</p>
 <p>实验表明，本文提出的算法在学术领域已有的SLAM系统中表现最优（这句话说的很严谨，没有提到工业界，因为没开源）。</p>
 <h1 id="系统总览"><a href="#系统总览" class="headerlink" title="系统总览"></a>系统总览</h1><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-1.png"></p>
-<p>ORB-SLAM3基于ORB-SLAM2以及ORB-SLAM-VI进行改进，上图是其系统框图。这基本上保持了与ORB-SLAM2类似的框架，同时增加了前述的几个创新点，接下来对其中主要步骤需要进行简要说明。</p>
+<p>ORB-SLAM3基于ORB-SLAM2以及ORB-SLAM-VI进行改进，上图是其系统框图。这基本上保持了与ORB-SLAM2类似的框架，同时增加了前述的几个创新点，接下来对其中主要步骤进行简要说明。</p>
 <h2 id="Atlas-地图集"><a href="#Atlas-地图集" class="headerlink" title="Atlas(地图集)"></a>Atlas(地图集)</h2><p>所谓Atlas就是一种多地图的表示形式，多地图由不相连的地图组成。可以看到，它由active map以及non-active map组成。其中active map被Tracking thread（追踪线程）用作定位，它被连续优化同时会加入新的关键帧。系统会构建基于DBoW2的关键帧数据库，可以用来做重定位/闭环以及地图融合。</p>
 <h2 id="Tracking-thread-追踪线程"><a href="#Tracking-thread-追踪线程" class="headerlink" title="Tracking thread(追踪线程)"></a>Tracking thread(追踪线程)</h2><p>与ORB-SLAM2类似，该线程用来处理传感器信息，计算当前帧相对于active map的位姿以及最小化匹配到的地图点的重投影误差。该线程决定何时当前帧被判定为关键帧。在VI模式下，机体的速度以及IMU的bias通过优化惯导残差被估计。当系统追踪丢失后，会触发重定位模式，即当前帧在所有的Altas进行重定位；若重定位成功，当前帧恢复追踪状态；否则，经过一段时间（超过5秒），当前的active map会被存储为non-active map，同时开启新的建图过程。</p>
 <h2 id="Local-Mapping-thread-局部建图线程"><a href="#Local-Mapping-thread-局部建图线程" class="headerlink" title="Local Mapping thread(局部建图线程)"></a>Local Mapping thread(局部建图线程)</h2><p>向active map中新增/删减/优化关键帧以及地图点，上述的操作是通过维护一个靠近当前帧的局部窗口的关键帧进行实现。与此同时，IMU的参数被初始化然后被该线程通过本文提出的最大后验估计技术进行求解。</p>
@@ -500,7 +513,7 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
     <strong>Post author:  </strong>Vincent Qin</li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://www.vincentqin.tech/posts/orb-slam3/" title="时隔多年，ORB-SLAM3终于来了">https://www.vincentqin.tech/posts/orb-slam3/</a>
+    <a href="https://www.vincentqin.tech/posts/orb-slam3/" title="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读">https://www.vincentqin.tech/posts/orb-slam3/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -518,6 +531,10 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
               <a href="/tags/SLAM/" rel="tag"># SLAM</a>
             
               <a href="/tags/CV/" rel="tag"># CV</a>
+            
+              <a href="/tags/笔记/" rel="tag"># 笔记</a>
+            
+              <a href="/tags/论文/" rel="tag"># 论文</a>
             
           </div>
         
@@ -677,7 +694,7 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
             <a href="/tags/">
           
         
-        <span class="site-state-item-count">101</span>
+        <span class="site-state-item-count">103</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -1068,7 +1085,7 @@ if (document.querySelectorAll('pre.mermaid').length) {
   function disqus_config() {
     this.page.url = "https://www.vincentqin.tech/posts/orb-slam3/";
     this.page.identifier = "posts/orb-slam3/";
-    this.page.title = '时隔多年，ORB-SLAM3终于来了';};
+    this.page.title = '笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读';};
   function loadComments() {
     if (window.DISQUS) {
       DISQUS.reset({
