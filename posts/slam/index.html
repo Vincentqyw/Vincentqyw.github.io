@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="ECCV 2018 视觉定位综述以下是今年ECCV上几位大牛介绍SLAM技术的tutorial pdfs，涉及基于特征点以及基于学习的SLAM算法介绍，并在最后探究了SLAM领域的主要问题以及未来的发展趋势。  Feature-based vs. Learned Approaches Current State of Feature-based Localization Learning-base">
-<meta name="keywords" content="SLAM,cv,computer vision,AR">
+<meta name="keywords" content="SLAM,cv,AR,computer vision">
 <meta property="og:type" content="article">
 <meta property="og:title" content="资料：SLAM草稿">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/slam/index.html">
@@ -469,9 +469,9 @@
             
               <a href="/tags/cv/" rel="tag"># cv</a>
             
-              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
-            
               <a href="/tags/AR/" rel="tag"># AR</a>
+            
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
             
           </div>
         
@@ -842,6 +842,21 @@
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <!-- 不蒜子计数初始值纠正 -->
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+      $(document).ready(function() {
+          var int = setInterval(fixCount, 100);
+          var busuanziSiteOffset = parseInt();
+          function fixCount() {
+              if ($("#busuanzi_container_site_pv").css("display") != "none") {
+                  clearInterval(int);
+                  $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + busuanziSiteOffset);
+              }
+          }
+      });
+  </script>
     <span class="post-meta-item-icon">
       <i class="fa fa-user"></i>
     </span>

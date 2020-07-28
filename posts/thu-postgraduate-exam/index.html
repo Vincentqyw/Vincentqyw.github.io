@@ -60,7 +60,7 @@
 </script>
 
   <meta name="description" content="本文涉及2015年清华自动化系复试相关题目，包括：复试笔试和复试面试。转载需注明来源，pdf版见此。">
-<meta name="keywords" content="SLAM,computer vision,李代数">
+<meta name="keywords" content="SLAM,李代数,computer vision">
 <meta property="og:type" content="article">
 <meta property="og:title" content="复试那些事儿">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/thu-postgraduate-exam/index.html">
@@ -485,9 +485,9 @@ B&0
             
               <a href="/tags/SLAM/" rel="tag"># SLAM</a>
             
-              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
-            
               <a href="/tags/李代数/" rel="tag"># 李代数</a>
+            
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
             
           </div>
         
@@ -854,6 +854,21 @@ B&0
         
 <div class="busuanzi-count">
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <!-- 不蒜子计数初始值纠正 -->
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+      $(document).ready(function() {
+          var int = setInterval(fixCount, 100);
+          var busuanziSiteOffset = parseInt();
+          function fixCount() {
+              if ($("#busuanzi_container_site_pv").css("display") != "none") {
+                  clearInterval(int);
+                  $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + busuanziSiteOffset);
+              }
+          }
+      });
+  </script>
     <span class="post-meta-item-icon">
       <i class="fa fa-user"></i>
     </span>
