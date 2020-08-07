@@ -535,53 +535,7 @@
           </div>
           
     
-      <div class="tabs tabs-comment">
-        <ul class="nav-tabs">
-          
-            <li class="tab"><a href="#comment-disqus">Disqus</a></li>
-          
-            <li class="tab"><a href="#comment-valine">Valine</a></li>
-          
-        </ul>
-        <div class="tab-content">
-          
-            <div class="tab-pane disqus" id="comment-disqus">
-              
-  <div class="comments" id="comments">
-    <div id="disqus_thread">
-      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-    </div>
-  </div>
-  
-            </div>
-          
-            <div class="tab-pane valine" id="comment-valine">
-              <div class="comments" id="comments"></div>
-            </div>
-          
-        </div>
-      </div>
-      <script>
-        window.addEventListener('tabs:register', () => {
-          let activeClass = 'valine';
-          
-            activeClass = localStorage.getItem('comments_active') || activeClass;
-          
-          if (activeClass) {
-            let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-            if (activeTab) {
-              activeTab.click();
-            }
-          }
-        });
-        
-        window.addEventListener('tabs:click', event => {
-          let commentClass = event.target.classList[1];
-          localStorage.setItem('comments_active', commentClass);
-        });
-        
-      </script>
-    
+    <div class="comments" id="comments"></div>
   
 
         </div>
@@ -1048,47 +1002,6 @@ if (document.querySelectorAll('pre.mermaid').length) {
   
 
   
-
-<script>
-  function disqus_config() {
-    this.page.url = "https://www.vincentqin.tech/posts/superglue/";
-    this.page.identifier = "posts/superglue/";
-    this.page.title = '笔记：SuperGlue:Learning Feature Matching with Graph Neural Networks论文阅读';};
-  function loadComments() {
-    if (window.DISQUS) {
-      DISQUS.reset({
-        reload: true,
-        config: disqus_config
-      });
-    } else {
-      var d = document, s = d.createElement('script');
-      s.src = 'https://vincentqin.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', '' + +new Date());
-      (d.head || d.body).appendChild(s);
-    }
-  }
-    (function() {
-      var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
-      if (offsetTop <= 0) {
-        // load directly when there's no a scrollbar
-        window.addEventListener('load', loadComments, false);
-      } else {
-        var disqus_scroll = () => {
-          // offsetTop may changes because of manually resizing browser window or lazy loading images.
-          var offsetTop = document.getElementById('comments').offsetTop - window.innerHeight;
-          var scrollTop = window.scrollY;
-
-          // pre-load comments a bit? (margin or anything else)
-          if (offsetTop - scrollTop < 60) {
-            window.removeEventListener('scroll', disqus_scroll);
-            loadComments();
-          }
-        };
-        window.addEventListener('scroll', disqus_scroll);
-      }
-    })();
-  
-</script>
 
 
 <script>
