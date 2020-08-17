@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    <lastmod>2020-08-17</lastmod>
+  </url>  <url>
     <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
-    <lastmod>2020-08-07</lastmod>
+    <lastmod>2020-08-17</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
+    <lastmod>2020-08-17</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>
     <lastmod>2020-07-28</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
     <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
-    <lastmod>2020-06-03</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
     <lastmod>2020-06-03</lastmod>

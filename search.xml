@@ -4,7 +4,30 @@
   
     
     <entry>
-      <title>使用vercel加速Hexo静态博客访问</title>
+      <title>笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法</title>
+      <link href="/posts/adalam/"/>
+      <url>/posts/adalam/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><div class="note success">            <p><code>AdaLAM</code>的全称是<code>Adaptive Locally-Affine Matching</code>(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。</p>          </div><a id="more"></a><h2 id="原有技术问题"><a href="#原有技术问题" class="headerlink" title="原有技术问题"></a>原有技术问题</h2><p>在图像匹配任务中初始匹配中外点较多，目前难以高效快速地滤除外点。</p><h2 id="新技术创新点"><a href="#新技术创新点" class="headerlink" title="新技术创新点"></a>新技术创新点</h2><ol><li>基于目前已有的外点滤除算法（spatial matching），提出了现有的鲁棒快速的图像一致性空域验证算法；</li><li>本框架基于一种几何假设（局部仿射），场景实用性较强；经实验验证，该算法目前达到了SOTA（很自信啊）。</li></ol><h2 id="新技术主要框架以及关键技术点"><a href="#新技术主要框架以及关键技术点" class="headerlink" title="新技术主要框架以及关键技术点"></a>新技术主要框架以及关键技术点</h2><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/adalam/fig-1.png"></p><p>总共分分四步：</p><ol><li>找到初始匹配（最近邻top1）;</li><li>找到置信度高且分布较好的点作为“种子点”；</li><li>在初始匹配中选择与该种子点在同一个区域的匹配点；</li><li>保留那些局部一致较好匹配；</li></ol><p>接下来重点介绍后3点。</p><h3 id="种子点选择"><a href="#种子点选择" class="headerlink" title="种子点选择"></a>种子点选择</h3><p>将<code>ratio-test</code>得到的<code>最优次优比</code>作为左图上匹配点的匹配置信度，选择那些在半径$R$内匹配置信度最大的点作为种子点。由于每个匹配点都是独立的，此时可用GPU对该过程进行并行加速。</p><h3 id="局部选择与过滤"><a href="#局部选择与过滤" class="headerlink" title="局部选择与过滤"></a>局部选择与过滤</h3><p>接下来要寻找一些可以支持种子匹配的匹配对。</p><p>令$S_{i}=\left(\mathbf{x}_{1}^{S_{i}}, \mathbf{x}_{2}^{S_{i}}\right)$，其中$\mathbf{x}_{1}^{S_{i}}, \mathbf{x}_{2}^{S_{i}}$分别表示两张图上的第$i$个种子匹配对，它们之间符合<strong>相似变换</strong>（即旋转+缩放，其中旋转$\alpha^{S_{i}}=\alpha_{2}^{S_{i}}-\alpha_{1}^{S_{i}}$, 缩放为$\sigma^{S_{i}}=\sigma_{2}^{S_{i}} / \sigma_{1}^{S_{i}}$）。那么对于任意匹配$\left(p_{1}, p_{2}\right)=\left(\left(\mathbf{x}_{1}, \mathbf{d}_{1}, \sigma_{1}, \alpha_{1}\right),\left(\mathbf{x}_{2}, \mathbf{d}_{2}, \sigma_{2}, \alpha_{2}\right)\right) \in \mathcal{M}$，其中$\mathbf{d}$表示描述子，如果上述匹配满足如下约束关系，就能够被纳入到支持种子点的匹配集合$\mathcal{N}_{i} \subseteq \mathcal{M}$中，该约束关系为：</p><script type="math/tex; mode=display">\begin{array}{c}\left(\left\|\mathbf{x}_{1}^{S_{i}}-\mathbf{x}_{1}\right\| \leq \lambda R_{1}\right) \wedge \left(\left\|\mathbf{x}_{2}^{S_{i}}-\mathbf{x}_{2}\right\| \leq \lambda R_{2}\right)\end{array}</script><script type="math/tex; mode=display">\begin{array}{c}\left(\left|\alpha^{S_{i}}-\alpha^{p}\right| \leq t_{\alpha}\right) \wedge\left(\left|\ln \left(\frac{\sigma^{S_{i}}}{\sigma^{p}}\right)\right| \leq t_{\sigma}\right)\end{array}</script><p>上式中$\alpha^{p}=\alpha_{2}-\alpha_{1}, \sigma^{p}=\sigma_{2} / \sigma_{1}$表示两个匹配点之间的角度与尺度差异；$R_1$与$R_2$分别表示图像$I_1$与$I_2$的种子点扩散半径；$\lambda$表示邻域圈圈的覆盖程度的正则项。</p><p>上面的第一个式子表示：初始匹配中与种子点相对位置差不多且在半径在$\lambda R$的匹配会加入到$\mathcal{N}_{i}$；第二个式子告诉我们：上面加入的这些匹配对需要满足角度以及尺度一致性才能够被加入，否则面谈。上面的两个条件需要同时满足才能得到$\mathcal{N}_{i}$。</p><h3 id="自适应仿射校验"><a href="#自适应仿射校验" class="headerlink" title="自适应仿射校验"></a>自适应仿射校验</h3><p>我们假设匹配对之间符合<strong>局部仿射变换</strong>，即上述的每个$\mathcal{N}_{i}$都满足该假设，那么接下来可利用该假设去滤除一些错误的匹配对：使用RANSAC的思想找到最小解集去拟合仿射矩阵，然后滤除置信度低的匹配对。</p><p>由于仅<strong>使用2对匹配点就可以得到仿射矩阵</strong>，那么即使对每个圈圈求仿射也并不耗时。对于第$j$次迭代，我们可以得到匹配关系$k$，对于在集合$\mathcal{N}_{i}$，我们可以随机选择一对匹配$\mathbf{x}_{1}^{k}, \mathbf{x}_{2}^{k}$，进而得到二者之间的仿射矩阵$A_{i}^{j}$，然后我们就可以得到<strong>匹配关系对两个匹配对产生的残差</strong>，如下式：</p><script type="math/tex; mode=display">r_{k}\left(A_{i}^{j}\right)=\left\|A_{i}^{j} \mathbf{x}_{1}^{k}-\mathbf{x}_{2}^{k}\right\|</script><p>然后作者参考文献<sup><a href="#fn_36" id="reffn_36">36</a></sup>，设计了置信度$c_{k}$（不展开讲），当置信度大于某个阈值，表示该模型对该匹配关系拟合的较好，视该匹配被视为内点；否则为外点。</p><p>注意每次迭代需要更新上述残差/置信度以及内点，后一次利用前一次得到的内点去拟合新的仿射矩阵，然后做校验，直至达到最大迭代次数，最后输出内点。</p><h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/adalam/tab-1.png"></p><p>看到没，竟然超过了效果极好的<strong>GMS</strong>。</p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/adalam/fig-2.png"></p><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/adalam/fig-3.png"></p><p>实时性：在RTX2080Ti平台下处理4000~8000个点耗时15~25ms。</p><h2 id="借鉴意义"><a href="#借鉴意义" class="headerlink" title="借鉴意义"></a>借鉴意义</h2><p>本文提出了一种高效快速的外点滤除算法，可加入到任何特征匹配算法中，预期能够提高位姿解算的精度。但上述实验结果中对GPU的要求较高，目前不清楚在低配版GPU或者在CPU平台下的表现。</p><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><ol><li><strong><a href="https://arxiv.org/pdf/2006.04250" target="_blank" rel="noopener">Paper: AdaLAM: Revisiting Handcrafted Outlier Detection</a></strong></li><li><a href="https://github.com/cavalli1234/AdaLAM" target="_blank" rel="noopener">Github Code</a></li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> SLAM </tag>
+            
+            <tag> CV </tag>
+            
+            <tag> Matching </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>工具：使用vercel加速Hexo静态博客访问</title>
       <link href="/posts/speedup-gitpage/"/>
       <url>/posts/speedup-gitpage/</url>
       
@@ -58,7 +81,7 @@
     
     
     <entry>
-      <title>解决Github挂图及龟速访问</title>
+      <title>工具：解决Github挂图及龟速访问</title>
       <link href="/posts/manage-pc-hosts/"/>
       <url>/posts/manage-pc-hosts/</url>
       
@@ -476,9 +499,9 @@
             
             <tag> SLAM </tag>
             
-            <tag> 李代数 </tag>
-            
             <tag> computer vision </tag>
+            
+            <tag> 李代数 </tag>
             
         </tags>
       
@@ -526,9 +549,9 @@
             
             <tag> cv </tag>
             
-            <tag> AR </tag>
-            
             <tag> computer vision </tag>
+            
+            <tag> AR </tag>
             
         </tags>
       
@@ -1353,9 +1376,9 @@
             
             <tag> SLAM </tag>
             
-            <tag> 李代数 </tag>
-            
             <tag> computer vision </tag>
+            
+            <tag> 李代数 </tag>
             
         </tags>
       

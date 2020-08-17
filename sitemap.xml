@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    
+    <lastmod>2020-08-17T16:53:51.404Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
     
-    <lastmod>2020-08-07T13:47:19.450Z</lastmod>
+    <lastmod>2020-08-17T12:42:53.662Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
+    
+    <lastmod>2020-08-17T12:42:35.351Z</lastmod>
     
   </url>
   
@@ -19,13 +33,6 @@
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
     
     <lastmod>2020-07-28T15:21:56.447Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
-    
-    <lastmod>2020-06-03T16:42:44.490Z</lastmod>
     
   </url>
   
