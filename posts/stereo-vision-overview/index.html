@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-03-31T15:46:14.708Z">
+<meta property="og:updated_time" content="2020-08-23T04:44:34.923Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="立体视觉综述：Stereo Vision Overview">
 <meta name="twitter:description" content="本文主要翻译自Mattoccia的双目视差估计综述，对于刚刚接触立体深度估计方向的小伙伴会有帮助；如果你是专家也可以做一下复习，如有错误请在评论中指出。文中主要介绍以下几个方面的内容：  Introduction to stereo vision Overview of a stereo vision system Algorithms for visual correspondence Com">
@@ -317,7 +317,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-31 23:46:14" itemprop="dateModified" datetime="2020-03-31T23:46:14+08:00">2020-03-31</time>
+                <time title="Modified: 2020-08-23 12:44:34" itemprop="dateModified" datetime="2020-08-23T12:44:34+08:00">2020-08-23</time>
               </span>
             
           
@@ -381,7 +381,7 @@
 <li>对于参考图像R而言，现实场景中的P与Q点在其像平面${\pi}_R$上被投影成为一个点p=q。</li>
 <li>极线约束规定，属于（红色）视线的点对应位于目标图像T的图像平面${\pi}_T$上的绿线上。</li>
 </ul>
-<p>我们可以在维基百科上找到更为详细的<a href="https://en.wikipedia.org/wiki/Epipolar_geometry" target="_blank" rel="noopener">介绍</a>，具体描述可见下图。特别感谢<a href="https://blog.csdn.net/lin453701006/article/details/55096777" target="_blank" rel="noopener">@岳麓吹雪同学</a>的帮忙，以下是他已经整理好的译文。下图是针孔相机模型图。两个针孔相机看向空间点，实际相机的像面位于焦点中心后面，生成了一幅关于透镜的焦点中心对称的图像。<strong>这个问题可以简化为在焦点中心前方放置一个虚拟像面来生成正立图像，而不需要对称变换得到</strong>。$O_L$和$O_R$表示两个相机透镜中心，$X$表示两个相机共同的目标点，$X_L$和$X_R$是点$X$在两像面上的投影。<br><img width="1600px" data-src="/stereo-vision-overview/Epipolar_geometry.svg"></p>
+<p>我们可以在维基百科上找到更为详细的<a href="https://en.wikipedia.org/wiki/Epipolar_geometry" target="_blank" rel="noopener">介绍</a>，具体描述可见下图。特别感谢<a href="https://blog.csdn.net/lin453701006/article/details/55096777" target="_blank" rel="noopener">@岳麓吹雪同学</a>的帮忙，以下是他已经整理好的译文。下图是针孔相机模型图。两个针孔相机看向空间点，实际相机的像面位于焦点中心后面，生成了一幅关于透镜的焦点中心对称的图像。<strong>这个问题可以简化为在焦点中心前方放置一个虚拟像面来生成正立图像，而不需要对称变换得到</strong>。$O_L$和$O_R$表示两个相机透镜中心，$X$表示两个相机共同的目标点，$X_L$和$X_R$是点$X$在两像面上的投影。<br><img width="1600px" data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/stereo-vision-overview/Epipolar_geometry.svg"></p>
 <ul>
 <li><p><strong>epipolar points极点</strong><br>每一个相机的透镜中心是不同的，会投射到另一个相机像面的不同点上。这两个像点用$e_L$和$e_R$表示，被称为<strong>epipolar points极点</strong>。两个极点$e_L$、$e_R$分别与透镜中心$O_L$、$O_R$在空间中位于一条直线上。</p>
 </li>

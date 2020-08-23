@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    
+    <lastmod>2020-08-23T04:54:22.751Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
+    
+    <lastmod>2020-08-23T04:51:37.991Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
+    
+    <lastmod>2020-08-23T04:44:34.923Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/adalam/</loc>
     
     <lastmod>2020-08-18T14:58:54.837Z</lastmod>
@@ -33,13 +54,6 @@
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
     
     <lastmod>2020-07-28T15:21:56.447Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
-    
-    <lastmod>2020-06-03T16:04:43.997Z</lastmod>
     
   </url>
   
@@ -128,13 +142,6 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
-    
-    <lastmod>2020-03-31T15:46:14.708Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/posts/pca/</loc>
     
     <lastmod>2020-03-31T15:43:13.363Z</lastmod>
@@ -187,13 +194,6 @@
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-SVD/</loc>
     
     <lastmod>2020-03-31T14:57:52.667Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
-    
-    <lastmod>2020-03-31T14:56:44.332Z</lastmod>
     
   </url>
   
