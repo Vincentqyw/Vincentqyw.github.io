@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -62,14 +62,14 @@
   <meta name="description" content="本文出自近几年备受瞩目的创业公司MagicLeap，发表在CVPR 2018,一作Daniel DeTone，[paper]，[slides]，[code]。 这篇文章设计了一种自监督网络框架，能够同时提取特征点的位置以及描述子。相比于patch-based方法，本文提出的算法能够在原始图像提取到像素级精度的特征点的位置及其描述子。本文提出了一种单映性适应（Homographic Adaptati">
 <meta name="keywords" content="SLAM,Deep Learning,特征提取,SuperPoint,MagicLeap,深度学习">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SuperPoint: Self-Supervised Interest Point Detection and Description">
+<meta property="og:title" content="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/superpoint/index.html">
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文出自近几年备受瞩目的创业公司MagicLeap，发表在CVPR 2018,一作Daniel DeTone，[paper]，[slides]，[code]。 这篇文章设计了一种自监督网络框架，能够同时提取特征点的位置以及描述子。相比于patch-based方法，本文提出的算法能够在原始图像提取到像素级精度的特征点的位置及其描述子。本文提出了一种单映性适应（Homographic Adaptati">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-05-18T15:17:42.554Z">
+<meta property="og:updated_time" content="2020-08-26T15:10:19.746Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SuperPoint: Self-Supervised Interest Point Detection and Description">
+<meta name="twitter:title" content="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点">
 <meta name="twitter:description" content="本文出自近几年备受瞩目的创业公司MagicLeap，发表在CVPR 2018,一作Daniel DeTone，[paper]，[slides]，[code]。 这篇文章设计了一种自监督网络框架，能够同时提取特征点的位置以及描述子。相比于patch-based方法，本文提出的算法能够在原始图像提取到像素级精度的特征点的位置及其描述子。本文提出了一种单映性适应（Homographic Adaptati">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/superpoint/">
 
@@ -85,7 +85,7 @@
   };
 </script>
 
-  <title>SuperPoint: Self-Supervised Interest Point Detection and Description | RealCat</title>
+  <title>📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点 | RealCat</title>
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
   <script>
@@ -170,6 +170,8 @@
         <li class="menu-item menu-item-home">
       
     
+      
+    
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
@@ -181,8 +183,10 @@
         <li class="menu-item menu-item-archives">
       
     
+      
+    
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">55</span></a>
 
   </li>
       
@@ -192,8 +196,10 @@
         <li class="menu-item menu-item-tags">
       
     
+      
+    
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">106</span></a>
 
   </li>
       
@@ -203,8 +209,10 @@
         <li class="menu-item menu-item-categories">
       
     
+      
+    
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
 
   </li>
       
@@ -212,6 +220,8 @@
       
         
         <li class="menu-item menu-item-collections">
+      
+    
       
     
 
@@ -222,33 +232,26 @@
       
       
         
-        <li class="menu-item menu-item-guest_comments">
-      
-    
-
-    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
-
-  </li>
-      
-      
-      
-        
-        <li class="menu-item menu-item-schedule">
-      
-    
-
-    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
-
-  </li>
-      
-      
-      
-        
         <li class="menu-item menu-item-top">
+      
+    
       
     
 
     <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
 
   </li>
   </ul>
@@ -290,7 +293,7 @@
       <meta itemprop="name" content="RealCat">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">SuperPoint: Self-Supervised Interest Point Detection and Description
+        <h1 class="post-title" itemprop="name headline">📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点
 
           
         </h1>
@@ -317,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-18 23:17:42" itemprop="dateModified" datetime="2020-05-18T23:17:42+08:00">2020-05-18</time>
+                <time title="Modified: 2020-08-26 23:10:19" itemprop="dateModified" datetime="2020-08-26T23:10:19+08:00">2020-08-26</time>
               </span>
             
           
@@ -336,7 +339,7 @@
           
 
           
-            <span id="/posts/superpoint/" class="post-meta-item leancloud_visitors" data-flag-title="SuperPoint: Self-Supervised Interest Point Detection and Description" title="Views">
+            <span id="/posts/superpoint/" class="post-meta-item leancloud_visitors" data-flag-title="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -452,7 +455,7 @@ s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} & {\text { if }\left\
     <strong>Post author:  </strong>Vincent Qin</li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://www.vincentqin.tech/posts/superpoint/" title="SuperPoint: Self-Supervised Interest Point Detection and Description">https://www.vincentqin.tech/posts/superpoint/</a>
+    <a href="https://www.vincentqin.tech/posts/superpoint/" title="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点">https://www.vincentqin.tech/posts/superpoint/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -497,8 +500,8 @@ s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} & {\text { if }\left\
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/posts/build-filebrowser/" rel="prev" title="Filebrowser：一款轻量级个人网盘">
-                  Filebrowser：一款轻量级个人网盘 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/build-filebrowser/" rel="prev" title="🔨工具：Filebrowser：一款轻量级个人网盘">
+                  🔨工具：Filebrowser：一款轻量级个人网盘 <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
@@ -744,6 +747,10 @@ s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} & {\text { if }\left\
       
         <li class="links-of-blogroll-item">
           <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
         </li>
       
     </ul>

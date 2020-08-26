@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
-    <lastmod>2020-08-23</lastmod>
+    <loc>https://www.vincentqin.tech/posts/build-filebrowser/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/superpoint/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/superglue/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
+    <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
-    <lastmod>2020-08-23</lastmod>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    <lastmod>2020-08-26</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/news/</loc>
+    <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
     <lastmod>2020-08-23</lastmod>
   </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
-    <lastmod>2020-08-18</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
-    <lastmod>2020-08-17</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
-    <lastmod>2020-08-17</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/superglue/</loc>
-    <lastmod>2020-07-28</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
-    <lastmod>2020-05-27</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
-    <lastmod>2020-05-24</lastmod>
-  </url>  <url>
     <loc>https://www.vincentqin.tech/posts/AR-applications/</loc>
     <lastmod>2020-05-22</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/superpoint/</loc>
-    <lastmod>2020-05-18</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-1/</loc>
     <lastmod>2020-04-18</lastmod>
@@ -62,9 +68,6 @@
     <lastmod>2020-03-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-PNP/</loc>
-    <lastmod>2020-03-31</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/build-filebrowser/</loc>
     <lastmod>2020-03-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-ICP/</loc>
@@ -116,9 +119,6 @@
     <lastmod>2020-03-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/new-pc/</loc>
-    <lastmod>2020-03-31</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/news/</loc>
     <lastmod>2020-03-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/recent-status/</loc>

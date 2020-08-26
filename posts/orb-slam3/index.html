@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -59,18 +59,18 @@
   };
 </script>
 
-  <meta name="description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
+  <meta name="description" content="论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM. 首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个">
 <meta name="keywords" content="SLAM,CV,笔记,论文">
 <meta property="og:type" content="article">
-<meta property="og:title" content="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读">
+<meta property="og:title" content="📝笔记：ORB-SLAM3论文阅读">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/orb-slam3/index.html">
 <meta property="og:site_name" content="RealCat">
-<meta property="og:description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
+<meta property="og:description" content="论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM. 首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-07-28T15:22:03.306Z">
+<meta property="og:updated_time" content="2020-08-26T15:05:49.623Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读">
-<meta name="twitter:description" content="首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。 论文,  Code Github,  Code国内镜像,  SLAM资源站">
+<meta name="twitter:title" content="📝笔记：ORB-SLAM3论文阅读">
+<meta name="twitter:description" content="论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM. 首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/orb-slam3/">
 
 
@@ -85,7 +85,7 @@
   };
 </script>
 
-  <title>笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读 | RealCat</title>
+  <title>📝笔记：ORB-SLAM3论文阅读 | RealCat</title>
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
   <script>
@@ -170,6 +170,8 @@
         <li class="menu-item menu-item-home">
       
     
+      
+    
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
@@ -181,8 +183,10 @@
         <li class="menu-item menu-item-archives">
       
     
+      
+    
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">55</span></a>
 
   </li>
       
@@ -192,8 +196,10 @@
         <li class="menu-item menu-item-tags">
       
     
+      
+    
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">106</span></a>
 
   </li>
       
@@ -203,8 +209,10 @@
         <li class="menu-item menu-item-categories">
       
     
+      
+    
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
 
   </li>
       
@@ -212,6 +220,8 @@
       
         
         <li class="menu-item menu-item-collections">
+      
+    
       
     
 
@@ -222,33 +232,26 @@
       
       
         
-        <li class="menu-item menu-item-guest_comments">
-      
-    
-
-    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
-
-  </li>
-      
-      
-      
-        
-        <li class="menu-item menu-item-schedule">
-      
-    
-
-    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
-
-  </li>
-      
-      
-      
-        
         <li class="menu-item menu-item-top">
+      
+    
       
     
 
     <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
 
   </li>
   </ul>
@@ -290,7 +293,7 @@
       <meta itemprop="name" content="RealCat">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读
+        <h1 class="post-title" itemprop="name headline">📝笔记：ORB-SLAM3论文阅读
 
           
         </h1>
@@ -317,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-07-28 23:22:03" itemprop="dateModified" datetime="2020-07-28T23:22:03+08:00">2020-07-28</time>
+                <time title="Modified: 2020-08-26 23:05:49" itemprop="dateModified" datetime="2020-08-26T23:05:49+08:00">2020-08-26</time>
               </span>
             
           
@@ -336,7 +339,7 @@
           
 
           
-            <span id="/posts/orb-slam3/" class="post-meta-item leancloud_visitors" data-flag-title="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读" title="Views">
+            <span id="/posts/orb-slam3/" class="post-meta-item leancloud_visitors" data-flag-title="📝笔记：ORB-SLAM3论文阅读" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -368,7 +371,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。</p>
+        <p>论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM.</p>
+<p>首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。</p>
 <p><strong><a href="http://xxx.itp.ac.cn/pdf/2007.11898.pdf" target="_blank" rel="noopener">论文</a></strong>,  <strong><a href="https://github.com/UZ-SLAMLab/ORB_SLAM3" target="_blank" rel="noopener">Code Github</a></strong>,  <strong><a href="https://gitee.com/vincentqin/ORB_SLAM3" target="_blank" rel="noopener">Code国内镜像</a></strong>,  <strong><a href="https://github.com/Vincentqyw/Recent-Stars-2020" target="_blank" rel="noopener">SLAM资源站</a></strong></p>
 <a id="more"></a>
 <h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1><p>ORB-SLAM3实现了基于视觉惯导紧耦合，同时能够对多地图进行复用；另外支持单目/双目/RGB-D作为输入，支持针孔以及鱼眼相机模型。</p>
@@ -513,7 +517,7 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
     <strong>Post author:  </strong>Vincent Qin</li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://www.vincentqin.tech/posts/orb-slam3/" title="笔记：ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM论文阅读">https://www.vincentqin.tech/posts/orb-slam3/</a>
+    <a href="https://www.vincentqin.tech/posts/orb-slam3/" title="📝笔记：ORB-SLAM3论文阅读">https://www.vincentqin.tech/posts/orb-slam3/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -544,8 +548,8 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/posts/manage-pc-hosts/" rel="next" title="工具：解决Github挂图及龟速访问">
-                  <i class="fa fa-chevron-left"></i> 工具：解决Github挂图及龟速访问
+                <a href="/posts/manage-pc-hosts/" rel="next" title="🔨工具：解决Github挂图及龟速访问">
+                  <i class="fa fa-chevron-left"></i> 🔨工具：解决Github挂图及龟速访问
                 </a>
               
             </div>
@@ -554,8 +558,8 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/posts/speedup-gitpage/" rel="prev" title="工具：使用vercel加速Hexo静态博客访问">
-                  工具：使用vercel加速Hexo静态博客访问 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/speedup-gitpage/" rel="prev" title="🔨工具：使用vercel加速Hexo静态博客访问">
+                  🔨工具：使用vercel加速Hexo静态博客访问 <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
@@ -801,6 +805,10 @@ s^{\text {new }}=s^{\text {old }} \exp (\delta s)
       
         <li class="links-of-blogroll-item">
           <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
         </li>
       
     </ul>

@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="Hexo作为建立Blog利器，为我们没有JS基础的小白们提供了建立专属自己博客的机会！经常使用的语法很简单，我们完全可以在10min分钟之内建立自己的Blog，后期的优化才是最耗费时间的。好了，直接进入正文。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-08-23T04:54:22.751Z">
+<meta property="og:updated_time" content="2020-08-26T14:36:06.029Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo+Github建站备忘录">
 <meta name="twitter:description" content="Hexo作为建立Blog利器，为我们没有JS基础的小白们提供了建立专属自己博客的机会！经常使用的语法很简单，我们完全可以在10min分钟之内建立自己的Blog，后期的优化才是最耗费时间的。好了，直接进入正文。">
@@ -170,6 +170,8 @@
         <li class="menu-item menu-item-home">
       
     
+      
+    
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
@@ -181,8 +183,10 @@
         <li class="menu-item menu-item-archives">
       
     
+      
+    
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">55</span></a>
 
   </li>
       
@@ -192,8 +196,10 @@
         <li class="menu-item menu-item-tags">
       
     
+      
+    
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">106</span></a>
 
   </li>
       
@@ -203,8 +209,10 @@
         <li class="menu-item menu-item-categories">
       
     
+      
+    
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
 
   </li>
       
@@ -212,6 +220,8 @@
       
         
         <li class="menu-item menu-item-collections">
+      
+    
       
     
 
@@ -222,33 +232,26 @@
       
       
         
-        <li class="menu-item menu-item-guest_comments">
-      
-    
-
-    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
-
-  </li>
-      
-      
-      
-        
-        <li class="menu-item menu-item-schedule">
-      
-    
-
-    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
-
-  </li>
-      
-      
-      
-        
         <li class="menu-item menu-item-top">
+      
+    
       
     
 
     <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
 
   </li>
   </ul>
@@ -317,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-23 12:54:22" itemprop="dateModified" datetime="2020-08-23T12:54:22+08:00">2020-08-23</time>
+                <time title="Modified: 2020-08-26 22:36:06" itemprop="dateModified" datetime="2020-08-26T22:36:06+08:00">2020-08-26</time>
               </span>
             
           
@@ -376,6 +379,11 @@
           </div>
 <a id="more"></a>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    # 清除缓存，简写 hexo c</span><br><span class="line">hexo generate # 作用：建立静态页面， 简写 hexo g</span><br><span class="line">hexo deploy   # 部署自己的blog，本人部署在了Git上，简写 hexo d</span><br><span class="line">hexo server   # 以启动本地服务， 可预览，简写 hexo s</span><br><span class="line">hexo new blog_name #　新建以blog_name为名的blog</span><br><span class="line">在.md文档中加入 &lt;!-- more --&gt; 可以显示“阅读全文”</span><br></pre></td></tr></table></figure>
+<h2 id="设置某个页面不显示TOC"><a href="#设置某个页面不显示TOC" class="headerlink" title="设置某个页面不显示TOC"></a>设置某个页面不显示TOC</h2><p>修改文件<code>themes/next/layout/_macro/sidebar.swig</code>，找到这一句</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;%- <span class="built_in">set</span> display_toc = theme.toc.enable and display_toc %&#125;</span><br></pre></td></tr></table></figure>
+<p>改成：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;%- <span class="built_in">set</span> display_toc = theme.toc.enable and display_toc and !page.no_toc %&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在post的<code>Front-matter</code>中增加<code>no_toc: true</code>。</p>
 <h2 id="设置Github-jsDelivr图床加速"><a href="#设置Github-jsDelivr图床加速" class="headerlink" title="设置Github + jsDelivr图床加速"></a>设置Github + jsDelivr图床加速</h2><p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/build-a-website-using-hexo/picgo.png"></p>
 <ul>
 <li><a href="https://www.itrhx.com/2019/08/01/A27-image-hosting/" target="_blank" rel="noopener">Github+jsDelivr+PicGo 打造稳定快速、高效免费图床</a></li>
@@ -640,7 +648,7 @@ mathjax: true
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置Github-jsDelivr图床加速"><span class="nav-number">1.</span> <span class="nav-text">设置Github + jsDelivr图床加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网站访问加速"><span class="nav-number">2.</span> <span class="nav-text">网站访问加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面重定向"><span class="nav-number">3.</span> <span class="nav-text">页面重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修复HEXO引用本地图片失败"><span class="nav-number">4.</span> <span class="nav-text">修复HEXO引用本地图片失败</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入PDF文档"><span class="nav-number">5.</span> <span class="nav-text">插入PDF文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-→-Go-to-NexT-dir"><span class="nav-number">5.1.</span> <span class="nav-text">Step 1 → Go to NexT dir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-→-Get-module"><span class="nav-number">5.2.</span> <span class="nav-text">Step 2 → Get module</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-→-Set-it-up"><span class="nav-number">5.3.</span> <span class="nav-text">Step 3 → Set it up</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Usage"><span class="nav-number">5.4.</span> <span class="nav-text">Usage:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据图像得到Latex公式"><span class="nav-number">6.</span> <span class="nav-text">根据图像得到Latex公式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个性化返回顶部"><span class="nav-number">7.</span> <span class="nav-text">个性化返回顶部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新增在线聊天tidio"><span class="nav-number">8.</span> <span class="nav-text">新增在线聊天tidio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新增-clustrmaps"><span class="nav-number">9.</span> <span class="nav-text">新增 clustrmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#valine-添加邮件提醒"><span class="nav-number">10.</span> <span class="nav-text">valine 添加邮件提醒</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gitment-小小改动"><span class="nav-number">11.</span> <span class="nav-text">Gitment 小小改动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Valine-刷新后评论消失"><span class="nav-number">12.</span> <span class="nav-text">Valine 刷新后评论消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除-Powered-by-Valine"><span class="nav-number">13.</span> <span class="nav-text">删除 Powered by Valine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网页压缩"><span class="nav-number">14.</span> <span class="nav-text">网页压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码区高级设置"><span class="nav-number">15.</span> <span class="nav-text">代码区高级设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修复行内公式显示乱码"><span class="nav-number">16.</span> <span class="nav-text">修复行内公式显示乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示文章阅读数量"><span class="nav-number">17.</span> <span class="nav-text">显示文章阅读数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#官方主题设置"><span class="nav-number">18.</span> <span class="nav-text">官方主题设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于评论系统"><span class="nav-number">19.</span> <span class="nav-text">关于评论系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于旋转头像"><span class="nav-number">20.</span> <span class="nav-text">关于旋转头像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背景颜色设置"><span class="nav-number">21.</span> <span class="nav-text">背景颜色设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面宽度设置"><span class="nav-number">22.</span> <span class="nav-text">页面宽度设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化友情链接"><span class="nav-number">23.</span> <span class="nav-text">优化友情链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加页面背景"><span class="nav-number">24.</span> <span class="nav-text">添加页面背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加fork-me-on-github"><span class="nav-number">25.</span> <span class="nav-text">添加fork me on github</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkDown编辑器"><span class="nav-number">26.</span> <span class="nav-text">MarkDown编辑器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入PDF文档以及图片"><span class="nav-number">27.</span> <span class="nav-text">插入PDF文档以及图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置个性化的字体"><span class="nav-number">28.</span> <span class="nav-text">配置个性化的字体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在博客中插入网易云音乐"><span class="nav-number">29.</span> <span class="nav-text">在博客中插入网易云音乐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#播放视频"><span class="nav-number">30.</span> <span class="nav-text">播放视频</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同时部署"><span class="nav-number">31.</span> <span class="nav-text">同时部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本管理"><span class="nav-number">32.</span> <span class="nav-text">版本管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案-1（推荐）"><span class="nav-number">32.1.</span> <span class="nav-text">方案 1（推荐）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案-2"><span class="nav-number">32.2.</span> <span class="nav-text">方案 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置主题远程仓库"><span class="nav-number">32.2.1.</span> <span class="nav-text">设置主题远程仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置node-modules远程仓库"><span class="nav-number">32.2.2.</span> <span class="nav-text">设置node_modules远程仓库</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">32.3.</span> <span class="nav-text">结语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#所有配置集锦"><span class="nav-number">33.</span> <span class="nav-text">所有配置集锦</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">34.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置某个页面不显示TOC"><span class="nav-number">1.</span> <span class="nav-text">设置某个页面不显示TOC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置Github-jsDelivr图床加速"><span class="nav-number">2.</span> <span class="nav-text">设置Github + jsDelivr图床加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网站访问加速"><span class="nav-number">3.</span> <span class="nav-text">网站访问加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面重定向"><span class="nav-number">4.</span> <span class="nav-text">页面重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修复HEXO引用本地图片失败"><span class="nav-number">5.</span> <span class="nav-text">修复HEXO引用本地图片失败</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入PDF文档"><span class="nav-number">6.</span> <span class="nav-text">插入PDF文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-→-Go-to-NexT-dir"><span class="nav-number">6.1.</span> <span class="nav-text">Step 1 → Go to NexT dir</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-→-Get-module"><span class="nav-number">6.2.</span> <span class="nav-text">Step 2 → Get module</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-→-Set-it-up"><span class="nav-number">6.3.</span> <span class="nav-text">Step 3 → Set it up</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Usage"><span class="nav-number">6.4.</span> <span class="nav-text">Usage:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根据图像得到Latex公式"><span class="nav-number">7.</span> <span class="nav-text">根据图像得到Latex公式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个性化返回顶部"><span class="nav-number">8.</span> <span class="nav-text">个性化返回顶部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新增在线聊天tidio"><span class="nav-number">9.</span> <span class="nav-text">新增在线聊天tidio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新增-clustrmaps"><span class="nav-number">10.</span> <span class="nav-text">新增 clustrmaps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#valine-添加邮件提醒"><span class="nav-number">11.</span> <span class="nav-text">valine 添加邮件提醒</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gitment-小小改动"><span class="nav-number">12.</span> <span class="nav-text">Gitment 小小改动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Valine-刷新后评论消失"><span class="nav-number">13.</span> <span class="nav-text">Valine 刷新后评论消失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除-Powered-by-Valine"><span class="nav-number">14.</span> <span class="nav-text">删除 Powered by Valine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网页压缩"><span class="nav-number">15.</span> <span class="nav-text">网页压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码区高级设置"><span class="nav-number">16.</span> <span class="nav-text">代码区高级设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修复行内公式显示乱码"><span class="nav-number">17.</span> <span class="nav-text">修复行内公式显示乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示文章阅读数量"><span class="nav-number">18.</span> <span class="nav-text">显示文章阅读数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#官方主题设置"><span class="nav-number">19.</span> <span class="nav-text">官方主题设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于评论系统"><span class="nav-number">20.</span> <span class="nav-text">关于评论系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于旋转头像"><span class="nav-number">21.</span> <span class="nav-text">关于旋转头像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背景颜色设置"><span class="nav-number">22.</span> <span class="nav-text">背景颜色设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页面宽度设置"><span class="nav-number">23.</span> <span class="nav-text">页面宽度设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化友情链接"><span class="nav-number">24.</span> <span class="nav-text">优化友情链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加页面背景"><span class="nav-number">25.</span> <span class="nav-text">添加页面背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加fork-me-on-github"><span class="nav-number">26.</span> <span class="nav-text">添加fork me on github</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MarkDown编辑器"><span class="nav-number">27.</span> <span class="nav-text">MarkDown编辑器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入PDF文档以及图片"><span class="nav-number">28.</span> <span class="nav-text">插入PDF文档以及图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置个性化的字体"><span class="nav-number">29.</span> <span class="nav-text">配置个性化的字体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在博客中插入网易云音乐"><span class="nav-number">30.</span> <span class="nav-text">在博客中插入网易云音乐</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#播放视频"><span class="nav-number">31.</span> <span class="nav-text">播放视频</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同时部署"><span class="nav-number">32.</span> <span class="nav-text">同时部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本管理"><span class="nav-number">33.</span> <span class="nav-text">版本管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案-1（推荐）"><span class="nav-number">33.1.</span> <span class="nav-text">方案 1（推荐）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案-2"><span class="nav-number">33.2.</span> <span class="nav-text">方案 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置主题远程仓库"><span class="nav-number">33.2.1.</span> <span class="nav-text">设置主题远程仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置node-modules远程仓库"><span class="nav-number">33.2.2.</span> <span class="nav-text">设置node_modules远程仓库</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结语"><span class="nav-number">33.3.</span> <span class="nav-text">结语</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#所有配置集锦"><span class="nav-number">34.</span> <span class="nav-text">所有配置集锦</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">35.</span> <span class="nav-text">参考</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
@@ -833,6 +841,10 @@ mathjax: true
       
         <li class="links-of-blogroll-item">
           <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
         </li>
       
     </ul>

@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -170,6 +170,8 @@
         <li class="menu-item menu-item-home">
       
     
+      
+    
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
@@ -181,8 +183,10 @@
         <li class="menu-item menu-item-archives">
       
     
+      
+    
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">55</span></a>
 
   </li>
       
@@ -192,8 +196,10 @@
         <li class="menu-item menu-item-tags">
       
     
+      
+    
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">106</span></a>
 
   </li>
       
@@ -203,8 +209,10 @@
         <li class="menu-item menu-item-categories">
       
     
+      
+    
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
 
   </li>
       
@@ -212,6 +220,8 @@
       
         
         <li class="menu-item menu-item-collections">
+      
+    
       
     
 
@@ -222,33 +232,26 @@
       
       
         
-        <li class="menu-item menu-item-guest_comments">
-      
-    
-
-    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
-
-  </li>
-      
-      
-      
-        
-        <li class="menu-item menu-item-schedule">
-      
-    
-
-    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
-
-  </li>
-      
-      
-      
-        
         <li class="menu-item menu-item-top">
+      
+    
       
     
 
     <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
 
   </li>
   </ul>
@@ -373,6 +376,9 @@
             <p><a href="https://www.vincentqin.tech/collections/">这里</a>鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。<br><span id="inline-red">声明</span>：<u><strong>一切理解都是本人观点，如有疑问，还望在</strong>评论<strong>中留言。如需转载请与本人联系，谢谢合作</strong></u>! )</p>
           </div>
 <a id="more"></a>
+<p>开始正文之前，我把常用的光场图像处理程序放在了GitHub，如下：</p>
+<p><a href="https://github.com/Vincentqyw/light-field-Processing" target="_blank" rel="noopener"><img alt="ReadMe Card" data-src="https://github-readme-stats.vercel.app/api/pin/?username=Vincentqyw&amp;repo=light-field-Processing&amp;show_owner=false&amp;theme=default"></a></p>
+<p><a href="https://github.com/Vincentqyw/light-field-TB" target="_blank" rel="noopener"><img alt="ReadMe Card" data-src="https://github-readme-stats.vercel.app/api/pin/?username=Vincentqyw&amp;repo=light-field-TB&amp;show_owner=false&amp;theme=default"></a></p>
 <h2 id="光场相机"><a href="#光场相机" class="headerlink" title="光场相机"></a>光场相机</h2><p>大家在刚刚入手光场领域的时候可能会用到目前消费级的手持光场相机，如Lytro或者ILLUM，如图（实验室的设备，鄙人可买不起ILLUM）：<br><img alt data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/LF-cameras.jpg"></p>
 <h2 id="获取-LFP-or-LFR-原文件"><a href="#获取-LFP-or-LFR-原文件" class="headerlink" title="获取.LFP(or .LFR)原文件"></a>获取.LFP(or .LFR)原文件</h2><p>由Lytro拍摄的图像的原格式是.lfp格式，我们要将其解码成我们需要的格式。<br>工具：<strong>Lytro Desktop</strong>，<strong>MATLAB光场工具包</strong>（很强大，推荐，本文介绍该方法）。</p>
 <p>首先用数据线把设备连接到电脑，打开Lytro Desktop，点击想要导入的图片，选中点击右上角立即处理，然后打开我的电脑图片-&gt;Lytro Desktop\Libraries\Lytro 图库.lytrolibrary*，就可以发现有很多文件夹名字是一串很长数字字母云云。点击进去可以发现里面有几个文件，以lytro为例，这几个文件如下形式：<br><img alt data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/lfp_list.png"></p>
@@ -789,6 +795,10 @@ L_{\alpha}(x,y,u,v)=L_0(x+(1-\frac{1}{\alpha})u,y+(1-\frac{1}{\alpha})v,u,v)</sc
       
         <li class="links-of-blogroll-item">
           <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
         </li>
       
     </ul>

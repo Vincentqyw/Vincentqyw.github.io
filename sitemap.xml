@@ -2,16 +2,93 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    <loc>https://www.vincentqin.tech/guestbook/index.html</loc>
     
-    <lastmod>2020-08-23T04:54:22.751Z</lastmod>
+    <lastmod>2020-08-26T15:25:37.425Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/build-filebrowser/</loc>
+    
+    <lastmod>2020-08-26T15:14:39.075Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/superpoint/</loc>
+    
+    <lastmod>2020-08-26T15:10:19.746Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/superglue/</loc>
+    
+    <lastmod>2020-08-26T15:09:06.818Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
+    
+    <lastmod>2020-08-26T15:08:50.909Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
+    
+    <lastmod>2020-08-26T15:07:55.773Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
     
-    <lastmod>2020-08-23T04:51:37.991Z</lastmod>
+    <lastmod>2020-08-26T15:07:36.816Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
+    
+    <lastmod>2020-08-26T15:07:23.719Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    
+    <lastmod>2020-08-26T15:06:45.137Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>
+    
+    <lastmod>2020-08-26T15:05:49.623Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
+    
+    <lastmod>2020-08-26T14:51:50.439Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    
+    <lastmod>2020-08-26T14:36:06.029Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/news/</loc>
+    
+    <lastmod>2020-08-26T14:29:26.479Z</lastmod>
     
   </url>
   
@@ -19,62 +96,6 @@
     <loc>https://www.vincentqin.tech/posts/stereo-vision-overview/</loc>
     
     <lastmod>2020-08-23T04:44:34.923Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
-    
-    <lastmod>2020-08-18T14:58:54.837Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
-    
-    <lastmod>2020-08-17T12:42:53.662Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
-    
-    <lastmod>2020-08-17T12:42:35.351Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>
-    
-    <lastmod>2020-07-28T15:22:03.306Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/superglue/</loc>
-    
-    <lastmod>2020-07-28T15:21:56.447Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
-    
-    <lastmod>2020-05-27T16:47:05.579Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
-    
-    <lastmod>2020-05-24T15:00:05.764Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/guestbook/index.html</loc>
-    
-    <lastmod>2020-05-22T16:09:38.843Z</lastmod>
     
   </url>
   
@@ -96,13 +117,6 @@
     <loc>https://www.vincentqin.tech/manifest.json</loc>
     
     <lastmod>2020-05-18T15:59:21.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/superpoint/</loc>
-    
-    <lastmod>2020-05-18T15:17:42.554Z</lastmod>
     
   </url>
   
@@ -166,13 +180,6 @@
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-PNP/</loc>
     
     <lastmod>2020-03-31T15:31:47.349Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/build-filebrowser/</loc>
-    
-    <lastmod>2020-03-31T15:27:36.717Z</lastmod>
     
   </url>
   
@@ -292,13 +299,6 @@
     <loc>https://www.vincentqin.tech/posts/new-pc/</loc>
     
     <lastmod>2020-03-31T14:51:17.816Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/news/</loc>
-    
-    <lastmod>2020-03-31T14:51:14.712Z</lastmod>
     
   </url>
   

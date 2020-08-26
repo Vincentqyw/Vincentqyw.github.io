@@ -21,7 +21,7 @@
 
 <link rel="stylesheet" href="/css/main.css?v=7.4.0">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
@@ -62,14 +62,14 @@
   <meta name="description" content="AdaLAM的全称是Adaptive Locally-Affine Matching(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。">
 <meta name="keywords" content="SLAM,CV,Matching">
 <meta property="og:type" content="article">
-<meta property="og:title" content="笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">
+<meta property="og:title" content="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/adalam/index.html">
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="AdaLAM的全称是Adaptive Locally-Affine Matching(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-08-18T14:58:54.837Z">
+<meta property="og:updated_time" content="2020-08-26T15:06:45.137Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">
+<meta name="twitter:title" content="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">
 <meta name="twitter:description" content="AdaLAM的全称是Adaptive Locally-Affine Matching(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/adalam/">
 
@@ -85,7 +85,7 @@
   };
 </script>
 
-  <title>笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法 | RealCat</title>
+  <title>📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法 | RealCat</title>
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
   <script>
@@ -170,6 +170,8 @@
         <li class="menu-item menu-item-home">
       
     
+      
+    
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
@@ -181,8 +183,10 @@
         <li class="menu-item menu-item-archives">
       
     
+      
+    
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">55</span></a>
 
   </li>
       
@@ -192,8 +196,10 @@
         <li class="menu-item menu-item-tags">
       
     
+      
+    
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">106</span></a>
 
   </li>
       
@@ -203,8 +209,10 @@
         <li class="menu-item menu-item-categories">
       
     
+      
+    
 
-    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
 
   </li>
       
@@ -212,6 +220,8 @@
       
         
         <li class="menu-item menu-item-collections">
+      
+    
       
     
 
@@ -222,33 +232,26 @@
       
       
         
-        <li class="menu-item menu-item-guest_comments">
-      
-    
-
-    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-send"></i> <br>Messager</a>
-
-  </li>
-      
-      
-      
-        
-        <li class="menu-item menu-item-schedule">
-      
-    
-
-    <a href="/schedule/" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>Schedule</a>
-
-  </li>
-      
-      
-      
-        
         <li class="menu-item menu-item-top">
+      
+    
       
     
 
     <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
 
   </li>
   </ul>
@@ -290,7 +293,7 @@
       <meta itemprop="name" content="RealCat">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法
+        <h1 class="post-title" itemprop="name headline">📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法
 
           
         </h1>
@@ -317,13 +320,13 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-18 22:58:54" itemprop="dateModified" datetime="2020-08-18T22:58:54+08:00">2020-08-18</time>
+                <time title="Modified: 2020-08-26 23:06:45" itemprop="dateModified" datetime="2020-08-26T23:06:45+08:00">2020-08-26</time>
               </span>
             
           
 
           
-            <span id="/posts/adalam/" class="post-meta-item leancloud_visitors" data-flag-title="笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法" title="Views">
+            <span id="/posts/adalam/" class="post-meta-item leancloud_visitors" data-flag-title="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -415,7 +418,7 @@ r_{k}\left(A_{i}^{j}\right)=\left\|A_{i}^{j} \mathbf{x}_{1}^{k}-\mathbf{x}_{2}^{
     <strong>Post author:  </strong>Vincent Qin</li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://www.vincentqin.tech/posts/adalam/" title="笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">https://www.vincentqin.tech/posts/adalam/</a>
+    <a href="https://www.vincentqin.tech/posts/adalam/" title="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">https://www.vincentqin.tech/posts/adalam/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -444,8 +447,8 @@ r_{k}\left(A_{i}^{j}\right)=\left\|A_{i}^{j} \mathbf{x}_{1}^{k}-\mathbf{x}_{2}^{
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/posts/speedup-gitpage/" rel="next" title="工具：使用vercel加速Hexo静态博客访问">
-                  <i class="fa fa-chevron-left"></i> 工具：使用vercel加速Hexo静态博客访问
+                <a href="/posts/speedup-gitpage/" rel="next" title="🔨工具：使用vercel加速Hexo静态博客访问">
+                  <i class="fa fa-chevron-left"></i> 🔨工具：使用vercel加速Hexo静态博客访问
                 </a>
               
             </div>
@@ -697,6 +700,10 @@ r_{k}\left(A_{i}^{j}\right)=\left\|A_{i}^{j} \mathbf{x}_{1}^{k}-\mathbf{x}_{2}^{
       
         <li class="links-of-blogroll-item">
           <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
         </li>
       
     </ul>
