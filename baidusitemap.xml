@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
+    <lastmod>2020-08-30</lastmod>
+  </url>  <url>
     <loc>https://www.vincentqin.tech/posts/build-filebrowser/</loc>
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
@@ -150,9 +153,6 @@
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/</loc>
     <lastmod>2019-08-04</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
-    <lastmod>2019-05-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/line-segments-detection/</loc>
     <lastmod>2018-12-09</lastmod>
