@@ -413,6 +413,13 @@ td {
     margin-bottom: 10px !important;
     padding: 10px !important;
   }
+  .post-body .note:not(.no-icon) {
+    padding-left: 35px !important;
+  }
+  .post-body .note:not(.no-icon)::before {
+    left: 12px !important;
+    top: 8px !important;
+  }
   .post-body .tabs .tab-content .tab-pane {
     padding: 10px 10px 0 10px !important;
   }
@@ -773,6 +780,9 @@ pre .javascript .function {
   border-top: 3px solid transparent;
   flex-grow: 1;
   list-style-type: none;
+  transition-delay: 0s;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
 }
 @media (max-width: 413px) {
   .post-body .tabs ul.nav-tabs li.tab,
@@ -846,7 +856,7 @@ pre .javascript .function {
 .post-body .note h4,
 .post-body .note h5,
 .post-body .note h6 {
-  margin-top: 0;
+  margin-top: 3px;
   border-bottom: initial;
   margin-bottom: 0;
   padding-top: 0;
@@ -869,6 +879,16 @@ pre .javascript .function {
 .post-body .note img:last-child {
   margin-bottom: 0;
 }
+.post-body .note:not(.no-icon) {
+  padding-left: 45px;
+}
+.post-body .note:not(.no-icon)::before {
+  font-family: 'FontAwesome';
+  font-size: larger;
+  left: 15px;
+  position: absolute;
+  top: 13px;
+}
 .post-body .note.default {
   background-color: #f3f3f3;
   border-color: #e1e1e1;
@@ -883,6 +903,9 @@ pre .javascript .function {
 .post-body .note.default span.exturl:not(.btn):hover {
   border-bottom: 1px solid #454545;
   color: #454545;
+}
+.post-body .note.default:not(.no-icon)::before {
+  content: "\f0a9";
 }
 .post-body .note.primary {
   background-color: #f3daff;
@@ -899,6 +922,9 @@ pre .javascript .function {
   border-bottom: 1px solid #453298;
   color: #453298;
 }
+.post-body .note.primary:not(.no-icon)::before {
+  content: "\f055";
+}
 .post-body .note.info {
   background-color: #d9edf7;
   border-color: #b3e5ef;
@@ -913,6 +939,9 @@ pre .javascript .function {
 .post-body .note.info span.exturl:not(.btn):hover {
   border-bottom: 1px solid #215761;
   color: #215761;
+}
+.post-body .note.info:not(.no-icon)::before {
+  content: "\f05a";
 }
 .post-body .note.success {
   background-color: #dff0d8;
@@ -929,6 +958,9 @@ pre .javascript .function {
   border-bottom: 1px solid #32562c;
   color: #32562c;
 }
+.post-body .note.success:not(.no-icon)::before {
+  content: "\f058";
+}
 .post-body .note.warning {
   background-color: #fcf4e3;
   border-color: #fae4cd;
@@ -944,6 +976,9 @@ pre .javascript .function {
   border-bottom: 1px solid #714f30;
   color: #714f30;
 }
+.post-body .note.warning:not(.no-icon)::before {
+  content: "\f06a";
+}
 .post-body .note.danger {
   background-color: #f2dfdf;
   border-color: #ebcdd2;
@@ -958,6 +993,9 @@ pre .javascript .function {
 .post-body .note.danger span.exturl:not(.btn):hover {
   border-bottom: 1px solid #84333f;
   color: #84333f;
+}
+.post-body .note.danger:not(.no-icon)::before {
+  content: "\f056";
 }
 .pdfobject-container {
   height: 500px;
@@ -1823,7 +1861,7 @@ article:last-child .post-eof {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #55e485;
+  background: #fbf;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2143,117 +2181,6 @@ article:last-child .post-eof {
   50%, 70% {
     transform: scale(1.1);
   }
-}
-.search-pop-overlay {
-  background-color: rgba(0,0,0,0.3);
-  display: none;
-  height: 100%;
-  left: 0;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 2080;
-}
-.search-popup {
-  background: #fff;
-  border-radius: 5px;
-  color: #333;
-  display: none;
-  height: 80%;
-  left: 50%;
-  margin-left: -350px;
-  padding: 0;
-  position: fixed;
-  top: 10%;
-  width: 700px;
-  z-index: 9999;
-}
-@media (max-width: 767px) {
-  .search-popup {
-    border-radius: 0;
-    height: 100%;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    top: 0;
-    width: 100%;
-  }
-}
-.search-popup .search-icon,
-.search-popup .popup-btn-close {
-  color: #999;
-  display: inline-block;
-  font-size: 18px;
-  height: 36px;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 18px;
-}
-.search-popup .popup-btn-close {
-  border-left: 1px solid #eee;
-  cursor: pointer;
-  float: right;
-}
-.search-popup .popup-btn-close:hover .fa {
-  color: #222;
-}
-.search-popup .search-header {
-  background: #f5f5f5;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  padding: 5px;
-}
-.search-loading-icon {
-  margin: 20% auto 0 auto;
-  text-align: center;
-}
-.search-popup ul.search-result-list {
-  margin: 0 5px;
-  padding: 0;
-}
-.search-popup p.search-result {
-  border-bottom: 1px dashed #ccc;
-  padding: 5px 0;
-}
-.search-popup a.search-result-title {
-  font-weight: bold;
-}
-.search-popup .search-keyword {
-  border-bottom: 1px dashed #f00;
-  color: #f00;
-  font-weight: bold;
-}
-.search-popup #search-result {
-  height: calc(100% - 55px);
-  overflow: auto;
-  padding: 5px 25px;
-  position: relative;
-}
-.search-popup .search-input-container {
-  display: inline-block;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 5px;
-  position: absolute;
-  width: calc(100% - 90px);
-}
-.search-popup .search-input-container input {
-  background: transparent;
-  border: 0;
-  display: block;
-  height: 20px;
-  outline: none;
-  padding: 8px 0;
-  vertical-align: middle;
-  width: 100%;
-}
-.search-popup #no-result {
-  color: #ccc;
-  left: 50%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 .category-all-page .category-all-title {
   text-align: center;
@@ -2668,19 +2595,6 @@ header.post-header {
   background: #f9f9f9;
   border-bottom-color: #fff;
 }
-.menu-item-active a::after,
-.menu .menu-item a:hover::after,
-.menu .menu-item span.exturl:hover::after {
-  background-color: #bbb;
-  border-radius: 50%;
-  content: ' ';
-  height: 6px;
-  margin-top: -3px;
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  width: 6px;
-}
 .menu .menu-item {
   display: block;
   margin: 0;
@@ -2751,9 +2665,6 @@ header.post-header {
 .sub-menu .menu-item-active a:hover {
   background: #fff;
   border-bottom-color: #fc6423;
-}
-.sub-menu .menu-item-active a::after {
-  content: initial;
 }
 .sidebar {
   bottom: auto;
