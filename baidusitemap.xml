@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.vincentqin.tech/posts/westlake/</loc>
-    <lastmod>2020-08-30</lastmod>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/westlake/</loc>
     <lastmod>2020-08-30</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/build-filebrowser/</loc>
@@ -26,9 +29,6 @@
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
-    <lastmod>2020-08-26</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>

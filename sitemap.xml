@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/westlake/</loc>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
     
-    <lastmod>2020-08-30T14:28:15.864Z</lastmod>
+    <lastmod>2020-09-04T16:15:41.456Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
     
-    <lastmod>2020-08-30T13:59:21.496Z</lastmod>
+    <lastmod>2020-09-04T16:09:02.867Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/westlake/</loc>
+    
+    <lastmod>2020-08-30T14:28:15.864Z</lastmod>
     
   </url>
   
@@ -68,13 +75,6 @@
     <loc>https://www.vincentqin.tech/posts/speedup-gitpage/</loc>
     
     <lastmod>2020-08-26T15:07:23.719Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
-    
-    <lastmod>2020-08-26T15:06:45.137Z</lastmod>
     
   </url>
   
