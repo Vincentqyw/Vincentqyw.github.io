@@ -59,17 +59,17 @@
   };
 </script>
 
-  <meta name="description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
+  <meta name="description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="📝笔记：图解卡尔曼滤波">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/index.html">
 <meta property="og:site_name" content="RealCat">
-<meta property="og:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
+<meta property="og:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-08-26T15:07:55.773Z">
+<meta property="og:updated_time" content="2020-09-04T16:25:44.200Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="📝笔记：图解卡尔曼滤波">
-<meta name="twitter:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！ 本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。">
+<meta name="twitter:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/">
 
 
@@ -319,7 +319,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-26 23:07:55" itemprop="dateModified" datetime="2020-08-26T23:07:55+08:00">2020-08-26</time>
+                <time title="Modified: 2020-09-05 00:25:44" itemprop="dateModified" datetime="2020-09-05T00:25:44+08:00">2020-09-05</time>
               </span>
             
           
@@ -357,9 +357,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong>译者注</strong>：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！</p>
-<p>本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。</p>
+        <div class="note success">
+            <p><strong>译者注</strong>：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！</p>
+          </div>
 <a id="more"></a>
+<p>本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。</p>
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="关于滤波"><a href="#关于滤波" class="headerlink" title="关于滤波"></a>关于滤波</h3><p>首先援引来自知乎大神的解释。</p>
 <div class="note info">
             <p>一位专业课的教授给我们上课的时候，曾谈到：filtering is weighting（滤波即加权）。滤波的作用就是给不同的信号分量不同的权重。最简单的loss pass filter， 就是直接把低频的信号给1权重，而给高频部分0权重。对于更复杂的滤波，比如维纳滤波, 则要根据信号的统计知识来设计权重。</p><p>从统计信号处理的角度，降噪可以看成滤波的一种。降噪的目的在于突出信号本身而抑制噪声影响。从这个角度，降噪就是给信号一个高的权重而给噪声一个低的权重。维纳滤波就是一个典型的降噪滤波器。</p>

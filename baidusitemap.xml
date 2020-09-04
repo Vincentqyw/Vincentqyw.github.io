@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
+    <lastmod>2020-09-04</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
     <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/westlake/</loc>
@@ -17,12 +23,6 @@
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
-    <lastmod>2020-08-26</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
-    <lastmod>2020-08-26</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/redirect-arxiv/</loc>
