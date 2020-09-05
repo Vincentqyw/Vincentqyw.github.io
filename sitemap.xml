@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/gms-matching/</loc>
+    
+    <lastmod>2020-09-05T17:47:40.817Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
+    
+    <lastmod>2020-09-05T17:43:27.248Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
     
-    <lastmod>2020-09-04T16:25:44.200Z</lastmod>
+    <lastmod>2020-09-05T17:19:38.496Z</lastmod>
     
   </url>
   
@@ -12,13 +26,6 @@
     <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
     
     <lastmod>2020-09-04T16:25:01.577Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
-    
-    <lastmod>2020-09-04T16:23:28.631Z</lastmod>
     
   </url>
   
