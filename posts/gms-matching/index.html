@@ -59,18 +59,18 @@
   };
 </script>
 
-  <meta name="description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤出算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
+  <meta name="description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤除算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
 <meta name="keywords" content="SLAM,Matching,图像匹配,论文分享">
 <meta property="og:type" content="article">
 <meta property="og:title" content="📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/gms-matching/index.html">
 <meta property="og:site_name" content="RealCat">
-<meta property="og:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤出算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
+<meta property="og:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤除算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-09-06T08:08:43.351Z">
+<meta property="og:updated_time" content="2020-09-06T09:32:09.976Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法">
-<meta name="twitter:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤出算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
+<meta name="twitter:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤除算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/gms-matching/">
 
 
@@ -320,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-06 16:08:43" itemprop="dateModified" datetime="2020-09-06T16:08:43+08:00">2020-09-06</time>
+                <time title="Modified: 2020-09-06 17:32:09" itemprop="dateModified" datetime="2020-09-06T17:32:09+08:00">2020-09-06</time>
               </span>
             
           
@@ -359,7 +359,7 @@
 
       
         <div class="note default">
-            <p>今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的<code>GMS</code>，论文名是”<strong>GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence</strong>“。同之前介绍的外点滤出算法<code>AdaLAM</code>的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。</p>
+            <p>今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的<code>GMS</code>，论文名是”<strong>GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence</strong>“。同之前介绍的外点滤除算法<code>AdaLAM</code>的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。</p>
           </div>
 <p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-1.png"></p>
 <a id="more"></a>
@@ -388,7 +388,7 @@ S_{i}=\left\{c_{j} \mid c_{j} \in N_{i}, d\left(q_{i}, q_{j}\right)<r_{2}\right\
 <script type="math/tex; mode=display">\left|S_{i}\right| \sim\left\{\begin{array}{ll}
 B\left(\left|N_{i}\right|, t\right), & \text { if } c_{i} \text { is correct } \\
 B\left(\left|N_{i}\right|, \epsilon\right), & \text { if } c_{i} \text { is wrong }
-\end{array}\right.</script><p>其中$B(·,·)$表示二项分布，$\left|N_{i}\right|$表示邻域$c_{i}$内匹配对的数量，$t$和$\epsilon$分别表示正确/错误匹配被其某个邻域窗口匹配支持的概率。</p>
+\end{array}\right.</script><p>其中$B(·,·)$表示二项分布，$\left|N_{i}\right|$表示邻域$N_{i}$内匹配对的数量，$t$和$\epsilon$分别表示正确/错误匹配被其某个邻域窗口匹配支持的概率。</p>
 <p>进一步解释：$t$是受特征质量的控制，即接近匹配的正确率。$\epsilon$通常很小，因为错误匹配几乎随机分布在图像范围内。上式的期望为：</p>
 <script type="math/tex; mode=display">E_{\left|S_{i}\right|}=\left\{\begin{array}{ll}
 E_{t}=\left|N_{i}\right| \cdot t, & \text { if } c_{i} \text { is correct } \\
@@ -398,7 +398,7 @@ E_{f}=\left|N_{i}\right| \cdot \epsilon, & \text { if } c_{i} \text { is wrong }
 V_{t}=\left|N_{i}\right| \cdot t \cdot(1-t), & \text { if } c_{i} \text { is correct } \\
 V_{f}=\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon), & \text { if } c_{i} \text { is wrong }
 \end{array}\right.</script><p>于是真假匹配的可区分度被表示为如下形式（均值差异比方差之和）：</p>
-<script type="math/tex; mode=display">P=\frac{\left|E_{t}-E_{f}\right|}{\sqrt{V_{t}}+\sqrt{V_{f}}}=\frac{\left|N_{i}\right| \cdot(t-\epsilon)}{\sqrt{\left|N_{i}\right| \cdot t \cdot(1-t)}+\sqrt{\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon)}}</script><p>上式告诉我们$P \propto \sqrt{\left|N_{i}\right|}$，如果$\left|N_{i}\right| \rightarrow \infty$时$P \rightarrow \infty$。也就是说，<strong>当图像中的匹配点越多，此时正确与错误匹配的可区分度就越强</strong>！同时，即使是在$t$比$\epsilon$稍微大一丁点的情况下，也可以通过增多特征点的数量来弥补正确匹配与错误匹配区分程度不足的缺点；当然，也可以通过提高特征质量$t$来增加正确/错误匹配之间的区分度。</p>
+<script type="math/tex; mode=display">P=\frac{\left|E_{t}-E_{f}\right|}{\sqrt{V_{t}}+\sqrt{V_{f}}}=\frac{\left|N_{i}\right| \cdot(t-\epsilon)}{\sqrt{\left|N_{i}\right| \cdot t \cdot(1-t)}+\sqrt{\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon)}}</script><p>上式告诉我们$P \propto \sqrt{\left|N_{i}\right|}$，如果$\left|N_{i}\right| \rightarrow \infty$时，$P \rightarrow \infty$。也就是说，<strong>当图像中的匹配点越多，此时正确与错误匹配的可区分度就越强</strong>！同时，即使是在$t$比$\epsilon$稍微大一丁点的情况下，也可以通过增多特征点的数量来弥补正确匹配与错误匹配区分程度不足的缺点；当然，也可以通过提高特征质量$t$来增加正确/错误匹配之间的区分度。</p>
 <p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-6.png"></p>
 <p>上图展示了作者在Oxford Affine Dataset上验证模型合理性的示意图。利用SIFT特征进行匹配，根据真值标记出正确以及错误匹配。统计每个匹配所在小邻域内的匹配数量。可以发现，正确匹配的支持域得分明显高于错误匹配，即使在非常困难的匹配序列上，该现象仍然存在。</p>
 <p>因此，可通过对$\left|S_{i}\right|$设置阈值来判定$c_{i}$是正确或者错误匹配：</p>
@@ -411,7 +411,7 @@ V_{f}=\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon), & \text { if } c_{i} 
 <p>看到这里，大家肯定有一个疑问：如何高效地实现上述算法呢？难道对每一个匹配画个圈圈，然后统计圈圈内的匹配数？当然不是，本文设计了一种基于划分网格的算法对上述算法进行加速。将两幅图像划分为多个不重合的网格：$\mathcal{G}_{1}$以及$\mathcal{G}_{2}$，$c_{i}$表示为落到网格$G_a$和$G_b$中的一个匹配对，如上图中的一个红线段。于是邻域（表示在网格网格$G_a$中的匹配）被重新定义为：</p>
 <script type="math/tex; mode=display">N_{i}=\left\{c_{j} \mid c_{j} \in C_{a}, c_{i} \neq c_{j}\right\},</script><p>相似邻域被重新定义为：</p>
 <script type="math/tex; mode=display">S_{i}=\left\{c_{j} \mid c_{j} \in C_{a b}, c_{i} \neq c_{j}\right\},</script><p>上面的两个式子中，$G_{a}$表示某个网格，$C_{a}$表示落在$G_{a}$中的匹配对，$C_{ab}$表示同时落在$G_{a}$和$G_{b}$中的匹配对。换句话说，本文将落在同一个网格中的匹配当作<strong>邻域</strong>，将同时落在两个网格中的匹配称为<strong>相似邻域</strong>，即<code>cell-pair</code>。</p>
-<p>注意：一个<code>cell-pair</code>中的匹配满足运动平滑性假设，所以在判断匹配关系是正确还是错误时，仅需要一个<code>cell-pair</code>中的所有匹配是否正确即可，无需逐个匹配判断。此外，不需要确定所有可能的<code>cell-pair</code>，而是只检查与第一个图像网格匹配数量最多的一个<code>cell-pair</code>即可。</p>
+<p>注意：一个<code>cell-pair</code>中的匹配满足运动平滑性假设，所以在判断匹配关系是正确还是错误时，仅需要判定一个<code>cell-pair</code>中的所有匹配是否正确即可，无需逐个匹配判断。此外，不需要确定所有可能的<code>cell-pair</code>，而是只检查与第一个图像网格匹配数量最多的一个<code>cell-pair</code>即可。</p>
 <h3 id="运动核"><a href="#运动核" class="headerlink" title="运动核"></a>运动核</h3><p>如果网格很小，则很少邻域信息将被考虑， 这会降低算法性能。 但是，如果网格很大，则将包括更多不正确的对应关系。为解决这个矛盾，我们将网格大小设置为较小以提高准确性，并提出运动内核以考虑更多邻域信息。</p>
 <p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-4.png"></p>
 <p>考虑了原有网格邻域的8个网格，构成一个更大的网格$\left(C_{a^{1} b^{1}}, \ldots, C_{a^{9} b^{9}}\right)$。</p>
