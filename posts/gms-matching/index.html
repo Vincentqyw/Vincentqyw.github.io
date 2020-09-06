@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤出算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-09-05T17:51:18.584Z">
+<meta property="og:updated_time" content="2020-09-06T08:08:43.351Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法">
 <meta name="twitter:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是”GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence“。同之前介绍的外点滤出算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
@@ -320,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-06 01:51:18" itemprop="dateModified" datetime="2020-09-06T01:51:18+08:00">2020-09-06</time>
+                <time title="Modified: 2020-09-06 16:08:43" itemprop="dateModified" datetime="2020-09-06T16:08:43+08:00">2020-09-06</time>
               </span>
             
           
@@ -363,10 +363,10 @@
           </div>
 <p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-1.png"></p>
 <a id="more"></a>
-<p>(a)图是ORB+Lowe Ratio的结果，有很多错误的匹配；(b)图是ORB+Lowe Ratio+GMS的结果，匹配效果明显变好。</p>
-<p>首先祭出代码：</p>
+<p>(a)图是ORB+Lowe Ratio的结果，有很多错误的匹配；(b)图是ORB+Lowe Ratio+GMS的结果，匹配效果明显变好。<br>首先祭出<strong>代码Repo</strong>：</p>
 <p><a href="https://github.com/JiawangBian/GMS-Feature-Matcher" target="_blank" rel="noopener"><img alt="ReadMe Card" data-src="https://github-readme-stats.vercel.app/api/pin/?username=JiawangBian&amp;repo=GMS-Feature-Matcher&amp;show_owner=false&amp;theme=default"></a> </p>
-<h2 id="原有技术问题"><a href="#原有技术问题" class="headerlink" title="原有技术问题"></a>原有技术问题</h2><h2 id="新技术创新点"><a href="#新技术创新点" class="headerlink" title="新技术创新点"></a>新技术创新点</h2><ol>
+<h2 id="原有技术问题"><a href="#原有技术问题" class="headerlink" title="原有技术问题"></a>原有技术问题</h2><p>原有算法复杂，为了达到好的效果，设计的算法比较复杂，导致运行速度慢，性价比低，无法部署在实时性要求较高的系统中。</p>
+<h2 id="新技术创新点"><a href="#新技术创新点" class="headerlink" title="新技术创新点"></a>新技术创新点</h2><ol>
 <li>将运动平滑约束转换为剔除错误匹配的统计量，实验证明该算法能够应对较为棘手的场景；</li>
 <li>提出了一种高效的基于网格的得分估计器，使得该算法能够用于实时特征匹配；</li>
 <li>能够取得比Lowe Ratio更好的特征匹配筛选效果，该结论已经在传统特征如SIFT，SURF以及CNN特征如LIFT上得到验证；</li>
@@ -389,8 +389,7 @@ S_{i}=\left\{c_{j} \mid c_{j} \in N_{i}, d\left(q_{i}, q_{j}\right)<r_{2}\right\
 B\left(\left|N_{i}\right|, t\right), & \text { if } c_{i} \text { is correct } \\
 B\left(\left|N_{i}\right|, \epsilon\right), & \text { if } c_{i} \text { is wrong }
 \end{array}\right.</script><p>其中$B(·,·)$表示二项分布，$\left|N_{i}\right|$表示邻域$c_{i}$内匹配对的数量，$t$和$\epsilon$分别表示正确/错误匹配被其某个邻域窗口匹配支持的概率。</p>
-<p>进一步解释：$t$是受特征质量的控制，即接近匹配的正确率。$\epsilon$通常很小，因为错误匹配几乎随机分布在图像范围内。请注意，在视觉相似但地理位置不同的区域，例如重复结构，它会更大</p>
-<p>上式的期望为：</p>
+<p>进一步解释：$t$是受特征质量的控制，即接近匹配的正确率。$\epsilon$通常很小，因为错误匹配几乎随机分布在图像范围内。上式的期望为：</p>
 <script type="math/tex; mode=display">E_{\left|S_{i}\right|}=\left\{\begin{array}{ll}
 E_{t}=\left|N_{i}\right| \cdot t, & \text { if } c_{i} \text { is correct } \\
 E_{f}=\left|N_{i}\right| \cdot \epsilon, & \text { if } c_{i} \text { is wrong }
@@ -400,6 +399,8 @@ V_{t}=\left|N_{i}\right| \cdot t \cdot(1-t), & \text { if } c_{i} \text { is cor
 V_{f}=\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon), & \text { if } c_{i} \text { is wrong }
 \end{array}\right.</script><p>于是真假匹配的可区分度被表示为如下形式（均值差异比方差之和）：</p>
 <script type="math/tex; mode=display">P=\frac{\left|E_{t}-E_{f}\right|}{\sqrt{V_{t}}+\sqrt{V_{f}}}=\frac{\left|N_{i}\right| \cdot(t-\epsilon)}{\sqrt{\left|N_{i}\right| \cdot t \cdot(1-t)}+\sqrt{\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon)}}</script><p>上式告诉我们$P \propto \sqrt{\left|N_{i}\right|}$，如果$\left|N_{i}\right| \rightarrow \infty$时$P \rightarrow \infty$。也就是说，<strong>当图像中的匹配点越多，此时正确与错误匹配的可区分度就越强</strong>！同时，即使是在$t$比$\epsilon$稍微大一丁点的情况下，也可以通过增多特征点的数量来弥补正确匹配与错误匹配区分程度不足的缺点；当然，也可以通过提高特征质量$t$来增加正确/错误匹配之间的区分度。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-6.png"></p>
+<p>上图展示了作者在Oxford Affine Dataset上验证模型合理性的示意图。利用SIFT特征进行匹配，根据真值标记出正确以及错误匹配。统计每个匹配所在小邻域内的匹配数量。可以发现，正确匹配的支持域得分明显高于错误匹配，即使在非常困难的匹配序列上，该现象仍然存在。</p>
 <p>因此，可通过对$\left|S_{i}\right|$设置阈值来判定$c_{i}$是正确或者错误匹配：</p>
 <script type="math/tex; mode=display">c_{i} \in\left\{\begin{array}{ll}
 \mathcal{T}, & \text { if }\left|S_{i}\right|>\tau_{i} \\
@@ -407,20 +408,45 @@ V_{f}=\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon), & \text { if } c_{i} 
 \end{array}\right.</script><p>上式中，$\mathcal{T}$以及$\mathcal{F}$分别表示正确/错误匹配集合，$\tau_{i}$的阈值被设置为：</p>
 <script type="math/tex; mode=display">\tau_{i}=\alpha \sqrt{\left|N_{i}\right|}</script><p>其中$\alpha$为超参数，经验值为4~6。</p>
 <h3 id="基于网格的框架"><a href="#基于网格的框架" class="headerlink" title="基于网格的框架"></a>基于网格的框架</h3><p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-3.png"></p>
-<p>本文设计了一种基于划分网格的算法对上述算法进行加速。将两幅图像划分为多个不重合的网格：$\mathcal{G}_{1}$以及$\mathcal{G}_{2}$，$c_{i}$表示为落到网格$G_a$和$G_b$中的一个匹配对，如上图中的一个红线段。于是邻域被重新定义为：</p>
+<p>看到这里，大家肯定有一个疑问：如何高效地实现上述算法呢？难道对每一个匹配画个圈圈，然后统计圈圈内的匹配数？当然不是，本文设计了一种基于划分网格的算法对上述算法进行加速。将两幅图像划分为多个不重合的网格：$\mathcal{G}_{1}$以及$\mathcal{G}_{2}$，$c_{i}$表示为落到网格$G_a$和$G_b$中的一个匹配对，如上图中的一个红线段。于是邻域（表示在网格网格$G_a$中的匹配）被重新定义为：</p>
 <script type="math/tex; mode=display">N_{i}=\left\{c_{j} \mid c_{j} \in C_{a}, c_{i} \neq c_{j}\right\},</script><p>相似邻域被重新定义为：</p>
-<script type="math/tex; mode=display">S_{i}=\left\{c_{j} \mid c_{j} \in C_{a b}, c_{i} \neq c_{j}\right\},</script><p>上面的两个式子中，$G_{a}$表示某个网格，$C_{a}$表示落在$G_{a}$中的匹配对，$C_{ab}$表示同时落在$G_{a}$和$G_{b}$中的匹配对。换句话说，本文将落在同一个网格中的匹配当作<strong>邻域</strong>，将同时落在两个网格中的匹配称为<strong>相似邻域</strong>。</p>
-<p>TBD.</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>TBD.</p>
+<script type="math/tex; mode=display">S_{i}=\left\{c_{j} \mid c_{j} \in C_{a b}, c_{i} \neq c_{j}\right\},</script><p>上面的两个式子中，$G_{a}$表示某个网格，$C_{a}$表示落在$G_{a}$中的匹配对，$C_{ab}$表示同时落在$G_{a}$和$G_{b}$中的匹配对。换句话说，本文将落在同一个网格中的匹配当作<strong>邻域</strong>，将同时落在两个网格中的匹配称为<strong>相似邻域</strong>，即<code>cell-pair</code>。</p>
+<p>注意：一个<code>cell-pair</code>中的匹配满足运动平滑性假设，所以在判断匹配关系是正确还是错误时，仅需要一个<code>cell-pair</code>中的所有匹配是否正确即可，无需逐个匹配判断。此外，不需要确定所有可能的<code>cell-pair</code>，而是只检查与第一个图像网格匹配数量最多的一个<code>cell-pair</code>即可。</p>
+<h3 id="运动核"><a href="#运动核" class="headerlink" title="运动核"></a>运动核</h3><p>如果网格很小，则很少邻域信息将被考虑， 这会降低算法性能。 但是，如果网格很大，则将包括更多不正确的对应关系。为解决这个矛盾，我们将网格大小设置为较小以提高准确性，并提出运动内核以考虑更多邻域信息。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-4.png"></p>
+<p>考虑了原有网格邻域的8个网格，构成一个更大的网格$\left(C_{a^{1} b^{1}}, \ldots, C_{a^{9} b^{9}}\right)$。</p>
+<p>于是我们从新定义了邻域：</p>
+<script type="math/tex; mode=display">N_{i}=\left\{c_{j} \mid c_{j} \in C_{A}, c_{i} \neq c_{j}\right\}</script><p>其中$C_{A}=C_{a^{1}} \cup C_{a^{2}} \cup C_{a^{3}} \ldots \cup C_{a^{9}}$；<br>重新定义相似邻域：</p>
+<script type="math/tex; mode=display">S_{i}=\left\{c_{j} \mid c_{j} \in C_{A B}, c_{i} \neq c_{j}\right\}</script><p>其中：$C_{A B}=C_{a^{1} b^{1}} \cup C_{a^{2} b^{2}} \cup C_{a^{3} b^{3}} \ldots \cup C_{a^{9} b^{9}}$。</p>
+<h3 id="多尺度-多旋转"><a href="#多尺度-多旋转" class="headerlink" title="多尺度+多旋转"></a>多尺度+多旋转</h3><p>为了应对匹配过程中的尺度与旋转问题，本文提出了多尺度以及多旋转策略。</p>
+<h4 id="多尺度"><a href="#多尺度" class="headerlink" title="多尺度"></a>多尺度</h4><p>固定一个图像网格，假设网格大小为$n \times n$，改变另一个图像的网格大小为$(n \cdot \alpha) \times(n \cdot \alpha)$，其中有5个候选的$\alpha$取值，分别为$\left\{\frac{1}{2}, \frac{\sqrt{2}}{2}, 1, \sqrt{2}, 2\right\}$。<br>在不同尺度的网格上运行GMS算法，然后统计最好的匹配结果。如果场景的尺度发生较大改变，此时可以设置更多的候选值或者增大$\alpha$。</p>
+<h4 id="多旋转"><a href="#多旋转" class="headerlink" title="多旋转"></a>多旋转</h4><p>利用旋转运动核模拟不同方向的旋转，如下图所示，固定$C_A$，对$C_B$按照顺时针旋转，这样可以得到8个运动核。然后利用GMS算法在所有的运动核上，然后选择最好的结果（选择匹配数量最多那个）。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-5.png"></p>
+<h3 id="伪代码"><a href="#伪代码" class="headerlink" title="伪代码"></a>伪代码</h3><p>综上，算法伪代码如下：</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/algorithm-1.png"></p>
+<h3 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h3><ol>
+<li>首先，算法假设图像运动是分段平滑的时，在违反假设的区域，例如图像边界，性能可能退化；</li>
+<li>其次，在视觉上相似但空间位置不同的图像区域，算法性能受到限制。此问题通常发生在具有大量重复纹理的场景中；</li>
+<li>最后，由于算法使用了网格化对图像进行处理，算法判定正确的匹配网格中仍然存在不准确匹配。</li>
+</ol>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="旋转以及尺度变化"><a href="#旋转以及尺度变化" class="headerlink" title="旋转以及尺度变化"></a>旋转以及尺度变化</h3><p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-7.png"></p>
+<h3 id="高精确率与召回率"><a href="#高精确率与召回率" class="headerlink" title="高精确率与召回率"></a>高精确率与召回率</h3><p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-8.png"></p>
+<h3 id="算法快速"><a href="#算法快速" class="headerlink" title="算法快速"></a>算法快速</h3><p>GMS能够在PC端速度2ms，multi-scale(GMS-S)以及multi-rotation(GMS-R)会增加一定的耗时。<br><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-11.png"></p>
+<h3 id="高效解算位姿"><a href="#高效解算位姿" class="headerlink" title="高效解算位姿"></a>高效解算位姿</h3><p>求解位姿速度快，且位姿精确。<br><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/fig-10.png"></p>
+<h3 id="有利于SLAM初始化"><a href="#有利于SLAM初始化" class="headerlink" title="有利于SLAM初始化"></a>有利于SLAM初始化</h3><p>集成到SLAM也可获得较好的结果（该实验不够充分，仅测试了将GMS集成到SLAM初始化的阶段，为了展示GMS能够更快/更好的进行初始化，同时能够产生较多的地图点）。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/table-6.png"></p>
 <h2 id="借鉴意义"><a href="#借鉴意义" class="headerlink" title="借鉴意义"></a>借鉴意义</h2><ol>
-<li>本文提供了一种高效/快速的外点滤除算法，能够在PC端实现实现实时过滤速度；</li>
+<li>本文提供了一种高效/快速的外点滤除算法，能够在PC端实现实现实时滤除外点；</li>
 <li>本算法已经被集成到OpenCV中，接口名为<code>matchGMS()</code>，可直接调用；</li>
 <li>本算法可用于SLAM/SFM等领域，可提高位姿解算的精度以及速度；</li>
-<li>TBD</li>
+<li>（局限）本算法需要提取较多的特征点以提高正确匹配与错误匹配的可区分度，若特征匹配较少；该算法性能会有一定下降；</li>
+<li>（局限）由于仅统计特征匹配数量，在重复纹理条件下该算法的性能也会下降；</li>
 </ol>
 <h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><ol>
 <li>项目地址：<a href="http://jwbian.net/gms" target="_blank" rel="noopener">http://jwbian.net/gms</a></li>
-<li>TBD</li>
+<li>论文：<a href="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/gms-matching-CVPR2017.pdf" target="_blank" rel="noopener">CVPR 2017</a>，<a href="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/gms-matching-IJCV2020.pdf" target="_blank" rel="noopener">IJCV 2020</a></li>
+<li>讲义：<a href="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/gms-matching/gms-matching-slides.pdf" target="_blank" rel="noopener">稳定的图像特征匹配以及快速的GMS方案</a></li>
+<li>视频资料：<a href="https://www.bilibili.com/video/BV1Yx411h7Fe" target="_blank" rel="noopener">Bilibili</a>，<a href="https://www.youtube.com/watch?v=3SlBqspLbxI&amp;feature=youtu.be" target="_blank" rel="noopener">Youtube</a></li>
 </ol>
 
     </div>
@@ -529,7 +555,7 @@ V_{f}=\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon), & \text { if } c_{i} 
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原有技术问题"><span class="nav-number">1.</span> <span class="nav-text">原有技术问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新技术创新点"><span class="nav-number">2.</span> <span class="nav-text">新技术创新点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新技术主要框架以及关键技术点"><span class="nav-number">3.</span> <span class="nav-text">新技术主要框架以及关键技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运动统计"><span class="nav-number">3.1.</span> <span class="nav-text">运动统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于网格的框架"><span class="nav-number">3.2.</span> <span class="nav-text">基于网格的框架</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#借鉴意义"><span class="nav-number">5.</span> <span class="nav-text">借鉴意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原有技术问题"><span class="nav-number">1.</span> <span class="nav-text">原有技术问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新技术创新点"><span class="nav-number">2.</span> <span class="nav-text">新技术创新点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新技术主要框架以及关键技术点"><span class="nav-number">3.</span> <span class="nav-text">新技术主要框架以及关键技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运动统计"><span class="nav-number">3.1.</span> <span class="nav-text">运动统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于网格的框架"><span class="nav-number">3.2.</span> <span class="nav-text">基于网格的框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运动核"><span class="nav-number">3.3.</span> <span class="nav-text">运动核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多尺度-多旋转"><span class="nav-number">3.4.</span> <span class="nav-text">多尺度+多旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#多尺度"><span class="nav-number">3.4.1.</span> <span class="nav-text">多尺度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多旋转"><span class="nav-number">3.4.2.</span> <span class="nav-text">多旋转</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伪代码"><span class="nav-number">3.5.</span> <span class="nav-text">伪代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局限性"><span class="nav-number">3.6.</span> <span class="nav-text">局限性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#旋转以及尺度变化"><span class="nav-number">4.1.</span> <span class="nav-text">旋转以及尺度变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高精确率与召回率"><span class="nav-number">4.2.</span> <span class="nav-text">高精确率与召回率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法快速"><span class="nav-number">4.3.</span> <span class="nav-text">算法快速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高效解算位姿"><span class="nav-number">4.4.</span> <span class="nav-text">高效解算位姿</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有利于SLAM初始化"><span class="nav-number">4.5.</span> <span class="nav-text">有利于SLAM初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#借鉴意义"><span class="nav-number">5.</span> <span class="nav-text">借鉴意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
