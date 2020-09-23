@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/superglue/</loc>
+    
+    <lastmod>2020-09-23T14:39:03.338Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/adalam/</loc>
     
     <lastmod>2020-09-07T15:09:12.678Z</lastmod>
@@ -61,13 +68,6 @@
     <loc>https://www.vincentqin.tech/posts/superpoint/</loc>
     
     <lastmod>2020-08-26T15:10:19.746Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/superglue/</loc>
-    
-    <lastmod>2020-08-26T15:09:06.818Z</lastmod>
     
   </url>
   
