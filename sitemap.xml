@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
+    
+    <lastmod>2020-09-24T16:32:34.090Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
     
     <lastmod>2020-09-23T14:39:03.338Z</lastmod>
@@ -96,13 +103,6 @@
     <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
     
     <lastmod>2020-08-26T14:51:50.439Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
-    
-    <lastmod>2020-08-26T14:36:06.029Z</lastmod>
     
   </url>
   
