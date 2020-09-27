@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/slam-common-issues-SVD/</loc>
+    
+    <lastmod>2020-09-27T16:41:49.083Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
     
     <lastmod>2020-09-24T16:32:34.090Z</lastmod>
@@ -215,13 +222,6 @@
     <loc>https://www.vincentqin.tech/posts/slam/</loc>
     
     <lastmod>2020-03-31T14:59:59.921Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/slam-common-issues-SVD/</loc>
-    
-    <lastmod>2020-03-31T14:57:52.667Z</lastmod>
     
   </url>
   
