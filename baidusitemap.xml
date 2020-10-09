@@ -2,7 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-SVD/</loc>
-    <lastmod>2020-09-27</lastmod>
+    <lastmod>2020-10-09</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
+    <lastmod>2020-10-09</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/build-a-website-using-hexo/</loc>
     <lastmod>2020-09-24</lastmod>
@@ -41,9 +44,6 @@
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/orb-slam3/</loc>
-    <lastmod>2020-08-26</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/manage-pc-hosts/</loc>
     <lastmod>2020-08-26</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/news/</loc>

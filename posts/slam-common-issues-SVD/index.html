@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="SVD分解就是一种矩阵拆解术，它能够把任意矩阵$A \in \mathbb{R}^{m \times n}$拆解成3个矩阵的乘积形式，即：  A = U \Sigma V^T其中，$U \in \mathbb{R}^{m \times m}$，$V \in \mathbb{R}^{n \times n}$都是正交矩阵，即列向量是正交的单位向量，$\Sigma \in \mathbb{R}^{m \">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-09-27T16:41:49.083Z">
+<meta property="og:updated_time" content="2020-10-09T12:29:51.532Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SLAM常见问题(五)：Singular Value Decomposition（SVD）分解">
 <meta name="twitter:description" content="SVD分解就是一种矩阵拆解术，它能够把任意矩阵$A \in \mathbb{R}^{m \times n}$拆解成3个矩阵的乘积形式，即：  A = U \Sigma V^T其中，$U \in \mathbb{R}^{m \times m}$，$V \in \mathbb{R}^{n \times n}$都是正交矩阵，即列向量是正交的单位向量，$\Sigma \in \mathbb{R}^{m \">
@@ -129,7 +129,7 @@
   </style>
 </noscript>
 
-<script src="/assets/js/DPlayer.min.js"></script><link rel="stylesheet" type="text/css" href="/assets/css/DPlayer.min.css"></head>
+<link rel="stylesheet" type="text/css" href="/assets/css/DPlayer.min.css"><script src="/assets/js/DPlayer.min.js"></script></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
   <div class="container">
@@ -320,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-28 00:41:49" itemprop="dateModified" datetime="2020-09-28T00:41:49+08:00">2020-09-28</time>
+                <time title="Modified: 2020-10-09 20:29:51" itemprop="dateModified" datetime="2020-10-09T20:29:51+08:00">2020-10-09</time>
               </span>
             
           
@@ -369,7 +369,7 @@ A = U \Sigma V^T</script><p>其中，$U \in \mathbb{R}^{m \times m}$，$V \in \m
 <h2 id="计算-A-TA"><a href="#计算-A-TA" class="headerlink" title="计算 $A^TA$"></a>计算 $A^TA$</h2><script type="math/tex; mode=display">
 A^TA = (U \Sigma V^T)^TU \Sigma V^T = V{\Sigma}^TU^TU \Sigma V^T = V{\Sigma}^T \Sigma V^T</script><p>可见，$V$正是矩阵$A^TA$的特征向量，而${\Sigma}^T \Sigma $为矩阵$A^TA$的特征值。</p>
 <h2 id="计算-AA-T"><a href="#计算-AA-T" class="headerlink" title="计算 $AA^T$"></a>计算 $AA^T$</h2><script type="math/tex; mode=display">
-AA^T = U \Sigma V^T(U \Sigma V^T)^T = U \Sigma V^TV{\Sigma}^TU^TU \Sigma V^T = U{\Sigma}^T \Sigma U^T</script><p>可见，$U$正是矩阵$AA^T$的特征向量，而${\Sigma}^T \Sigma $为矩阵$A^TA$的特征值。</p>
+AA^T = U \Sigma V^T(U \Sigma V^T)^T = U \Sigma V^TV{\Sigma}^TU^T = U\Sigma {\Sigma}^T  U^T</script><p>可见，$U$正是矩阵$AA^T$的特征向量，而$\Sigma {\Sigma}^T  $为矩阵$AA^T$的特征值。</p>
 <p>所以$U, \Sigma, V$都可以通过上述方式来计算。</p>
 <h2 id="降维"><a href="#降维" class="headerlink" title="降维"></a>降维</h2><script type="math/tex; mode=display">
 \Sigma = 
