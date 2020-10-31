@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</loc>
+    <lastmod>2020-10-31</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
+    <lastmod>2020-10-31</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    <lastmod>2020-10-31</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/cvpr-2020-image-matching/</loc>
+    <lastmod>2020-10-31</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/gms-matching/</loc>
+    <lastmod>2020-10-31</lastmod>
+  </url>  <url>
+    <loc>https://www.vincentqin.tech/posts/cvpr-2020-localization/</loc>
+    <lastmod>2020-10-31</lastmod>
+  </url>  <url>
     <loc>https://www.vincentqin.tech/posts/colmap/</loc>
     <lastmod>2020-10-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/realcat-mango/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/slam-common-issues-SVD/</loc>
     <lastmod>2020-10-09</lastmod>
@@ -19,20 +37,8 @@
     <loc>https://www.vincentqin.tech/posts/superglue/</loc>
     <lastmod>2020-09-23</lastmod>
   </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
-    <lastmod>2020-09-07</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/gms-matching/</loc>
-    <lastmod>2020-09-06</lastmod>
-  </url>  <url>
     <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
     <lastmod>2020-09-05</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
-    <lastmod>2020-09-05</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
-    <lastmod>2020-09-04</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/westlake/</loc>
     <lastmod>2020-08-30</lastmod>
@@ -98,9 +104,6 @@
     <lastmod>2020-03-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/first-black-hole/</loc>
-    <lastmod>2020-03-31</lastmod>
-  </url>  <url>
-    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</loc>
     <lastmod>2020-03-31</lastmod>
   </url>  <url>
     <loc>https://www.vincentqin.tech/posts/CNN-Architectures/</loc>

@@ -2,16 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</loc>
+    
+    <lastmod>2020-10-31T10:23:54.551Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
+    
+    <lastmod>2020-10-31T10:23:07.771Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
+    
+    <lastmod>2020-10-31T10:22:59.193Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/cvpr-2020-image-matching/</loc>
+    
+    <lastmod>2020-10-31T10:22:52.352Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/gms-matching/</loc>
+    
+    <lastmod>2020-10-31T10:22:42.027Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.vincentqin.tech/posts/cvpr-2020-localization/</loc>
+    
+    <lastmod>2020-10-31T10:22:32.221Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.vincentqin.tech/posts/colmap/</loc>
     
-    <lastmod>2020-10-31T08:37:40.655Z</lastmod>
+    <lastmod>2020-10-31T10:14:30.732Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://www.vincentqin.tech/posts/realcat-mango/</loc>
     
-    <lastmod>2020-10-11T14:34:31.706Z</lastmod>
+    <lastmod>2020-10-31T09:45:17.587Z</lastmod>
     
   </url>
   
@@ -44,37 +86,9 @@
   </url>
   
   <url>
-    <loc>https://www.vincentqin.tech/posts/adalam/</loc>
-    
-    <lastmod>2020-09-07T15:09:12.678Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/gms-matching/</loc>
-    
-    <lastmod>2020-09-06T09:32:09.976Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://www.vincentqin.tech/posts/awesome-works/</loc>
     
     <lastmod>2020-09-05T17:43:27.248Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</loc>
-    
-    <lastmod>2020-09-05T17:19:38.496Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</loc>
-    
-    <lastmod>2020-09-04T16:25:01.577Z</lastmod>
     
   </url>
   
@@ -250,13 +264,6 @@
     <loc>https://www.vincentqin.tech/posts/first-black-hole/</loc>
     
     <lastmod>2020-03-31T14:55:18.422Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/</loc>
-    
-    <lastmod>2020-03-31T14:55:07.220Z</lastmod>
     
   </url>
   

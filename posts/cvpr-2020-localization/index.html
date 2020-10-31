@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <link rel="alternate" href="https://realcat.vercel.app/" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="本文介绍2020年CVPR视觉定位挑战赛的冠军方案。接下来会分别介绍什么是视觉定位挑战赛，比赛的难点是什么，冠军方案以及后续展望。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：CVPR 2020 视觉定位挑战赛冠军方案">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/cvpr-2020-localization/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文介绍2020年CVPR视觉定位挑战赛的冠军方案。接下来会分别介绍什么是视觉定位挑战赛，比赛的难点是什么，冠军方案以及后续展望。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-10-31T10:22:32.221Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="📝笔记：CVPR 2020 视觉定位挑战赛冠军方案">
+<meta name="twitter:description" content="本文介绍2020年CVPR视觉定位挑战赛的冠军方案。接下来会分别介绍什么是视觉定位挑战赛，比赛的难点是什么，冠军方案以及后续展望。">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/cvpr-2020-localization/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>📝笔记：CVPR 2020 视觉定位挑战赛冠军方案 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">60</span></a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">108</span></a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/cvpr-2020-localization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">📝笔记：CVPR 2020 视觉定位挑战赛冠军方案
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-10-31 16:47:04 / Modified: 18:22:32" itemprop="dateCreated datePublished" datetime="2020-10-31T16:47:04+08:00">2020-10-31</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+            <span id="/posts/cvpr-2020-localization/" class="post-meta-item leancloud_visitors" data-flag-title="📝笔记：CVPR 2020 视觉定位挑战赛冠军方案" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/cvpr-2020-localization/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/cvpr-2020-localization/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/teaser.jpg"></p>
+<div class="note info">
+            <p>本文介绍2020年CVPR视觉定位挑战赛的冠军方案。接下来会分别介绍什么是视觉定位挑战赛，比赛的难点是什么，冠军方案以及后续展望。</p>
+          </div>
+<a id="more"></a>
+<h2 id="关于视觉定位挑战赛"><a href="#关于视觉定位挑战赛" class="headerlink" title="关于视觉定位挑战赛"></a>关于视觉定位挑战赛</h2><p>视觉定位是一个估计6自由度（DoF）相机姿态的问题，从中获取一个给定的图像相对于一个参考场景表示。视觉定位是增强、混合和虚拟现实等应用以及机器人技术（如自动驾驶汽车）的关键技术。</p>
+<p>为了评估较长时间内的视觉定位，官方提供了基准数据集，旨在评估由季节（夏季、冬季、春季等）和照明（黎明、白天、日落、夜晚）条件变化引起的较大外观变化的6自由度姿态估计精度。每个数据集由一组参考图像及其相应的地面真实姿态和一组查询图像组成。官方为每个数据集提供一个三角化的三维模型，并可用于基于结构的定位方法。</p>
+<p>主页地址<sup><a href="#fn_1" id="reffn_1">1</a></sup>：<a href="https://www.visuallocalization.net/" target="_blank" rel="noopener">https://www.visuallocalization.net/</a></p>
+<h2 id="难点"><a href="#难点" class="headerlink" title="难点"></a>难点</h2><p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/challenge.png"></p>
+<p>上面官方已经介绍了，该比赛的难点就是如何在场景变化时进行定位。场景变化主要在光照变化以及视角变化等。对于光照变化带来的问题可以通过上图进行阐述。上图<sup><a href="#fn_10" id="reffn_10">10</a></sup>分别展示了三角化的3D模型（上）以及同一个场景但是在不同光照条件下拍摄的图像（下四图）。假如建图时的光照左下图，定位时为后续的三种光照，由于光照条件已经发生了较大的差改变，即使使用人眼仍需要仔细辨别才能判定这是同一个地点，但如何让计算机理解这是同一个地点同时计算出此时相机的位姿呢？这就是该比赛面对的一个难点。对于视角变化的难点在此不做赘述，各位同学可以查看数据集进行查看。</p>
+<p>数据集地址：<a href="https://www.visuallocalization.net/datasets/" target="_blank" rel="noopener">https://www.visuallocalization.net/datasets/</a></p>
+<h2 id="冠军方案"><a href="#冠军方案" class="headerlink" title="冠军方案"></a>冠军方案</h2><p>方案名称：Hierarchical Localization - SuperPoint + SuperGlue(简称，Hloc+SP+SG)<sup><a href="#fn_6" id="reffn_6">6</a></sup> <sup><a href="#fn_7" id="reffn_7">7</a></sup></p>
+<p>方案介绍：</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/hloc.jpg"></p>
+<blockquote>
+<p>Hierarchical Localization (<a href="https://arxiv.org/abs/1812.03506" target="_blank" rel="noopener">https://arxiv.org/abs/1812.03506</a>) with NetVLAD retrieval (trained on Pitts-30k, top 50), SuperPoint features (4096 keypoints, NMS radius 3, on 1024-pixel images), and SuperGlue matcher (outdoor model).</p>
+</blockquote>
+<p>本方案采用了分级定位(Hierarchical Localization)的方案，即先粗定位再细定位。该方案的主要特点在于特征匹配阶段使用了最近比较火的SuperPoint+SuperGlue(后续简称<strong>SP+SG</strong>)，这两个网络在之前有过介绍，当时只是提到了二者在大视角特征匹配时效果极佳。本方案的成功应用，可见这两个网络在该定位任务中也能发光发热。</p>
+<p>在官方提供的代码中给出了使用例程：<a href="https://github.com/cvg/Hierarchical-Localization/blob/master/pipeline_Aachen.ipynb" target="_blank" rel="noopener">https://github.com/cvg/Hierarchical-Localization/blob/master/pipeline_Aachen.ipynb</a></p>
+<h3 id="建图"><a href="#建图" class="headerlink" title="建图"></a>建图</h3><p>由于该比赛提供了已经用COLMAP+SIFT特征建好的模型（相机位姿以及地图点），本方案并不是使用<strong>SP+SG</strong>一股脑地对整个场景重新进行，否则时间消耗是巨大的。本方案使用了已经建好的模型提供的<strong>scene graph</strong>得到与当前帧共视最好的前20张图像，然后再去提取SP特征+SG进行匹配，得到2D-2D数据关联。接下来就是三角化，本方案沿用了COLMAP的三角化方案，只是位姿换成了官方模型的位姿，数据关联就是<strong>SP+SG</strong>提供的2D-2D关联，三角化输出是3D地图点。</p>
+<h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p>本阶段的目标是从上面建好地图中定位输入的图像对应相机的位姿。</p>
+<p>粗定位：NetVLAD<sup><a href="#fn_3" id="reffn_3">3</a></sup> <sup><a href="#fn_4" id="reffn_4">4</a></sup> retrieval (trained on Pitts-30k, top 50)</p>
+<p>细定位：SP+SG+RANSAC PnP</p>
+<p>下图<sup><a href="#fn_10" id="reffn_10">10</a></sup>展示了查询图像与地图中图像的匹配效果。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/localize-match.png"></p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/localize-depth.png"></p>
+<p>下图展示了根据Aachen Day-Night数据集建立的3D模型 (database (red), day-time query (green), night-time query images (blue))</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/aachen.png"></p>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>在上述数据集，不同定位阈值下的召回率排名如下图，本方案能够以较明显的优势取胜。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/cvpr-2020-slam/ranking.png"></p>
+<h2 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h2><p>上文主要对视觉定位挑战赛以及CVPR 2020的冠军方案进行了介绍。基于深度学习的相似图像召回，图像特征点匹配扮演了重要的角色。</p>
+<p>虽然目前方案能够获得较为出色的性能表现，但笔者认为定位性能仍然具有提升空间。例如，由于目前建图阶段并不考虑实时性，此时可以使用SP+SG对整个场景进行重建，这样可以弥补SIFT在大视角变化时无法应对的数据关联。此外，相似图像召回的方法不限于NetVLAD (CVPR 2016)，可以使用性能更好的算法如<sup><a href="#fn_5" id="reffn_5">5</a></sup> <sup><a href="#fn_9" id="reffn_9">9</a></sup> 中提到的方案。注意到Hloc使用的是分级定位的思想，这使得分模块实现变得比较轻松，例如上述改进方法；但值得思考的是这种“局部最优”拼凑起来的效果一定是“全局最优”吗？匹配做的好，位姿结算一定准确吗？后续的工作可以对此进行更多地讨论与研究（谷歌公布2020图像匹配挑战对该问题进行了较为详细的说明，建议阅读<sup><a href="#fn_8" id="reffn_8">8</a></sup>）。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote id="fn_1">
+<sup>1</sup>. 视觉定位挑战赛主页, <a href="https://www.visuallocalization.net" target="_blank" rel="noopener">https://www.visuallocalization.net</a><a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_2">
+<sup>2</sup>. From Coarse to Fine: Robust Hierarchical Localization at Large Scale, <a href="https://arxiv.org/abs/1812.03506" target="_blank" rel="noopener">https://arxiv.org/abs/1812.03506</a><a href="#reffn_2" title="Jump back to footnote [2] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_3">
+<sup>3</sup>. NetVLAD: CNN architecture for weakly supervised place recognition, <a href="http://xxx.itp.ac.cn/pdf/1511.07247v3" target="_blank" rel="noopener">http://xxx.itp.ac.cn/pdf/1511.07247v3</a><a href="#reffn_3" title="Jump back to footnote [3] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_4">
+<sup>4</sup>. Hloc+SP+SG方案中NetVLAD地址, <a href="https://github.com/uzh-rpg/netvlad_tf_open" target="_blank" rel="noopener">https://github.com/uzh-rpg/netvlad_tf_open</a><a href="#reffn_4" title="Jump back to footnote [4] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_5">
+<sup>5</sup>. 深度学习图像召回, <a href="https://github.com/almazan/deep-image-retrieval" target="_blank" rel="noopener">https://github.com/almazan/deep-image-retrieval</a><a href="#reffn_5" title="Jump back to footnote [5] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_6">
+<sup>6</sup>. Hloc+SP+SG方案代码, <a href="https://github.com/cvg/Hierarchical-Localization" target="_blank" rel="noopener">https://github.com/cvg/Hierarchical-Localization</a><a href="#reffn_6" title="Jump back to footnote [6] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_7">
+<sup>7</sup>. Hloc+SP+SG方案提交地址, <a href="https://www.visuallocalization.net/details/10931/" target="_blank" rel="noopener">https://www.visuallocalization.net/details/10931/</a><a href="#reffn_7" title="Jump back to footnote [7] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_8">
+<sup>8</sup>. 笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！<a href="https://vincentqin.tech/posts/2020-image-matching-cvpr/" target="_blank" rel="noopener">https://vincentqin.tech/posts/2020-image-matching-cvpr/</a><a href="#reffn_8" title="Jump back to footnote [8] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_9">
+<sup>9</sup>. A. Oertel, T. Cieslewski, D. Scaramuzza. <a href="http://rpg.ifi.uzh.ch/research_vo.html" target="_blank" rel="noopener">“Augmenting Visual Place Recognition with Structural Cues”</a>, IEEE Robotics and Automation Letters (RA-L), 2020.<a href="#reffn_9" title="Jump back to footnote [9] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_10">
+<sup>10</sup>. Sattler, Torsten, et al. <a href="https://arxiv.org/pdf/1707.09092.pdf" target="_blank" rel="noopener">“Benchmarking 6dof outdoor visual localization in changing conditions.”</a> Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2018.<a href="#reffn_10" title="Jump back to footnote [10] in the text."> &#8617;</a>
+</blockquote>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/wechat-qcode.gif"></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/cvpr-2020-localization/" title="📝笔记：CVPR 2020 视觉定位挑战赛冠军方案">https://www.vincentqin.tech/posts/cvpr-2020-localization/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/colmap/" rel="next" title="📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于视觉定位挑战赛"><span class="nav-number">1.</span> <span class="nav-text">关于视觉定位挑战赛</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#难点"><span class="nav-number">2.</span> <span class="nav-text">难点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#冠军方案"><span class="nav-number">3.</span> <span class="nav-text">冠军方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#建图"><span class="nav-number">3.1.</span> <span class="nav-text">建图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位"><span class="nav-number">3.2.</span> <span class="nav-text">定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结果"><span class="nav-number">3.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#展望"><span class="nav-number">4.</span> <span class="nav-text">展望</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="https://vincentqin.gitee.io/images/qin_small.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">108</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat &rarr; https://vincentqin.gitee.io/images/qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fa fa-fw fa-weixin"></i>Wechat</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn" title="http://xxx.itp.ac.cn" rel="noopener" target="_blank">arxiv</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http://arxiv-sanity.com/" rel="noopener" target="_blank">arxiv-sanity</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http://openaccess.thecvf.com/menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http://www.wangpengan.com/" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://erenship.com/" title="https://erenship.com/" rel="noopener" target="_blank">Eren</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      常用链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://realcat.avosapps.us" title="https://realcat.avosapps.us" rel="noopener" target="_blank">评论管理</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https://gitee.com/vincentqin/vincentqin" rel="noopener" target="_blank">网站源码</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://xyz.realcat.icu:65432" title="http://xyz.realcat.icu:65432" rel="noopener" target="_blank">不可描述</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https://www.notion.so/realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+  <div class="feed-link motion-element">
+    <a href="https://realcat.vercel.app/" rel="alternate">
+       <i class="fa fa-home"></i>Homepage Backup
+    </a>
+  </div>
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+<script src="/js/utils.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: '建议在上方留下昵称和邮箱信息，以便收到回复。',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    serverURLs: 'https://e2yzant8.api.lncldglobal.com'
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+
+</body>
+</html>
