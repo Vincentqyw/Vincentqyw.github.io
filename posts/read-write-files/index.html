@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="RealCat" type="application/atom+xml">
+  <link rel="alternate" href="https://realcat.vercel.app/" title="RealCat" type="application/atom+xml">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":false,"style":"flat"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":10,"unescape":true,"preload":true},
+    path: 'search.xml',
+    motion: {"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="近期本人工作中频繁用到跨语言文本读写，本文结合实例介绍使用$\mathbf{Matlab}/\mathbf{Python}/\mathbf{C++}$读写文件的常规操作，以便后续查阅。">
+<meta name="keywords" content="Matlab,小工具,Python,c++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：读写文本常用操作">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/read-write-files/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="近期本人工作中频繁用到跨语言文本读写，本文结合实例介绍使用$\mathbf{Matlab}/\mathbf{Python}/\mathbf{C++}$读写文件的常规操作，以便后续查阅。">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-12-20T16:32:12.070Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="📝笔记：读写文本常用操作">
+<meta name="twitter:description" content="近期本人工作中频繁用到跨语言文本读写，本文结合实例介绍使用$\mathbf{Matlab}/\mathbf{Python}/\mathbf{C++}$读写文件的常规操作，以便后续查阅。">
+  <link rel="canonical" href="https://www.vincentqin.tech/posts/read-write-files/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>📝笔记：读写文本常用操作 | RealCat</title>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
+  <script>
+    var host = window.location.hostname;
+    if (host !== "localhost" || !true) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-97856334-1');
+    }
+  </script>
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">RealCat</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Turn on, Tune in, Drop out</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">61</span></a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">111</span></a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories<span class="badge">13</span></a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-collections">
+      
+    
+      
+    
+
+    <a href="/collections" rel="section"><i class="menu-item-icon fa fa-fw fa-diamond"></i> <br>Collections</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-top">
+      
+    
+      
+    
+
+    <a href="/top/" rel="section"><i class="menu-item-icon fa fa-fw fa-signal"></i> <br>Top</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-guest_comments">
+      
+    
+      
+    
+
+    <a href="/guestbook" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/read-write-files/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Vincent Qin">
+      <meta itemprop="description" content="Keep Your Curiosity">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">📝笔记：读写文本常用操作
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2020-12-19 21:28:01" itemprop="dateCreated datePublished" datetime="2020-12-19T21:28:01+08:00">2020-12-19</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-12-21 00:32:12" itemprop="dateModified" datetime="2020-12-21T00:32:12+08:00">2020-12-21</time>
+              </span>
+            
+          
+
+          
+            <span id="/posts/read-write-files/" class="post-meta-item leancloud_visitors" data-flag-title="📝笔记：读写文本常用操作" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Comments: </span>
+    
+    <a title="valine" href="/posts/read-write-files/#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/posts/read-write-files/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="note warning">
+            <p>近期本人工作中频繁用到跨语言文本读写，本文结合实例介绍使用$\mathbf{Matlab}/\mathbf{Python}/\mathbf{C++}$读写文件的常规操作，以便后续查阅。</p>
+          </div>
+<a id="more"></a>
+<h1 id="语言：Matlab"><a href="#语言：Matlab" class="headerlink" title="语言：Matlab"></a>语言：Matlab</h1><h2 id="操作：读"><a href="#操作：读" class="headerlink" title="操作：读"></a>操作：读</h2><h3 id="importdata"><a href="#importdata" class="headerlink" title="importdata"></a>importdata</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data=importdata(data_path);</span><br></pre></td></tr></table></figure>
+<p>这种方式适合结构化数据的读取，如<code>euroc_ground_truth.txt</code>文件的内容如下：</p>
+<pre><code># timestamp,tx,ty,tz,qw,qx,qy,qz
+1403636580838555648,4.688319,-1.786938,0.783338,0.534108,-0.153029,-0.827383,-0.082152
+1403636580843555328,4.688177,-1.786770,0.787350,0.534640,-0.152990,-0.826976,-0.082863
+1403636580848555520,4.688028,-1.786598,0.791382,0.535178,-0.152945,-0.826562,-0.083605
+1403636580853555456,4.687878,-1.786421,0.795429,0.535715,-0.152884,-0.826146,-0.084391
+1403636580858555648,4.687727,-1.786240,0.799484,0.536244,-0.152821,-0.825731,-0.085213
+1403636580863555328,4.687579,-1.786059,0.803540,0.536768,-0.152768,-0.825314,-0.086049
+1403636580868555520,4.687435,-1.785881,0.807594,0.537289,-0.152725,-0.824896,-0.086890
+1403636580873555456,4.687295,-1.785709,0.811642,0.537804,-0.152680,-0.824481,-0.087725
+1403636580878555648,4.687158,-1.785544,0.815682,0.538317,-0.152627,-0.824067,-0.088553
+1403636580883555328,4.687025,-1.785390,0.819712,0.538828,-0.152566,-0.823657,-0.089371
+1403636580888555520,4.686893,-1.785247,0.823734,0.539337,-0.152496,-0.823250,-0.090170
+1403636580893555456,4.686763,-1.785116,0.827749,0.539846,-0.152427,-0.822845,-0.090943
+</code></pre><p>可以通过下述方式导入上面的数据：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filename = <span class="string">'euroc_ground_truth.txt'</span>;</span><br><span class="line">delimiterIn = <span class="string">' '</span>;</span><br><span class="line">headerlinesIn = <span class="number">1</span>;</span><br><span class="line">A = importdata(filename,delimiterIn,headerlinesIn);</span><br></pre></td></tr></table></figure></p>
+<h3 id="txtread"><a href="#txtread" class="headerlink" title="txtread"></a>txtread</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data_pattern=<span class="string">'%f,%f,%f,%f,%f,%f,%f,%f'</span>;</span><br><span class="line"></span><br><span class="line">[timestamp, tx, ty, tz , qw , qx , qy , qz] = ...</span><br><span class="line"> textread(data_path,data_pattern,<span class="string">'delimiter'</span>, <span class="string">'\n'</span>,<span class="string">'headerlines'</span>, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="textscan"><a href="#textscan" class="headerlink" title="textscan"></a>textscan</h3><p>上面几种方式读取的时间戳数据被自动转换成了double类型，此时可以进一步指定格式读取数据，此处介绍textscan函数。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fid = fopen(data_path);</span><br><span class="line">tline = fgets(fid);    <span class="comment">%读取第一行无用数据</span></span><br><span class="line">data_pattern = <span class="string">'%u64,%f,%f,%f,%f,%f,%f,%f'</span>;</span><br><span class="line">data_cell = textscan(fid,data_pattern) ;</span><br><span class="line">fclose(fid);</span><br></pre></td></tr></table></figure>
+<h3 id="File操作"><a href="#File操作" class="headerlink" title="File操作"></a>File操作</h3><p>SFM得到的模型文件中<code>images.txt</code>的格式如下所示：</p>
+<pre><code># Image list with two lines of data per image:
+#   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
+#   POINTS2D[] as (X, Y, POINT3D_ID)
+# Number of images: 31, mean observations per image: 780.80645161290317
+1 0.884099 -0.141937 0.435855 0.0908508 0.456173 1.10575 -0.638635 12 IMG_4774.jpg
+1664.41 2219.53 -1 3398.7 902.05 -1 2712.06 961.02 -1 1699.48 1238.63 -1 2879.4 2405.39 -1 2660.97 381.236 -1 3644.9 1452.33 -1 1140.93 1660.45 -1 3591.46 2353.79 -1 79.85 2666.42 -1 1140.46 2684.59 -1 2557.4 1692.47 -1 3016.67 1926.3 -1 454.761 2708.41 -1 1485.06 2722.92 -1 1492.38 1858.58 -1 1433.93 1420.58 -1 1669.55 1613.83 -1 2520.72 2673.94 -1 1046 455.571 -1 3259.22 1748.17 7126 2594.15 2494.27 -1 3093.89 876.393 -1 1660.63 1339.07 -1 832.575 1383.51 -1 149.518 2744.39 -1 3315.03 2473.41 7124 2088.65 620.031 -1 2078.78 966.732 -1 1401 1096.82 8134 3865.21 1484.07 -1 860.423 516.002 -1 3769.77 1725.51 -1 2808.02 1954.06 -1 551.916 2168.01 -1 213.281 2411.6 -1 2802.37 1706.15 -1 3677.91 2856.51 -1 874.193 2740.2 -1 858.867 2068.12 -1 3637.86 1157.71 -1 2475.61 2157.57 -1 2966.61 587.535 6881 3887.21 1767.42 -1 3182.04 1737.79 -1 841.659 1499.39 -1 843.027 1267.73 -1 1213.94 956.537 -1 3728.5 796.223 -1 3283.44 2532.15 -1 3835.46 1967.03 2538 328.52 2892.58 -1 734.794 2687.09 -1 714.173 2556.91 -1 1217.6 2491.75 -1 2723.55 2299.31 -1 873.913 2299 -1 3801.61 2217 -1 1276.33 2783.46 -1 3012.51 2168.26 -1 2890.92 2129.36 5648 3829.79 2093.15 -1 3061.59 1762.5 -1 3531.56 2084.99 -1 1246.53 1960.89 -1 3535.97 1792.58 6883 2109.03 934.487 -1 1288.39 2370.23 -1 892.76 2397.14 -1 763.122 2439.22 -1 958.999 2545.59 -1 870.587 2670.47 -1 337.499 2776.81 -1 2822.44 2829.3 -1 1445.31 2906.54 -1 3812.19 2458.6 5695 1454.09 2816.63 -1 1868.71 984.07 -1 3066.34 1223.46 -1 3864.86 1257.88 -1 3947.42 1345.05 -1 1520.25 1409.18 -1 1481.34 1526.1 -1 735.2 2137.66 -1 3127.57 2157.58 6504 687.177 2245.03 -1 559.242 2298.25 7777 1696.43 1351.53 -1 2880.04 1439.3 -1 38.7915 1549.01 -1 2890.66 1548.36 -1 47.8064 1656.89 -1 3620.52 1682.84 1716 3687.85 1720.03 -1 1722.31 1764.86 -1 254.117 2823.77 -1 181.262 2706.08 -1 160.79 2629.34 -1 324.581 2614.24 -1 2903.75 1780.66 -1 664.931 2602.83 -1 2437.42 2599.08 6885 3511.25 2305.26 -1 868.83 2488.58 -1 374.989 2360.49 -1 374.989 2360.49 -1 450.599 2331.43 -1 2801 2217.58 5656 3507.39 2202.53 7127 3204.93 2177.21 -1 2480.14 2100.03 -1 3218.11 2014.01 -1 3031.36 2002.24 5673 841.39 2006.93 -1 2657.5 1917.97 7549 2699.19 1831.71 -1 3401.06 2131.06 7396 1270.71 2606.61 -1 3595.47 1957.88 7474 3837.27 2881.06 -1 1115.83 2528.9 7779 2630.58 1986.87 6888 1955.06 1036.5 -1 2739.36 1913.07 -1 1778.16 1753.93 -1 1507.33 1745.1 -1 54.5862 1603.19 -1 3902.87 1535.15 -1 1612.35 1659.53 -1 2933.7 1483.71 -1 1604.73 1470.23 -1 3521.92 2931.27 6520 3400.6 2903.59 -1 3225.46 2900.27 6889 2857.93 2025.9 -1 2761.73 1404.53 -1 3757.05 2636.56 -1 941.592 2625.63 -1 3273.06 2553.15 -1 1316.81 2531.96 -1 2448.55 2008.76 -1 247.038 2505 7149 1603.3 1359.87 -1 528.52 2494.4 -1 87.2797 2497.3 -1 310.672 2465.84 6890 371.206 2431.08 -1 
+</code></pre><p>此时文本格式并不规则，此时我们采用<code>fopen+fgets+strsplit</code>对数据进行读取，代码如下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">images = read_images(images.txt);</span><br><span class="line"></span><br><span class="line"><span class="comment">% 定义读取SFM图像文本函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">images</span> = <span class="title">read_images</span><span class="params">(path)</span></span></span><br><span class="line">    images = containers.Map(<span class="string">'KeyType'</span>, <span class="string">'int64'</span>, <span class="string">'ValueType'</span>, <span class="string">'any'</span>);</span><br><span class="line">    fid = fopen(path);</span><br><span class="line">    tline = fgets(fid);    <span class="comment">%读取一行数据</span></span><br><span class="line">    <span class="keyword">while</span> ischar(tline)  <span class="comment">%判断是否是文件结尾</span></span><br><span class="line">        elems = strsplit(tline,<span class="string">' '</span>); <span class="comment">%分割以' '为间隔的字符，返回元胞数组</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">numel</span>(elems) &lt; <span class="number">4</span> || strcmp(elems(<span class="number">1</span>), <span class="string">'#'</span>) <span class="comment">%略过非数据行</span></span><br><span class="line">            tline = fgets(fid);</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">mod</span>(images.Count, <span class="number">10</span>) == <span class="number">0</span> <span class="comment">%打印读取信息</span></span><br><span class="line">            fprintf(<span class="string">'Reading image %d\n'</span>, images.<span class="built_in">length</span>);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        image = struct;</span><br><span class="line">        image.image_id = str2num(elems&#123;<span class="number">1</span>&#125;);</span><br><span class="line">        qw = str2double(elems&#123;<span class="number">2</span>&#125;);</span><br><span class="line">        qx = str2double(elems&#123;<span class="number">3</span>&#125;);</span><br><span class="line">        qy = str2double(elems&#123;<span class="number">4</span>&#125;);</span><br><span class="line">        qz = str2double(elems&#123;<span class="number">5</span>&#125;);</span><br><span class="line">        image.R = quat2rotmat([qw, qx, qy, qz]);</span><br><span class="line">        tx = str2double(elems&#123;<span class="number">6</span>&#125;);</span><br><span class="line">        ty = str2double(elems&#123;<span class="number">7</span>&#125;);</span><br><span class="line">        tz = str2double(elems&#123;<span class="number">8</span>&#125;);</span><br><span class="line">        image.t = [tx; ty; tz];</span><br><span class="line">        image.camera_id = str2num(elems&#123;<span class="number">9</span>&#125;);</span><br><span class="line">        image.name = elems&#123;<span class="number">10</span>&#125;;</span><br><span class="line"></span><br><span class="line">        tline = fgets(fid);</span><br><span class="line">        elems = sscanf(tline, <span class="string">'%f'</span>); <span class="comment">% 读取图像特点</span></span><br><span class="line">        elems = <span class="built_in">reshape</span>(elems, [<span class="number">3</span>, <span class="built_in">numel</span>(elems) / <span class="number">3</span>]);</span><br><span class="line">        image.xys = elems(<span class="number">1</span>:<span class="number">2</span>,:)';</span><br><span class="line">        image.point3D_ids = elems(<span class="number">3</span>,:)';</span><br><span class="line">        images(image.image_id) = image;</span><br><span class="line">        tline = fgets(fid);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    fclose(fid);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="comment">%四元数转旋转矩阵</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">rotmat</span> = <span class="title">quat2rotmat</span><span class="params">(qvec)</span></span></span><br><span class="line">    rotmat = [<span class="number">1</span> - <span class="number">2</span> * qvec(<span class="number">3</span>).^<span class="number">2</span> - <span class="number">2</span> * qvec(<span class="number">4</span>).^<span class="number">2</span>, ...</span><br><span class="line">            <span class="number">2</span> * qvec(<span class="number">2</span>) * qvec(<span class="number">3</span>) - <span class="number">2</span> * qvec(<span class="number">1</span>) * qvec(<span class="number">4</span>), ...</span><br><span class="line">            <span class="number">2</span> * qvec(<span class="number">4</span>) * qvec(<span class="number">2</span>) + <span class="number">2</span> * qvec(<span class="number">1</span>) * qvec(<span class="number">3</span>); ...</span><br><span class="line"></span><br><span class="line">            <span class="number">2</span> * qvec(<span class="number">2</span>) * qvec(<span class="number">3</span>) + <span class="number">2</span> * qvec(<span class="number">1</span>) * qvec(<span class="number">4</span>), ...</span><br><span class="line">            <span class="number">1</span> - <span class="number">2</span> * qvec(<span class="number">2</span>).^<span class="number">2</span> - <span class="number">2</span> * qvec(<span class="number">4</span>).^<span class="number">2</span>, ...</span><br><span class="line">            <span class="number">2</span> * qvec(<span class="number">3</span>) * qvec(<span class="number">4</span>) - <span class="number">2</span> * qvec(<span class="number">1</span>) * qvec(<span class="number">2</span>); ...</span><br><span class="line"></span><br><span class="line">            <span class="number">2</span> * qvec(<span class="number">4</span>) * qvec(<span class="number">2</span>) - <span class="number">2</span> * qvec(<span class="number">1</span>) * qvec(<span class="number">3</span>), ...</span><br><span class="line">            <span class="number">2</span> * qvec(<span class="number">3</span>) * qvec(<span class="number">4</span>) + <span class="number">2</span> * qvec(<span class="number">1</span>) * qvec(<span class="number">2</span>), ...</span><br><span class="line">            <span class="number">1</span> - <span class="number">2</span> * qvec(<span class="number">2</span>).^<span class="number">2</span> - <span class="number">2</span> * qvec(<span class="number">3</span>).^<span class="number">2</span>];</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="操作：写"><a href="#操作：写" class="headerlink" title="操作：写"></a>操作：写</h2><h3 id="File操作-1"><a href="#File操作-1" class="headerlink" title="File操作"></a>File操作</h3><p>下面的<code>write_ply.m</code>是写点云数据的方法，主要使用<code>fprintf</code>。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">write_ply</span><span class="params">(path, xyz, normals, rgb)</span></span></span><br><span class="line">    <span class="comment">% Write point cloud to PLY text file.</span></span><br><span class="line">    file = fopen(path, <span class="string">'W'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'ply\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'format ascii 1.0\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'element vertex %d\n'</span>,<span class="built_in">size</span>(xyz,<span class="number">1</span>));</span><br><span class="line">    fprintf(file,<span class="string">'property float x\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property float y\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property float z\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property float nx\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property float ny\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property float nz\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property uchar diffuse_red\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property uchar diffuse_green\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'property uchar diffuse_blue\n'</span>);</span><br><span class="line">    fprintf(file,<span class="string">'end_header\n'</span>);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">size</span>(xyz, <span class="number">1</span>)</span><br><span class="line">        fprintf(file, <span class="string">'%f %f %f %f %f %f %d %d %d\n'</span>, ...</span><br><span class="line">            xyz(<span class="built_in">i</span>,<span class="number">1</span>), xyz(<span class="built_in">i</span>,<span class="number">2</span>), xyz(<span class="built_in">i</span>,<span class="number">3</span>), ...</span><br><span class="line">            normals(<span class="built_in">i</span>,<span class="number">1</span>), normals(<span class="built_in">i</span>,<span class="number">2</span>), normals(<span class="built_in">i</span>,<span class="number">3</span>), ...</span><br><span class="line">            uint8(rgb(<span class="built_in">i</span>,<span class="number">1</span>)), uint8(rgb(<span class="built_in">i</span>,<span class="number">2</span>)), uint8(rgb(<span class="built_in">i</span>,<span class="number">3</span>)));</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    fclose(file);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h1 id="语言：c"><a href="#语言：c" class="headerlink" title="语言：c++"></a>语言：c++</h1><p>读的难点在于读取一行数据并实现字符的切分，可采用<code>stringstream</code>或者<code>getline</code>对字符切割。</p>
+<h2 id="操作：读-1"><a href="#操作：读-1" class="headerlink" title="操作：读"></a>操作：读</h2><p>下图是文件读写用到的函数继承关系以及对应的头文件，具体操作可参考这篇<a href="https://blog.csdn.net/kingstar158/article/details/6859379" target="_blank" rel="noopener">文章</a>。</p>
+<p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/read-write-files/iostream.gif"></p>
+<p>在<code>fstream</code>类中，成员函数<code>open(file_path,flag)</code>实现打开文件的操作，从而将数据流和文件进行关联，作为传入参数的<strong>文件打开模式标记</strong>（flag）可参看这个<a href="http://c.biancheng.net/view/294.html" target="_blank" rel="noopener">文章</a>。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">模式标记</th>
+<th style="text-align:left">适用对象</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ios::in</td>
+<td style="text-align:left">ifstream fstream</td>
+<td style="text-align:left">打开文件用于读取数据。如果文件不存在，则打开出错。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::out</td>
+<td style="text-align:left">ofstream fstream</td>
+<td style="text-align:left">打开文件用于写入数据。如果文件不存在，则新建该文件；如果文件原来就存在，则打开时清除原来的内容。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::app</td>
+<td style="text-align:left">ofstream fstream</td>
+<td style="text-align:left">打开文件，用于在其尾部添加数据。如果文件不存在，则新建该文件。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::ate</td>
+<td style="text-align:left">ifstream</td>
+<td style="text-align:left">打开一个已有的文件，并将文件读指针指向文件末尾（读写指 的概念后面解释）。如果文件不存在，则打开出错。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios:: trunc</td>
+<td style="text-align:left">ofstream</td>
+<td style="text-align:left">打开文件时会清空内部存储的所有数据，单独使用时与 ios::out 相同。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::binary</td>
+<td style="text-align:left">ifstream ofstream fstream</td>
+<td style="text-align:left">以二进制方式打开文件。若不指定此模式，则以文本模式打开。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::in &#124; ios::out</td>
+<td style="text-align:left">fstream</td>
+<td style="text-align:left">打开已存在的文件，既可读取其内容，也可向其写入数据。文件刚打开时，原有内容保持不变。如果文件不存在，则打开出错。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::in &#124; ios::out</td>
+<td style="text-align:left">ofstream</td>
+<td style="text-align:left">打开已存在的文件，可以向其写入数据。文件刚打开时，原有内容保持不变。如果文件不存在，则打开出错。</td>
+</tr>
+<tr>
+<td style="text-align:left">ios::in &#124; ios::out &#124; ios::trunc</td>
+<td style="text-align:left">fstream</td>
+<td style="text-align:left">打开文件，既可读取其内容，也可向其写入数据。如果文件本来就存在，则打开时清除原来的内容；如果文件不存在，则新建该文件。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用stringstream分割字符，注意引入头文件#include &lt;sstream&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">read_images_text</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; path)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="function">ifstream <span class="title">file</span><span class="params">(path)</span></span>;<span class="comment">//文件到流缓冲，即内存</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> line;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> item;</span><br><span class="line">    <span class="keyword">long</span> <span class="keyword">double</span> qw, qx, qy, qz, tx, ty, tz;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> camera_id;</span><br><span class="line">    <span class="built_in">string</span> image_name;</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">std</span>::getline(file, line)) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (line.empty() || line[<span class="number">0</span>] == <span class="string">'#'</span>) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">std</span>::<span class="function"><span class="built_in">stringstream</span> <span class="title">line_stream1</span><span class="params">(line)</span></span>;</span><br><span class="line">        line_stream1 &gt;&gt; item; qw = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; qx = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; qy = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; qz = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; tx = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; ty = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; tz = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; qw = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; camera_id = <span class="built_in">std</span>::stoul(item);</span><br><span class="line">        line_stream1 &gt;&gt; item; image_name = item;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// POINTS2D</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">std</span>::getline(file, line)) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"processing : "</span> &lt;&lt; image_name &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">std</span>::<span class="function"><span class="built_in">stringstream</span> <span class="title">line_stream2</span><span class="params">(line)</span></span>;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">double</span> x,y;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> point3D_id;</span><br><span class="line">        <span class="keyword">if</span> (!line.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span> (!line_stream2.eof())</span><br><span class="line">            &#123;</span><br><span class="line">                line_stream2 &gt;&gt; item; x = <span class="built_in">std</span>::stold(item);</span><br><span class="line">                line_stream2 &gt;&gt; item; y = <span class="built_in">std</span>::stold(item);</span><br><span class="line">                line_stream2 &gt;&gt; item; point3D_id = <span class="built_in">std</span>::stoll(item);</span><br><span class="line">                <span class="comment">// cout &lt;&lt;x &lt;&lt;" " &lt;&lt; y &lt;&lt; " " &lt;&lt; point3D_id&lt;&lt;" ";</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    file.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用getline分割字符，需指定间隔字符</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">read_images_text</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; path)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="function">ifstream <span class="title">file</span><span class="params">(path)</span></span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> line;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> item;</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">std</span>::getline(file, line)) &#123;</span><br><span class="line">        StringTrim(&amp;line);</span><br><span class="line">        <span class="keyword">if</span> (line.empty() || line[<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="built_in">std</span>::<span class="function"><span class="built_in">stringstream</span> <span class="title">line_stream1</span><span class="params">(line)</span></span>;</span><br><span class="line">        <span class="comment">// ID</span></span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);</span><br><span class="line">        <span class="comment">// QVEC (qw, qx, qy, qz)</span></span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> qw = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> qx = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> qy = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> qz = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="comment">// TVEC</span></span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> tx = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> ty = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">long</span> <span class="keyword">double</span> tz = <span class="built_in">std</span>::stold(item);</span><br><span class="line">        <span class="comment">// CAMERA_ID</span></span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="keyword">unsigned</span> <span class="keyword">long</span> camera_id = <span class="built_in">std</span>::stoul(item);</span><br><span class="line">        <span class="comment">// NAME</span></span><br><span class="line">        <span class="built_in">std</span>::getline(line_stream1, item, <span class="string">' '</span>);<span class="built_in">std</span>::<span class="built_in">string</span> image_name = item;</span><br><span class="line">        <span class="comment">// POINTS2D</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">std</span>::getline(file, line)) <span class="keyword">break</span>;</span><br><span class="line">        StringTrim(&amp;line);</span><br><span class="line">        <span class="built_in">std</span>::<span class="function"><span class="built_in">stringstream</span> <span class="title">line_stream2</span><span class="params">(line)</span></span>;</span><br><span class="line">        <span class="keyword">if</span> (!line.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span> (!line_stream2.eof())</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">std</span>::getline(line_stream2, item, <span class="string">' '</span>);<span class="keyword">double</span> x = <span class="built_in">std</span>::stold(item);</span><br><span class="line">                <span class="built_in">std</span>::getline(line_stream2, item, <span class="string">' '</span>);<span class="keyword">double</span> y = <span class="built_in">std</span>::stold(item);</span><br><span class="line">                <span class="built_in">std</span>::getline(line_stream2, item, <span class="string">' '</span>);</span><br><span class="line">                <span class="keyword">long</span> <span class="keyword">long</span> point3D_id;</span><br><span class="line">                <span class="keyword">if</span> (item == <span class="string">"-1"</span>) &#123;</span><br><span class="line">                    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"2D point has no 3D points"</span> &lt;&lt;<span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">                    point3D_id = <span class="number">-1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt;<span class="string">"2D point ok!!!"</span> &lt;&lt;<span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">                    point3D_id = <span class="built_in">std</span>::stoll(item);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    file.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="操作：写-1"><a href="#操作：写-1" class="headerlink" title="操作：写"></a>操作：写</h2><p>写文件比读文件容易得多，此处可用<code>ofstream</code>进行写入文件。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 此处给出colmap中WriteImagesText函数</span></span><br><span class="line"><span class="keyword">void</span> Reconstruction::WriteImagesText(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; path) <span class="keyword">const</span> &#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="function">ofstream <span class="title">file</span><span class="params">(path, <span class="built_in">std</span>::ios::trunc)</span></span>;</span><br><span class="line">  CHECK(file.is_open()) &lt;&lt; path;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Ensure that we don't loose any precision by storing in text.</span></span><br><span class="line">  file.precision(<span class="number">17</span>);</span><br><span class="line"></span><br><span class="line">  file &lt;&lt; <span class="string">"# Image list with two lines of data per image:"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  file &lt;&lt; <span class="string">"#   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, "</span></span><br><span class="line">          <span class="string">"NAME"</span></span><br><span class="line">       &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  file &lt;&lt; <span class="string">"#   POINTS2D[] as (X, Y, POINT3D_ID)"</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  file &lt;&lt; <span class="string">"# Number of images: "</span> &lt;&lt; reg_image_ids_.size()</span><br><span class="line">       &lt;&lt; <span class="string">", mean observations per image: "</span></span><br><span class="line">       &lt;&lt; ComputeMeanObservationsPerRegImage() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; image : images_) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!image.second.IsRegistered()) &#123;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">ostringstream</span> line; <span class="comment">//接收一行数据，通过'&lt;&lt;'接收</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> line_string;</span><br><span class="line"></span><br><span class="line">    line &lt;&lt; image.first &lt;&lt; <span class="string">" "</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// QVEC (qw, qx, qy, qz)</span></span><br><span class="line">    <span class="keyword">const</span> Eigen::Vector4d normalized_qvec =</span><br><span class="line">        NormalizeQuaternion(image.second.Qvec());</span><br><span class="line">    line &lt;&lt; normalized_qvec(<span class="number">0</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; normalized_qvec(<span class="number">1</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; normalized_qvec(<span class="number">2</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; normalized_qvec(<span class="number">3</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// TVEC</span></span><br><span class="line">    line &lt;&lt; image.second.Tvec(<span class="number">0</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; image.second.Tvec(<span class="number">1</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; image.second.Tvec(<span class="number">2</span>) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; image.second.CameraId() &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    line &lt;&lt; image.second.Name();</span><br><span class="line">    file &lt;&lt; line.str() &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">    line.str(<span class="string">""</span>);</span><br><span class="line">    line.clear();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> Point2D&amp; point2D : image.second.Points2D()) &#123;</span><br><span class="line">      line &lt;&lt; point2D.X() &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">      line &lt;&lt; point2D.Y() &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">      <span class="keyword">if</span> (point2D.HasPoint3D()) &#123;</span><br><span class="line">        line &lt;&lt; point2D.Point3DId() &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        line &lt;&lt; <span class="number">-1</span> &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    line_string = line.str();</span><br><span class="line">    line_string = line_string.substr(<span class="number">0</span>, line_string.size() - <span class="number">1</span>);</span><br><span class="line">    file &lt;&lt; line_string &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>补充：读写数据时可能会涉及字符串与数字的转换，如下给出二者转换的方法。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//string to number</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Type&gt;</span><br><span class="line"><span class="function">Type <span class="title">tonumber</span><span class="params">(<span class="built_in">string</span> str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; str;</span><br><span class="line">    Type ret = <span class="number">0</span>;</span><br><span class="line">    ss &gt;&gt; ret;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//number to str</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Type&gt;</span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">tostring</span><span class="params">(Type number)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; number;</span><br><span class="line">    <span class="built_in">string</span> ret;</span><br><span class="line">    ss &gt;&gt; ret;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用时：</span></span><br><span class="line"><span class="built_in">string</span> str = <span class="string">"1403636580838555648"</span>;</span><br><span class="line"><span class="keyword">uint64_t</span> number = <span class="number">1403636580838555648</span>;</span><br><span class="line">num_convert = tonumber&lt;<span class="keyword">uint64_t</span> &gt;(str);</span><br><span class="line">str_convert = tostring&lt;<span class="keyword">uint64_t</span> &gt;(number);</span><br></pre></td></tr></table></figure>
+<h1 id="语言：Python"><a href="#语言：Python" class="headerlink" title="语言：Python"></a>语言：Python</h1><h2 id="操作：读-2"><a href="#操作：读-2" class="headerlink" title="操作：读"></a>操作：读</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read_images_text</span><span class="params">(path)</span>:</span></span><br><span class="line">    images = &#123;&#125;</span><br><span class="line">    <span class="keyword">with</span> open(path, <span class="string">"r"</span>) <span class="keyword">as</span> fid:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            line = fid.readline()<span class="comment">#读取一行数据</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> line:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            line = line.strip() <span class="comment">#移除字符串头尾指定的字符（默认为空格或换行符）或字符序列</span></span><br><span class="line">            <span class="keyword">if</span> len(line) &gt; <span class="number">0</span> <span class="keyword">and</span> line[<span class="number">0</span>] != <span class="string">"#"</span>:</span><br><span class="line">                elems = line.split()  <span class="comment">#分割字符</span></span><br><span class="line">                image_id = int(elems[<span class="number">0</span>])</span><br><span class="line">                qvec = np.array(tuple(map(float, elems[<span class="number">1</span>:<span class="number">5</span>])))</span><br><span class="line">                tvec = np.array(tuple(map(float, elems[<span class="number">5</span>:<span class="number">8</span>])))</span><br><span class="line">                camera_id = int(elems[<span class="number">8</span>])</span><br><span class="line">                image_name = elems[<span class="number">9</span>]</span><br><span class="line">                elems = fid.readline().split()</span><br><span class="line">                xys = np.column_stack([tuple(map(float, elems[<span class="number">0</span>::<span class="number">3</span>])),</span><br><span class="line">                                       tuple(map(float, elems[<span class="number">1</span>::<span class="number">3</span>]))])</span><br><span class="line">                point3D_ids = np.array(tuple(map(int, elems[<span class="number">2</span>::<span class="number">3</span>])))</span><br><span class="line">                images[image_id] = Image(</span><br><span class="line">                    id=image_id, qvec=qvec, tvec=tvec,</span><br><span class="line">                    camera_id=camera_id, name=image_name,</span><br><span class="line">                    xys=xys, point3D_ids=point3D_ids)</span><br><span class="line">    <span class="keyword">return</span> images</span><br></pre></td></tr></table></figure>
+<h2 id="操作：写-2"><a href="#操作：写-2" class="headerlink" title="操作：写"></a>操作：写</h2><p>使用File(文件) <code>open(file, mode=&#39;r&#39;)</code> 方法，如下面写SFM matchs-pair.txt的方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pairs = []</span><br><span class="line"><span class="keyword">for</span> query, indices <span class="keyword">in</span> zip(query_names, topk):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> indices:</span><br><span class="line">        pair = (query, db_names[i])</span><br><span class="line">        pairs.append(pair)</span><br><span class="line"></span><br><span class="line">logging.info(<span class="string">f'Found <span class="subst">&#123;len(pairs)&#125;</span> pairs.'</span>)</span><br><span class="line"><span class="keyword">with</span> open(output, <span class="string">'w'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(<span class="string">'\n'</span>.join(<span class="string">' '</span>.join([i, j]) <span class="keyword">for</span> i, j <span class="keyword">in</span> pairs))</span><br></pre></td></tr></table></figure>
+<p>以及写SFM模型<code>images.txt</code>的方法都可值得参考。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_images_text</span><span class="params">(images, path)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(images) == <span class="number">0</span>:</span><br><span class="line">        mean_observations = <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        mean_observations = sum((len(img.point3D_ids) \</span><br><span class="line">         <span class="keyword">for</span> _, img <span class="keyword">in</span> images.items()))/len(images)</span><br><span class="line">    HEADER = <span class="string">"# Image list with two lines of data per image:\n"</span></span><br><span class="line">    <span class="string">"#   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME\n"</span></span><br><span class="line">    <span class="string">"#   POINTS2D[] as (X, Y, POINT3D_ID)\n"</span></span><br><span class="line">    <span class="string">"# Number of images: &#123;&#125;, mean observations per image: &#123;&#125;\n"</span>\</span><br><span class="line">    .format(len(images),mean_observations)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> open(path, <span class="string">"w"</span>) <span class="keyword">as</span> fid:</span><br><span class="line">        fid.write(HEADER)</span><br><span class="line">        <span class="keyword">for</span> _, img <span class="keyword">in</span> images.items():</span><br><span class="line">            <span class="comment">#写图像ID/位姿/相机ID/图像名</span></span><br><span class="line">            image_header = [img.id, *img.qvec, *img.tvec, img.camera_id, img.name]</span><br><span class="line">            first_line = <span class="string">" "</span>.join(map(str, image_header))</span><br><span class="line">            fid.write(first_line + <span class="string">"\n"</span>)</span><br><span class="line">            <span class="comment">#写2D点</span></span><br><span class="line">            points_strings = []</span><br><span class="line">            <span class="keyword">for</span> xy, point3D_id <span class="keyword">in</span> zip(img.xys, img.point3D_ids):</span><br><span class="line">                points_strings.append(<span class="string">" "</span>.join(map(str, [*xy, point3D_id])))</span><br><span class="line">            fid.write(<span class="string">" "</span>.join(points_strings) + <span class="string">"\n"</span>)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Vincent Qin</li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://www.vincentqin.tech/posts/read-write-files/" title="📝笔记：读写文本常用操作">https://www.vincentqin.tech/posts/read-write-files/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Matlab/" rel="tag"># Matlab</a>
+            
+              <a href="/tags/小工具/" rel="tag"># 小工具</a>
+            
+              <a href="/tags/Python/" rel="tag"># Python</a>
+            
+              <a href="/tags/c/" rel="tag"># c++</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/cvpr-2020-localization/" rel="next" title="📝笔记：CVPR 2020 视觉定位挑战赛冠军方案">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：CVPR 2020 视觉定位挑战赛冠军方案
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#语言：Matlab"><span class="nav-number">1.</span> <span class="nav-text">语言：Matlab</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作：读"><span class="nav-number">1.1.</span> <span class="nav-text">操作：读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#importdata"><span class="nav-number">1.1.1.</span> <span class="nav-text">importdata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#txtread"><span class="nav-number">1.1.2.</span> <span class="nav-text">txtread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#textscan"><span class="nav-number">1.1.3.</span> <span class="nav-text">textscan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#File操作"><span class="nav-number">1.1.4.</span> <span class="nav-text">File操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作：写"><span class="nav-number">1.2.</span> <span class="nav-text">操作：写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#File操作-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">File操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语言：c"><span class="nav-number">2.</span> <span class="nav-text">语言：c++</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作：读-1"><span class="nav-number">2.1.</span> <span class="nav-text">操作：读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作：写-1"><span class="nav-number">2.2.</span> <span class="nav-text">操作：写</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语言：Python"><span class="nav-number">3.</span> <span class="nav-text">语言：Python</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作：读-2"><span class="nav-number">3.1.</span> <span class="nav-text">操作：读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作：写-2"><span class="nav-number">3.2.</span> <span class="nav-text">操作：写</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="https://vincentqin.gitee.io/images/qin_small.png"
+      alt="Vincent Qin">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Vincentqyw" title="GitHub &rarr; https://github.com/Vincentqyw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:realcat@126.com" title="Email &rarr; mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Email</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat &rarr; https://vincentqin.gitee.io/images/qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fa fa-fw fa-weixin"></i>Wechat</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu &rarr; https://www.zhihu.com/people/i_vincent/activities" rel="noopener" target="_blank"><i class="fa fa-fw fa-quora"></i>Zhihu</a>
+      </span>
+    
+  </div>
+
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn" title="http://xxx.itp.ac.cn" rel="noopener" target="_blank">arxiv</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http://arxiv-sanity.com/" rel="noopener" target="_blank">arxiv-sanity</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http://openaccess.thecvf.com/menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-battery-three-quarters"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http://www.wangpengan.com/" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http://simtalk.cn/" rel="noopener" target="_blank">Simshang</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io" title="https://sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://newdee.cf/" title="https://newdee.cf/" rel="noopener" target="_blank">Newdee</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http://cs-people.bu.edu/yfhu/" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http://yulunzhang.com/" rel="noopener" target="_blank">Yulun</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https://sanglongbest.github.io/" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://erenship.com/" title="https://erenship.com/" rel="noopener" target="_blank">Eren</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      常用链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://realcat.avosapps.us" title="https://realcat.avosapps.us" rel="noopener" target="_blank">评论管理</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https://gitee.com/vincentqin/vincentqin" rel="noopener" target="_blank">网站源码</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://xyz.realcat.icu:65432" title="http://xyz.realcat.icu:65432" rel="noopener" target="_blank">不可描述</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https://www.notion.so/realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http://www.matrixcalculus.org/" rel="noopener" target="_blank">矩阵求导</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https://emojipedia.org/" rel="noopener" target="_blank">Emoji</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+  <div class="feed-link motion-element">
+    <a href="https://realcat.vercel.app/" rel="alternate">
+       <i class="fa fa-home"></i>Homepage Backup
+    </a>
+  </div>
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+  <script>
+    function timer() {
+      var ages = moment.preciseDiff(moment(),moment(20160701,"YYYYMMDD"));
+      ages = ages.replace(/years?/, "年");
+      ages = ages.replace(/months?/, "月");
+      ages = ages.replace(/days?/, "天");
+      ages = ages.replace(/hours?/, "小时");
+      ages = ages.replace(/minutes?/, "分");
+      ages = ages.replace(/seconds?/, "秒");
+      ages = ages.replace(/\d+/g, '<span style="color:#1890ff">$&</span>');
+      div.innerHTML = `已运行 ${ages}`;
+    }
+    var div = document.createElement("div");
+    //插入到copyright之后
+    var copyright = document.querySelector(".copyright");
+    document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+    timer();
+    setInterval("timer()",1000)
+  </script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1273219530&web_id=1273219530"></script>
+  </div>
+
+
+
+
+
+
+  <script>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65489609";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+<script src="/js/utils.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme: 'forest',
+      logLevel: 3,
+      flowchart: { curve: 'linear' },
+      gantt: { axisFormat: '%m/%d/%Y' },
+      sequence: { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+    MathJax.Ajax.config.path['mhchem'] = '//cdn.jsdelivr.net/npm/mathjax-mhchem@3';
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        extensions: ['[mhchem]/mhchem.js'],
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: false,
+    appId: 'E2yzANt8H4UiIuw4c95dTaXH-MdYXbMMI',
+    appKey: 'NF1yxeki6kw4KM5glHkwjvKc',
+    placeholder: '建议在上方留下昵称和邮箱信息，以便收到回复。',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: '' || 'zh-cn',
+    path: location.pathname,
+    serverURLs: 'https://e2yzant8.api.lncldglobal.com'
+  });
+}, window.Valine);
+</script>
+
+
+  
+
+
+
+
+
+  <script src="/js/activate-power-mode.min.js"></script>
+  <script>
+    POWERMODE.colorful = true;
+    POWERMODE.shake = false;
+    document.body.addEventListener('input', POWERMODE);
+  </script>
+
+
+
+</body>
+</html>
