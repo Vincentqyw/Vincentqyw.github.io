@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="近期本人工作中频繁用到跨语言文本读写，本文结合实例介绍使用$\mathbf{Matlab}/\mathbf{Python}/\mathbf{C++}$读写文件的常规操作，以便后续查阅。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-12-20T16:32:12.070Z">
+<meta property="og:updated_time" content="2020-12-24T15:12:08.820Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="📝笔记：读写文本常用操作">
 <meta name="twitter:description" content="近期本人工作中频繁用到跨语言文本读写，本文结合实例介绍使用$\mathbf{Matlab}/\mathbf{Python}/\mathbf{C++}$读写文件的常规操作，以便后续查阅。">
@@ -320,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-21 00:32:12" itemprop="dateModified" datetime="2020-12-21T00:32:12+08:00">2020-12-21</time>
+                <time title="Modified: 2020-12-24 23:12:08" itemprop="dateModified" datetime="2020-12-24T23:12:08+08:00">2020-12-24</time>
               </span>
             
           
@@ -363,7 +363,7 @@
           </div>
 <a id="more"></a>
 <h1 id="语言：Matlab"><a href="#语言：Matlab" class="headerlink" title="语言：Matlab"></a>语言：Matlab</h1><h2 id="操作：读"><a href="#操作：读" class="headerlink" title="操作：读"></a>操作：读</h2><h3 id="importdata"><a href="#importdata" class="headerlink" title="importdata"></a>importdata</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data=importdata(data_path);</span><br></pre></td></tr></table></figure>
-<p>这种方式适合结构化数据的读取，如<code>euroc_ground_truth.txt</code>文件的内容如下：</p>
+<p>这种方式适合结构化数据的读取，如<code>euroc_ground_truth.txt</code>文件，其内容如下（节选）：</p>
 <pre><code># timestamp,tx,ty,tz,qw,qx,qy,qz
 1403636580838555648,4.688319,-1.786938,0.783338,0.534108,-0.153029,-0.827383,-0.082152
 1403636580843555328,4.688177,-1.786770,0.787350,0.534640,-0.152990,-0.826976,-0.082863
@@ -377,11 +377,11 @@
 1403636580883555328,4.687025,-1.785390,0.819712,0.538828,-0.152566,-0.823657,-0.089371
 1403636580888555520,4.686893,-1.785247,0.823734,0.539337,-0.152496,-0.823250,-0.090170
 1403636580893555456,4.686763,-1.785116,0.827749,0.539846,-0.152427,-0.822845,-0.090943
-</code></pre><p>可以通过下述方式导入上面的数据：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filename = <span class="string">'euroc_ground_truth.txt'</span>;</span><br><span class="line">delimiterIn = <span class="string">' '</span>;</span><br><span class="line">headerlinesIn = <span class="number">1</span>;</span><br><span class="line">A = importdata(filename,delimiterIn,headerlinesIn);</span><br></pre></td></tr></table></figure></p>
+</code></pre><p>可以通过下述方式导入上述数据：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">filename = <span class="string">'euroc_ground_truth.txt'</span>;</span><br><span class="line">delimiterIn = <span class="string">' '</span>;</span><br><span class="line">headerlinesIn = <span class="number">1</span>;</span><br><span class="line">A = importdata(filename,delimiterIn,headerlinesIn);</span><br></pre></td></tr></table></figure></p>
 <h3 id="txtread"><a href="#txtread" class="headerlink" title="txtread"></a>txtread</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">data_pattern=<span class="string">'%f,%f,%f,%f,%f,%f,%f,%f'</span>;</span><br><span class="line"></span><br><span class="line">[timestamp, tx, ty, tz , qw , qx , qy , qz] = ...</span><br><span class="line"> textread(data_path,data_pattern,<span class="string">'delimiter'</span>, <span class="string">'\n'</span>,<span class="string">'headerlines'</span>, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<h3 id="textscan"><a href="#textscan" class="headerlink" title="textscan"></a>textscan</h3><p>上面几种方式读取的时间戳数据被自动转换成了double类型，此时可以进一步指定格式读取数据，此处介绍textscan函数。</p>
+<h3 id="textscan"><a href="#textscan" class="headerlink" title="textscan"></a>textscan</h3><p>上面几种方式读取到时间戳被自动转换成double类型，这不符合我们的预期，此时可以进一步指定格式读取数据，因此提到textscan函数。</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fid = fopen(data_path);</span><br><span class="line">tline = fgets(fid);    <span class="comment">%读取第一行无用数据</span></span><br><span class="line">data_pattern = <span class="string">'%u64,%f,%f,%f,%f,%f,%f,%f'</span>;</span><br><span class="line">data_cell = textscan(fid,data_pattern) ;</span><br><span class="line">fclose(fid);</span><br></pre></td></tr></table></figure>
-<h3 id="File操作"><a href="#File操作" class="headerlink" title="File操作"></a>File操作</h3><p>SFM得到的模型文件中<code>images.txt</code>的格式如下所示：</p>
+<h3 id="File操作"><a href="#File操作" class="headerlink" title="File操作"></a>File操作</h3><p>SFM得到的模型文件中<code>images.txt</code>的格式如下所示（节选）：</p>
 <pre><code># Image list with two lines of data per image:
 #   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
 #   POINTS2D[] as (X, Y, POINT3D_ID)
@@ -683,15 +683,23 @@
     </div>
     <ul class="links-of-blogroll-list">
         <li class="links-of-blogroll-item">
-          <a href="http://xxx.itp.ac.cn" title="http://xxx.itp.ac.cn" rel="noopener" target="_blank">arxiv</a>
+          <a href="http://xxx.itp.ac.cn" title="http://xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
         </li>
       
         <li class="links-of-blogroll-item">
-          <a href="http://arxiv-sanity.com/" title="http://arxiv-sanity.com/" rel="noopener" target="_blank">arxiv-sanity</a>
+          <a href="http://arxiv-sanity.com/" title="http://arxiv-sanity.com/" rel="noopener" target="_blank">Arxiv-sanity</a>
         </li>
       
         <li class="links-of-blogroll-item">
           <a href="http://openaccess.thecvf.com/menu.py" title="http://openaccess.thecvf.com/menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https://paperswithcode.com/sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https://scihub.wikicn.top/" rel="noopener" target="_blank">Scihub</a>
         </li>
       
     </ul>
