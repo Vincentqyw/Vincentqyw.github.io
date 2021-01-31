@@ -60,15 +60,16 @@
 </script>
 
   <meta name="description" content="最近有几个同学问我光场相机是否能够用在SLAM中，我的第一感觉是不可能。本人研究生期间一直进行光场相机深度恢复的工作，深知其优势与不足。SLAM是我参加工作以来从事的研究方向，经过两年多的摸爬滚打算是入门了。目前视觉SLAM理论上虽已比较成熟，但在实际使用中仍会遇到诸多问题，如容易受到外界因素如光照/动态物体/稀疏纹理/室外大场景/快速运动等因素的影响，这些问题仅使用传统">
+<meta name="keywords" content="SLAM,光场,Light Field">
 <meta property="og:type" content="article">
-<meta property="og:title" content="光场相机是否能用于SLAM">
+<meta property="og:title" content="📝笔记：光场相机能否用于SLAM?">
 <meta property="og:url" content="https://www.vincentqin.tech/posts/light-field-slam/index.html">
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="最近有几个同学问我光场相机是否能够用在SLAM中，我的第一感觉是不可能。本人研究生期间一直进行光场相机深度恢复的工作，深知其优势与不足。SLAM是我参加工作以来从事的研究方向，经过两年多的摸爬滚打算是入门了。目前视觉SLAM理论上虽已比较成熟，但在实际使用中仍会遇到诸多问题，如容易受到外界因素如光照/动态物体/稀疏纹理/室外大场景/快速运动等因素的影响，这些问题仅使用传统">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2021-01-31T08:24:33.321Z">
+<meta property="og:updated_time" content="2021-01-31T10:47:34.623Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="光场相机是否能用于SLAM">
+<meta name="twitter:title" content="📝笔记：光场相机能否用于SLAM?">
 <meta name="twitter:description" content="最近有几个同学问我光场相机是否能够用在SLAM中，我的第一感觉是不可能。本人研究生期间一直进行光场相机深度恢复的工作，深知其优势与不足。SLAM是我参加工作以来从事的研究方向，经过两年多的摸爬滚打算是入门了。目前视觉SLAM理论上虽已比较成熟，但在实际使用中仍会遇到诸多问题，如容易受到外界因素如光照/动态物体/稀疏纹理/室外大场景/快速运动等因素的影响，这些问题仅使用传统">
   <link rel="canonical" href="https://www.vincentqin.tech/posts/light-field-slam/">
 
@@ -84,7 +85,7 @@
   };
 </script>
 
-  <title>光场相机是否能用于SLAM | RealCat</title>
+  <title>📝笔记：光场相机能否用于SLAM? | RealCat</title>
   
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97856334-1"></script>
   <script>
@@ -292,7 +293,7 @@
       <meta itemprop="name" content="RealCat">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">光场相机是否能用于SLAM
+        <h1 class="post-title" itemprop="name headline">📝笔记：光场相机能否用于SLAM?
 
           
         </h1>
@@ -308,7 +309,7 @@
                 
               
 
-              <time title="Created: 2021-01-31 14:49:51 / Modified: 16:24:33" itemprop="dateCreated datePublished" datetime="2021-01-31T14:49:51+08:00">2021-01-31</time>
+              <time title="Created: 2021-01-31 14:49:51 / Modified: 18:47:34" itemprop="dateCreated datePublished" datetime="2021-01-31T14:49:51+08:00">2021-01-31</time>
             </span>
           
             
@@ -317,7 +318,7 @@
           
 
           
-            <span id="/posts/light-field-slam/" class="post-meta-item leancloud_visitors" data-flag-title="光场相机是否能用于SLAM" title="Views">
+            <span id="/posts/light-field-slam/" class="post-meta-item leancloud_visitors" data-flag-title="📝笔记：光场相机能否用于SLAM?" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -389,14 +390,14 @@
 <h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><ol>
 <li>Plenoptic flow: Closed-form visual odometry for light field cameras, IROS 2011</li>
 <li>Plenoptic cameras in real-time robotics, INT J ROBOT RES 2013</li>
-<li>From the calibration of a light-field camera to direct plenoptic odometry, 2017</li>
+<li>From the calibration of a light-field camera to direct plenoptic odometry, JSTSP 2017</li>
 <li>A Synchronized Stereo and Plenoptic Visual Odometry Dataset, arXiv 2018</li>
 <li>Direct sparse odometry, TPAMI 2018</li>
 </ol>
 <h2 id="光场提高位姿解算能力"><a href="#光场提高位姿解算能力" class="headerlink" title="光场提高位姿解算能力"></a>光场提高位姿解算能力</h2><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/lf-slam-2019-title.png"></p>
 <p>第二篇文章，作者来西工大计算机学院的王庆教授组，发表于2019年的SPIE。本文提出了LF-SLAM (light field SLAM)，与传统相机进行SLAM最大区别在于该算法将特征点重投影误差转换成了光场中的 ray-ray损失函数，提高了位姿解算的精度。</p>
 <h3 id="背景-1"><a href="#背景-1" class="headerlink" title="背景"></a>背景</h3><p>作者提到，传统相机进行SLAM，特征点匹配是稀疏的，且并不鲁棒。而不同的<strong>光场相机之间捕捉的光线信息能够为位姿解算提供更多的约束，预期能够提高位姿解算精度</strong>。</p>
-<h3 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h3><p><img alt="算法伪代码" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/lf-slam-2019-algorithm1.png"></p>
+<h3 id="创新点-1"><a href="#创新点-1" class="headerlink" title="创新点"></a>创新点</h3><p><img alt="算法伪代码" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/lf-slam-2019-algorithm1.png"></p>
 <p>本文主要探究了在光场相机的投影模型(ray-space projection model)下的位姿解算的约束形式，主要改变了SLAM中的初始化过程以及BA优化中残差表示，其贡献主要可以概括为：</p>
 <ol>
 <li>SLAM初始化中使用了光场相机的投影模型，得到初始位姿以及地图点；</li>
@@ -411,9 +412,9 @@
 <li>Ray-space projection model for light ﬁeld camera, CVPR 2019</li>
 </ol>
 <h2 id="光场提高动态场景定位鲁棒性"><a href="#光场提高动态场景定位鲁棒性" class="headerlink" title="光场提高动态场景定位鲁棒性"></a>光场提高动态场景定位鲁棒性</h2><p><img alt data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-arxiv2020-title.png"></p>
-<p>第三篇文章，作者来西北大学，主要利用光场图像合成视角图像(SAI, Synthetic Aperture Imaging)去除场景中的动态物体，本文提出的算法能够提高SLAM算法在动态场景中的鲁棒性以及定位精度。</p>
+<p>第三篇文章，作者来自西北大学，主要利用光场图像合成视角图像(SAI, Synthetic Aperture Imaging)去除场景中的动态物体，本文提出的算法能够提高SLAM算法在动态场景中的鲁棒性以及定位精度。</p>
 <h3 id="背景-2"><a href="#背景-2" class="headerlink" title="背景"></a>背景</h3><p>SLAM假设世界是静止的，然而实际上并非如此，现实世界中存在大量的动态物体，如行人/车等。动态物体会影响定位过程中的特征关联，若不进行处理，会导致定位异常。解决动态物体传统的方式包括光流/RANSAC等方式，但如果场景中的动态物体占比较大时，这些方法稍显力不能及。现有的处理方式只能使前端不去追踪被动态物体遮挡的区域，而本文想做的是用<strong>光场技术合成被遮挡的静态物体，从而使已经被遮挡的静态物体也能参与追踪</strong>。</p>
-<h3 id="创新点-1"><a href="#创新点-1" class="headerlink" title="创新点"></a>创新点</h3><p><img alt="算法框架" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-arxiv2020-fig1.png"></p>
+<h3 id="创新点-2"><a href="#创新点-2" class="headerlink" title="创新点"></a>创新点</h3><p><img alt="算法框架" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-arxiv2020-fig1.png"></p>
 <p><img alt="虚拟视角合成" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-arxiv2020-fig2.png"></p>
 <p>本文最大的贡献是改变了SLAM的输入图像质量，即通过使用光场能够生成虚拟视角的技术，恢复出被遮挡的背景物体，使得图像中去除了动态物体的干扰，进而保证后续追踪建图的鲁棒性以及精度。核心算法是光场虚拟视角技术，在这个过程中需要对来自$K$个相机的图像进行语义分割（本文使用了Mask R-CNN）以及进行深度估计。然后通过下面的两个公式合成虚拟视角图像。</p>
 <script type="math/tex; mode=display">x^{k}=\pi_{k}\left[R_{k} \mid t_{k}\right] \pi_{r e f}^{-1}\left(x^{r e f}, d^{r e f}\right)</script><script type="math/tex; mode=display">I^{s}=\frac{\sum I\left(x^{k}\right) *\left(s^{k}=\text { static }\right)}{\sum\left(s^{k}=\text { static }\right)}</script><p>其中，第一个公式表示2D点从参考帧到目标帧$k$的投影，即得到在目标帧上的投影$x^k$。这样的话只要知道参考帧图像上哪些地方是静态的，就可以通过第二个公式进行加权合成一张无动态物体遮挡的虚拟图。</p>
@@ -424,7 +425,7 @@
 <p><img alt="动态场景下算法精度对比" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-arxiv2020-tab1.png"></p>
 <p><img alt="动态场景下算法轨迹对比" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-arxiv2020-fig6.png"></p>
 <h3 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h3><p>本文思路较为简单，通过语义分割以及光场视角合成技术实现对SLAM前端输入图像中动态物体的抑制，保证SLAM拥有更高的鲁棒性及精度。</p>
-<p>实际上，本文的核心是通过<strong>多相机阵列</strong>的方式解决了动态物体的干扰，即使一个视角被动态物体遮挡，其它视角也能看到被遮挡物，因而遮挡区域的特征追踪就不成问题了。作者将多相机阵列建模成光场的双平面模型合成虚拟新的视角，这实际上就是近几年研究较多的光场相机去遮挡要做的。注意到本文通过多相机阵列实现了光场采集系统，相机间的距离远远大于微透镜阵列光场相机虚拟视角之间的距离，这使得前者并不是所有的视角都被动态物体遮挡，而后者全部虚拟视角都被遮挡，因而<strong>微透镜阵列光场相机无法胜任去遮挡任务</strong>。</p>
+<p>实际上，本文的核心是通过<strong>多相机阵列</strong>的方式解决了动态物体的干扰，即使一个视角被动态物体遮挡，其它视角也能看到被遮挡物，因而遮挡区域的特征追踪就不成问题了。作者将多相机阵列建模成光场的双平面模型合成虚拟视角，这实际上就是近几年研究较多的光场相机去遮挡要做的。注意到本文通过多相机阵列实现了光场采集系统，相机间的距离远远大于微透镜阵列光场相机虚拟视角之间的距离，这使得前者并不是所有的视角都被动态物体遮挡，而后者全部虚拟视角都被遮挡，因而<strong>微透镜阵列光场相机无法胜任去遮挡任务</strong>。</p>
 <p>这里顺便提一下，《<strong>Real-time Light Field Processing for Autonomous Robotics</strong>》中也采用了类似的线形相机阵列光场采集设备<strong>实现遮挡物去除/图像低照度增强/去除高光反射以及去雾</strong>的功能。这些应用预期可辅助视觉SLAM的定位与建图。</p>
 <p><img alt="数据采集设备:5个相机+2个雷达" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-iros2018-fig1.png"></p>
 <p><img alt="仿真实验表明5个线性排列的相机去遮挡效果尚可" data-src="https://vincentqin.gitee.io/blogresource-5/light-field-slam/light-field-dyna-iros2018-fig7.png"></p>
@@ -436,7 +437,7 @@
 <li>Efﬁcient large-scale stereo matching, ACCV 2010</li>
 </ol>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上内容列举了几个关于光场技术与SLAM结合的手段，从现有手段来看，光场能够在一定程度上<strong>辅助单目SLAM恢复尺度/提供位姿解算更多约束/去除场景动态物体，去高光/低照度图像增强以及去雾</strong>等，SLAM在以上措施的加持下能够恢复尺度，亦或提高定位鲁棒性以及精度。但从解决问题的角度来看，动态物体问题可以用广角或鱼眼相机进行缓解，单目无尺度问题可以用单目+惯性导航或者双目来解决。多传感器融合进行是目前SLAM的趋势，多相机阵列的光场设备在解决以上问题上并非最好的选择，但不可否认的是以上手段都是不错的尝试。</p>
-<p>回到文章一开始提到问题：光场是否能用于SLAM？我的结论是：<strong>可作研究但并不实用</strong>。光场的理论可为多相机建模提供思路，利用光场阐述多相机间的成像之间的联系，辅助算法设计。但传输及处理多相机数据本身将付出极大的算力/时间成本，违背了实时定位建图的初衷，不过对实时性要求不高的三维重建任务，光场似乎有用武之地。总之，光场只是一种建模手段，而非为了用而用，否则得不偿失。</p>
+<p>回到文章一开始提到问题：光场是否能用于SLAM？我的结论是：<strong>可做研究但并不实用</strong>。​这个结论具有时效性，不能排除一切来自未来的可能性。光场的理论可为多相机建模提供思路，利用光场阐述多相机间的成像之间的联系，辅助算法设计。但传输及处理多相机数据本身将付出极大的算力/时间成本，违背了实时定位建图的初衷，不过对实时性要求不高的三维重建任务，光场似乎有用武之地。总之，光场只是一种建模手段，而非为了用而用，否则得不偿失。</p>
 <p><em>注：以上看法仅代表我个人观点，仅作参考。</em></p>
 <p><img alt data-src="https://cdn.jsdelivr.net/gh/Vincentqyw/blog-resources/wechat-qcode.gif"></p>
 
@@ -455,7 +456,7 @@
     <strong>Post author:  </strong>Vincent Qin</li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://www.vincentqin.tech/posts/light-field-slam/" title="光场相机是否能用于SLAM">https://www.vincentqin.tech/posts/light-field-slam/</a>
+    <a href="https://www.vincentqin.tech/posts/light-field-slam/" title="📝笔记：光场相机能否用于SLAM?">https://www.vincentqin.tech/posts/light-field-slam/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
@@ -465,6 +466,19 @@
       
 
       <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+            
+              <a href="/tags/光场/" rel="tag"># 光场</a>
+            
+              <a href="/tags/Light-Field/" rel="tag"># Light Field</a>
+            
+          </div>
+        
 
         
 
@@ -531,7 +545,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#光场辅助SLAM恢复尺度"><span class="nav-number">1.</span> <span class="nav-text">光场辅助SLAM恢复尺度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创新点"><span class="nav-number">1.2.</span> <span class="nav-text">创新点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键结果"><span class="nav-number">1.3.</span> <span class="nav-text">关键结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">1.4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献"><span class="nav-number">1.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光场提高位姿解算能力"><span class="nav-number">2.</span> <span class="nav-text">光场提高位姿解算能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景-1"><span class="nav-number">2.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#贡献"><span class="nav-number">2.2.</span> <span class="nav-text">贡献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键结果-1"><span class="nav-number">2.3.</span> <span class="nav-text">关键结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论-1"><span class="nav-number">2.4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献-1"><span class="nav-number">2.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光场提高动态场景定位鲁棒性"><span class="nav-number">3.</span> <span class="nav-text">光场提高动态场景定位鲁棒性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景-2"><span class="nav-number">3.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创新点-1"><span class="nav-number">3.2.</span> <span class="nav-text">创新点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键结果-2"><span class="nav-number">3.3.</span> <span class="nav-text">关键结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论-2"><span class="nav-number">3.4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献-2"><span class="nav-number">3.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#光场辅助SLAM恢复尺度"><span class="nav-number">1.</span> <span class="nav-text">光场辅助SLAM恢复尺度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创新点"><span class="nav-number">1.2.</span> <span class="nav-text">创新点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键结果"><span class="nav-number">1.3.</span> <span class="nav-text">关键结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">1.4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献"><span class="nav-number">1.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光场提高位姿解算能力"><span class="nav-number">2.</span> <span class="nav-text">光场提高位姿解算能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景-1"><span class="nav-number">2.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创新点-1"><span class="nav-number">2.2.</span> <span class="nav-text">创新点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键结果-1"><span class="nav-number">2.3.</span> <span class="nav-text">关键结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论-1"><span class="nav-number">2.4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献-1"><span class="nav-number">2.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光场提高动态场景定位鲁棒性"><span class="nav-number">3.</span> <span class="nav-text">光场提高动态场景定位鲁棒性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景-2"><span class="nav-number">3.1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创新点-2"><span class="nav-number">3.2.</span> <span class="nav-text">创新点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关键结果-2"><span class="nav-number">3.3.</span> <span class="nav-text">关键结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论-2"><span class="nav-number">3.4.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献-2"><span class="nav-number">3.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
         
       </div>
       <!--/noindex-->
