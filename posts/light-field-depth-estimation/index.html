@@ -67,7 +67,7 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文将介绍光场领域进行深度估计的相关研究。In this post, I’ll introduce some depth estimation algorithms using Light field information. Here is some of the code.研究生阶段的研究方向是光场深度信息的恢复。再此做一些总结，以便于让大家了解光场数据处理的一般步">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-03-31T14:53:32.586Z">
+<meta property="og:updated_time" content="2021-03-06T10:42:21.395Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Light Field Depth Estimation">
 <meta name="twitter:description" content="本文将介绍光场领域进行深度估计的相关研究。In this post, I’ll introduce some depth estimation algorithms using Light field information. Here is some of the code.研究生阶段的研究方向是光场深度信息的恢复。再此做一些总结，以便于让大家了解光场数据处理的一般步">
@@ -320,7 +320,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-31 22:53:32" itemprop="dateModified" datetime="2020-03-31T22:53:32+08:00">2020-03-31</time>
+                <time title="Modified: 2021-03-06 18:42:21" itemprop="dateModified" datetime="2021-03-06T18:42:21+08:00">2021-03-06</time>
               </span>
             
           
@@ -470,7 +470,7 @@ C_G(x,l) = \sum_{u \in V}\sum_{x \in R_x}\beta (u){\min\left( Diff_x(u_c,u,x,l),
     </tr>
 
     <tr>
-        <td>Wanner et al. <sup><a href="#fn_14" id="reffn_14">14</a></sup> <sup><a href="#fn_26" id="reffn_26">26</a></sup></td>
+        <td>Wanner et al. <sup><a href="#fn_14" id="reffn_14">14</a></sup> <sup><a href="#fn_33" id="reffn_33">33</a></sup> <sup><a href="#fn_26" id="reffn_26">26</a></sup></td>
         <td>Total variation(TV)</td>
     </tr>
 
@@ -486,7 +486,7 @@ C_G(x,l) = \sum_{u \in V}\sum_{x \in R_x}\beta (u){\min\left( Diff_x(u_c,u,x,l),
 
 </table>
 
-<p>在以上表格中最具代表性的算法是由wanner<sup><a href="#fn_14" id="reffn_14">14</a></sup>提出的结构张量法得到EPI图中线的斜率，如下公式所示：</p>
+<p>在以上表格中最具代表性的算法是由wanner<sup><a href="#fn_33" id="reffn_33">33</a></sup>提出的结构张量法得到EPI图中线的斜率，如下公式所示：</p>
 <script type="math/tex; mode=display">
  J=
  \left[
@@ -715,6 +715,9 @@ L(x,y,0,0)=L(x+d(x,y)*u,y+d(x,y)*u \tan \theta,u,u \tan \theta).\tag{26}</script
 </blockquote>
 <blockquote id="fn_32">
 <sup>32</sup>. Luo, Wenjie, A. G. Schwing, and R. Urtasun. “<a href="https://vincentqin.gitee.io/blogresource-1/light-field-depth-estimation/32.Efficient%20deep%20learning%20for%20stereo%20matching.pdf" target="_blank" rel="noopener">Efficient Deep Learning for Stereo Matching</a>.” IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2016:5695-5703.<a href="#reffn_32" title="Jump back to footnote [32] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_33">
+<sup>33</sup>. S. Wanner and B. Goldluecke. “<a href="http://publications.lightfield-analysis.net/WG12_cvpr.pdf" target="_blank" rel="noopener">Globally Consistent Depth Labeling of 4D Light Fields</a>.” 2012 IEEE Conference on Computer Vision and Pattern Recognition, Providence, RI, USA, 2012, pp. 41-48, doi: 10.1109/CVPR.2012.6247656.<a href="#reffn_33" title="Jump back to footnote [33] in the text."> &#8617;</a>
 </blockquote>
 
     </div>
