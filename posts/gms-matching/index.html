@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是&quot;GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence&quot;。同之前介绍的外点滤除算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/gms-matching/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的GMS，论文名是&quot;GMS: Grid-based Motion Statistics for Fast, Ultra-robust Feature Correspondence&quot;。同之前介绍的外点滤除算法AdaLAM的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-05T15:40:08.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:39:31.042Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="Matching">
+<meta property="article:tag" content="Paper">
+<meta property="article:tag" content="图像匹配">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/gms-matching/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/gms-matching/","path":"posts/gms-matching/","title":"📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E6%9C%89%E6%8A%80%E6%9C%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">原有技术问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%8A%80%E6%9C%AF%E5%88%9B%E6%96%B0%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">新技术创新点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%BB%E8%A6%81%E6%A1%86%E6%9E%B6%E4%BB%A5%E5%8F%8A%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">新技术主要框架以及关键技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E5%8A%A8%E7%BB%9F%E8%AE%A1"><span class="nav-number">3.1.</span> <span class="nav-text">运动统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%BD%91%E6%A0%BC%E7%9A%84%E6%A1%86%E6%9E%B6"><span class="nav-number">3.2.</span> <span class="nav-text">基于网格的框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E5%8A%A8%E6%A0%B8"><span class="nav-number">3.3.</span> <span class="nav-text">运动核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%B0%BA%E5%BA%A6%E5%A4%9A%E6%97%8B%E8%BD%AC"><span class="nav-number">3.4.</span> <span class="nav-text">多尺度+多旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E5%B0%BA%E5%BA%A6"><span class="nav-number">3.4.1.</span> <span class="nav-text">多尺度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%97%8B%E8%BD%AC"><span class="nav-number">3.4.2.</span> <span class="nav-text">多旋转</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-number">3.5.</span> <span class="nav-text">伪代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">3.6.</span> <span class="nav-text">局限性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%8B%E8%BD%AC%E4%BB%A5%E5%8F%8A%E5%B0%BA%E5%BA%A6%E5%8F%98%E5%8C%96"><span class="nav-number">4.1.</span> <span class="nav-text">旋转以及尺度变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E7%B2%BE%E7%A1%AE%E7%8E%87%E4%B8%8E%E5%8F%AC%E5%9B%9E%E7%8E%87"><span class="nav-number">4.2.</span> <span class="nav-text">高精确率与召回率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E5%BF%AB%E9%80%9F"><span class="nav-number">4.3.</span> <span class="nav-text">算法快速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E6%95%88%E8%A7%A3%E7%AE%97%E4%BD%8D%E5%A7%BF"><span class="nav-number">4.4.</span> <span class="nav-text">高效解算位姿</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E5%88%A9%E4%BA%8Eslam%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.5.</span> <span class="nav-text">有利于SLAM初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E9%89%B4%E6%84%8F%E4%B9%89"><span class="nav-number">5.</span> <span class="nav-text">借鉴意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/gms-matching/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-09-05 23:40:08" itemprop="dateCreated datePublished" datetime="2020-09-05T23:40:08+08:00">2020-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:39:31" itemprop="dateModified" datetime="2022-09-05T02:39:31+08:00">2022-09-05</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/gms-matching/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/gms-matching/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/gms-matching/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note default"><p>今天要介绍的文章是边佳旺在CVPR2017以及IJCV2020发表的<code>GMS</code>，论文名是"<strong>GMS:
+Grid-based Motion Statistics for Fast, Ultra-robust Feature
+Correspondence</strong>"。同之前介绍的外点滤除算法<code>AdaLAM</code>的目的相同，该算法能够实现对初始匹配的筛选，以减少错误匹配。</p>
+</div>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-1.png" /></p>
+<span id="more"></span>
+<p>(a)图是ORB+Lowe Ratio的结果，有很多错误的匹配；(b)图是ORB+Lowe
+Ratio+GMS的结果，匹配效果明显变好。 首先祭出代码 <a
+target="_blank" rel="noopener" href="https://github.com/JiawangBian/GMS-Feature-Matcher">Repo</a>：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/JiawangBian/GMS-Feature-Matcher"><img data-src="https://github-readme-stats.vercel.app/api/pin/?username=JiawangBian&amp;repo=GMS-Feature-Matcher&amp;show_owner=false&amp;theme=default"
+alt="ReadMe Card" /></a></p>
+<h2 id="原有技术问题">原有技术问题</h2>
+<p>原有算法复杂，为了达到好的效果，设计的算法比较复杂，导致运行速度慢，性价比低，无法部署在实时性要求较高的系统中。</p>
+<h2 id="新技术创新点">新技术创新点</h2>
+<ol type="1">
+<li>将运动平滑约束转换为剔除错误匹配的统计量，实验证明该算法能够应对较为棘手的场景；</li>
+<li>提出了一种高效的基于网格的得分估计器，使得该算法能够用于实时特征匹配；</li>
+<li>能够取得比Lowe
+Ratio更好的特征匹配筛选效果，该结论已经在传统特征如SIFT，SURF以及CNN特征如LIFT上得到验证；</li>
+</ol>
+<h2 id="新技术主要框架以及关键技术点">新技术主要框架以及关键技术点</h2>
+<p>首先给出第一个假设：</p>
+<blockquote>
+<p>运动平滑性：真实匹配的小邻域内匹配通常是在三维空间中的同一块区域。同样地，一个错误匹配的邻域内的匹配通常是几何上不同的三维位置。</p>
+</blockquote>
+<p>这个假设告诉我们：正确匹配的邻域内有多个支持它的匹配，而错误匹配的邻域内支持它的匹配是很少的。<strong>这里其实隐含着一个逻辑：作者通过观察发现，正确匹配的邻域内匹配的数量多的概率就会很大，反之则少；那么根据贝叶斯法则，那些匹配对邻域内有很多匹配的匹配关系有很大概率是正确匹配。</strong>
+一句话：<strong><font color="red">正确匹配周围会有较多的匹配去支持它，而错误的匹配周围支持它的匹配很少</font></strong>。</p>
+<h3 id="运动统计">运动统计</h3>
+<p>输入图像为<span
+class="math inline">\(\{I_1,I_2\}\)</span>，它们分别有<span
+class="math inline">\(\{N,M\}\)</span>个特征匹配；</p>
+<p><span class="math inline">\(C=\left\{c_{1}, c_{2}, \ldots, c_{i},
+\ldots, c_{N}\right\}\)</span>表示图<span
+class="math inline">\(I_a\)</span>到图<span
+class="math inline">\(I_b\)</span>的最近邻匹配；</p>
+<p>其中<span class="math inline">\(c_{i}\)</span>表示像素点<span
+class="math inline">\(p_i\)</span>与<span
+class="math inline">\(q_i\)</span>的匹配；定义<span
+class="math inline">\(c_{i}\)</span>的邻域为： <span
+class="math display">\[
+N_{i}=\left\{c_{j} \mid c_{j} \in C, c_{j} \neq c_{i}, d\left(p_{i},
+p_{j}\right)\right\},
+\]</span> 以及它的相似邻域可以表示为： <span class="math display">\[
+S_{i}=\left\{c_{j} \mid c_{j} \in N_{i}, d\left(q_{i},
+q_{j}\right)&lt;r_{2}\right\},
+\]</span> 其中<span
+class="math inline">\(d(·,·)\)</span>表示两点之间的欧式距离，<span
+class="math inline">\(r_1\)</span>和<span
+class="math inline">\(r_2\)</span>为距离阈值，对于<span
+class="math inline">\(\left|S_{i}\right|\)</span>，它表示在<span
+class="math inline">\(S_{i}\)</span>中元素的个数，即匹配<span
+class="math inline">\(c_{i}\)</span>的<code>运动支持</code>。
+如下图所示：黄圈区域即表示邻域<span
+class="math inline">\(N_i\)</span>。支持它的匹配对为<span
+class="math inline">\(S_i=2\)</span>，错误匹配没有支持它的匹配对，即<span
+class="math inline">\(S_j=0\)</span>。那么我们就可以通过统计的方式知道哪些匹配是正确的，哪些是错误的。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-2.png" /></p>
+<p>由上文我们知道：统计支持域内的匹配数量就能够判别正确/错误匹配。于是我们可以对<span
+class="math inline">\(\left|S_{i}\right|\)</span>建模，如下：</p>
+<p><span class="math display">\[\left|S_{i}\right|
+\sim\left\{\begin{array}{ll}
+B\left(\left|N_{i}\right|, t\right), &amp; \text { if } c_{i} \text { is
+correct } \\
+B\left(\left|N_{i}\right|, \epsilon\right), &amp; \text { if } c_{i}
+\text { is wrong }
+\end{array}\right.\]</span></p>
+<p>其中<span class="math inline">\(B(·,·)\)</span>表示二项分布，<span
+class="math inline">\(\left|N_{i}\right|\)</span>表示邻域<span
+class="math inline">\(N_{i}\)</span>内匹配对的数量，<span
+class="math inline">\(t\)</span>和<span
+class="math inline">\(\epsilon\)</span>分别表示正确/错误匹配被其某个邻域窗口匹配支持的概率。</p>
+<p>进一步解释：<span
+class="math inline">\(t\)</span>是受特征质量的控制，即接近匹配的正确率。<span
+class="math inline">\(\epsilon\)</span>通常很小，因为错误匹配几乎随机分布在图像范围内。上式的期望为：</p>
+<p><span
+class="math display">\[E_{\left|S_{i}\right|}=\left\{\begin{array}{ll}
+E_{t}=\left|N_{i}\right| \cdot t, &amp; \text { if } c_{i} \text { is
+correct } \\
+E_{f}=\left|N_{i}\right| \cdot \epsilon, &amp; \text { if } c_{i} \text
+{ is wrong }
+\end{array}\right.\]</span></p>
+<p>方差为：</p>
+<p><span
+class="math display">\[V_{\left|S_{i}\right|}=\left\{\begin{array}{ll}
+V_{t}=\left|N_{i}\right| \cdot t \cdot(1-t), &amp; \text { if } c_{i}
+\text { is correct } \\
+V_{f}=\left|N_{i}\right| \cdot \epsilon \cdot(1-\epsilon), &amp; \text {
+if } c_{i} \text { is wrong }
+\end{array}\right.\]</span></p>
+<p>于是真假匹配的可区分度被表示为如下形式（均值差异比方差之和）：</p>
+<p><span
+class="math display">\[P=\frac{\left|E_{t}-E_{f}\right|}{\sqrt{V_{t}}+\sqrt{V_{f}}}=\frac{\left|N_{i}\right|
+\cdot(t-\epsilon)}{\sqrt{\left|N_{i}\right| \cdot t
+\cdot(1-t)}+\sqrt{\left|N_{i}\right| \cdot \epsilon
+\cdot(1-\epsilon)}}\]</span></p>
+<p>上式告诉我们<span class="math inline">\(P \propto
+\sqrt{\left|N_{i}\right|}\)</span>，如果<span
+class="math inline">\(\left|N_{i}\right| \rightarrow
+\infty\)</span>时，<span class="math inline">\(P \rightarrow
+\infty\)</span>。也就是说，<strong>当图像中的匹配点越多，此时正确与错误匹配的可区分度就越强</strong>！同时，即使是在<span
+class="math inline">\(t\)</span>比<span
+class="math inline">\(\epsilon\)</span>稍微大一丁点的情况下，也可以通过增多特征点的数量来弥补正确匹配与错误匹配区分程度不足的缺点；当然，也可以通过提高特征质量<span
+class="math inline">\(t\)</span>来增加正确/错误匹配之间的区分度。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-6.png" /></p>
+<p>上图展示了作者在Oxford Affine
+Dataset上验证模型合理性的示意图。利用SIFT特征进行匹配，根据真值标记出正确以及错误匹配。统计每个匹配所在小邻域内的匹配数量。可以发现，正确匹配的支持域得分明显高于错误匹配，即使在非常困难的匹配序列上，该现象仍然存在。</p>
+<p>因此，可通过对<span
+class="math inline">\(\left|S_{i}\right|\)</span>设置阈值来判定<span
+class="math inline">\(c_{i}\)</span>是正确或者错误匹配：</p>
+<p><span class="math display">\[c_{i} \in\left\{\begin{array}{ll}
+\mathcal{T}, &amp; \text { if }\left|S_{i}\right|&gt;\tau_{i} \\
+\mathcal{F}, &amp; \text { otherwise }
+\end{array}\right.\]</span></p>
+<p>上式中，<span class="math inline">\(\mathcal{T}\)</span>以及<span
+class="math inline">\(\mathcal{F}\)</span>分别表示正确/错误匹配集合，<span
+class="math inline">\(\tau_{i}\)</span>的阈值被设置为：</p>
+<p><span class="math display">\[\tau_{i}=\alpha
+\sqrt{\left|N_{i}\right|}\]</span></p>
+<p>其中<span
+class="math inline">\(\alpha\)</span>为超参数，经验值为4~6。</p>
+<h3 id="基于网格的框架">基于网格的框架</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-3.png" /></p>
+<p>看到这里，大家肯定有一个疑问：如何高效地实现上述算法呢？难道对每一个匹配画个圈圈，然后统计圈圈内的匹配数？当然不是，本文设计了一种基于划分网格的算法对上述算法进行加速。将两幅图像划分为多个不重合的网格：<span
+class="math inline">\(\mathcal{G}_{1}\)</span>以及<span
+class="math inline">\(\mathcal{G}_{2}\)</span>，<span
+class="math inline">\(c_{i}\)</span>表示为落到网格<span
+class="math inline">\(G_a\)</span>和<span
+class="math inline">\(G_b\)</span>中的一个匹配对，如上图中的一个红线段。于是邻域（表示在网格网格<span
+class="math inline">\(G_a\)</span>中的匹配）被重新定义为：</p>
+<p><span class="math display">\[N_{i}=\left\{c_{j} \mid c_{j} \in C_{a},
+c_{i} \neq c_{j}\right\},\]</span></p>
+<p>相似邻域被重新定义为：</p>
+<p><span class="math display">\[S_{i}=\left\{c_{j} \mid c_{j} \in C_{a
+b}, c_{i} \neq c_{j}\right\},\]</span></p>
+<p>上面的两个式子中，<span
+class="math inline">\(G_{a}\)</span>表示某个网格，<span
+class="math inline">\(C_{a}\)</span>表示落在<span
+class="math inline">\(G_{a}\)</span>中的匹配对，<span
+class="math inline">\(C_{ab}\)</span>表示同时落在<span
+class="math inline">\(G_{a}\)</span>和<span
+class="math inline">\(G_{b}\)</span>中的匹配对。换句话说，本文将落在同一个网格中的匹配当作<strong>邻域</strong>，将同时落在两个网格中的匹配称为<strong>相似邻域</strong>，即<code>cell-pair</code>。</p>
+<p>注意：一个<code>cell-pair</code>中的匹配满足运动平滑性假设，所以在判断匹配关系是正确还是错误时，仅需要判定一个<code>cell-pair</code>中的所有匹配是否正确即可，无需逐个匹配判断。此外，不需要确定所有可能的<code>cell-pair</code>，而是只检查与第一个图像网格匹配数量最多的一个<code>cell-pair</code>即可。</p>
+<h3 id="运动核">运动核</h3>
+<p>如果网格很小，则很少邻域信息将被考虑， 这会降低算法性能。
+但是，如果网格很大，则将包括更多不正确的对应关系。为解决这个矛盾，我们将网格大小设置为较小以提高准确性，并提出运动内核以考虑更多邻域信息。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-4.png" /></p>
+<p>考虑了原有网格邻域的8个网格，构成一个更大的网格<span
+class="math inline">\(\left(C_{a^{1} b^{1}}, \ldots, C_{a^{9}
+b^{9}}\right)\)</span>。</p>
+<p>于是我们从新定义了邻域： <span
+class="math display">\[N_{i}=\left\{c_{j} \mid c_{j} \in C_{A}, c_{i}
+\neq c_{j}\right\}\]</span> 其中<span
+class="math inline">\(C_{A}=C_{a^{1}} \cup C_{a^{2}} \cup C_{a^{3}}
+\ldots \cup C_{a^{9}}\)</span>； 重新定义相似邻域： <span
+class="math display">\[S_{i}=\left\{c_{j} \mid c_{j} \in C_{A B}, c_{i}
+\neq c_{j}\right\}\]</span> 其中：<span class="math inline">\(C_{A
+B}=C_{a^{1} b^{1}} \cup C_{a^{2} b^{2}} \cup C_{a^{3} b^{3}} \ldots \cup
+C_{a^{9} b^{9}}\)</span>。</p>
+<h3 id="多尺度多旋转">多尺度+多旋转</h3>
+<p>为了应对匹配过程中的尺度与旋转问题，本文提出了多尺度以及多旋转策略。</p>
+<h4 id="多尺度">多尺度</h4>
+<p>固定一个图像网格，假设网格大小为<span class="math inline">\(n \times
+n\)</span>，改变另一个图像的网格大小为<span class="math inline">\((n
+\cdot \alpha) \times(n \cdot \alpha)\)</span>，其中有5个候选的<span
+class="math inline">\(\alpha\)</span>取值，分别为<span
+class="math inline">\(\left\{\frac{1}{2}, \frac{\sqrt{2}}{2}, 1,
+\sqrt{2}, 2\right\}\)</span>。
+在不同尺度的网格上运行GMS算法，然后统计最好的匹配结果。如果场景的尺度发生较大改变，此时可以设置更多的候选值或者增大<span
+class="math inline">\(\alpha\)</span>。</p>
+<h4 id="多旋转">多旋转</h4>
+<p>利用旋转运动核模拟不同方向的旋转，如下图所示，固定<span
+class="math inline">\(C_A\)</span>，对<span
+class="math inline">\(C_B\)</span>按照顺时针旋转，这样可以得到8个运动核。然后利用GMS算法在所有的运动核上，然后选择最好的结果（选择匹配数量最多那个）。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-5.png" /></p>
+<h3 id="伪代码">伪代码</h3>
+<p>综上，算法伪代码如下：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/algorithm-1.png" /></p>
+<h3 id="局限性">局限性</h3>
+<ol type="1">
+<li>首先，算法假设图像运动是分段平滑的时，在违反假设的区域，例如图像边界，性能可能退化；</li>
+<li>其次，在视觉上相似但空间位置不同的图像区域，算法性能受到限制。此问题通常发生在具有大量重复纹理的场景中；</li>
+<li>最后，由于算法使用了网格化对图像进行处理，算法判定正确的匹配网格中仍然存在不准确匹配。</li>
+</ol>
+<h2 id="实验">实验</h2>
+<h3 id="旋转以及尺度变化">旋转以及尺度变化</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-7.png" /></p>
+<h3 id="高精确率与召回率">高精确率与召回率</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-8.png" /></p>
+<h3 id="算法快速">算法快速</h3>
+<p>GMS能够在PC端速度2ms，multi-scale(GMS-S)以及multi-rotation(GMS-R)会增加一定的耗时。
+<img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-11.png" /></p>
+<h3 id="高效解算位姿">高效解算位姿</h3>
+<p>求解位姿速度快，且位姿精确。 <img data-src="https://vincentqin.tech/blog-resources/gms-matching/fig-10.png" /></p>
+<h3 id="有利于slam初始化">有利于SLAM初始化</h3>
+<p>集成到SLAM也可获得较好的结果（该实验不够充分，仅测试了将GMS集成到SLAM初始化的阶段，为了展示GMS能够更快/更好的进行初始化，同时能够产生较多的地图点）。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/gms-matching/table-6.png" /></p>
+<h2 id="借鉴意义">借鉴意义</h2>
+<ol type="1">
+<li>本文提供了一种高效/快速的外点滤除算法，能够在PC端实现实现实时滤除外点；</li>
+<li>本算法已经被集成到OpenCV中，接口名为<code>matchGMS()</code>，可直接调用；</li>
+<li>本算法可用于SLAM/SFM等领域，可提高位姿解算的精度以及速度；</li>
+<li>（局限）本算法需要提取较多的特征点以提高正确匹配与错误匹配的可区分度，若特征匹配较少；该算法性能会有一定下降；</li>
+<li>（局限）由于仅统计特征匹配数量，在重复纹理条件下该算法的性能也会下降；</li>
+</ol>
+<h2 id="附录">附录</h2>
+<ol type="1">
+<li>项目地址：<a
+target="_blank" rel="noopener" href="http://jwbian.net/gms">http://jwbian.net/gms</a></li>
+<li>论文：<a
+target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/gms-matching/gms-matching-CVPR2017.pdf">CVPR
+2017</a>，<a
+target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/gms-matching/gms-matching-IJCV2020.pdf">IJCV
+2020</a></li>
+<li>讲义：<a
+target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/gms-matching/gms-matching-slides.pdf">稳定的图像特征匹配以及快速的GMS方案</a></li>
+<li>视频资料：<a
+target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Yx411h7Fe">Bilibili</a>，<a
+target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=3SlBqspLbxI&amp;feature=youtu.be">Youtube</a></li>
+</ol>
+<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/gms-matching/" title="📝笔记：GMS一种基于运动统计的快速鲁棒特征匹配过滤算法">https://www.vincentqin.tech/posts/gms-matching/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/Matching/" rel="tag"># Matching</a>
+              <a href="/tags/Paper/" rel="tag"># Paper</a>
+              <a href="/tags/%E5%9B%BE%E5%83%8F%E5%8C%B9%E9%85%8D/" rel="tag"># 图像匹配</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/westlake/" rel="prev" title="🌡️秋天到了，还是很热">
+                  <i class="fa fa-chevron-left"></i> 🌡️秋天到了，还是很热
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/realcat-mango/" rel="next" title="🐈芒果驾到">
+                  🐈芒果驾到 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/gms-matching/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

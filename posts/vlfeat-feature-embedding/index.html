@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文使用 vlfeat 的 Matlab 接口实现 BOW 以及 VLAD。另外，补充了有关NetVLAD的介绍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：使用vlfeat的Matlab接口简单实现BOW以及VLAD">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/vlfeat-feature-embedding/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文使用 vlfeat 的 Matlab 接口实现 BOW 以及 VLAD。另外，补充了有关NetVLAD的介绍。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-23T16:42:53.000Z">
+<meta property="article:modified_time" content="2022-05-17T14:32:52.000Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="Matlab">
+<meta property="article:tag" content="BOW">
+<meta property="article:tag" content="VLAD">
+<meta property="article:tag" content="vlfeat">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/vlfeat-feature-embedding/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/vlfeat-feature-embedding/","path":"posts/vlfeat-feature-embedding/","title":"📝笔记：使用vlfeat的Matlab接口简单实现BOW以及VLAD"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：使用vlfeat的Matlab接口简单实现BOW以及VLAD | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bow"><span class="nav-number">1.</span> <span class="nav-text">BOW</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E5%8D%95%E8%AF%8D%E7%89%B9%E5%BE%81"><span class="nav-number">1.1.</span> <span class="nav-text">字典&#x2F;单词&#x2F;特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0bow"><span class="nav-number">1.2.</span> <span class="nav-text">如何得到BoW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%92%E6%8E%92%E7%B4%A2%E5%BC%95"><span class="nav-number">1.3.</span> <span class="nav-text">倒排索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vlad"><span class="nav-number">2.</span> <span class="nav-text">VLAD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bow%E5%92%8Cvlad%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">BoW和VLAD代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%95%B0%E6%8D%AE"><span class="nav-number">3.1.</span> <span class="nav-text">虚拟数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%9F%E5%AE%9E%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.</span> <span class="nav-text">真实数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-number">3.2.1.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.2.2.</span> <span class="nav-text">查询</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netvlad"><span class="nav-number">4.</span> <span class="nav-text">NetVLAD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E4%BB%A3%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">推理代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loss%E9%A1%B9"><span class="nav-number">4.2.</span> <span class="nav-text">Loss项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/vlfeat-feature-embedding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：使用vlfeat的Matlab接口简单实现BOW以及VLAD | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：使用vlfeat的Matlab接口简单实现BOW以及VLAD
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-03-24 00:42:53" itemprop="dateCreated datePublished" datetime="2022-03-24T00:42:53+08:00">2022-03-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-05-17 22:32:52" itemprop="dateModified" datetime="2022-05-17T22:32:52+08:00">2022-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Image-Retrieval/" itemprop="url" rel="index"><span itemprop="name">Image Retrieval</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/vlfeat-feature-embedding/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/vlfeat-feature-embedding/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/vlfeat-feature-embedding/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note default"><p>本文使用 <a target="_blank" rel="noopener" href="https://www.vlfeat.org/index.html">vlfeat</a> 的
+<code>Matlab</code> 接口实现 <code>BOW</code> 以及
+<code>VLAD</code>。另外，补充了有关NetVLAD的介绍。</p>
+</div>
+<span id="more"></span>
+<h2 id="bow">BOW</h2>
+<p>BoW: Bag of Words，中译“词袋”，BoW算法即Bag of
+Words，本是用于文本检索，后被应用于图像检索，和SIFT等出色的局部特征描述符共同使用（所以有时也叫Bag
+of
+Feature，BOF），表现出比暴力匹配效率更高的图像检索效果，它是直接使用K-means对局部描述符进行聚类，获得一定数量的视觉单词，然后量化再统计词频或TF-IDF加权之后的权重系数。</p>
+<p><font color="red">D</font>BoW(2/3): 这是 BoW 的一种 C++ 实现，D
+是作者的名字首字母，以下是作者的回复：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-1.png" /></p>
+<p>BOW参考文献 <a
+target="_blank" rel="noopener" href="https://www.robots.ox.ac.uk/~vgg/publications/papers/sivic03.pdf">Video
+Google: A Text Retrieval Approach to Object Matching in Videos</a> ,
+ICCV 2003.</p>
+<h3 id="字典单词特征">字典/单词/特征</h3>
+<ul>
+<li>字典是单词的集合，有的地方称为“码书”(codebook)</li>
+<li>一个字典里有很多“单词”</li>
+<li>一个“单词”底下”挂着”
+很多“特征”(可以想象，这些特征因“长得像”所以分在了一个单词下)</li>
+</ul>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-2.jpg" /></p>
+<p>字典，单词与特征的关系可以由下图表示。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-notion1.jpg" /></p>
+<h3 id="如何得到bow">如何得到BoW</h3>
+<p>后续的例子均以SIFT特征为例进行展开介绍。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-bow.jpg" /></p>
+<p>在计算词袋向量之前，我们需要一个训练好的字典（稍后介绍）。对于输入图像，提取SIFT特征，这里的特征指的是特征点及其对应的描述子，计算词袋向量需要的是描述子。我们在字典中查找特征描述子所在的单词，然后在该单词的频次上计数+1，图像上所有特征的描述子找到其对应单词后也就得到了单词出现频次的计数值，我们可以将这个频次称为词袋向量，维度为单词的个数。如上图所示，图像有4个特征，统计特征对应字典种单词出现的频次，这样可以得到该图像的“词袋”向量<span
+class="math inline">\(\mathbf{B} =
+[1,0,2,1,...]\)</span>，或者我们仅仅保留单词有无出现过，这样可以得到二值化的词袋向量<span
+class="math inline">\(\mathbf{B} = [1,0,1,1,...]\)</span>。</p>
+<p>不过，我们这么做的大前提是对每个单词“一视同仁”，但这是有问题的！</p>
+<p>试想一下：如果给出一个单词“了”,你能确定是它是来自哪个句子吗？恐怕很难！但是给你一个单词“龍”，你就可能非常快速地找到它的来源。所以“了”和“龍”虽然都是单词，但是它们的<strong>重要程度</strong>是不一样的。</p>
+<p>因此一个成熟的BoW应该具备如下性质：</p>
+<ul>
+<li>我们希望，我们构建的字典中单词“了”的权重比单词“龍”的权重要小些！这就需要引入逆向文件频率Inverse
+document frequency（<span
+class="math inline">\(IDF\)</span>），即构建字典时出现次数多的单词权重小些，出现次数小的单词权重大些。</li>
+<li>此外，在分类时，图像中有的单词多有的单词少，此时单词多需要增加权重，单词少要加大权重，这就是词频Term
+Frequency（<span class="math inline">\(TF\)</span>）</li>
+</ul>
+<p>对于<span class="math inline">\(IDF\)</span>：<span
+class="math inline">\(IDF_i = \log{\frac{n}{n_i}}\)</span>, 其中<span
+class="math inline">\(n\)</span>表示字典中特征总数，<span
+class="math inline">\(n_i\)</span>表示字典中单词<span
+class="math inline">\(i\)</span>中特征总数，<span
+class="math inline">\(IDF\)</span>在训练字典时就可以顺便计算得到。</p>
+<p>对于<span class="math inline">\(TF\)</span>：<span
+class="math inline">\(TF_i = \log{\frac{m_i}{m}}\)</span>, 其中<span
+class="math inline">\(m\)</span>表示图像上特征总数，<span
+class="math inline">\(m_i\)</span>表示字典中单词<span
+class="math inline">\(i\)</span>中特征总数，每一张图像的<span
+class="math inline">\(TF\)</span>都不同，需要在查询时进行计算。其实，上面例子中计算的就是词频<span
+class="math inline">\(TF\)</span>。</p>
+<p>将使用<span class="math inline">\(IDF\)</span>对<span
+class="math inline">\(TF\)</span>加权就可以得到加权后的词袋向量 <span
+class="math inline">\(\eta_i = TF_i \times IDF_i\)</span>。</p>
+<h3 id="倒排索引">倒排索引</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-bow-ivf1.jpg" /></p>
+<p>倒排索引记录了单词与图像之间的对应关系，即<span
+class="math inline">\(IVF[w_{id}] = {I_{i}}\)</span>，如对于单词<span
+class="math inline">\(w_1\)</span>，图像<span
+class="math inline">\({1,2,4...}\)</span>都有单词<span
+class="math inline">\(w_1\)</span>。于是在进行图像检索时，我们可以统计查询图像与数据库图像之间的共享单词的个数，共享单词数量多的数据库图像就是与查询图像“相似”的图像。整个过程中并没有进行图像匹配，仅以统计的方式得到了图像之间的“相似度”，这个过程是非常快速的，因而在SLAM中的重定位/闭环时经常使用。</p>
+<h2 id="vlad">VLAD</h2>
+<p>在了解了BoW的计算过程后，VLAD (Vector of Locally Aggregated
+Descriptor)的计算过程也就非常简单了。VLAD将属于同一个单词的所有特征与单词之间的距离差异（residual
+vector）累积，得到属于该单词的VLAD向量<span
+class="math inline">\(\mathbf{V}(:,k)\)</span>。可以看到，VLAD相较BoW增加了特征与单词之间的距离度量(即保留局部特征与聚类中心的分布差异)。假设单词的数量为<span
+class="math inline">\(K\)</span>，以SIFT为例，每个特征的描述子维度为128，所以VLAD的维度为<span
+class="math inline">\(128 \times K\)</span>。当<span
+class="math inline">\(K\)</span>较大时，VLAD的维度是非常大的，通常后续要进行降维操作。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-vlad.jpg" /></p>
+<h2 id="bow和vlad代码实现">BoW和VLAD代码实现</h2>
+<p>废话不多说，直接上代码。本小节使用<a
+target="_blank" rel="noopener" href="https://www.vlfeat.org">vlfeat</a>工具箱的Matlab接口对BoW和VLAD进行了实现。</p>
+<h3 id="虚拟数据">虚拟数据</h3>
+<p>这里提供了一种使用虚拟数据训练字典得到BoW和VLAD的过程。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">close all</span><br><span class="line"><span class="comment">% add vlfeat toolbox</span></span><br><span class="line">run(<span class="string">&#x27;vlfeat-0.9.21\toolbox\vl_setup&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Train a codebook</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% trainning data generation</span></span><br><span class="line">numDatabase    = <span class="number">10000</span>;</span><br><span class="line">dimLocalDesc   = <span class="number">128</span>;</span><br><span class="line">X = uint8(<span class="built_in">floor</span>(<span class="number">255</span>*<span class="built_in">rand</span>(dimLocalDesc,numDatabase))); <span class="comment">% can be computed by vl_sift</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% setting params to KMeans</span></span><br><span class="line">K              = <span class="number">10</span>; <span class="comment">% number of clusters</span></span><br><span class="line">[centers,assn] = vl_ikmeans(X,K,<span class="string">&#x27;verbose&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% build a kd-tree to softassignment</span></span><br><span class="line">kdtree         = vl_kdtreebuild(single(centers),<span class="string">&#x27;verbose&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Compute IDF for database</span></span><br><span class="line">nn_kdtree      = vl_kdtreequery(kdtree, single(centers), single(X));</span><br><span class="line">assignments    = <span class="built_in">zeros</span>(K,<span class="built_in">size</span>(X,<span class="number">2</span>)); </span><br><span class="line">assignments(<span class="built_in">sub2ind</span>(<span class="built_in">size</span>(assignments), nn_kdtree, <span class="number">1</span>:<span class="built_in">length</span>(nn))) = <span class="number">1</span>;</span><br><span class="line"><span class="comment">% or: assignments(sub2ind(size(assignments), assn, 1:length(nn))) = 1;</span></span><br><span class="line"></span><br><span class="line">IDF            = <span class="built_in">log</span>(numDatabase*<span class="built_in">ones</span>(K,<span class="number">1</span>)./(sum(assignments,<span class="number">2</span>) + <span class="number">1</span>) );</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">%% Encode with BOW and VLAD</span></span><br><span class="line">numofLocalKPs  = <span class="number">100</span>; <span class="comment">% number of keypoints </span></span><br><span class="line"></span><br><span class="line">query          = uint8(<span class="built_in">floor</span>(<span class="number">255</span>*<span class="built_in">rand</span>(dimLocalDesc,numofLocalKPs)));  <span class="comment">% can be computed by vl_sift</span></span><br><span class="line"><span class="comment">% todo: can be retrieval with vl_ikmeanspush(query,centers) ;</span></span><br><span class="line">nn             = vl_kdtreequery(kdtree, single(centers), single(query));</span><br><span class="line"></span><br><span class="line"><span class="comment">% soft assignment</span></span><br><span class="line">query_assign   = <span class="built_in">zeros</span>(K,numofLocalKPs);  <span class="comment">%only 1 each col </span></span><br><span class="line">query_assign(<span class="built_in">sub2ind</span>(<span class="built_in">size</span>(query_assign), nn, <span class="number">1</span>:<span class="built_in">length</span>(nn))) = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">% encode with vlad and bow</span></span><br><span class="line">enc_vlad       = vl_vlad(single(query),single(centers),single(query_assign),<span class="string">&#x27;verbose&#x27;</span>);</span><br><span class="line"></span><br><span class="line">enc_bow        = sum(query_assign,<span class="number">2</span>);</span><br><span class="line">numTotalWords  = sum(enc_bow);</span><br><span class="line">TF             = enc_bow / numTotalWords;</span><br><span class="line">enc_bow        = TF .* IDF;</span><br><span class="line"></span><br><span class="line"><span class="comment">% show</span></span><br><span class="line">bar(enc_bow);</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>TF-IDF</code>加权后的<code>BOW</code>向量长这个样子：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/demo_01.png" /></p>
+<h3 id="真实数据">真实数据</h3>
+<p>这里提供了一种使用真实数据训练字典得到BoW和VLAD进行图像相似度比较的实现。</p>
+<h4 id="训练">训练</h4>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">close all;</span><br><span class="line">clear all;</span><br><span class="line">clc</span><br><span class="line"></span><br><span class="line">run(<span class="string">&#x27;vlfeat/toolbox/vl_setup&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% build kd-tree(KMeans)</span></span><br><span class="line"></span><br><span class="line">base_path       = <span class="string">&#x27;your_image_data_path&#x27;</span>;</span><br><span class="line"></span><br><span class="line">files           = dir(base_path);</span><br><span class="line">database        = [];</span><br><span class="line">already_compute = dir(<span class="string">&#x27;database.mat&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">numel</span>(already_compute)</span><br><span class="line">    <span class="built_in">disp</span>([<span class="string">&#x27;==&gt; loading database...&#x27;</span>]);</span><br><span class="line">    load(<span class="string">&#x27;database.mat&#x27;</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="built_in">disp</span>([<span class="string">&#x27;==&gt; Extract sift to database...&#x27;</span>]);</span><br><span class="line">    h = waitbar(<span class="number">0</span>,<span class="string">&#x27;Extract sift, please wait&#x27;</span>);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">numel</span>(files)</span><br><span class="line">        <span class="keyword">if</span>(files(<span class="built_in">i</span>).isdir)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        image_path = [base_path, files(<span class="built_in">i</span>).name];</span><br><span class="line">        image      = imread(image_path) ;</span><br><span class="line">        image      = imresize(image,<span class="number">0.5</span>);</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">numel</span>(<span class="built_in">size</span>(image))== <span class="number">3</span></span><br><span class="line">            image      = single(rgb2gray(image)) ;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            image      = single(image);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        [f,d]      = vl_sift(image) ;</span><br><span class="line">        database   = [database,d]; </span><br><span class="line">        waitbar(<span class="built_in">i</span>/<span class="built_in">numel</span>(files), h,[<span class="string">&#x27;Extract sift, please wait: &#x27;</span>, num2str(<span class="built_in">i</span>/<span class="built_in">numel</span>(files)*<span class="number">100</span>), <span class="string">&#x27;%&#x27;</span> ]);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    close(h);</span><br><span class="line">    save(<span class="string">&#x27;database.mat&#x27;</span>,<span class="string">&#x27;database&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">numClusters  = <span class="number">50</span>;</span><br><span class="line"><span class="comment">% nleaves    = 10000;</span></span><br><span class="line"><span class="built_in">disp</span>([<span class="string">&#x27;==&gt; Kmeans running...&#x27;</span>]);</span><br><span class="line"><span class="comment">% [centers, ~] = vl_hikmeans(database, numClusters,nleaves,&#x27;verbose&#x27;);</span></span><br><span class="line"></span><br><span class="line">[centers, associations] = vl_ikmeans(database, numClusters,<span class="string">&#x27;verbose&#x27;</span>);</span><br><span class="line">assign = <span class="built_in">zeros</span>(numClusters,<span class="built_in">size</span>(database,<span class="number">2</span>));</span><br><span class="line">assign(<span class="built_in">sub2ind</span>(<span class="built_in">size</span>(assign),associations,<span class="number">1</span>:<span class="built_in">length</span>(associations))) = <span class="number">1</span>;</span><br><span class="line">IDF    = <span class="built_in">log</span>(<span class="built_in">size</span>(database,<span class="number">2</span>) * <span class="built_in">ones</span>(numClusters,<span class="number">1</span>) ./ (sum(assign,<span class="number">2</span>)+<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line"><span class="built_in">disp</span>([<span class="string">&#x27;==&gt; Building KDTree running...&#x27;</span>]);</span><br><span class="line">kdtree = vl_kdtreebuild(single(centers)); <span class="comment">% optional, to accelerate query speed</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="查询">查询</h4>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">disp</span>([<span class="string">&#x27;==&gt; Query KDTree running...&#x27;</span>]);</span><br><span class="line">I = imread(<span class="string">&#x27;Q.png&#x27;</span>) ;  </span><br><span class="line">I = single(rgb2gray(imresize(I,<span class="number">0.8</span>))) ;</span><br><span class="line">[feat_vlad_1,feat_tf_1] = feature_aggregate(I,centers,numClusters);</span><br><span class="line"><span class="comment">%[feat_vlad_1,feat_tf_1] = feature_aggregate_kdtree(I,kdtree,centers,numClusters); %optional</span></span><br><span class="line"></span><br><span class="line">I = imread(<span class="string">&#x27;DB_1.png&#x27;</span>) ; </span><br><span class="line">I = single(rgb2gray(imresize(I,<span class="number">0.8</span>))) ;</span><br><span class="line">[feat_vlad_2,feat_tf_2] = feature_aggregate(I,centers,numClusters);</span><br><span class="line"><span class="comment">%[feat_vlad_2,feat_tf_2] = feature_aggregate_kdtree(I,kdtree,centers,numClusters); %optional</span></span><br><span class="line"></span><br><span class="line">I = imread(<span class="string">&#x27;DB_2.png&#x27;</span>) ;</span><br><span class="line">I = single(rgb2gray(imresize(I,<span class="number">0.8</span>))) ;</span><br><span class="line">[feat_vlad_3,feat_tf_3] = feature_aggregate(I,centers,numClusters);</span><br><span class="line"><span class="comment">%[feat_vlad_3,feat_tf_3] = feature_aggregate_kdtree(I,kdtree,centers,numClusters); %optional</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% weighted by IDF and TF</span></span><br><span class="line">feat_bow_1 = IDF .* feat_tf_1;</span><br><span class="line">feat_bow_2 = IDF .* feat_tf_2;</span><br><span class="line">feat_bow_3 = IDF .* feat_tf_3;</span><br><span class="line"></span><br><span class="line"><span class="comment">% higher better</span></span><br><span class="line">score_vlad1 = feat_vlad_1&#x27; * feat_vlad_2;</span><br><span class="line">score_vlad2 = feat_vlad_1&#x27; * feat_vlad_3;</span><br><span class="line"></span><br><span class="line"><span class="comment">% higher better</span></span><br><span class="line">score_bow1 = computeBowScore(feat_bow_1,feat_bow_2); </span><br><span class="line">score_bow2 = computeBowScore(feat_bow_1,feat_bow_3); </span><br><span class="line"></span><br><span class="line"><span class="comment">% plot </span></span><br><span class="line">subplot(<span class="number">311</span>);</span><br><span class="line">bar(feat_bow_1);</span><br><span class="line">set(gca,<span class="string">&#x27;xlim&#x27;</span>,[<span class="number">0</span>,numClusters+<span class="number">1</span>]);</span><br><span class="line">xlabel(<span class="string">&#x27;cluster index&#x27;</span>);</span><br><span class="line">subplot(<span class="number">312</span>);</span><br><span class="line">bar(feat_bow_2);</span><br><span class="line">set(gca,<span class="string">&#x27;xlim&#x27;</span>,[<span class="number">0</span>,numClusters+<span class="number">1</span>]);</span><br><span class="line">xlabel(<span class="string">&#x27;cluster index&#x27;</span>);</span><br><span class="line">subplot(<span class="number">313</span>);</span><br><span class="line">bar(feat_bow_3);</span><br><span class="line">set(gca,<span class="string">&#x27;xlim&#x27;</span>,[<span class="number">0</span>,numClusters+<span class="number">1</span>]);</span><br><span class="line">xlabel(<span class="string">&#x27;cluster index&#x27;</span>);</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]);</span><br><span class="line">set(gcf,<span class="string">&#x27;pos&#x27;</span>,[<span class="number">756</span>   <span class="number">301</span>   <span class="number">742</span>   <span class="number">647</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>其中<code>feature_aggregate</code>函数输入图像，输出其TF与VLAD编码。笔者提供了两种实现方式，两种方式的区别是后者<code>feature_aggregate_kdtree</code>采用KD-Tree加速了图像特征到单词的查询速度，即编码速度更快（但可能存在精度损失）。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[vlad,TF]</span> = <span class="title">feature_aggregate</span><span class="params">(image,centers,numClusters)</span></span></span><br><span class="line">    [f,d]  = vl_sift(image) ;</span><br><span class="line">    query  = single(d);</span><br><span class="line">    dim    = <span class="built_in">size</span>(query,<span class="number">2</span>);</span><br><span class="line">    assign = <span class="built_in">zeros</span>(numClusters,dim);</span><br><span class="line">    nn     = vl_ikmeanspush(uint8(d) , int32(centers));</span><br><span class="line">    assign(<span class="built_in">sub2ind</span>(<span class="built_in">size</span>(assign),nn,<span class="number">1</span>:<span class="built_in">length</span>(nn))) = <span class="number">1</span>;  </span><br><span class="line">    TF     = sum(assign,<span class="number">2</span>) / sum(assign(:));</span><br><span class="line">    vlad   = vl_vlad(query,single(centers), single(assign),<span class="string">&#x27;NormalizeComponents&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[vlad,TF]</span> = <span class="title">feature_aggregate_kdtree</span><span class="params">(image,kdtree,centers,numClusters)</span></span></span><br><span class="line">    [f,d]  = vl_sift(image) ;</span><br><span class="line">    query  = single(d);</span><br><span class="line">    dim    = <span class="built_in">size</span>(query,<span class="number">2</span>);</span><br><span class="line">    assign = <span class="built_in">zeros</span>(numClusters,dim);</span><br><span class="line">    nn     = vl_kdtreequery(kdtree,single(centers),single(d));</span><br><span class="line">    assign(<span class="built_in">sub2ind</span>(<span class="built_in">size</span>(assign),nn,<span class="number">1</span>:<span class="built_in">length</span>(nn))) = <span class="number">1</span>;  </span><br><span class="line">    TF     = sum(assign,<span class="number">2</span>) / sum(assign(:));</span><br><span class="line">    vlad   = vl_vlad(query,single(centers), single(assign),<span class="string">&#x27;NormalizeComponents&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>此外，<code>computeBowScore</code>计算词袋向量的相似度（越大越好），实现如下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">score</span> = <span class="title">computeBowScore</span><span class="params">(bow1,bow2)</span></span></span><br><span class="line">    score = <span class="number">2</span> * sum(<span class="built_in">abs</span>(bow1) + <span class="built_in">abs</span>(bow2) - <span class="built_in">abs</span>(bow1- bow2)); </span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>下图是查询图与数据库中两张图像的相似度对比。其中<span
+class="math inline">\(K = 50, L =
+1\)</span>表示，聚类中心数量为50，这个字典由50个单词组成，层数为1。另外，参与训练字典的图像数量为10。通过主观观察可以明显地看到查询图<span
+class="math inline">\(Q\)</span>与<span
+class="math inline">\(DB_1\)</span>相似，与<span
+class="math inline">\(DB_2\)</span>不相似；从词袋相似度上可以看到，前者的相似度比后者要高，这说明BoW的有效性。但是二者相似度得分差异并不大，这可能与训练样本数量以及字典层数相关（如何改进？多层+增加训练集合+使用特异性更强的特征点对特征进行描述）。VLAD相似度得分比较位于表格的最后一列，也可以得出<span
+class="math inline">\(Q\)</span>与<span
+class="math inline">\(DB_1\)</span>较为相似的结论。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-vlad-vs-bow.jpg" /></p>
+<h2 id="netvlad">NetVLAD</h2>
+<p>NetVLAD是对VLAD的进一步改进，使用<code>softmax</code>到单词的对应关系从<code>hard assignment</code>转换成<code>soft assigment</code>（软分配矩阵），遂将VLAD变成了一个学习的过程。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-netvlad0.jpg" /></p>
+<p>至于这个软分配矩阵，假设我们有100个特征，聚类中心的数量为 K =
+64，这个软分配矩阵的维度就是 64 x
+100，每一列是每个特征距离每个聚类中心的距离。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-netvlad.jpg" /></p>
+<p>NetVLAD层的处理流程如下：</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbf{x}\)</span>维度是<span
+class="math inline">\(1 \times D \times N\)</span>，其中 <span
+class="math inline">\(D = 512\)</span>，<span class="math inline">\(N =
+H \times W\)</span>，可以理解成有<span
+class="math inline">\(N\)</span>个<span
+class="math inline">\(D\)</span>维的特征，<span
+class="math inline">\(N\)</span>就是特征的个数；</li>
+<li><span
+class="math inline">\(\mathbf{s}\)</span>就是score，维度：<span
+class="math inline">\(1 \times K \times N\)</span>，其中 <span
+class="math inline">\(K = 64\)</span>，为“聚类中心” 的数量，<span
+class="math inline">\(\mathbf{s}\)</span>是将<span
+class="math inline">\(\mathbf{x}\)</span>经过卷积得到，这一步在源码中叫做
+score_proj（由1D卷积定义）；</li>
+<li><span
+class="math inline">\(\mathbf{a}\)</span>为软分配矩阵，即通过<span
+class="math inline">\(\mathbf{s}\)</span>经过一个<code>softmax</code>得到，维度与<span
+class="math inline">\(\mathbf{s}\)</span>相同；</li>
+<li>NetVLAD公式中需要计算每个特征与聚类中心的距离diff，它的维度是<span
+class="math inline">\(1 \times D \times K \times
+N\)</span>，这同样是比较关键的一步：这个diff可以理解成，一共有<span
+class="math inline">\(N\)</span>个特征，<span
+class="math inline">\(K\)</span>个聚类中心，所以一共有<span
+class="math inline">\(K \times N\)</span>个距离，这个距离的维度是<span
+class="math inline">\(D\)</span>；</li>
+<li>将score与diff相乘，并按照特征维度（最后一维）进行相加，得到desc（即图中的<span
+class="math inline">\(\mathbf{V}\)</span>），其维度为 <span
+class="math inline">\(1 \times D\times K\)</span>；</li>
+<li>将<span
+class="math inline">\(\mathbf{V}\)</span>按照dim=1进行归一化（文中称为intra-norm）,即按照特征维度归一化；</li>
+<li>将<span
+class="math inline">\(\mathbf{V}\)</span>拉成“一条”得到一个维度为<span
+class="math inline">\(1\times(D \times
+K)\)</span>的向量，紧接着将这个向量进行<code>L2</code>归一化；</li>
+<li>经过第7步之后得到一个<span class="math inline">\(1 \times (D \times
+K)\)</span>的VLAD向量，经过一个“白化”层，对其进行降维，最终得到一个<span
+class="math inline">\(1 \times 4096\)</span>维的向量；</li>
+</ol>
+<p>上述处理流程与下面的代码是对应的（可能与上图标记的张量维度有些差异，这一点需要注意）。</p>
+<h3 id="推理代码">推理代码</h3>
+<blockquote>
+<p>下面是CVG <a
+target="_blank" rel="noopener" href="https://github.com/cvg/Hierarchical-Localization">Hierarchical-Localization</a>项目中公开的netvlad
+layer的Pytorch实现。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NetVLADLayer</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, input_dim=<span class="number">512</span>, K=<span class="number">64</span>, score_bias=<span class="literal">False</span>, intranorm=<span class="literal">True</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.score_proj = nn.Conv1d(</span><br><span class="line">            input_dim, K, kernel_size=<span class="number">1</span>, bias=score_bias)</span><br><span class="line">        centers = nn.parameter.Parameter(torch.empty([input_dim, K]))</span><br><span class="line">        nn.init.xavier_uniform_(centers)</span><br><span class="line">        self.register_parameter(<span class="string">&#x27;centers&#x27;</span>, centers)</span><br><span class="line">        self.intranorm = intranorm</span><br><span class="line">        self.output_dim = input_dim * K</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        b = x.size(<span class="number">0</span>)</span><br><span class="line">        scores = self.score_proj(x)                                       <span class="comment"># DIM: 1xKxN</span></span><br><span class="line">        scores = F.softmax(scores, dim=<span class="number">1</span>)                                 <span class="comment"># DIM: 1xKxN</span></span><br><span class="line">        diff = (x.unsqueeze(<span class="number">2</span>) - self.centers.unsqueeze(<span class="number">0</span>).unsqueeze(-<span class="number">1</span>)) <span class="comment"># DIM: 1xDxKxN</span></span><br><span class="line">        desc = (scores.unsqueeze(<span class="number">1</span>) * diff).<span class="built_in">sum</span>(dim=-<span class="number">1</span>)                   <span class="comment"># DIM: 1xDxK</span></span><br><span class="line">        <span class="keyword">if</span> self.intranorm:</span><br><span class="line">            <span class="comment"># From the official MATLAB implementation.</span></span><br><span class="line">            desc = F.normalize(desc, dim=<span class="number">1</span>)                               <span class="comment"># DIM: 1xDxK</span></span><br><span class="line">        desc = desc.view(b, -<span class="number">1</span>)</span><br><span class="line">        desc = F.normalize(desc, dim=<span class="number">1</span>)                                   <span class="comment"># DIM: 1x(DxK)</span></span><br><span class="line">        <span class="keyword">return</span> desc</span><br></pre></td></tr></table></figure>
+<p>后续的白化层whiten layer通过一个全连接层来定义：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.whiten = nn.Linear(self.netvlad.output_dim, <span class="number">4096</span>)   <span class="comment"># IN_DIM: 1x(DxK), OUT_DIM: 1x4096</span></span><br></pre></td></tr></table></figure>
+<p>将主干网络与NetVLAD层串起来得到forward，代码如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_forward</span>(<span class="params">self, data</span>):</span><br><span class="line">    image = data[<span class="string">&#x27;image&#x27;</span>]</span><br><span class="line">    <span class="keyword">assert</span> image.shape[<span class="number">1</span>] == <span class="number">3</span></span><br><span class="line">    <span class="keyword">assert</span> image.<span class="built_in">min</span>() &gt;= -EPS <span class="keyword">and</span> image.<span class="built_in">max</span>() &lt;= <span class="number">1</span> + EPS</span><br><span class="line">    image = torch.clamp(image * <span class="number">255</span>, <span class="number">0.0</span>, <span class="number">255.0</span>)  <span class="comment"># Input should be 0-255.</span></span><br><span class="line">    mean  = self.preprocess[<span class="string">&#x27;mean&#x27;</span>]</span><br><span class="line">    std   = self.preprocess[<span class="string">&#x27;std&#x27;</span>]</span><br><span class="line">    image = image - image.new_tensor(mean).view(<span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">    image = image / image.new_tensor(std).view(<span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Feature extraction.</span></span><br><span class="line">    descriptors = self.backbone(image)</span><br><span class="line">    b, c, _, _  = descriptors.size()</span><br><span class="line">    descriptors = descriptors.view(b, c, -<span class="number">1</span>) <span class="comment"># DIM: bx512xN, N = H&#x27;x w&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># NetVLAD layer.</span></span><br><span class="line">    descriptors = F.normalize(descriptors, dim=<span class="number">1</span>)  <span class="comment"># Pre-normalization.</span></span><br><span class="line">    desc = self.netvlad(descriptors)     <span class="comment"># DIM: bx(DxK)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Whiten if needed.</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">hasattr</span>(self, <span class="string">&#x27;whiten&#x27;</span>):</span><br><span class="line">        desc = self.whiten(desc)</span><br><span class="line">        desc = F.normalize(desc, dim=<span class="number">1</span>)  <span class="comment"># Final L2 normalization, DIM: bx4096</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&#x27;global_descriptor&#x27;</span>: desc</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="loss项">Loss项</h3>
+<p>训练样本来自Google Street View Time Machine(谷歌街景时光机)。</p>
+<ul>
+<li>给定查询帧, 街景数据会提供给我们百分百错误的候选帧 (geographically
+far from the query)</li>
+</ul>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-netvlad-train1.jpg" /></p>
+<ul>
+<li>给定查询帧, 街景数据会提供给我们可能的候选帧 (geographically close
+to the query)</li>
+</ul>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-netvlad-train2.jpg" /></p>
+<p>NetVLAD的loss采用了<code>triplet-loss</code>。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/vlfeat-feature-embedding/vlfeat-feature-embedding-netvlad-loss.jpg" /></p>
+<p>目标：学习一个网络使得查询帧与正例之间的最小距离<span
+class="math inline">\(d_1\)</span>要小于查询帧与所有负例之间的距离<span
+class="math inline">\(d_2\)</span>。但仅仅 <span
+class="math inline">\(d_2 - d_1 &gt; 0\)</span> 并不够，还要求<span
+class="math inline">\(d_2\)</span> 比 <span
+class="math inline">\(d_1\)</span> 大上一段距离，这个距离为上式中的<span
+class="math inline">\(m\)</span>。所以，当$d_2 – d_1 &lt; m $
+时，这说明网络还不足以区分正、负例，我们要惩罚这种现象（即，此时的<span
+class="math inline">\(l(x) = x\)</span>）;对应的，当<span
+class="math inline">\(d_2 – d_1 \geq m\)</span>
+时，网络可以区分正、负例，此时的惩罚为0。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li>vlfeat: Integer k-means:
+https://www.vlfeat.org/overview/ikm.html</li>
+<li>vlfeat: Hierarchical Integer k-means:
+https://www.vlfeat.org/overview/hikm.html</li>
+<li>R Arandjelovic et.al. <a
+target="_blank" rel="noopener" href="https://www.robots.ox.ac.uk/~vgg/publications/2013/arandjelovic13/arandjelovic13.pdf">All
+about VLAD</a>, 2013</li>
+<li>ETH Zurich, <a target="_blank" rel="noopener" href="http://cvg.ethz.ch">Computer Vision and
+Geometry Lab(CVG)</a>, <a
+target="_blank" rel="noopener" href="https://github.com/cvg/Hierarchical-Localization/blob/master/hloc/extractors/netvlad.py">NetVLAD
+code</a>, 2021</li>
+<li>NetVLAD: CNN architecture for weakly supervised place recognition,
+<a target="_blank" rel="noopener" href="https://www.di.ens.fr/willow/research/netvlad">[Homepage]</a> ,
+<a target="_blank" rel="noopener" href="http://arxiv.org/abs/1511.07247">[Paper on arXiv]</a> <a
+target="_blank" rel="noopener" href="https://www.di.ens.fr/willow/research/netvlad/cvpr16_NetVLAD_presentation.pptx">[Presentation
+(54 MB)]</a>, CVPR 2016</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/vlfeat-feature-embedding/" title="📝笔记：使用vlfeat的Matlab接口简单实现BOW以及VLAD">https://www.vincentqin.tech/posts/vlfeat-feature-embedding/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Matlab/" rel="tag"># Matlab</a>
+              <a href="/tags/BOW/" rel="tag"># BOW</a>
+              <a href="/tags/VLAD/" rel="tag"># VLAD</a>
+              <a href="/tags/vlfeat/" rel="tag"># vlfeat</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/kdtree/" rel="prev" title="📝笔记：一些关于KD-Tree的知识点">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：一些关于KD-Tree的知识点
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/visual-localization/" rel="next" title="📝笔记：A brife history of Visualization Localization(under construction...)">
+                  📝笔记：A brife history of Visualization Localization(under construction...) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/vlfeat-feature-embedding/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近一段时间在推\(Jacobian\)，会用到一些关于李代数求导的知识。参考高博《视觉slam十四讲》一书，在此总结一些常用的关于李群与李代数相关的知识点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="笔记：李群与李代数求导">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/LieAlgebra/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="最近一段时间在推\(Jacobian\)，会用到一些关于李代数求导的知识。参考高博《视觉slam十四讲》一书，在此总结一些常用的关于李群与李代数相关的知识点。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-12-04T15:40:56.000Z">
+<meta property="article:modified_time" content="2022-09-04T14:04:35.009Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="李代数">
+<meta property="article:tag" content="computer vision">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/LieAlgebra/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/LieAlgebra/","path":"posts/LieAlgebra/","title":"笔记：李群与李代数求导"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>笔记：李群与李代数求导 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E6%AD%A3%E4%BA%A4%E7%BE%A4%E4%B8%8E%E7%89%B9%E6%AE%8A%E6%AC%A7%E5%BC%8F%E7%BE%A4"><span class="nav-number">2.</span> <span class="nav-text">特殊正交群与特殊欧式群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%8E%E4%BB%A3%E6%95%B0%E7%9A%84%E5%BC%95%E5%87%BA"><span class="nav-number">3.</span> <span class="nav-text">李代数的引出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%8E%E4%BB%A3%E6%95%B0-mathfrakso3"><span class="nav-number">4.</span> <span class="nav-text">李代数 \(\mathfrak{so}(3)\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%8E%E4%BB%A3%E6%95%B0-mathfrakse3"><span class="nav-number">5.</span> <span class="nav-text">李代数 \(\mathfrak{se}(3)\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E6%95%B0%E6%98%A0%E5%B0%84"><span class="nav-number">6.</span> <span class="nav-text">指数映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%8E%E4%BB%A3%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="nav-number">7.</span> <span class="nav-text">李代数求导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%97%8B%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%9D%8E%E4%BB%A3%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="nav-number">7.1.</span> <span class="nav-text">对旋转矩阵李代数求导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E6%8D%A2%E8%BD%AC%E7%9F%A9%E9%98%B5%E6%9D%8E%E4%BB%A3%E6%95%B0%E6%B1%82%E5%AF%BC"><span class="nav-number">7.2.</span> <span class="nav-text">变换转矩阵李代数求导</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-number">8.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#se3%E5%B7%A6%E6%89%B0"><span class="nav-number">8.1.</span> <span class="nav-text">\(SE(3)\)左扰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#se3%E5%8F%B3%E6%89%B0"><span class="nav-number">8.2.</span> <span class="nav-text">\(SE(3)\)右扰</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/LieAlgebra/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="笔记：李群与李代数求导 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          笔记：李群与李代数求导
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2018-12-04 23:40:56" itemprop="dateCreated datePublished" datetime="2018-12-04T23:40:56+08:00">2018-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-04 22:04:35" itemprop="dateModified" datetime="2022-09-04T22:04:35+08:00">2022-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%9F%A5%E8%AF%86%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">知识库</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/LieAlgebra/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/LieAlgebra/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/LieAlgebra/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note primary"><p>最近一段时间在推<span
+class="math inline">\(Jacobian\)</span>，会用到一些关于李代数求导的知识。参考高博《视觉slam十四讲》一书，在此总结一些常用的关于李群与李代数相关的知识点。</p>
+</div>
+<span id="more"></span>
+<h2 id="前言">前言</h2>
+<p>在SLAM中位姿是未知的，而我们需要解决什么样的相机位姿最符合当前观测数据这样的问题。一种典型的方式是把它构建成一个优化问题，求解最优的<span
+class="math inline">\(R\)</span>,<span
+class="math inline">\(t\)</span>，使得误差最小化。
+旋转矩阵自身是带有约束的（正交且行列式为
+1）。它们作为优化变量时，会引入额外的约束，使优化变得困难。通过李群——李代数间的转换关系，我们希望把位姿估计变成无约束的优化问题，简化求解方式。群（Group）是一种集合加上一种运算的代数结构，李群是指具有连续（光滑）性质的群，李群在相机姿态估计时具有重要意义，接下来主要讨论特殊正交群<span
+class="math inline">\(SO(n)\)</span>与特殊欧式群<span
+class="math inline">\(SE(n)\)</span>。</p>
+<h2 id="特殊正交群与特殊欧式群">特殊正交群与特殊欧式群</h2>
+<p><span class="math display">\[
+SO(n) = \{ \mathbf{R} \in \mathbb{R}^{n \times n} | \mathbf{R R}^T =
+\mathbf{I}, det(\mathbf{R})=1 \}
+\]</span></p>
+<p><span class="math display">\[
+SE(3) = \left\{ \mathbf{T} = \left[ {\begin{array}{*{20}{c}} \mathbf{R}
+&amp; \mathbf{t} \\ \mathbf{0}^T &amp; 1 \end{array}} \right]  \in
+\mathbb{R}^{4 \times 4} | \mathbf{R} \in SO(3), \mathbf{t} \in
+\mathbb{R}^3\right\}
+\]</span>
+在李群中，我们使用矩阵来表达一个旋转和平移，这存在冗余的自由度。三维空间的旋转只有三自由度，旋转+平移有六自由度。因此，我们希望寻找一个没有冗余自由度（但是相应的存在奇异性）的表示，也就是李代数<span
+class="math inline">\(\mathfrak{so}(3)\)</span>和<span
+class="math inline">\(\mathfrak{se}(3)\)</span>。且无论是旋转还是变换矩阵，它们都是对加法不封闭的，但是对乘法是封闭的。</p>
+<h2 id="李代数的引出">李代数的引出</h2>
+<p>关于李代数理论的介绍，包含李代数/切空间/李群的介绍，非常形象。</p>
+<iframe width="954" height="546" src="https://www.youtube.com/embed/nHOcoIyJj2o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>对于任意旋转矩阵<span
+class="math inline">\(R\)</span>，它必定满足：</p>
+<p><span class="math display">\[\mathbf{R}
+\mathbf{R}^T＝\mathbf{I}.\]</span></p>
+<p>考虑它随时间发生变化，即从<span
+class="math inline">\(\mathbf{R}\)</span>变为<span
+class="math inline">\(\mathbf{R(t)}\)</span>，它仍然满足如下如下等式：</p>
+<p><span class="math display">\[\mathbf{R}(t) \mathbf{R}(t) ^T =
+\mathbf{I}\]</span></p>
+<p>对两侧同时对时间求导数得：</p>
+<p><span class="math display">\[\mathbf{\dot{R}} (t) \mathbf{R} {(t)^T}
++ \mathbf{R} (t) \mathbf{\dot{R}} {(t)^T} = 0 \]</span> 则有： <span
+class="math display">\[\mathbf{\dot{R}} (t) \mathbf{R} {(t)^T} = -
+\left(  \mathbf{\dot{R}} (t) \mathbf{R} {(t)^T} \right)^T \]</span>
+可见<span class="math inline">\(\mathbf{\dot{R}} (t) \mathbf{R}
+{(t)^T}\)</span>是一个反对称矩阵，将其记作<span
+class="math inline">\(\mathbf{A}\)</span>，于是<span
+class="math inline">\(\mathbf{A}^T=-\mathbf{A}\)</span>,所以它主对角线元素必为，而非对角线元素则只有三个自由度。我们一定可以找到一个这样的向量<span
+class="math inline">\(\mathbf{a}=[a_1, a_2, a_3]^T\)</span>使得： <span
+class="math display">\[
+{\mathbf{a}^ \wedge } = \mathbf{A} = \left[ {\begin{array}{*{20}{c}}
+0&amp; -a_3 &amp; a_2\\ {a_3}&amp;0&amp; - {a_1}\\  -
+{a_2}&amp;{a_1}&amp;0 \end{array}} \right]
+\]</span></p>
+<p>其中<span
+class="math inline">\(^{\wedge}\)</span>符号表示由向量转换为矩阵，反之我们也可以用<span
+class="math inline">\(^{\vee}\)</span>符号定义由矩阵转换为向量的方式:
+<span class="math display">\[ { \mathbf{A}^ \vee } = \mathbf{a}
+\]</span></p>
+<p>现在，由于<span class="math inline">\(\mathbf{\dot{R}} (t) \mathbf{R}
+{(t)^T}\)</span>是一个反对称矩阵，所以我们一定可以找到一个三维向量<span
+class="math inline">\(\mathbf{\phi} (t) \in
+\mathbb{R}^3\)</span>与之对应。于是我们有： <span
+class="math display">\[\mathbf{ \dot{R} } (t) \mathbf{R}(t)^T =
+\mathbf{\phi} (t) ^ {\wedge}\]</span> 左右各右乘<span
+class="math inline">\(\mathbf{R}(t)\)</span>，由于其正交性，有： <span
+class="math display">\[ \mathbf{ \dot{R} } (t)  = \mathbf{\phi}
+(t)^{\wedge} \mathbf{R}(t) =   \left[ {\begin{array}{*{20}{c}} 0&amp;-
+{\phi _3}&amp;{\phi _2}\\ {\phi _3}&amp;0&amp; - {\phi _1}\\ { - \phi
+_2}&amp;{\phi _1}&amp;0 \end{array}} \right] \mathbf{R} (t)
+\]</span></p>
+<p>可以看到，每对旋转矩阵求一次导数，只需左乘一个矩阵<span
+class="math inline">\(\mathbf{\phi} (t)^{\wedge}\)</span>即可。由于<span
+class="math inline">\(\mathbf{\phi}
+(t)^{\wedge}\)</span>反映了的导数性质，故称它在的正切空间(tangent
+space)上。同时在<span class="math inline">\(t_0\)</span>附近，设<span
+class="math inline">\(\mathbf{\phi}\)</span>保持为常数<span
+class="math inline">\(\mathbf{\phi}(t_0)=\mathbf{\phi}_0\)</span>，我们有：
+<span class="math display">\[ \mathbf{ \dot{R} } (t)  = \mathbf{\phi}
+(t_0)^{\wedge} \mathbf{R}(t)= \mathbf{\phi}_0^{\wedge} \mathbf{R}(t)
+\]</span> 又因为初始值$ (0) = $对上式进行求解可得：</p>
+<p><span class="math display">\[\label{eq:so3ode} \mathbf{R}(t) = \exp
+\left( \mathbf{\phi}_0^{\wedge} t\right) .\]</span></p>
+<p>上式描述<span
+class="math inline">\(\mathbf{R}\)</span>在局部的导数关系。</p>
+<h2 id="李代数-mathfrakso3">李代数 <span
+class="math inline">\(\mathfrak{so}(3)\)</span></h2>
+<p>上文提及的<span
+class="math inline">\(\mathbf{\phi}\)</span>是一种李代数，<span
+class="math inline">\(SO(3)\)</span>对应的李代数是定义在<span
+class="math inline">\(\mathbb{R}^3\)</span>上的向量，我们记作<span
+class="math inline">\(\mathbf{\phi}\)</span>，它
+对应与一个反对称矩阵：</p>
+<p><span class="math display">\[
+\label{eq:phi} \mathbf{\Phi} = \mathbf{\phi}^{\wedge} = \left[
+{\begin{array}{*{20}{c}}     0&amp;{ - \phi _3}&amp;{\phi _2}\\  {\phi
+_3}&amp;0&amp;{ - \phi _1}\\  { - \phi _2}&amp;{\phi
+_1}&amp;0    \end{array}} \right] \in \mathbb{R}^{3 \times 3}
+\]</span></p>
+<p>由于它与反对称矩阵关系很紧密，在不引起歧义的情况下，就说的元素是3维向量或者3维反对称矩阵，不加区别：
+<span class="math display">\[\bbox[5px,border:2px solid red]
+{
+\mathfrak{so}(3) = \left\{ \Phi = \mathbf{\phi^\wedge} \in \mathbb{R}^{3
+\times 3} | \mathbf{\phi} \in \mathbb{R}^3 \right\}
+}
+\]</span></p>
+<h2 id="李代数-mathfrakse3">李代数 <span
+class="math inline">\(\mathfrak{se}(3)\)</span></h2>
+<p><span class="math inline">\(SE(3)\)</span>对应的李代数为<span
+class="math inline">\(\mathfrak{se}(3)\)</span>，<span
+class="math inline">\(\mathfrak{se}(3)\)</span>定义在<span
+class="math inline">\(\mathbb{R}^{6}\)</span>空间，其具体形式如下：</p>
+<p><span class="math display">\[\bbox[5px,border:2px solid red]
+{
+\mathfrak{se}(3) = \left\{ \mathbf{ \xi } = \left[
+\begin{array}{l}     \mathbf{\rho} \\    \mathbf{\phi}   \end{array}
+\right] \in \mathbb{R}^{6}, \mathbf{\rho} \in
+\mathbb{R}^{3},\mathbf{\phi} \in \mathfrak{so}(3),\mathbf{\xi}^\wedge  =
+\left[ {\begin{array}{*{20}{c}}  \mathbf{\phi} ^ \wedge
+&amp;\mathbf{\rho} \\ \mathbf{0}^T&amp;0 \end{array}} \right] \in
+\mathbb{R}^{4 \times 4} \right\}
+}
+\]</span></p>
+<p><span
+class="math inline">\(\mathfrak{se}(3)\)</span>是一个这样的六维向量，前三维表示平移，记作<span
+class="math inline">\(\mathbf{\rho}\)</span>；后三维表示旋转，记作<span
+class="math inline">\(\mathbf{\phi}\)</span>（有时候这两个参数会反过来，可也可以的）。</p>
+<h2 id="指数映射">指数映射</h2>
+<p><span class="math inline">\(\mathfrak{so}(3)\)</span>以及<span
+class="math inline">\(\mathfrak{se}(3)\)</span>的指数映射分别对应于<span
+class="math inline">\(SO(3)\)</span>以及<span
+class="math inline">\(SE(3)\)</span>，它们之间的转换关系可以由下图表示：</p>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-3/LieAlgebra/lieGroup.png"
+alt="lieGroup" />
+<figcaption aria-hidden="true">lieGroup</figcaption>
+</figure>
+<h2 id="李代数求导">李代数求导</h2>
+<h3 id="对旋转矩阵李代数求导">对旋转矩阵李代数求导</h3>
+<p>对<span class="math inline">\(\mathbf{R}\)</span>进行一次扰动<span
+class="math inline">\(\Delta \mathbf{R}\)</span>，假设左扰动<span
+class="math inline">\(\Delta \mathbf{R}\)</span>对应的李代数为$ {}<span
+class="math inline">\(，对\)</span> {}$求导，得到：</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial ({\boldsymbol Rp})}{\partial {\boldsymbol \varphi}}
+&amp;= \lim_{\boldsymbol \varphi \to 0}
+\frac{ \overbrace{ \exp ({\boldsymbol \varphi}^{\land})
+}^{\color{Red}{可作泰勒展开}} \exp ({\boldsymbol \phi}^{\land})
+{\boldsymbol p} - \exp ({\boldsymbol \phi}^{\land}) {\boldsymbol p}}
+{ {\boldsymbol \varphi} }\\
+&amp;\approx \lim_{\boldsymbol \varphi \to 0}
+\frac{({\boldsymbol I} + {\boldsymbol \varphi}^{\land}) \exp
+({\boldsymbol \phi}^{\land}) {\boldsymbol p} - \exp ({\boldsymbol
+\phi}^{\land}) {\boldsymbol p}}
+{ {\boldsymbol \varphi} }  \\
+&amp;= \lim_{\boldsymbol \varphi \to 0}
+\frac{ {\boldsymbol \varphi}^{\land} {\boldsymbol {Rp}} }
+{ {\boldsymbol \varphi} }  \\
+&amp;= \lim_{\boldsymbol \varphi \to 0}
+\frac{ -({\boldsymbol {Rp}})^{\land} {\boldsymbol \varphi} }
+{ {\boldsymbol \varphi} } \\
+&amp;= -({\boldsymbol {Rp}})^{\land}
+\end{aligned}
+\]</span></p>
+<h3 id="变换转矩阵李代数求导">变换转矩阵李代数求导</h3>
+<p>假设空间点<span class="math inline">\({\boldsymbol
+p}\)</span>经过一次变换<span class="math inline">\({\boldsymbol
+T}\)</span>（对应的李代数为<span class="math inline">\({\boldsymbol
+\xi}\)</span>）后变为 <span class="math inline">\({\boldsymbol
+Tp}\)</span> 。当给<span class="math inline">\({\boldsymbol
+T}\)</span>左乘一个扰动<span class="math inline">\(\Delta {\boldsymbol
+T} = \exp (\delta {\boldsymbol
+\xi}^{\land})\)</span>，设扰动项的李代数为<span
+class="math inline">\(\delta {\boldsymbol \xi} = [\delta {\boldsymbol
+\rho}, \delta {\boldsymbol \phi}]^{T}\)</span>，有：</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial ({\boldsymbol {Tp}})}{\partial \delta{\boldsymbol \xi}}
+&amp;= \lim_{\delta{\boldsymbol \xi} \to 0}
+\frac{ \overbrace{ \exp (\delta {\boldsymbol \xi}^{\land})
+}^{\color{Red}{可作泰勒展开}}  \exp ({\boldsymbol \xi}^{\land})
+{\boldsymbol p} - \exp ({\boldsymbol \xi}^{\land}) {\boldsymbol p}}
+{ \delta {\boldsymbol \xi} } \\
+&amp;\approx \lim_{\delta{\boldsymbol \xi} \to 0}
+\frac{ ({\boldsymbol I} + \delta {\boldsymbol \xi}^{\land}) \exp
+({\boldsymbol \xi}^{\land}) {\boldsymbol p} - \exp ({\boldsymbol
+\xi}^{\land}) {\boldsymbol p} }
+{ \delta {\boldsymbol \xi} } \\
+&amp;= \lim_{\delta{\boldsymbol \xi} \to 0}
+\frac{  \delta {\boldsymbol \xi}^{\land} \exp ({\boldsymbol
+\xi}^{\land}) {\boldsymbol p}  }
+{ \delta {\boldsymbol \xi} } \\
+&amp;= \lim_{\delta{\boldsymbol \xi} \to 0}
+\frac{
+\begin{bmatrix}
+\delta {\boldsymbol \phi}^{\land}  &amp;   \delta {\boldsymbol
+\rho}     \\
+     {\boldsymbol
+0}^{T}                 &amp;                      1                           \\
+\end{bmatrix}
+\begin{bmatrix}
+   {\boldsymbol {Rp}} +  {\boldsymbol t}     \\
+                                     1                                \\
+\end{bmatrix}
+}
+{ \delta {\boldsymbol \xi} } \\
+&amp;= \lim_{\delta{\boldsymbol \xi} \to 0}
+\frac{
+\begin{bmatrix}
+   \delta {\boldsymbol \phi}^{\land} ({\boldsymbol {Rp}} + {\boldsymbol
+t}) + \delta {\boldsymbol \rho}     \\
+                                     0                                \\
+\end{bmatrix}
+}
+{ \delta {\boldsymbol \xi} } \\
+&amp;=
+\overbrace{
+\begin{bmatrix}
+{\boldsymbol I}            &amp;   -({\boldsymbol {Rp}} + {\boldsymbol
+t})^{\land}    \\
+{\boldsymbol 0}^{T}    &amp;     {\boldsymbol 0}^{T}             \\
+\end{bmatrix}
+}^{\color{Red}{上式分块求导}}\\
+&amp;= ({\boldsymbol {Tp}})^{\bigodot}
+\end{aligned}
+\]</span></p>
+<p>上式中运算符号<span
+class="math inline">\(\bigodot\)</span>的含义：将一个齐次坐标的空间点变换成一个<span
+class="math inline">\(4 \times 6\)</span>的矩阵。</p>
+<h2 id="补充">补充</h2>
+<h3 id="se3左扰"><span class="math inline">\(SE(3)\)</span>左扰</h3>
+<p><span class="math display">\[
+\begin{aligned}
+\rm{exp}\left( {\Delta {\xi}^{\land} } \right){\rm{exp}}\left(
+{\xi}^{\land}  \right)
+&amp; \approx \left( {I + {\left[ {\Delta \xi } \right]}_ \times }
+\right){\rm{exp}}(\xi) \\
+&amp;= \left( I_{4 \times 4} +
+\left[
+\begin{array}{*{20}{c}}
+{  \left[ \Delta \phi  \right]}_{\times}   &amp;   \Delta \rho    \\
+0&amp;0
+\end{array}
+\right]
+\right)
+\left[
+\begin{array}{*{20}{c}}
+R   &amp;   t    \\
+0&amp;1
+\end{array}
+\right] \\
+&amp;=
+\left[
+\begin{array}{*{20}{c}}
+{  \left[ \Delta \phi  \right]}_{\times}+I_{3 \times 3}   &amp;   \Delta
+\rho    \\
+0&amp;1
+\end{array}
+\right]
+\left[
+\begin{array}{*{20}{c}}
+R   &amp;   t    \\
+0&amp;1
+\end{array}
+\right] \\
+&amp;=
+\left[
+\begin{array}{*{20}{c}}
+\left( \left[ \Delta \phi  \right]_{\times}+I_{3 \times 3} \right)
+R  &amp;    \left( \left[ \Delta \phi  \right]_{\times}+I_{3 \times 3}
+\right) t + \Delta \rho    \\
+0&amp;1
+\end{array}
+\right]
+\end{aligned}
+\]</span></p>
+<h3 id="se3右扰"><span class="math inline">\(SE(3)\)</span>右扰</h3>
+<p><span class="math display">\[
+\begin{aligned}
+\rm{exp}\left( {\xi}^{\land}  \right) \rm{exp}\left( {\Delta
+{\xi}^{\land} } \right)
+&amp; \approx {\rm{exp}}({\xi}^{\land}) \left( {I + {\left[ {\Delta \xi
+} \right]}_ \times } \right)\\
+&amp;=
+\left[
+\begin{array}{*{20}{c}}
+R   &amp;   t    \\
+0&amp;1
+\end{array}
+\right]
+\left( I_{4 \times 4} +
+\left[
+\begin{array}{*{20}{c}}
+{  \left[ \Delta \phi  \right]}_{\times}   &amp;   \Delta \rho    \\
+0&amp;0
+\end{array}
+\right]
+\right)\\
+&amp;=
+\left[
+\begin{array}{*{20}{c}}
+R   &amp;   t    \\
+0&amp;1
+\end{array}
+\right]
+\left[
+\begin{array}{*{20}{c}}
+{  \left[ \Delta \phi  \right]}_{\times}+I_{3 \times 3}   &amp;   \Delta
+\rho    \\
+0&amp;1
+\end{array}
+\right] \\
+&amp;=
+\left[
+\begin{array}{*{20}{c}}
+R \left( \left[ \Delta \phi  \right]_{\times}+I_{3 \times 3}
+\right)  &amp;   R \Delta \rho + t   \\
+0&amp;1
+\end{array}
+\right]
+\end{aligned}
+\]</span></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/LieAlgebra/" title="笔记：李群与李代数求导">https://www.vincentqin.tech/posts/LieAlgebra/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/%E6%9D%8E%E4%BB%A3%E6%95%B0/" rel="tag"># 李代数</a>
+              <a href="/tags/computer-vision/" rel="tag"># computer vision</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/orb-slam/" rel="prev" title="资料：ORB SLAM2 阅读报告">
+                  <i class="fa fa-chevron-left"></i> 资料：ORB SLAM2 阅读报告
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/recent-status/" rel="next" title="虚实:「未麻的部屋」">
+                  虚实:「未麻的部屋」 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/LieAlgebra/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：图解卡尔曼滤波">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_0.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_3.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_2.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_7.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_8.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_9.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10a.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10b.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_12.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/wechat-qcode.gif">
+<meta property="article:published_time" content="2020-05-24T11:41:50.000Z">
+<meta property="article:modified_time" content="2022-08-29T17:26:29.385Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_0.png">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/kalman-filter-in-pictures/","path":"posts/kalman-filter-in-pictures/","title":"📝笔记：图解卡尔曼滤波"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：图解卡尔曼滤波 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%BB%A4%E6%B3%A2"><span class="nav-number">1.1.</span> <span class="nav-text">关于滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%8D%A1%E5%B0%94%E6%9B%BC%E6%BB%A4%E6%B3%A2"><span class="nav-number">1.2.</span> <span class="nav-text">关于卡尔曼滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.3.</span> <span class="nav-text">问题描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E9%A2%84%E6%B5%8B"><span class="nav-number">2.</span> <span class="nav-text">状态预测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E7%9A%84%E7%9F%A9%E9%98%B5%E5%BD%A2%E5%BC%8F%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.1.</span> <span class="nav-text">问题的矩阵形式表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#external-influence"><span class="nav-number">2.2.</span> <span class="nav-text">External influence</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#external-uncertainty"><span class="nav-number">2.3.</span> <span class="nav-text">External uncertainty</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9B%B4%E6%96%B0"><span class="nav-number">3.</span> <span class="nav-text">状态更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%B5%8B%E9%87%8F%E8%BF%9B%E4%B8%80%E6%AD%A5%E4%BF%AE%E6%AD%A3%E7%8A%B6%E6%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">利用测量进一步修正状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E4%B8%A4%E4%B8%AA%E9%AB%98%E6%96%AF%E5%88%86%E5%B8%83"><span class="nav-number">3.2.</span> <span class="nav-text">合并两个高斯分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F%E6%B1%87%E6%80%BB"><span class="nav-number">3.3.</span> <span class="nav-text">公式汇总</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E8%AF%B4"><span class="nav-number">4.</span> <span class="nav-text">图说</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：图解卡尔曼滤波 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：图解卡尔曼滤波
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-24 19:41:50" itemprop="dateCreated datePublished" datetime="2020-05-24T19:41:50+08:00">2020-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-08-30 01:26:29" itemprop="dateModified" datetime="2022-08-30T01:26:29+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%9F%A5%E8%AF%86%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">知识库</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/kalman-filter-in-pictures/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/kalman-filter-in-pictures/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/kalman-filter-in-pictures/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><div class="note success"><p><strong>译者注</strong>：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！</p>
+</div>
+<span id="more"></span>
+<p>本人翻译水平有限，如有疑问，请阅读原文；如有错误，请在评论区指出。</p>
+<h2 id="背景">背景</h2>
+<h3 id="关于滤波">关于滤波</h3>
+<p>首先援引来自知乎大神的解释。</p>
+<div class="note info"><p>一位专业课的教授给我们上课的时候，曾谈到：filtering is
+weighting（滤波即加权）。滤波的作用就是给不同的信号分量不同的权重。最简单的loss
+pass filter，
+就是直接把低频的信号给1权重，而给高频部分0权重。对于更复杂的滤波，比如维纳滤波,
+则要根据信号的统计知识来设计权重。</p>
+<p>从统计信号处理的角度，降噪可以看成滤波的一种。降噪的目的在于突出信号本身而抑制噪声影响。从这个角度，降噪就是给信号一个高的权重而给噪声一个低的权重。维纳滤波就是一个典型的降噪滤波器。</p>
+</div>
+<h3 id="关于卡尔曼滤波">关于卡尔曼滤波</h3>
+<p>Kalman Filter
+算法，是一种递推预测滤波算法，算法中涉及到滤波，也涉及到对下一时刻数据的预测。Kalman
+Filter
+由一系列递归数学公式描述。它提供了一种高效可计算的方法来估计过程的状态，并使估计均方误差最小。卡尔曼滤波器应用广泛且功能强大：它可以估计信号的过去和当前状态，甚至能估计将来的状态，即使并不知道模型的确切性质。</p>
+<p>Kalman Filter 也可以被认为是一种数据融合算法（Data fusion
+algorithm），已有50多年的历史，是当今使用最重要和最常见的数据融合算法之一。Kalman
+Filter
+的巨大成功归功于其小的计算需求，优雅的递归属性以及作为具有高斯误差统计的一维线性系统的最优估计器的状态<sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R. Faragher, “Understanding the Basis of the Kalman Filter Via a Simple and Intuitive Derivation [Lecture Notes]”, IEEE Signal Processing Magazine, vol. 29, no. 5, pp. 128–132, Sep. 2012.
+">4</span></a></sup>。</p>
+<p>Kalman Filter
+只能减小均值为0的测量噪声带来的影响。只要噪声期望为0，那么不管方差多大，只要迭代次数足够多，那效果都很好。反之，噪声期望不为0，那么估计值就还是与实际值有偏差。</p>
+<h3 id="问题描述">问题描述</h3>
+<p>上面的描述可能把大家绕晕了，下面来点轻松的。</p>
+<p>我们会有一个疑问：卡尔曼滤波到底是如何解决实际问题的呢？</p>
+<p>我们以机器人为例介绍卡尔曼滤波的原理，我们的任务是要预测机器人的状态<span
+class="math inline">\(\vec{x}\)</span>，包括位置<span
+class="math inline">\(p\)</span>与速度<span
+class="math inline">\(v\)</span>，即可表示为：</p>
+<p><span class="math display">\[\vec{x}=\begin{bmatrix} p\\ v
+\end{bmatrix}\]</span></p>
+<p>某个时刻，我们不知道真实的位置与速度到底是多少，二者存在一个所有可能性的组合，大致如下图所示。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_0.png" ></p>
+<p><strong>卡尔曼滤波假设状态所有的变量都是随机的且都服从高斯分布，每个变量都有其对应的均值<span
+class="math inline">\(\mu\)</span>以及方差<span
+class="math inline">\(\sigma^2\)</span>（它代表了不确定性）</strong>。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_1.png" ></p>
+<p>在上图中，位置和速度是不相关（<strong>uncorrelated</strong>）的，这意味着某个变量的状态不会告诉你其他变量的状态是怎样的。即虽然我们知道现在的速度，但是无法从现在的速度推测出现在的位置。但实际上并非如此，我们知道速度和位置是有关系的（<strong>correlated</strong>），这样一来二者之间的组合关系变成了如下图所示的情况。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_3.png" ></p>
+<p>这种情况是很容易发生的，例如，如果速度很快，我们可能会走得更远，所以我们的位置会更大。如果我们走得很慢，我们就不会走得太远。</p>
+<p>这种状态变量之间的关系很重要，因为它可以为我们提供<strong>更多信息</strong>：One
+measurement tells us something about what the others could
+be。这就是卡尔曼滤波器的目标，我们希望从不确定的测量中尽可能多地获取信息！</p>
+<p>这种状态量的相关性可以由协方差矩阵表示。简而言之，矩阵<span
+class="math inline">\(\Sigma_{ij}\)</span>的每个元素是第i个状态变量和第j个状态变量之间的相关度。（显然地可以知道协方差矩阵是对称的，这意味着您交换i和j都没关系）。协方差矩阵通常标记为“
+<span
+class="math inline">\(\Sigma\)</span>”，因此我们将它们的元素称为“<span
+class="math inline">\(\Sigma_{ij}\)</span>”。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_2.png" ></p>
+<h2 id="状态预测">状态预测</h2>
+<h3 id="问题的矩阵形式表示">问题的矩阵形式表示</h3>
+<p>我们把状态建模成高斯分布（Gaussian
+blob，由于二维高斯分布长得像一个个小泡泡，之所以长这个样子，可参考链接<sup id="fnref:2"><a href="#fn:2" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="[A geometric interpretation of the covariance matrix, 协方差矩阵的几何解释](https://www.visiondummy.com/2014/04/geometric-interpretation-covariance-matrix/)
+">2</span></a></sup>）。我们需要求解/估计在时间<span
+class="math inline">\(k\)</span>时刻的两个信息：1. 最优估计<span
+class="math inline">\(\mathbf{\hat{x}_k}\)</span>以及它的协方差矩阵<span
+class="math inline">\(\mathbf{P_k}\)</span>，我们可以写成下面矩阵形式：</p>
+<p><span class="math display">\[
+\begin{equation}
+\label{eq:statevars}  \begin{aligned}  \mathbf{\hat{x}}_k &amp;=
+\begin{bmatrix}  \text{position}\\  \text{velocity}  \end{bmatrix}\\  \mathbf{P}_k
+&amp;=  \begin{bmatrix}  \Sigma_{pp} &amp; \Sigma_{pv} \\  \Sigma_{vp}
+&amp; \Sigma_{vv} \\  \end{bmatrix}  \end{aligned}  \end{equation}
+\]</span></p>
+<p>（当然，这里我们仅使用位置和速度，但是请记住状态可以包含任意数量的变量，并且可以表示所需的任何变量）</p>
+<p>接下来，我们需要某种方式来查看当前状态（<span
+class="math inline">\(k-1\)</span>时刻）并<strong>预测</strong>在时刻<span
+class="math inline">\(k\)</span>处的状态。请记住，我们不知道哪个状态是“真实”状态，但是我们提到的<strong>预测</strong>（prediction）并不在乎这些。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_7.jpg"></p>
+<p>我们可以用一个矩阵<span
+class="math inline">\(\mathbf{F_k}\)</span>来表示这个预测过程：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_8.jpg"></p>
+<p>这个矩阵<span
+class="math inline">\(\mathbf{F_k}\)</span>将原始估计中的每个点移动到新的预测位置。</p>
+<p>那么问题来了，应该如何使用上述矩阵来预测下一时刻的位置和速度呢？为了阐述这个过程，我们使用了一个非常基础的运动学公式（初中物理中就学过）进行描述：</p>
+<p><span class="math display">\[\begin{split}
+\color{deeppink}{p_k} &amp;= \color{royalblue}{p_{k-1}} + \Delta t
+&amp;\color{royalblue}{v_{k-1}} \\
+\color{deeppink}{v_k} &amp;= &amp;\color{royalblue}{v_{k-1}}
+\end{split}\]</span></p>
+<p>写成矩阵形式：</p>
+<p><span class="math display">\[
+\begin{align}
+\color{deeppink}{\mathbf{\hat{x}}_k} &amp;= \begin{bmatrix}
+1 &amp; \Delta t \\
+0 &amp; 1
+\end{bmatrix} \color{royalblue}{\mathbf{\hat{x}}_{k-1}} \\
+&amp;= \mathbf{F}_k \color{royalblue}{\mathbf{\hat{x}}_{k-1}}
+\label{statevars}
+\end{align}
+\]</span></p>
+<p>现在我们有了一个<strong>预测矩阵</strong>或者叫做<strong>状态转移矩阵</strong>，该矩阵可以帮助我们计算下一个时刻的状态。但我们仍然不知道如何更新状态的协方差矩阵，其实过程也是很简单，如果我们将分布中的每个点乘以矩阵<span
+class="math inline">\(A\)</span>，那么其协方差矩阵<span
+class="math inline">\(\Sigma\)</span>会发生什么？</p>
+<p><span class="math display">\[
+\begin{equation}
+\begin{split}
+Cov(x) &amp;= \Sigma\\
+Cov(\color{firebrick}{\mathbf{A}}x) &amp;= \color{firebrick}{\mathbf{A}}
+\Sigma \color{firebrick}{\mathbf{A}}^T
+\end{split} \label{covident}
+\end{equation}
+\]</span></p>
+<p>将公式<span
+class="math inline">\(\eqref{covident}\)</span>带入公式<span
+class="math inline">\(\eqref{statevars}\)</span>，我们可以得到：</p>
+<p><span class="math display">\[
+\begin{equation}
+\begin{split}
+\color{deeppink}{\mathbf{\hat{x}}_k} &amp;= \mathbf{F}_k
+\color{royalblue}{\mathbf{\hat{x}}_{k-1}} \\
+\color{deeppink}{\mathbf{P}_k} &amp;= \mathbf{F_k}
+\color{royalblue}{\mathbf{P}_{k-1}} \mathbf{F}_k^T
+\end{split}
+\end{equation}
+\]</span></p>
+<h3 id="external-influence">External influence</h3>
+<p>不过我们并没有考虑到所有的影响因素。可能有一些与状态本身无关的变化——如外界因素可能正在影响系统。</p>
+<p>例如，我们用状态对列车的运动进行建模，如果列车长加大油门，火车就加速。同样，在我们的机器人示例中，导航系统软件可能会发出使车轮转动或停止的命令。如果我们很明确地知道这些因素，我们可以将其放在一起构成一个向量<span
+class="math inline">\(\color{darkorange}{\vec{\mathbf{u}_k}}\)</span>，对这个量进行处理，然后将其添加到我们的预测中对状态进行更正。</p>
+<p>假设我们知道由于油门设置或控制命令而产生的预期加速度<span
+class="math inline">\(\color{darkorange}{a}\)</span>。根据基本运动学，我们得到下式：</p>
+<p><span class="math display">\[\begin{split}
+\color{deeppink}{p_k} &amp;= \color{royalblue}{p_{k-1}} + {\Delta t}
+&amp;\color{royalblue}{v_{k-1}} + &amp;\frac{1}{2} \color{darkorange}{a}
+{\Delta t}^2 \\
+\color{deeppink}{v_k} &amp;= &amp;\color{royalblue}{v_{k-1}} + &amp;
+\color{darkorange}{a} {\Delta t}
+\end{split}\]</span></p>
+<p>矩阵形式：</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
+\color{deeppink}{\mathbf{\hat{x}}_k} &amp;= \mathbf{F}_k
+\color{royalblue}{\mathbf{\hat{x}}_{k-1}} + \begin{bmatrix}
+\frac{\Delta t^2}{2} \\
+\Delta t
+\end{bmatrix} \color{darkorange}{a} \\
+&amp;= \mathbf{F}_k \color{royalblue}{\mathbf{\hat{x}}_{k-1}} +
+\mathbf{B}_k \color{darkorange}{\vec{\mathbf{u}_k}}
+\end{split}
+\end{equation}\]</span></p>
+<p>其中<span
+class="math inline">\(\mathbf{B}_k\)</span>被称为<strong>控制矩阵</strong>，<span
+class="math inline">\(\color{darkorange}{\vec{\mathbf{u}_k}}\)</span>被称为<strong>控制向量</strong>。（注意：对于没有外部影响的简单系统，可以忽略该控制项）。</p>
+<p>如果我们的预测并不是100％准确模型，这会发生什么呢？</p>
+<h3 id="external-uncertainty">External uncertainty</h3>
+<p>如果状态仅仅依赖其自身的属性进行演进，那一切都很好。如果状态受到外部因素进行演进，我们只要知道那些外部因素是什么，那么一切仍然很好。</p>
+<p>但在实际使用中，我们有时不知道的那些外部因素到底是如何被建模的。例如，我们要跟踪四轴飞行器，它可能会随风摇晃；如果我们跟踪的是轮式机器人，则车轮可能会打滑，或者因地面颠簸导致其减速。我们无法跟踪这些外部因素，如果发生任何这些情况，我们的预测可能会出错，因为我们并没有考虑这些因素。</p>
+<p>通过在每个预测步骤之后添加一些新的不确定性，我们可以对与“世界”相关的不确定性进行建模（如我们无法跟踪的事物）：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_9.jpg"></p>
+<p>这样一来，由于新增的不确定性<strong>原始估计中的每个状态都可能迁移到多个状态</strong>。
+因为我们非常喜欢用高斯分布进行建模，此时也不例外。我们可以说<span
+class="math inline">\(\color{royalblue}{\mathbf{\hat{x}}_{k-1}}\)</span>的每个点都移动到具有协方差<span
+class="math inline">\(\color{mediumaquamarine}{\mathbf{Q}_k}\)</span>的高斯分布内的某个位置，如下图所示：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10a.jpg"></p>
+<p>这将产生一个新的高斯分布，其协方差不同（但均值相同）：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10b.jpg"></p>
+<p>所以呢，我们在状态量的协方差中增加了额外的协方差<span
+class="math inline">\(\color{mediumaquamarine}{\mathbf{Q}_k}\)</span>，所以预测阶段完整的状态转移方程为：</p>
+<p><span class="math display">\[
+\begin{equation}  \begin{split}  \color{deeppink}{\mathbf{\hat{x}}_k}
+&amp;= \mathbf{F}_k \color{royalblue}{\mathbf{\hat{x}}_{k-1}} +
+\mathbf{B}_k \color{darkorange}{\vec{\mathbf{u}_k}}
+\\  \color{deeppink}{\mathbf{P}_k} &amp;= \mathbf{F_k}
+\color{royalblue}{\mathbf{P}_{k-1}} \mathbf{F}_k^T +
+\color{mediumaquamarine}{\mathbf{Q}_k}  \end{split}  \label{kalpredictfull}  \end{equation}
+\]</span></p>
+<p>换句话说：<strong><font color=deeppink>新的最佳估计</font></strong>是根据<strong><font color=royalblue>先前的最佳估计</font></strong>做出的<strong>预测</strong>，再加上对<strong><font color=darkorange>已知外部影响</font></strong>的校正。</p>
+<p><strong><font color=deeppink>新的不确定度</font></strong>是根据<strong><font color=royalblue>先前的不确定度</font></strong>做出的<strong>预测</strong>，再加上<strong><font color=mediumaquamarine>来自环境额外的不确定度</font></strong>。</p>
+<p>上述过程描绘了状态预测过程，那么当我们从传感器中获取一些测量数据时会发生什么呢？</p>
+<h2 id="状态更新">状态更新</h2>
+<h3 id="利用测量进一步修正状态">利用测量进一步修正状态</h3>
+<p>假设我们有几个传感器，这些传感器可以向我们提供有关系统状态的信息。就目前而言，测量什么量都无关紧要，也许一个读取位置，另一个读取速度。每个传感器都告诉我们有关状态的一些间接信息（换句话说，传感器在状态下运作并产生一组测量读数）。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_12.jpg" ></p>
+<p>请注意，测量的单位可能与状态量的单位不同。我们使用矩阵<span
+class="math inline">\(\mathbf{H}_k\)</span>对传感器的测量进行建模。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_13.jpg" /></p>
+<p>所以我们期望传感器的度数可以被建模成如下形式：</p>
+<p><span
+class="math display">\[\begin{equation}  \begin{aligned}  \vec{\mu}_{\text{expected}}
+&amp;= \mathbf{H}_k \color{deeppink}{\mathbf{\hat{x}}_k}
+\\  \mathbf{\Sigma}_{\text{expected}} &amp;= \mathbf{H}_k
+\color{deeppink}{\mathbf{P}_k}
+\mathbf{H}_k^T  \end{aligned}  \end{equation}\]</span></p>
+<p>卡尔曼滤波器的伟大之处就在于它能够处理传感器噪声。换句话说，传感器本身的测量是不准确的，且原始估计中的每个状态都可能导致一定范围的传感器读数，而卡尔曼滤波能够在这些不确定性存在的情况下找到最优的状态。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_14.jpg" /></p>
+<p>根据传感器的读数，我们会猜测系统正处于某个特定状态。但是由于不确定性的存在，<strong>某些状态比其他状态更可能产生我们看到的读数</strong>：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_11.jpg" /></p>
+<p>我们将这种不确定性（如传感器噪声）的<strong>协方差</strong>表示为<span
+class="math inline">\(\color{mediumaquamarine}{\mathbf{R}_k}\)</span>，读数的分布<strong>均值</strong>等于我们观察到传感器的读数，我们将其表示为<span
+class="math inline">\(\color{yellowgreen}{\vec{\mathbf{z}_k}}\)</span></p>
+<p>这样一来，我们有了两个高斯分布：一个围绕通过状态转移预测的平均值，另一个围绕实际传感器读数。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_4.jpg" /></p>
+<p>因此，我们需要将基于预测状态（<strong><font color=deeppink>粉红色</font></strong>）的推测读数与基于实际观察到的传感器读数（<strong><font color=yellowgreen>绿色</font></strong>）进行融合。</p>
+<p>那么融合后<strong>最有可能的新状态</strong>是什么？
+对于任何可能的读数<span
+class="math inline">\((z_1,z_2)\)</span>，我们都有两个相关的概率：（1）我们的传感器读数<span
+class="math inline">\(\color{yellowgreen}{\vec{\mathbf{z}_k}}\)</span>是<span
+class="math inline">\((z_1,z_2)\)</span>的（误-）测量值的概率，以及（2）先前估计值的概率认为<span
+class="math inline">\((z_1,z_2)\)</span>是我们应该看到的读数。</p>
+<p>如果我们有两个概率，并且想知道两个概率都为真的机会，则将它们相乘。因此，我们对两个高斯分布进行了相乘处理：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_6a.png" /></p>
+<p>两个概率分布相乘得到的就是上图中的重叠部分。而且重叠部分的概率分布会比我们之前的任何一个估计值/读数都精确得多，这个分布的均值就是两种估计最有可能配置（得到的状态）。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_6.png" /></p>
+<p>事实证明，<strong>两个独立的高斯分布相乘之后会得到一个新的具有其均值和协方差矩阵的高斯分布</strong>！下面开始推公式。</p>
+<h3 id="合并两个高斯分布">合并两个高斯分布</h3>
+<p>首先考虑一维高斯情况：一个均值为<span
+class="math inline">\(\mu\)</span>，方差为<span
+class="math inline">\(\sigma^2\)</span>的高斯分布的形式为：</p>
+<p><span class="math display">\[\begin{equation} \label{gaussformula}
+\mathcal{N}(x, \mu,\sigma) = \frac{1}{ \sigma \sqrt{ 2\pi } } e^{
+-\frac{ (x – \mu)^2 }{ 2\sigma^2 } }
+\end{equation}\]</span></p>
+<p>我们想知道将两个高斯曲线相乘会发生什么。下图中的蓝色曲线表示两个高斯总体的（未归一化）交集：</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_joint.png" /></p>
+<p><span class="math display">\[\begin{equation} \label{gaussequiv}
+\mathcal{N}(x, \color{fuchsia}{\mu_0}, \color{deeppink}{\sigma_0}) \cdot
+\mathcal{N}(x, \color{yellowgreen}{\mu_1},
+\color{mediumaquamarine}{\sigma_1}) \stackrel{?}{=} \mathcal{N}(x,
+\color{royalblue}{\mu’}, \color{mediumblue}{\sigma’})
+\end{equation}\]</span></p>
+<p>将公式<span
+class="math inline">\(\eqref{gaussformula}\)</span>代入公式<span
+class="math inline">\(\eqref{gaussequiv}\)</span>，我们可以得到新的高斯分布的均值和方差如下所示：</p>
+<p><span class="math display">\[\begin{equation} \label{fusionformula}
+\begin{aligned}
+\color{royalblue}{\mu’} &amp;= \mu_0 + \frac{\sigma_0^2 (\mu_1 – \mu_0)}
+{\sigma_0^2 + \sigma_1^2}\\
+\color{mediumblue}{\sigma’}^2 &amp;= \sigma_0^2 – \frac{\sigma_0^4}
+{\sigma_0^2 + \sigma_1^2}
+\end{aligned}
+\end{equation}\]</span></p>
+<p>我们将其中的一小部分重写为<span
+class="math inline">\(\color{purple}{\mathbf{k}}\)</span>：</p>
+<p><span class="math display">\[\begin{equation} \label{gainformula}
+\color{purple}{\mathbf{k}} = \frac{\sigma_0^2}{\sigma_0^2 + \sigma_1^2}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
+\color{royalblue}{\mu’} &amp;= \mu_0 + &amp;\color{purple}{\mathbf{k}}
+(\mu_1 – \mu_0)\\
+\color{mediumblue}{\sigma’}^2 &amp;= \sigma_0^2 –
+&amp;\color{purple}{\mathbf{k}} \sigma_0^2
+\end{split} \label{update}
+\end{equation}\]</span></p>
+<p>这样一来，公式的形式就简单多了！我们顺势将公式<span
+class="math inline">\(\eqref{gainformula}\)</span>和<span
+class="math inline">\(\eqref{update}\)</span>的矩阵形式写在下面：</p>
+<p><span class="math display">\[\begin{equation} \label{matrixgain}
+\color{purple}{\mathbf{K}} = \Sigma_0 (\Sigma_0 + \Sigma_1)^{-1}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
+\color{royalblue}{\vec{\mu}’} &amp;= \vec{\mu_0} +
+&amp;\color{purple}{\mathbf{K}} (\vec{\mu_1} – \vec{\mu_0})\\
+\color{mediumblue}{\Sigma’} &amp;= \Sigma_0 –
+&amp;\color{purple}{\mathbf{K}} \Sigma_0
+\end{split} \label{matrixupdate}
+\end{equation}\]</span></p>
+<p>其中<span
+class="math inline">\(\Sigma\)</span>表示新高斯分布的协方差矩阵，<span
+class="math inline">\(\vec{\mu}\)</span>是每个维度的均值，<span
+class="math inline">\(\color{purple}{\mathbf{K}}\)</span>就是大名鼎鼎的“<strong>卡尔曼增益</strong>”（<strong>Kalman
+gain</strong>）。</p>
+<h3 id="公式汇总">公式汇总</h3>
+<p>我们有两个高斯分布，一个是我们预测的观测<span
+class="math inline">\((\color{fuchsia}{\mu_0},
+\color{deeppink}{\Sigma_0}) = (\color{fuchsia}{\mathbf{H}_k
+\mathbf{\hat{x}}_k}, \color{deeppink}{\mathbf{H}_k \mathbf{P}_k
+\mathbf{H}_k^T})\)</span>，另外一个是实际的观测(传感器读数)<span
+class="math inline">\((\color{yellowgreen}{\mu_1},
+\color{mediumaquamarine}{\Sigma_1}) =
+(\color{yellowgreen}{\vec{\mathbf{z}_k}},
+\color{mediumaquamarine}{\mathbf{R}_k})\)</span>，我们将这两个高斯分布带入公式<span
+class="math inline">\(\eqref{matrixupdate}\)</span>中就可以得到二者的重叠区域：</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathbf{H}_k \color{royalblue}{\mathbf{\hat{x}}_k’} &amp;=
+\color{fuchsia}{\mathbf{H}_k \mathbf{\hat{x}}_k} &amp; + &amp;
+\color{purple}{\mathbf{K}} ( \color{yellowgreen}{\vec{\mathbf{z}_k}} –
+\color{fuchsia}{\mathbf{H}_k \mathbf{\hat{x}}_k} ) \\
+\mathbf{H}_k \color{royalblue}{\mathbf{P}_k’} \mathbf{H}_k^T &amp;=
+\color{deeppink}{\mathbf{H}_k \mathbf{P}_k \mathbf{H}_k^T} &amp; – &amp;
+\color{purple}{\mathbf{K}} \color{deeppink}{\mathbf{H}_k \mathbf{P}_k
+\mathbf{H}_k^T}
+\end{aligned} \label {kalunsimplified}
+\end{equation}\]</span></p>
+<p>从公式<span
+class="math inline">\(\eqref{matrixgain}\)</span>我们可以知道，卡尔曼增益是：</p>
+<p><span class="math display">\[
+\begin{equation} \label{eq:kalgainunsimplified}
+\color{purple}{\mathbf{K}} = \color{deeppink}{\mathbf{H}_k \mathbf{P}_k
+\mathbf{H}_k^T} ( \color{deeppink}{\mathbf{H}_k \mathbf{P}_k
+\mathbf{H}_k^T} + \color{mediumaquamarine}{\mathbf{R}_k})^{-1}
+\end{equation}
+\]</span></p>
+<p>然后我们将公式<span
+class="math inline">\(\eqref{kalunsimplified}\)</span>与公式<span
+class="math inline">\(\eqref{eq:kalgainunsimplified}\)</span>中的<span
+class="math inline">\(\mathbf{H}_k\)</span>去除，同时将<span
+class="math inline">\(\color{royalblue}{\mathbf{P}_k’}\)</span>后面的<span
+class="math inline">\(\mathbf{H}_k^T\)</span>去除，我们可以得到最终的化简形式的更新方程：</p>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
+\color{royalblue}{\mathbf{\hat{x}}_k’} &amp;=
+\color{fuchsia}{\mathbf{\hat{x}}_k} &amp; + &amp;
+\color{purple}{\mathbf{K}’} ( \color{yellowgreen}{\vec{\mathbf{z}_k}} –
+\color{fuchsia}{\mathbf{H}_k \mathbf{\hat{x}}_k} ) \\
+\color{royalblue}{\mathbf{P}_k’} &amp;= \color{deeppink}{\mathbf{P}_k}
+&amp; – &amp; \color{purple}{\mathbf{K}’} \color{deeppink}{\mathbf{H}_k
+\mathbf{P}_k}
+\end{split}
+\label{kalupdatefull}
+\end{equation}\]</span></p>
+<p><span class="math display">\[\begin{equation}
+\color{purple}{\mathbf{K}’} = \color{deeppink}{\mathbf{P}_k
+\mathbf{H}_k^T} ( \color{deeppink}{\mathbf{H}_k \mathbf{P}_k
+\mathbf{H}_k^T} + \color{mediumaquamarine}{\mathbf{R}_k})^{-1}
+\label{kalgainfull}
+\end{equation}\]</span></p>
+<h2 id="图说">图说</h2>
+<p>大功告成，<span
+class="math inline">\(\color{royalblue}{\mathbf{\hat{x}}_k’}\)</span>就是更新后的最优状态！接下来我们可以继续进行预测，然后更新，重复上述过程！下图给出卡尔曼滤波信息流。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/kalflow.png" /></p>
+<h2 id="总结">总结</h2>
+<p>在上述所有数学公式中，你需要实现的只是公式<span
+class="math inline">\(\eqref{kalpredictfull},
+\eqref{kalupdatefull}\)</span>和<span
+class="math inline">\(\eqref{kalgainfull}\)</span>。（或者，如果你忘记了这些，可以从等式<span
+class="math inline">\(\eqref{covident}\)</span>和<span
+class="math inline">\(\eqref{matrixupdate}\)</span>重新推导所有内容。）</p>
+<p>这将使你能够准确地对任何线性系统建模。对于非线性系统，我们使用<strong>扩展卡尔曼滤波器</strong>，该滤波器通过简单地线性化预测和测量值的均值进行工作。</p>
+<h2 id="参考文献">参考文献</h2>
+<img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" />
+<div id="footnotes">
+<hr>
+<div id="footnotelist">
+<ol style="list-style: none; padding-left: 0; margin-left: 40px">
+<li id="fn:1">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;"><a target="_blank" rel="noopener" href="http://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/#mathybits">How
+a Kalman filter works, in pictures,
+图解卡尔曼滤波是如何工作的</a><a href="#fnref:1" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:2">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;"><a target="_blank" rel="noopener" href="https://www.visiondummy.com/2014/04/geometric-interpretation-covariance-matrix/">A
+geometric interpretation of the covariance matrix,
+协方差矩阵的几何解释</a><a href="#fnref:2" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:3">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;"><a target="_blank" rel="noopener" href="https://sikasjc.github.io/2018/05/08/kalman_filter">Kalman
+Filter 卡尔曼滤波</a><a href="#fnref:3" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:4">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+Faragher, “Understanding the Basis of the Kalman Filter Via a Simple and
+Intuitive Derivation [Lecture Notes]”, IEEE Signal Processing Magazine,
+vol. 29, no. 5, pp. 128–132, Sep.
+2012.<a href="#fnref:4" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:5">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">G.
+Welch and G. Bishop,
+“<a target="_blank" rel="noopener" href="http://www.cs.unc.edu/~welch/media/pdf/kalman_intro.pdf">An
+Introduction to the Kalman Filter</a>”, p. 16,
+2006.<a href="#fnref:5" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:6">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Fitzgerald,
+Robert J. “Divergence of the Kalman filter”, Automatic Control IEEE
+Transactions on
+16.6(1971):736-747.<a href="#fnref:6" rev="footnote">↩︎</a></span>
+</li>
+</ol>
+</div>
+</div>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/" title="📝笔记：图解卡尔曼滤波">https://www.vincentqin.tech/posts/kalman-filter-in-pictures/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/redirect-arxiv/" rel="prev" title="🔨工具：国内加速访问arxiv">
+                  <i class="fa fa-chevron-left"></i> 🔨工具：国内加速访问arxiv
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/manage-pc-hosts/" rel="next" title="🔨工具：解决Github挂图及龟速访问">
+                  🔨工具：解决Github挂图及龟速访问 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/kalman-filter-in-pictures/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

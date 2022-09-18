@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Eigen是一个非常常用的矩阵运算库，至少对于SLAM的研究者来说不可或缺。然而，向来乖巧的Eigen近来却频频闹脾气，把我的程序折腾得死去活来，我却是丈二和尚摸不着头脑。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="🎃资料: 从Eigen向量化谈内存对齐">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/eigen-alignment/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="Eigen是一个非常常用的矩阵运算库，至少对于SLAM的研究者来说不可或缺。然而，向来乖巧的Eigen近来却频频闹脾气，把我的程序折腾得死去活来，我却是丈二和尚摸不着头脑。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-10-17T09:17:08.000Z">
+<meta property="article:modified_time" content="2022-05-17T14:32:52.017Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="Eigen">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/eigen-alignment/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/eigen-alignment/","path":"posts/eigen-alignment/","title":"🎃资料: 从Eigen向量化谈内存对齐"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>🎃资料: 从Eigen向量化谈内存对齐 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%98%E8%B5%B7"><span class="nav-number">1.</span> <span class="nav-text">缘起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%90%91%E9%87%8F%E5%8C%96%E8%BF%90%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">什么是向量化运算？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BE%E4%B8%AA%E6%A0%97%E5%AD%90"><span class="nav-number">3.</span> <span class="nav-text">举个栗子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">重构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heap-vs-stack"><span class="nav-number">5.</span> <span class="nav-text">Heap vs Stack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%98%E6%9C%89%E5%9D%91"><span class="nav-number">6.</span> <span class="nav-text">还有坑？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%8D%E8%B0%88eigen"><span class="nav-number">7.</span> <span class="nav-text">再谈Eigen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/eigen-alignment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="🎃资料: 从Eigen向量化谈内存对齐 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          🎃资料: 从Eigen向量化谈内存对齐
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-10-17 17:17:08" itemprop="dateCreated datePublished" datetime="2021-10-17T17:17:08+08:00">2021-10-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-05-17 22:32:52" itemprop="dateModified" datetime="2022-05-17T22:32:52+08:00">2022-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%9F%A5%E8%AF%86%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">知识库</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/eigen-alignment/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/eigen-alignment/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/eigen-alignment/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><code>Eigen</code>是一个非常常用的矩阵运算库，至少对于SLAM的研究者来说不可或缺。然而，向来乖巧的<code>Eigen</code>近来却频频闹脾气，把我的程序折腾得死去活来，我却是丈二和尚摸不着头脑。</p>
+<span id="more"></span>
+<p>(本文转发自：<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/93824687">知乎@王金戈</a>，已获授权)</p>
+<h2 id="缘起">缘起</h2>
+<p>简单说说我经历的灵异事件。我的程序原本在NVIDIA
+TX2上跑的好好的，直到有一天，我打算把它放到服务器上，看看传说中的RTX
+2080GPU能不能加速一把。结果悲剧发生了，编译正常，但是一运行就立即double
+free。我很是吃惊，怎么能一行代码都没执行就崩了呢。但崩了就是崩了，一定是哪里有bug，我用<code>valgrind</code>检查内存问题，发现种种线索都指向<code>g2o</code>。<code>g2o</code>是一个SLAM后端优化库，里面封装了大量SLAM相关的优化算法，内部使用了<code>Eigen</code>进行矩阵运算。阴差阳错之间，我发现关闭<code>-march=native</code>这个编译选项后就能正常运行，而这个编译选项其实是告诉编译器当前的处理器支持哪些SIMD指令集，Eigen中又恰好使用了SSE、AVX等指令集进行向量化加速。此时，机智的我发现Eigen文档中有一章叫做<code>Alignment issues</code>，里面提到了某些情况下Eigen对象可能没有内存对齐，从而导致程序崩溃。现在，证据到齐，基本可以确定我遇到的真实问题了：编译安装<code>g2o</code>时，默认没有使用<code>-march=native</code>，因此里面的<code>Eigen</code>代码没有使用向量化加速，所以它们并没有内存对齐。而在我的程序中，启用了向量化加速，所有的<code>Eigen</code>对象都是内存对齐的。两个程序链接起来之后，<code>g2o</code>中未对齐的<code>Eigen</code>对象一旦传递到我的代码中，向量化运算的指令就会触发异常。解决方案很简单，要么都用<code>-march=native</code>，要么都不用。</p>
+<p>这件事就这么过去了，但我不能轻易放过它，毕竟花费了那么多时间找bug。后来我又做了一些深入的探究，这篇文章就来谈谈向量化和内存对齐里面的门道。</p>
+<h2 id="什么是向量化运算">什么是向量化运算？</h2>
+<p>向量化运算就是用SSE、AVX等<code>SIMD</code>（Single Instruction
+Multiple
+Data）指令集，实现一条指令对多个操作数的运算，从而提高代码的吞吐量，实现加速效果。SSE是一个系列，包括从最初的SSE到最新的SSE4.2，支持同时操作16
+bytes的数据，即4个float或者2个double。AVX也是一个系列，它是SSE的升级版，支持同时操作32
+bytes的数据，即8个float或者4个double。</p>
+<p>但向量化运算是有前提的，那就是<strong>内存对齐</strong>。SSE的操作数，必须16
+bytes对齐，而AVX的操作数，必须32
+bytes对齐。也就是说，如果我们有4个float数，必须把它们放在连续的且首地址为16的倍数的内存空间中，才能调用SSE的指令进行运算。</p>
+<h2 id="举个栗子">举个栗子</h2>
+<p>为了给没接触过向量化编程的同学一些直观的感受，我写了一个简单的示例程序：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;immintrin.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="type">double</span> input1[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">  <span class="type">double</span> input2[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">  <span class="type">double</span> result[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of input1: &quot;</span> &lt;&lt; input1 &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of input2: &quot;</span> &lt;&lt; input2 &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  __m256d a = _mm256_load_pd(input1);</span><br><span class="line">  __m256d b = _mm256_load_pd(input2);</span><br><span class="line">  __m256d c = _mm256_add_pd(a, b);</span><br><span class="line"></span><br><span class="line">  _mm256_store_pd(result, c);</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; result[<span class="number">0</span>] &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; result[<span class="number">1</span>] &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; result[<span class="number">2</span>] &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; result[<span class="number">3</span>] &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码使用AVX中的向量化加法指令，同时计算4对double的和。这4对数保存在input1和input2中。
+<code>_mm256_load_pd</code>指令用来加载操作数，<code>_mm256_add_pd</code>指令进行向量化运算，最后，
+<code>_mm256_store_pd</code>指令读取运算结果到result中。可惜的是，程序运行到第一个<code>_mm256_load_pd</code>处就崩溃了。崩溃的原因正是因为输入变量没有内存对齐。我特意打印出了两个输入变量的地址，结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">address of input1: 0x7ffeef431ef0</span><br><span class="line">address of input2: 0x7ffeef431f10 </span><br></pre></td></tr></table></figure>
+<p>上一节提到了AVX要求32字节对齐，我们可以把这两个输入变量的地址除以32，看是否能够整除。结果发现
+<code>0x7ffeef431ef0</code> 和 <code>0x7ffeef431f10</code>
+都不能整除。当然，其实直接看倒数第二位是否是偶数即可，是偶数就可以被32整除，是奇数则不能被32整除。</p>
+<p>如何让输入变量内存对齐呢？我们知道，对于局部变量来说，它们的内存地址是在编译期确定的，也就是由编译器决定。所以我们只需要告诉编译器，给input1和input2申请空间时请让首地址32字节对齐，这需要通过<strong>预编译指令</strong>来实现。不同编译器的预编译指令是不一样的，比如gcc的语法为<code>__attribute__((aligned(32)))</code>，MSVC的语法为
+<code>__declspec(align(32))</code>
+。以gcc语法为例，做少量修改，就可以得到正确的代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;immintrin.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span> input1[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">  __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span> input2[<span class="number">4</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">  __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span> result[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of input1: &quot;</span> &lt;&lt; input1 &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of input2: &quot;</span> &lt;&lt; input2 &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  __m256d a = _mm256_load_pd(input1);</span><br><span class="line">  __m256d b = _mm256_load_pd(input2);</span><br><span class="line">  __m256d c = _mm256_add_pd(a, b);</span><br><span class="line"></span><br><span class="line">  _mm256_store_pd(result, c);</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; result[<span class="number">0</span>] &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; result[<span class="number">1</span>] &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; result[<span class="number">2</span>] &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; result[<span class="number">3</span>] &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">address of input1: 0x7ffc5ca2e640</span><br><span class="line">address of input2: 0x7ffc5ca2e660</span><br><span class="line">2 3 4 5</span><br></pre></td></tr></table></figure>
+<p>可以看到，这次的两个地址都是32的倍数，而且最终的运算结果也完全正确。</p>
+<p>虽然上面的代码正确实现了向量化运算，但实现方式未免过于粗糙。每个变量声明前面都加上一长串预编译指令看起来就不舒服。我们尝试重构一下这段代码。</p>
+<h2 id="重构">重构</h2>
+<p>首先，最容易想到的是，把内存对齐的double数组声明成一种自定义数据类型，如下所示:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> aligned_double4 = __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span>[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">aligned_double4 input1 = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">aligned_double4 input2 = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">aligned_double4 result;</span><br></pre></td></tr></table></figure>
+<p>这样看起来清爽多了。更进一步，如果4个double是一种经常使用的数据类型的话，我们就可以把它封装为一个<code>Vector4d</code>类，这样，用户就完全看不到内存对齐的具体实现了，像下面这样。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;immintrin.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vector4d</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> aligned_double4 = __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span>[<span class="number">4</span>];</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Vector4d</span>() &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Vector4d</span>(<span class="type">double</span> d1, <span class="type">double</span> d2, <span class="type">double</span> d3, <span class="type">double</span> d4) &#123;</span><br><span class="line">    data[<span class="number">0</span>] = d1;</span><br><span class="line">    data[<span class="number">1</span>] = d2;</span><br><span class="line">    data[<span class="number">2</span>] = d3;</span><br><span class="line">    data[<span class="number">3</span>] = d4;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  aligned_double4 data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Vector4d <span class="keyword">operator</span>+ (<span class="type">const</span> Vector4d&amp; v1, <span class="type">const</span> Vector4d&amp; v2) &#123;</span><br><span class="line">  __m256d data1 = _mm256_load_pd(v1.data);</span><br><span class="line">  __m256d data2 = _mm256_load_pd(v2.data);</span><br><span class="line">  __m256d data3 = _mm256_add_pd(data1, data2);</span><br><span class="line">  Vector4d result;</span><br><span class="line">  _mm256_store_pd(result.data, data3);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">std::ostream&amp; <span class="keyword">operator</span>&lt;&lt; (std::ostream&amp; o, <span class="type">const</span> Vector4d&amp; v) &#123;</span><br><span class="line">  o &lt;&lt; <span class="string">&quot;(&quot;</span> &lt;&lt; v.data[<span class="number">0</span>] &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.data[<span class="number">1</span>] &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.data[<span class="number">2</span>] &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.data[<span class="number">3</span>] &lt;&lt; <span class="string">&quot;)&quot;</span>;</span><br><span class="line">  <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Vector4d input1 = &#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">  Vector4d input2 = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line">  Vector4d result = input1 + input2;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; result &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码实现了<code>Vector4d</code>类，并把向量化运算放在了<code>operator+</code>中，主函数变得非常简单。</p>
+<p>但不要高兴得太早，这个<code>Vector4d</code>其实有着严重的漏洞，如果我们动态创建对象，程序仍然会崩溃，比如这段代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Vector4d* input1 = <span class="keyword">new</span> Vector4d&#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">  Vector4d* input2 = <span class="keyword">new</span> Vector4d&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of input1: &quot;</span> &lt;&lt; input1-&gt;data &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of input2: &quot;</span> &lt;&lt; input2-&gt;data &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  Vector4d result = *input1 + *input2;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; result &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">delete</span> input1;</span><br><span class="line">  <span class="keyword">delete</span> input2;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>崩溃前的输出为： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">address of input1: 0x1ceae70</span><br><span class="line">address of input2: 0x1ceaea0</span><br></pre></td></tr></table></figure>
+很诡异吧，似乎刚才我们设置的内存对齐都失效了，这两个输入变量的内存首地址又不是32的倍数了。</p>
+<h2 id="heap-vs-stack">Heap vs Stack</h2>
+<p>问题的根源在于不同的对象创建方式。<strong>直接声明的对象是存储在栈上的，其内存地址由编译器在编译时确定，因此预编译指令会生效。但用new动态创建的对象则存储在堆中，其地址在运行时确定</strong>。C++的运行时库并不会关心预编译指令声明的对齐方式，我们需要更强有力的手段来确保内存对齐。</p>
+<p>C++提供的<code>new</code>关键字是个好东西，它避免了C语言中丑陋的<code>malloc</code>操作，但同时也隐藏了实现细节。如果我们翻看C++官方文档，可以发现<code>new Vector4d</code>实际上做了两件事情，第一步申请<code>sizeof(Vector4d)</code>大小的空间，第二步调用<code>Vector4d</code>的构造函数。要想实现内存对齐，我们必须修改第一步申请空间的方式才行。好在第一步其实调用了<code>operator new</code>这个函数，我们只需要重写这个函数，就可以实现自定义的内存申请，下面是添加了该函数后的<code>Vector4d</code>类。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Vector4d</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> aligned_double4 = __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span>[<span class="number">4</span>];</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Vector4d</span>() &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Vector4d</span>(<span class="type">double</span> d1, <span class="type">double</span> d2, <span class="type">double</span> d3, <span class="type">double</span> d4) &#123;</span><br><span class="line">    data[<span class="number">0</span>] = d1;</span><br><span class="line">    data[<span class="number">1</span>] = d2;</span><br><span class="line">    data[<span class="number">2</span>] = d3;</span><br><span class="line">    data[<span class="number">3</span>] = d4;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span>* <span class="keyword">operator</span> <span class="title">new</span> <span class="params">(std::<span class="type">size_t</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="type">void</span>* original = ::<span class="keyword">operator</span> <span class="built_in">new</span>(count + <span class="number">32</span>);</span><br><span class="line">    <span class="type">void</span>* aligned = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">void</span>*&gt;((<span class="built_in">reinterpret_cast</span>&lt;<span class="type">size_t</span>&gt;(original) &amp; ~<span class="built_in">size_t</span>(<span class="number">32</span> - <span class="number">1</span>)) + <span class="number">32</span>);</span><br><span class="line">    *(<span class="built_in">reinterpret_cast</span>&lt;<span class="type">void</span>**&gt;(aligned) - <span class="number">1</span>) = original;</span><br><span class="line">    <span class="keyword">return</span> aligned;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="keyword">operator</span> <span class="title">delete</span> <span class="params">(<span class="type">void</span>* ptr)</span> </span>&#123;</span><br><span class="line">    ::<span class="function"><span class="keyword">operator</span> <span class="title">delete</span><span class="params">(*(<span class="keyword">reinterpret_cast</span>&lt;<span class="type">void</span>**&gt;(ptr) - <span class="number">1</span>))</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  aligned_double4 data;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>operator new</code>的实现还是有些技巧的，我们来详细解释一下。
+首先，根据C++标准的规定，<code>operator new</code>的参数<code>count</code>是要开辟的空间的大小。
+为了保证一定可以得到<code>count</code>大小且32字节对齐的内存空间，我们把实际申请的内存空间扩大到<code>count + 32</code>。可以想象，在这<code>count + 32</code>字节空间中，
+一定存在首地址为32的倍数的连续<code>count</code>字节的空间。
+所以，第二行代码，我们通过对申请到的原始地址<code>original</code>做一些位运算，先找到比<code>original</code>小且是32的倍数的地址，然后加上32，就得到了我们想要的对齐后的地址，记作<code>aligned</code>。
+接下来，第三行代码很关键，它把原始地址的值保存在了<code>aligned</code>地址的前一个位置中，之所以要这样做，是因为我们还需要自定义释放内存的函数<code>operator delete</code>。毕竟<code>aligned</code>地址并非真实申请到的地址，所以在该地址上调用默认的<code>delete</code>
+是会出错的。可以看到，我们在代码中也定义了一个<code>operator delete</code>，传入的参数正是前面<code>operator new</code>返回的对齐的地址。这时候，保存在<code>aligned</code>前一个位置的原始地址就非常有用了，我们只需要把它取出来，然后用标准的<code>delete</code>释放该内存即可。</p>
+<p>为了方便大家理解这段代码，有几个细节需要特地强调一下。<code>::operator new</code>中的<code>::</code>代表全局命名空间，因此可以调用到标准的<code>operator new</code>。第三行需要先把<code>aligned</code>强制转换为<code>void**</code>类型，这是因为我们希望在<code>aligned</code>的前一个位置保存一个<code>void*</code>类型的地址，既然保存的元素是地址，那么该位置对应的地址就是地址的地址，也就是<code>void**</code>。</p>
+<p>这是一个不大不小的trick，C++的很多内存管理方面的处理经常会有这样的操作。但不知道细心的你是否发现了这里的一个问题：<code>reinterpret_cast&lt;void**&gt;(aligned) - 1</code>这个地址是否一定在我们申请的空间中呢？换句话说，
+它是否一定大于original呢？
+之所以存在这个质疑，是因为这里的-1其实是对指针减一。要知道，在64位计算机中，指针的长度是8字节，所以这里得到的地址其实是<code>reinterpret_cast&lt;size_t&gt;(aligned) - 8</code>。看出这里的区别了吧，对指针减1相当于对地址的值减8。所以仔细想想，如果original到aligned的距离小于8字节的话，这段代码就会对申请的空间以外的内存赋值，可怕吧。</p>
+<p>其实没什么可怕的，为什么我敢这样讲，因为<code>Eigen</code>就是这样实现的。这样做依赖于现代编译器的一个共识：<strong>所有的内存分配都默认16字节对齐</strong>。这个事实可以解释很多问题，首先，永远不用担心<code>original</code>到<code>aligned</code>的距离会不会小于8了，它会稳定在16，这足够保存一个指针。其次，为什么我们用AVX指令集举例，而不是SSE？因为SSE要求16字节对齐，而现代编译器已经默认16字节对齐了，那这篇文章就没办法展开了。
+最后，为什么我的代码在NVIDIA
+TX2上运行正常而在服务器上挂掉了？因为TX2中是ARM处理器，里面的向量化指令集NEON也只要求16字节对齐。</p>
+<h2 id="还有坑">还有坑？</h2>
+<p>如果你以为到这里就圆满结束了，那可是大错特错。还有个天坑没展示给大家，下面的代码中，我的自定义类Point包含了一个Vector4d的成员，这时候，噩梦又出现了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Point</span>(Vector4d position) : <span class="built_in">position</span>(position) &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Vector4d position;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Vector4d* input1 = <span class="keyword">new</span> Vector4d&#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">  Vector4d* input2 = <span class="keyword">new</span> Vector4d&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"></span><br><span class="line">  Point* point1 = <span class="keyword">new</span> Point&#123;*input1&#125;;</span><br><span class="line">  Point* point2 = <span class="keyword">new</span> Point&#123;*input2&#125;;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of point1: &quot;</span> &lt;&lt; point1-&gt;position.data &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of point2: &quot;</span> &lt;&lt; point2-&gt;position.data &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  Vector4d result = point1-&gt;position + point2-&gt;position;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; result &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">delete</span> input1;</span><br><span class="line">  <span class="keyword">delete</span> input2;</span><br><span class="line">  <span class="keyword">delete</span> point1;</span><br><span class="line">  <span class="keyword">delete</span> point2;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出的地址又不再是32的倍数了，程序戛然而止。我们分析一下为什么会这样。在主函数中，<code>new Point</code>动态创建了一个<code>Point</code>对象。前面提到过，这个过程分为两步，第一步申请<code>Point</code>对象所需的空间，即<code>sizeof(Point)</code>大小的空间，第二步调用<code>Point</code>的构造函数。我们寄希望于第一步申请到的空间恰好让内部的<code>position</code>对象对齐，这是不现实的。因为整个过程中并不会调用<code>Vector4d</code>的<code>operator new</code>，调用的只有<code>Point</code>的<code>operator new</code>，而这个函数我们并没有重写。</p>
+<p>可惜的是，此处并没有足够优雅的解决方案，唯一的方案是在<code>Point</code>类中也添加自定义<code>operator new</code>，这就需要用户的协助，类库的作者已经无能为力了。
+不过类库的作者能做的，是尽量让用户更方便地添加<code>operator new</code>，比如封装为一个宏定义，用户只需要在<code>Point</code>类中添加一句宏即可。最后，完整的代码如下。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;immintrin.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ALIGNED_OPERATOR_NEW \</span></span><br><span class="line"><span class="meta">  void* operator new (std::size_t count) &#123; \</span></span><br><span class="line"><span class="meta">    void* original = ::operator new(count + 32); \</span></span><br><span class="line"><span class="meta">    void* aligned = reinterpret_cast<span class="string">&lt;void*&gt;</span>((reinterpret_cast<span class="string">&lt;size_t&gt;</span>(original) &amp; ~size_t(32 - 1)) + 32); \</span></span><br><span class="line"><span class="meta">    *(reinterpret_cast<span class="string">&lt;void**&gt;</span>(aligned) - 1) = original; \</span></span><br><span class="line"><span class="meta">    return aligned;\</span></span><br><span class="line"><span class="meta">  &#125; \</span></span><br><span class="line"><span class="meta">  void operator delete (void* ptr) &#123; \</span></span><br><span class="line"><span class="meta">    ::operator delete(*(reinterpret_cast<span class="string">&lt;void**&gt;</span>(ptr) - 1)); \</span></span><br><span class="line"><span class="meta">  &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Vector4d</span> &#123;</span><br><span class="line">  <span class="keyword">using</span> aligned_double4 = __attribute__ ((<span class="built_in">aligned</span> (<span class="number">32</span>))) <span class="type">double</span>[<span class="number">4</span>];</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Vector4d</span>() &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Vector4d</span>(<span class="type">double</span> d1, <span class="type">double</span> d2, <span class="type">double</span> d3, <span class="type">double</span> d4) &#123;</span><br><span class="line">    data[<span class="number">0</span>] = d1;</span><br><span class="line">    data[<span class="number">1</span>] = d2;</span><br><span class="line">    data[<span class="number">2</span>] = d3;</span><br><span class="line">    data[<span class="number">3</span>] = d4;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ALIGNED_OPERATOR_NEW</span><br><span class="line"></span><br><span class="line">  aligned_double4 data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Vector4d <span class="keyword">operator</span>+ (<span class="type">const</span> Vector4d&amp; v1, <span class="type">const</span> Vector4d&amp; v2) &#123;</span><br><span class="line">  __m256d data1 = _mm256_load_pd(v1.data);</span><br><span class="line">  __m256d data2 = _mm256_load_pd(v2.data);</span><br><span class="line">  __m256d data3 = _mm256_add_pd(data1, data2);</span><br><span class="line">  Vector4d result;</span><br><span class="line">  _mm256_store_pd(result.data, data3);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">std::ostream&amp; <span class="keyword">operator</span>&lt;&lt; (std::ostream&amp; o, <span class="type">const</span> Vector4d&amp; v) &#123;</span><br><span class="line">  o &lt;&lt; <span class="string">&quot;(&quot;</span> &lt;&lt; v.data[<span class="number">0</span>] &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.data[<span class="number">1</span>] &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.data[<span class="number">2</span>] &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; v.data[<span class="number">3</span>] &lt;&lt; <span class="string">&quot;)&quot;</span>;</span><br><span class="line">  <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">Point</span>(Vector4d position) : <span class="built_in">position</span>(position) &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ALIGNED_OPERATOR_NEW</span><br><span class="line"></span><br><span class="line">  Vector4d position;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Vector4d* input1 = <span class="keyword">new</span> Vector4d&#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>&#125;;</span><br><span class="line">  Vector4d* input2 = <span class="keyword">new</span> Vector4d&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"></span><br><span class="line">  Point* point1 = <span class="keyword">new</span> Point&#123;*input1&#125;;</span><br><span class="line">  Point* point2 = <span class="keyword">new</span> Point&#123;*input2&#125;;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of point1: &quot;</span> &lt;&lt; point1-&gt;position.data &lt;&lt; std::endl;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;address of point2: &quot;</span> &lt;&lt; point2-&gt;position.data &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  Vector4d result = point1-&gt;position + point2-&gt;position;</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; result &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">delete</span> input1;</span><br><span class="line">  <span class="keyword">delete</span> input2;</span><br><span class="line">  <span class="keyword">delete</span> point1;</span><br><span class="line">  <span class="keyword">delete</span> point2;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码中，宏定义<code>ALIGNED_OPERATOR_NEW</code>包含了<code>operator new</code>和<code>operator delete</code>，它们对所有需要内存对齐的类都适用。因此，无论是需要内存对齐的类，还是包含了这些类的类，都需要添加这个宏。</p>
+<h2 id="再谈eigen">再谈Eigen</h2>
+<p>在Eigen官方文档中有这么一页内容:</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/eigen-alignment/eigen-alignment-fig1.png" /></p>
+<p>有没有觉得似曾相识？Eigen对该问题的解决方案与我们不谋而合(<code>EIGEN_MAKE_ALIGNED_OPERATOR_NEW</code>)。这当然不是巧合，事实上，本文的灵感正是来源于Eigen。但Eigen只告诉了我们应该怎么做，没有详细讲解其原理。本文则从问题的提出，到具体的解决方案，一一剖析，希望可以给大家一些更深的理解。</p>
+<h2 id="总结">总结</h2>
+<p>最后做一个简短的总结。对于基本数据类型和自定义类型，我们需要用<strong>预编译指令来保证栈内存的对齐</strong>，用重写<code>operator new</code>的方式保证<strong>堆内存对齐</strong>。对于<strong>嵌套</strong>的自定义类型，申请栈内存时会自动保证其内部数据类型的对齐，而申请堆内存时仍然需要重写<code>operator new</code>。</p>
+<p>有一种特殊情况本文并未提到，如果使用<code>std::vector&lt;Vector4d&gt;</code>
+，需要传入自定义内存申请器，即<code>std::vector&lt;Vector4d</code>,
+<code>AlignedAllocator&gt;</code>，其中<code>AlignedAllocator</code>是我们自定义的内存申请器。这是因为，<code>std::vector</code>中使用了动态申请的空间保存数据，因此默认的<code>operator new</code>是无法让其内存对齐的。在无法重写<code>std::vector</code>类的<code>operator new</code>的情况下，标准库提供了自定义内存申请器的机制，让用户可以以自己的方式申请内存。具体做法本文就不再展开了，理解了前面的内容，这个问题应该很容易解决。</p>
+<h2 id="参考资料">参考资料</h2>
+<ol type="1">
+<li><p><a
+target="_blank" rel="noopener" href="https://github.com/ethz-asl/eigen_catkin/wiki/Eigen-Memory-Issues">Eigen
+Memory Issues ethz-asl/eigen_catkin wiki</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="http://eigen.tuxfamily.org/dox-devel/group__TopicUnalignedArrayAssert.html">Explanation
+of the assertion on unaligned arrays Eigen Doc</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/gengshenghong/article/details/7010615">在C/C++代码中使用SSE等指令集的指令(4)SSE指令集Intrinsic函数使用
+gengshenghong</a>)</p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://en.cppreference.com/w/c/language/_Alignas">alignas
+cppreference</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://www.gamedeveloper.com/programming/data-alignment-part-1">Data
+Alignment, Part 1 Noel Llopis</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://www.gamasutra.com/view/feature/3975/data_alignment_part_2_objects_on_.php?print=1">Data
+Alignment, Part 2: Objects on The Heap and The Stack Noel
+Llopis</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://blog.shengbin.me/posts/gcc-attribute-aligned-and-packed">GCC中的aligned和packed属性
+Shengbin</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/language/new">new
+expression cppreference</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/59074271/why-are-all-arrays-aligned-to-16-bytes-on-my-implementation">Why
+are all arrays aligned to 16 bytes on my implementation?
+stackoverflow</a></p></li>
+<li><p><a
+target="_blank" rel="noopener" href="https://stackoverflow.com/questions/59098246/why-is-dynamically-allocated-memory-always-16-bytes-aligned">Why
+is dynamically allocated memory always 16 bytes aligned?
+stackoverflow</a></p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Eigen/" rel="tag"># Eigen</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/pixel-perfect-sfm/" rel="prev" title="📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/r3live/" rel="next" title="📝笔记：港大MARS实验室 R3LIVE (R2LIVE升级) 鲁棒实时RGB雷达视觉惯导紧耦合状态估计">
+                  📝笔记：港大MARS实验室 R3LIVE (R2LIVE升级) 鲁棒实时RGB雷达视觉惯导紧耦合状态估计 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/eigen-alignment/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM. 首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：ORB-SLAM3论文阅读">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/orb-slam3/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM. 首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-3.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-4.png">
+<meta property="article:published_time" content="2020-07-25T14:19:38.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:33:22.041Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="CV">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-3.png">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/orb-slam3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/orb-slam3/","path":"posts/orb-slam3/","title":"📝笔记：ORB-SLAM3论文阅读"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：ORB-SLAM3论文阅读 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%80%BB%E8%A7%88"><span class="nav-number">2.</span> <span class="nav-text">系统总览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#atlas%E5%9C%B0%E5%9B%BE%E9%9B%86"><span class="nav-number">2.1.</span> <span class="nav-text">Atlas(地图集)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tracking-thread%E8%BF%BD%E8%B8%AA%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">Tracking thread(追踪线程)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#local-mapping-thread%E5%B1%80%E9%83%A8%E5%BB%BA%E5%9B%BE%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">Local Mapping
+thread(局部建图线程)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loop-and-map-merging-thread%E9%97%AD%E7%8E%AF%E5%92%8C%E5%9C%B0%E5%9B%BE%E8%9E%8D%E5%90%88%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.4.</span> <span class="nav-text">Loop and map
+merging thread(闭环和地图融合线程)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E6%9C%BA%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">相机模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">3.1.</span> <span class="nav-text">重定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%9F%AB%E6%AD%A3%E5%8F%8C%E7%9B%AEslam"><span class="nav-number">3.2.</span> <span class="nav-text">非矫正双目SLAM</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vi-slam"><span class="nav-number">4.</span> <span class="nav-text">VI SLAM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#imu%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">4.2.</span> <span class="nav-text">IMU初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-vision-only-map-estimation"><span class="nav-number">4.2.1.</span> <span class="nav-text">Step1: Vision-only MAP
+Estimation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-inertial-only-map-estimation"><span class="nav-number">4.2.2.</span> <span class="nav-text">Step2: Inertial-only MAP
+Estimation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-visual-inertial-map-estimation"><span class="nav-number">4.2.3.</span> <span class="nav-text">Step3: Visual-Inertial MAP
+Estimation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%BD%E8%B8%AA%E4%B8%8E%E5%BB%BA%E5%9B%BE"><span class="nav-number">4.3.</span> <span class="nav-text">追踪与建图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%B2%81%E6%A3%92%E6%80%A7%E4%BB%A5%E5%8F%8A%E8%BF%BD%E8%B8%AA%E4%B8%A2%E5%A4%B1"><span class="nav-number">4.4.</span> <span class="nav-text">鲁棒性以及追踪丢失</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%B0%E5%9B%BE%E8%9E%8D%E5%90%88%E4%B8%8E%E9%97%AD%E7%8E%AF"><span class="nav-number">5.</span> <span class="nav-text">地图融合与闭环</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E8%AF%86%E5%88%AB"><span class="nav-number">5.1.</span> <span class="nav-text">场景识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E5%9C%B0%E5%9B%BE%E8%9E%8D%E5%90%88"><span class="nav-number">5.2.</span> <span class="nav-text">视觉地图融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-welding-window-assembly"><span class="nav-number">5.2.1.</span> <span class="nav-text">step1: Welding window
+assembly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-%E8%9E%8D%E5%90%88"><span class="nav-number">5.2.2.</span> <span class="nav-text">step2: 融合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-welding-bundle-adjustment"><span class="nav-number">5.2.3.</span> <span class="nav-text">step3: Welding bundle
+adjustment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%A7%BF%E5%9B%BE%E4%BC%98%E5%8C%96"><span class="nav-number">5.2.4.</span> <span class="nav-text">位姿图优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E6%83%AF%E5%AF%BC%E5%9C%B0%E5%9B%BE%E8%9E%8D%E5%90%88"><span class="nav-number">5.3.</span> <span class="nav-text">视觉惯导地图融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step1-vi-welding-window-assembly"><span class="nav-number">5.3.1.</span> <span class="nav-text">step1: VI welding window
+assembly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step2-%E5%90%8C%E4%B8%8A"><span class="nav-number">5.3.2.</span> <span class="nav-text">step2: 同上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step3-vi-welding-bundle-adjustment"><span class="nav-number">5.3.3.</span> <span class="nav-text">step3: VI welding bundle
+adjustment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AD%E7%8E%AF"><span class="nav-number">5.4.</span> <span class="nav-text">闭环</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">6.</span> <span class="nav-text">实验结果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#euroc%E5%8D%95%E6%AC%A1%E4%BC%9A%E8%AF%9D"><span class="nav-number">6.1.</span> <span class="nav-text">EuRoC单次会话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vi-slam%E4%BB%A5%E5%8F%8Atum-vi%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">6.2.</span> <span class="nav-text">VI SLAM以及TUM-VI数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%9C%B0%E5%9B%BE"><span class="nav-number">6.3.</span> <span class="nav-text">多地图</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/orb-slam3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：ORB-SLAM3论文阅读 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：ORB-SLAM3论文阅读
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-07-25 22:19:38" itemprop="dateCreated datePublished" datetime="2020-07-25T22:19:38+08:00">2020-07-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:33:22" itemprop="dateModified" datetime="2022-09-05T02:33:22+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/orb-slam3/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/orb-slam3/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/orb-slam3/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p>论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual,
+Visual-Inertial and Multi-Map SLAM.</p>
+<p>首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议这个挂在ARXIV才不到3天的论文。好奇心的驱使下，本人偷瞄了一下论文，就在这里总结一下吧。</p>
+<p><strong><a
+target="_blank" rel="noopener" href="http://xxx.itp.ac.cn/pdf/2007.11898.pdf">论文</a></strong>,
+<strong><a target="_blank" rel="noopener" href="https://github.com/UZ-SLAMLab/ORB_SLAM3">Code
+Github</a></strong>, <strong><a
+target="_blank" rel="noopener" href="https://gitee.com/vincentqin/ORB_SLAM3">Code国内镜像</a></strong>,
+<strong><a
+target="_blank" rel="noopener" href="https://github.com/Vincentqyw/Recent-Stars-2020">SLAM资源站</a></strong></p>
+<span id="more"></span>
+<h1 id="摘要">摘要</h1>
+<p>ORB-SLAM3实现了基于视觉惯导紧耦合，同时能够对多地图进行复用；另外支持单目/双目/RGB-D作为输入，支持针孔以及鱼眼相机模型。</p>
+<p>本文第一个创新点是提出了一种<strong>基于特征点法的视觉惯导紧耦合SLAM系统</strong>，这套系统在很大使用了最大后验估计对状态量进行求解，即使是在<strong>系统初始化</strong>阶段亦是如此。这套系统可在大/小/室内/室外各种环境下鲁棒实时运行，相较于之前的算法有2~5倍的精度提升。</p>
+<p>本文第二个主要创新点在于提出了<strong>多地图复用系统</strong>，这套系统使用了一种高召回率的场景识别算法。正是依赖于这一点，ORB-SLAM3能够有效应对长时弱纹理的环境：若系统丢失，它重新开始建图并在当经过之前走过的地点时与原来的地图无缝融合。另外，相比于其它仅用到之前一段时间内信息的VO方案，本文提出的方案用到之前所有时刻的信息。这样可以利用到很久之前或者来自不同地图的信息。</p>
+<p>实验表明，本文提出的算法在学术领域已有的SLAM系统中表现最优（这句话说的很严谨，没有提到工业界，因为没开源）。</p>
+<h1 id="系统总览">系统总览</h1>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-1.png" /></p>
+<p>ORB-SLAM3基于ORB-SLAM2以及ORB-SLAM-VI进行改进，上图是其系统框图。这基本上保持了与ORB-SLAM2类似的框架，同时增加了前述的几个创新点，接下来对其中主要步骤进行简要说明。</p>
+<h2 id="atlas地图集">Atlas(地图集)</h2>
+<p>所谓Atlas就是一种多地图的表示形式，多地图由不相连的地图组成。可以看到，它由active
+map以及non-active map组成。其中active map被Tracking
+thread（追踪线程）用作定位，它被连续优化同时会加入新的关键帧。系统会构建基于DBoW2的关键帧数据库，可以用来做重定位/闭环以及地图融合。</p>
+<h2 id="tracking-thread追踪线程">Tracking thread(追踪线程)</h2>
+<p>与ORB-SLAM2类似，该线程用来处理传感器信息，计算当前帧相对于active
+map的位姿以及最小化匹配到的地图点的重投影误差。该线程决定何时当前帧被判定为关键帧。在VI模式下，机体的速度以及IMU的bias通过优化惯导残差被估计。当系统追踪丢失后，会触发重定位模式，即当前帧在所有的Altas进行重定位；若重定位成功，当前帧恢复追踪状态；否则，经过一段时间（超过5秒），当前的active
+map会被存储为non-active map，同时开启新的建图过程。</p>
+<h2 id="local-mapping-thread局部建图线程">Local Mapping
+thread(局部建图线程)</h2>
+<p>向active
+map中新增/删减/优化关键帧以及地图点，上述的操作是通过维护一个靠近当前帧的局部窗口的关键帧进行实现。与此同时，IMU的参数被初始化然后被该线程通过本文提出的最大后验估计技术进行求解。</p>
+<h2 id="loop-and-map-merging-thread闭环和地图融合线程">Loop and map
+merging thread(闭环和地图融合线程)</h2>
+<p>该线程检测active
+map与整个Atlas是否有共同的区域，若共同的区域同属于active
+map，此时进行闭环矫正；若共同的区域属于不同的map，那么这些map就会被融合（融合为1个）,并变为active
+map。BA被一个独立的线程执行（不损害实时性），用来修正地图。</p>
+<h1 id="相机模型">相机模型</h1>
+<h2 id="重定位">重定位</h2>
+<p>ORB-SLAM假设所有系统组件都符合针孔模型。对于重定位这项任务，ORB-SLAM基于EPnP算法建立PnP求解器进行解算位姿，其中所有的公式都假设相机为标定好的针孔相机。为适配本文的方法，作者使用了一种独立于相机模型的求解器：Maximum
+Likelihood Perspective-n-Point algorithm (<a
+target="_blank" rel="noopener" href="http://xxx.itp.ac.cn/pdf/1607.08112v1">MLPnP</a>)（最大后验PnP算法）。该算法实现了相机模型与求解算法的解耦，相机模型只是用来提供投影射线作为输入。</p>
+<h2 id="非矫正双目slam">非矫正双目SLAM</h2>
+<p>几乎所有的SLAM系统都假设双目图像是已经被<strong>矫正</strong>的，这里的矫正是指，使用相同的焦距将两个图像转换为针孔投影，且像平面共面，同时与水平对极线对齐，从而可以通过查看图像中的同一行进行特征匹配。然而，这个假设是及其严格的，在很多应用中，这个假设通常难以满足或则不合适使用。例如，矫正（一对基线较大的相机）双目相机或双目鱼眼镜头将需要对其拍摄的图像进行严格的图像裁剪，从而失去了大视场角的优势，所以我们需要更快的环境映射方式以应对遮挡等情况。</p>
+<p>本文设计的系统并不依赖于图像的矫正，而是将双目设备看作两个单目相机，于是有如下约束：
+1. 两个单目相机之间存在一个固有的SE(3)变换（即双目外参）； 2.
+两个单目相机之间存在共视；</p>
+<p>上述两个约束可以用来有效地估计尺度。按照这种思路，ORB-SLAM3可估计6DOF刚体机体位姿，注意，机体位于某一个相机或者IMU上。另外，若两个相机之间存在共视，我们可以在通过三角化恢复路标点的尺度。注意：仅在首次看到该其区域的路标点时进行三角化，其它时刻只使用单目信息。</p>
+<h1 id="vi-slam">VI SLAM</h1>
+<p>之前的ORB-SLAM-VI受限于针孔相机/初始化时间太长以及无法应对某些挑战场景。本文设计了一种快速准确IMU初始化技术，以及开发了一种单目/双目惯导SLAM，支持针孔以及鱼眼相机图像作为输入。</p>
+<h2 id="原理">原理</h2>
+<p>纯视觉SLAM的状态量仅有当前帧的位姿，而在VI-SLAM中，增加了一些需要被估计的状态量。除了机体在世界系下的位姿<span
+class="math inline">\(\mathbf{T}_{i}=\left[\mathbf{R}_{i},
+\mathbf{p}_{i}\right] \in \operatorname{SE}(3)\)</span>（这里是指<span
+class="math inline">\(\mathbf{T}_{WC_i}\)</span>）还有速度<span
+class="math inline">\(\mathbf{v}_{i}\)</span>，以及陀螺仪和加速度计的bias:
+<span class="math inline">\(\mathbf{b}_{i}^{g},
+\mathbf{b}_{i}^{a}\)</span>。我们将这些状态量合在一起构成了如下状态向量<span
+class="math inline">\(\eqref{eq1}\)</span>：</p>
+<p><span class="math display">\[\begin{equation} \mathcal{S}_{i}
+\doteq\left\{\mathbf{T}_{i}, \mathbf{v}_{i}, \mathbf{b}_{i}^{g},
+\mathbf{b}_{i}^{a}\right\} \label{eq1} \end{equation}\]</span></p>
+<p>对于视觉惯导SLAM而言，我们通过对IMU的测量进行预积分，可以获得连续两帧（如第<span
+class="math inline">\(i\)</span>到第<span
+class="math inline">\(i+1\)</span>帧）之间的相对位姿测量：<span
+class="math inline">\(\Delta \mathbf{p}_{i, i+1}\)</span>，<span
+class="math inline">\(\Delta \mathbf{v}_{i, i+1}\)</span>，<span
+class="math inline">\(\Delta \mathbf{R}_{i,
+i+1}\)</span>以及整个测量向量的信息矩阵<span
+class="math inline">\(\Sigma_{\mathcal{I}_{i,
+i+1}}\)</span>。于是给定上述预积分项以及状态向量<span
+class="math inline">\(\mathcal{S}_{i}\)</span>以及<span
+class="math inline">\(\mathcal{S}_{i+1}\)</span>，我们就可以得到如下IMU残差<span
+class="math inline">\(\mathbf{r}_{\mathcal{I}_{i, i+1}}\)</span>：</p>
+<p><span class="math display">\[\begin{equation}
+\begin{aligned}
+\mathbf{r}_{\mathcal{I}_{i, i+1}} &amp;=\left[\mathbf{r}_{\Delta
+\mathrm{R}_{i, i+1}}, \mathbf{r}_{\Delta \mathrm{v}_{i, i+1}},
+\mathbf{r}_{\Delta \mathrm{p}_{i, i+1}}\right] \\
+\mathbf{r}_{\Delta \mathrm{R}_{i, i+1}} &amp;=\log \left(\Delta
+\mathbf{R}_{i, i+1}^{\mathrm{T}} \mathbf{R}_{i}^{\mathrm{T}}
+\mathbf{R}_{i+1}\right) \\
+\mathbf{r}_{\Delta \mathrm{v}_{i, i+1}}
+&amp;=\mathbf{R}_{i}^{\mathrm{T}}\left(\mathbf{v}_{i+1}-\mathbf{v}_{i}-\mathbf{g}
+\Delta t_{i, i+1}\right)-\Delta \mathbf{v}_{i, i+1} \\
+\mathbf{r}_{\Delta \mathrm{p}_{i, i+1}}
+&amp;=\mathbf{R}_{i}^{\mathrm{T}}\left(\mathbf{p}_{j}-\mathbf{p}_{i}-\mathbf{v}_{i}
+\Delta t-\frac{1}{2} \mathbf{g} \Delta t^{2}\right)-\Delta
+\mathbf{p}_{i, i+1}
+\end{aligned}
+\label{eq2}
+\end{equation}
+\]</span></p>
+<p>此外，除了IMU残差还有帧<span
+class="math inline">\(i\)</span>与3D点<span
+class="math inline">\(\mathbf{x}_j\)</span>之间的视觉残差，即重投影误差<span
+class="math inline">\(\mathbf{r}_{i j}\)</span>： <span
+class="math display">\[\begin{equation}
+\mathbf{r}_{i j}=\mathbf{u}_{i j}-\Pi\left(\mathbf{T}_{\mathrm{CB}}
+\mathbf{T}_{i}^{-1} \oplus \mathbf{x}_{j}\right)
+\label{eq3}
+\end{equation}
+\]</span> 其中<span class="math inline">\(\mathbf{u}_{i
+j}\)</span>是3D路标点<span
+class="math inline">\(\mathbf{x}_j\)</span>在当前帧上的投影，信息矩阵为<span
+class="math inline">\(\Sigma_{i, j}\)</span>，<span
+class="math inline">\(\mathbf{T}_{CB} \in
+\operatorname{SE}(3)\)</span>表示机体系到相机的刚体变换。给定<span
+class="math inline">\(k+1\)</span>个关键帧及其状态量<span
+class="math inline">\(\bar{S}_{k} \doteq\left\{\mathcal{S}_{0} \ldots
+\mathcal{S}_{k}\right\}\)</span>，同时给定<span
+class="math inline">\(l\)</span>个3D点集，它的状态量为<span
+class="math inline">\(\mathcal{X} \doteq\left\{\mathbf{x}_{0} \ldots
+\mathbf{x}_{l-1}\right\}\)</span>，于是该优化问题可表示为IMU残差以及重投影误差的组合，具体如下形式：</p>
+<p><span class="math display">\[\begin{equation}
+\min _{\overline{\mathcal{S}}_{k},
+\mathcal{X}}\left(\sum_{i=1}^{k}\left\|\mathbf{r}_{\mathcal{I}_{i-1,
+i}}\right\|_{\Sigma_{\mathcal{I}_{i, i+1}}^{2}}+\sum_{j=0}^{l-1} \sum_{i
+\in \mathcal{K}^{j}} \rho_{\text {Hub }}\left(\left\|\mathbf{r}_{i
+j}\right\|_{\Sigma_{i j}}\right)\right)
+\label{eq4}
+\end{equation}
+\]</span></p>
+<p>其中<span
+class="math inline">\(\mathcal{K}^{j}\)</span>表示观测到第<span
+class="math inline">\(j\)</span>个3D点的关键帧集合。这个优化可以用因子图进行表示，如图2a。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-2.png" /></p>
+<h2 id="imu初始化">IMU初始化</h2>
+<p>这一步的目的是获取IMU参数较好的初始值：速度/重力向以及Bias。本文的工作重点是设计<strong>一种快速准确的IMU初始化算法</strong>。文中提到如下3个见解：
+1.
+纯单目SLAM可以提供非常准确的初始地图，问题是尺度未知。首先求解vision-only问题可以提升IMU初始化的性能。
+2.
+<strong>如果将尺度scale显式表示为优化变量，而不是使用BA的隐式表示，则scale收敛得更快</strong>。
+3. 若在IMU初始化过程中忽略传感器不确定性会产生大量不可预测的错误。</p>
+<p>根据以上三点，本文设计了如下基于最大后验估计的IMU初始化算法，主要分为如下三个步骤：</p>
+<h3 id="step1-vision-only-map-estimation">Step1: Vision-only MAP
+Estimation</h3>
+<p>进行单目SLAM，按照关键帧速率4Hz持续运行2s，然后我们可以得到按比例缩放的地图，包括<span
+class="math inline">\(k=10\)</span>个关键帧以及上百个地图点，然后通过Visual-Only
+BA进行优化，因子图如图2b。于是可以得到优化后的轨迹<span
+class="math inline">\(\overline{\mathbf{T}}_{0: k}=[\mathbf{R},
+\overline{\mathbf{p}}]_{0:
+k}\)</span>，其中上划线表示按比例缩放的变量（即尺度未定）。</p>
+<h3 id="step2-inertial-only-map-estimation">Step2: Inertial-only MAP
+Estimation</h3>
+<p>这一步的目的是获得IMU参数最优估计。利用<span
+class="math inline">\(\overline{\mathbf{T}}_{0:
+k}\)</span>以及这些关键帧之间的IMU测量，IMU的参数可以放在一起构成状态向量：</p>
+<p><span class="math display">\[
+\begin{equation}
+\mathcal{Y}_{k}=\left\{s, \mathbf{R}_{\mathrm{w} g}, \mathbf{b},
+\overline{\mathbf{v}}_{0: k}\right\}
+\label{eq5}
+\end{equation}
+\]</span></p>
+<p>其中的<span class="math inline">\(s \in
+\mathbb{R}^{+}\)</span>表示尺度因子，<span
+class="math inline">\(\mathbf{R}_{\mathrm{w} g} \in
+\mathrm{SO}(3)\)</span>表示重力向，由两个角度表示，重力向量在世界系下的表示为<span
+class="math inline">\(\mathbf{g}=\mathbf{R}_{\mathrm{w} g}
+\mathbf{g}_{\mathrm{I}}\)</span>，其中<span
+class="math inline">\(\mathbf{g}_{\mathrm{I}}=(0,0,
+G)^{\mathrm{T}}\)</span>，<span
+class="math inline">\(G\)</span>是重力大小模值；<span
+class="math inline">\(\mathbf{b}=\left(\mathbf{b}^{a},
+\mathbf{b}^{g}\right) \in
+\mathbb{R}^{6}\)</span>表示加速度计以及陀螺仪的bias，在初始化阶段可以假设该值为常数；<span
+class="math inline">\(\overline{\mathbf{v}}_{0:
+k}\)</span>表示从首帧到末尾帧的无尺度机体速度。此时，我们有IMU的测量<span
+class="math inline">\(\dot{\mathcal{I}}_{0: k}
+\doteq\left\{\mathcal{I}_{0,1} \ldots \mathcal{I}_{k-1,
+k}\right\}\)</span>，于是MAP估计问题中的需要被最大化的后验分布为：</p>
+<p><span class="math display">\[
+\begin{equation}
+p\left(\mathcal{Y}_{k} \mid \mathcal{I}_{0: k}\right) \propto
+p\left(\mathcal{I}_{0: k} \mid \mathcal{Y}_{k}\right)
+p\left(\mathcal{Y}_{k}\right)
+\label{eq6}
+\end{equation}
+\]</span></p>
+<p>具体地，<span class="math inline">\(p\left(\mathcal{I}_{0: k} \mid
+\mathcal{Y}_{k}\right)\)</span>表示似然，<span
+class="math inline">\(p\left(\mathcal{Y}_{k}\right)\)</span>表示先验，考虑到IMU测量之间iid，于是最大后验概率估计问题可以表示为如下形式：</p>
+<p><span class="math display">\[
+\begin{equation}
+\mathcal{Y}_{k}^{*}=\underset{\mathcal{Y}_{k}}{\arg \max
+}\left(p\left(\mathcal{Y}_{k}\right) \prod_{i=1}^{k}
+p\left(\mathcal{I}_{i-1, i} \mid s, \mathbf{g}_{d i r}, \mathbf{b},
+\overline{\mathbf{v}}_{i-1}, \overline{\mathbf{v}}_{i}\right)\right)
+\label{eq7}
+\end{equation}
+\]</span></p>
+<p>对上式取负对数并且假设IMU预积分以及先验分布服从高斯分布，于是最终的优化问题可以表示为：</p>
+<p><span class="math display">\[
+\begin{equation}
+\mathcal{Y}_{k}^{*}=\underset{\mathcal{Y}_{k}}{\arg \min
+}\left(\left\|\mathbf{r}_{\mathbf{p}}\right\|_{\Sigma_{p}}^{2}+\sum_{i=1}^{k}\left\|\mathbf{r}_{\mathcal{I}_{i-1,
+i}}\right\|_{\Sigma_{\mathcal{I}_{i-1, i}}}^{2}\right)
+\label{eq8}
+\end{equation}
+\]</span></p>
+<p>这个优化问题的因子图表示为图2c，可以看到上式中不包含视觉残差，而是多了一个先验的残差项<span
+class="math inline">\(\mathbf{r}_{p}\)</span>用来约束IMU的bias需要<strong>接近于0</strong>。
+由于上述优化在流形上进行，重力向的在优化过程中的更新需要构建一个"retraction"：</p>
+<p><span class="math display">\[
+\begin{equation}
+\mathbf{R}_{\mathrm{wg}}^{\mathrm{new}}=\mathbf{R}_{\mathrm{wg}}^{\mathrm{old}}
+\operatorname{Exp}\left(\delta \alpha_{\mathrm{g}}, \delta
+\beta_{\mathrm{g}}, 0\right)
+\label{eq9}
+\end{equation}
+\]</span></p>
+<p>其中<span
+class="math inline">\(\operatorname{Exp}\left(.\right)\)</span>表示从<span
+class="math inline">\(\mathfrak{s o}(3)\)</span>到<span
+class="math inline">\(\mathrm{SO}(3)\)</span>指数映射。
+为了保证优化过程中尺度因子保持正数，尺度因子的更新形式为如下形式：</p>
+<p><span class="math display">\[
+\begin{equation}
+s^{\text {new }}=s^{\text {old }} \exp (\delta s)
+\label{eq10}
+\end{equation}
+\]</span></p>
+<p>Inertial-only MAP
+Estimation完成之后，帧位姿/速度以及3D点根据估计的尺度进行调整，同时将<span
+class="math inline">\(z\)</span>轴对齐重力向。</p>
+<h3 id="step3-visual-inertial-map-estimation">Step3: Visual-Inertial MAP
+Estimation</h3>
+<p>一旦视觉以及IMU有了较好的估计后，进行一个VI联合优化进一步对这些参数进行精化，优化因子图见图2a。
+作者在EuRoC数据集上进行测试发现上述初始化方式非常有效，可达到2秒内仅5%的误差。为了进一步提升初始估计精度，初始化后会进行5~15秒的VI
+BA优化，这样可以收敛到仅1%的尺度误差。相较于ORB-SLAM-VI需要15秒才获得首个尺度因子更加快速。经过了这些BA操作之后，我们就认为这个map是mature（成熟的），意思就是尺度/IMU参数/重力向已经被较好地估计完成。</p>
+<h2 id="追踪与建图">追踪与建图</h2>
+<p>追踪过程借鉴了VI-SLAM-VI的思路：追踪过程解决了简化版的VI优化问题，只优化最后两帧位姿，同时保持地图点固定。</p>
+<p>建图过程是为了解决全图优化问题，若图的规模比较大，这个问题会变得很棘手。本文采用了滑动窗口的思想，即维护了关键帧与地图点的滑动窗口，同时包括它们的共视关键帧，只是在优化时需要保持这些关键帧固定状态。</p>
+<p>慢速运动不能为IMU参数的提供好的可观性，会使初始化无法在仅15秒内收敛到精确的结果。为了
+应对这种情况，本文基于修改版“Inertial-only MAP
+Estimation”的提出了一种尺度精化技术：所有插入的关键帧都参与优化，但优化量只有重力向以及尺度因子，优化因子图见图2d，在这种情况下bias为常数的假设就不再成立。我们使用了每帧的估计量并固定它们。上述的这种操作非常高效，在Local
+Mapping线程每隔10秒执行一次，直到Map中有100个关键帧或者从初始化起已经过了75秒。</p>
+<h2 id="鲁棒性以及追踪丢失">鲁棒性以及追踪丢失</h2>
+<p>快速运动/无纹理/遮挡等会导致系统丢失，ORB-SLAM采用了基于词袋的场景识别进行重定位。本文的VI系统在追踪到少于15个特征点时就会视觉丢失（visually
+lost），鲁棒性体现在如下两点：</p>
+<ol type="1">
+<li>短期丢失：通过IMU读数对当前帧状态进行估计，地图点根据估计的位姿投影到当前帧后设置较大搜索窗口进行匹配。大多数情况下，通过这种方式能够恢复系统位姿。若超过5秒仍未重定位成功，则进入下一个状态；</li>
+<li>长期丢失：新的VI地图会被重新初始化，并成为active map。</li>
+</ol>
+<h1 id="地图融合与闭环">地图融合与闭环</h1>
+<p>前文的介绍可知，短期以及中期数据关联可以通过Tracking以及Local
+Mapping进行完成。而对于长期的数据关联，可通过重定位以及闭环实现。</p>
+<p>ORB-SLAM采用的基于视觉词袋场景识别的重定位，若候选关键帧只有1个，召回率为50<sub>80%。为了应对假阳性的出现，算法使用了时域校验以及几何校验，这两种手段能够使精确率达到100%的同时召回率为30</sub>40%。至关重要的是，时域连续性检测将使场景识别滞后至少3个关键帧，同时召回率较低，这都是目前存在的问题。</p>
+<p>为了应对这个问题，本文提出一种新的场景识别（召回率得到改善）以及多地图数据关联算法。一旦Local
+Mapping线程创建了关键帧，场景识别算法就会被激活并且寻找该帧在Atlas中的数据关联。若匹配的关键帧在active
+map中，则进行闭环；否则，则进行多地图间的数据关联，即将active
+map与匹配的map进行融合。一旦这个新的关键帧与匹配地图间的相对位姿被计算出，就定义一个在局部窗口，这个局部窗口包括匹配的关键帧以及这个关键帧的共视关键帧。在这个局部窗口中，我们会寻找中期数据关联，以提高闭环以及地图融合的精度。这个改进使得ORB-SLAM3比ORB-SLAM2具有更高的精度。</p>
+<h2 id="场景识别">场景识别</h2>
+<p>此处较为简单，与ORB-SLAM2基本类似，只是增加了重力向校验的步骤。具体的，计算出了当前关键帧在matched
+map（可能是active map或者其它地图）中的位姿<span
+class="math inline">\(\mathbf{T}_{a m} \in
+\operatorname{SE}(3)\)</span>，检验pitch(俯仰角)和roll(横滚角)是否小于一定阈值来对场景识别结果进行校验。</p>
+<h2 id="视觉地图融合">视觉地图融合</h2>
+<p>当场景识别成功后，位于actimve map <span
+class="math inline">\(M_a\)</span>中的当前关键帧<span
+class="math inline">\(K_a\)</span>与位于active map <span
+class="math inline">\(M_m\)</span>中的当前关键帧<span
+class="math inline">\(K_m\)</span>产生了多地图的数据关联，此时会进行地图融合。在此过程中，必须格外小心，以确保跟踪线程可以迅速重用<span
+class="math inline">\(M_m\)</span>中的信息，以避免地图重复。</p>
+<p>由于<span
+class="math inline">\(M_a\)</span>可能包含许多元素，融合它们可能需要很长时间，因此融合分为两个步骤。首先，在由<span
+class="math inline">\(K_a\)</span>和<span
+class="math inline">\(K_m\)</span>的邻域定义的welding
+window（焊接窗口）中执行融合，随后在第二阶段，通过位姿图优化将校正传播到融合图的其余部分。具体过程如下：</p>
+<h3 id="step1-welding-window-assembly">step1: Welding window
+assembly</h3>
+<p>Welding window包括当前关键帧<span
+class="math inline">\(K_a\)</span>及其共视帧，<span
+class="math inline">\(K_m\)</span>以及其共视帧，以及被这些关键帧观测的地图点。在将它们包含在Welding
+window中之前，属于<span
+class="math inline">\(M_a\)</span>的关键帧和地图点通过<span
+class="math inline">\(\mathbf{T}_{m a}\)</span>进行变换，以使其与<span
+class="math inline">\(M_m\)</span>对齐。</p>
+<h3 id="step2-融合">step2: 融合</h3>
+<p><span class="math inline">\(M_a\)</span>与<span
+class="math inline">\(M_m\)</span>融合为一个新的active
+map。为了要删除重复的点，<span
+class="math inline">\(M_m\)</span>关键帧主动搜索匹配<span
+class="math inline">\(M_a\)</span>中的点。对于每个匹配点，都会删除<span
+class="math inline">\(M_a\)</span>中的点，并保留<span
+class="math inline">\(M_m\)</span>中的点，并累积删除点的所有观测值，同时更新共视图以及本质图。</p>
+<h3 id="step3-welding-bundle-adjustment">step3: Welding bundle
+adjustment</h3>
+<p>Welding
+window范围内的所有关键帧进行局部BA优化（见下图）。为了确定尺度自由度，<strong>观测到<span
+class="math inline">\(M_m\)</span>的那些关键帧需要保持固定</strong>。优化完成后，Welding
+window区域中包含的所有关键帧都可以用于跟踪，实现地图<span
+class="math inline">\(M_m\)</span>的快速/准确复用。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-3a.png" /></p>
+<h3 id="位姿图优化">位姿图优化</h3>
+<p>位姿图利用本质图在融合后的地图范围进行优化，Welding
+window范围内的关键帧保持固定。这一步的意义在于分摊误差。</p>
+<h2 id="视觉惯导地图融合">视觉惯导地图融合</h2>
+<p>与上述纯视觉地图融合步骤类似，只是修改了步骤1和3，具体如下：</p>
+<h3 id="step1-vi-welding-window-assembly">step1: VI welding window
+assembly</h3>
+<p>若active map是mature的，与纯视觉类似，将对地图<span
+class="math inline">\(M_a\)</span>进行<span
+class="math inline">\(\mathbf{T}_{m a} \in
+\operatorname{SE}(3)\)</span>变换，与<span
+class="math inline">\(M_m\)</span>对齐。若active
+map不是mature的，将对地图进行<span class="math inline">\(\mathbf{T}_{m
+a} \in \operatorname{Sim}(3)\)</span>变换，与<span
+class="math inline">\(M_m\)</span>对齐。</p>
+<h3 id="step2-同上">step2: 同上</h3>
+<h3 id="step3-vi-welding-bundle-adjustment">step3: VI welding bundle
+adjustment</h3>
+<p>active关键帧<span
+class="math inline">\(K_a\)</span>及其前5个时间连续的关键帧的位姿，速度和bias参与优化，对于<span
+class="math inline">\(M_m\)</span>中的<span
+class="math inline">\(K_m\)</span>及其前5个时间连续的关键帧的位姿，速度和bias也参与优化，详细见下图。对于<span
+class="math inline">\(M_m\)</span>，优化中包括但不固定在紧接局部窗口之前的那一关键帧位姿，而对于<span
+class="math inline">\(M_a\)</span>，局部窗口之前的那一关键帧，但其姿势仍然参与优化。所有这些关键帧看到的所有地图点以及观测这些地图点的关键帧姿势也都进行优化。所有关键帧和地图点都通过重投影误差项（作为约束因子，下图中的蓝色小方块）进行关联。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-3b.png" /></p>
+<h2 id="闭环">闭环</h2>
+<p>闭环校正算法类似于地图融合，但是在这种情况下，当前关键帧以及匹配关键帧都同属于active
+map。welding
+window是由匹配的关键帧组合而成/重复的3D点被融合/更新共视图以及本质图的连接关系。下一步是姿势图优化（PG），以均分误差。由于闭环增加了中期/长期数据关联，此时进行全局BA。在VI情况下，仅在关键帧的数量低于阈值时才执行全局BA，以避免巨大的计算量。</p>
+<h1 id="实验结果">实验结果</h1>
+<p>实验主要分为如下部分：</p>
+<ul>
+<li>EuRoC单一会话（地图）：11个场景中的每个序列产生一个地图；传感器配置：单目，单目+IMU，双目以及双目+IMU；</li>
+<li>TUM-VI数据：比较单目/双目鱼眼VI配置下的表现；</li>
+<li>多次会话，上述所有数据；</li>
+</ul>
+<!-- <iframe width="2543" height="1128" src="https://www.youtube.com/embed/kZbpIbaBnZ0?list=PLXwmI2zWtHsY0iCQDOuI-PVroFGLCYHpC" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="2543" height="1128" src="https://www.youtube.com/embed/E-7fsq7en2g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+<h2 id="euroc单次会话">EuRoC单次会话</h2>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-2.png" /></p>
+<h2 id="vi-slam以及tum-vi数据集">VI SLAM以及TUM-VI数据集</h2>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-3.png" width ="80%"/></p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-4.png" width ="70%"/></p>
+<h2 id="多地图">多地图</h2>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-5.png" /></p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-6.png" /></p>
+<h1 id="总结">总结</h1>
+<p>基于ORB-SLAM/ORB-SLAM2以及ORB-SLAM-VI，本文提出了ORB-SLAM3，它是一个功能更加完整，性能更加出众的SLAM系统。这使得该系统更加适合长时/大规模SLAM实际应用。</p>
+<p>实验结果表明，ORB-SLAM3是第一个能够有效利用短期，中期，长期和多地图数据关联的视觉和视觉惯性系统，其精度水平已经超出了现有系统。
+实验结果还表明，关于精度，使用所有这些类型的数据关联的能力会超过其他选择，如使用直接方法代替特征点法或对局部BA执行关键帧边缘化，而不是像我们那样假设一组外部静态关键帧。</p>
+<p>关于鲁棒性，直接法在低纹理环境中可能更鲁棒，但仅限于短期和中期数据关联。另一方面，匹配特征描述符可以成功解决长期和多地图数据关联问题，但与使用光度信息的Lucas-Kanade相比，跟踪功能似乎不那么可靠。在直接法中使用这四种数据关联方式是一个非常有趣的研究领域，我们目前正在根据这个想法探索从人体内部的内窥镜图像构建地图。</p>
+<p>在四种不同的传感器配置中，双目惯导SLAM提供了最可靠，最准确的解决方案。此外，惯性传感器允许以IMU速率估算姿势，IMU速率比帧速率高几个数量级，这可能也会在某些领域发挥优势（如AR/MR等领域）。对于设备体积/成本受限等应用，可以选择使用单目惯导方案，精度与鲁棒性并不会下降多少。</p>
+<p>在慢速运动或没有旋转和俯仰旋转的应用中，例如平坦区域中的汽车，IMU传感器可能难以初始化。在这些情况下，推荐使用双目SLAM。或者，使用CNN进行单目深度恢复的最新研究成果为单目SLAM恢复尺度提供了良好的前景，但是需要保证在同样的环境中对网络进行了训练（泛化性问题）。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/orb-slam3/" title="📝笔记：ORB-SLAM3论文阅读">https://www.vincentqin.tech/posts/orb-slam3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/CV/" rel="tag"># CV</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/manage-pc-hosts/" rel="prev" title="🔨工具：解决Github挂图及龟速访问">
+                  <i class="fa fa-chevron-left"></i> 🔨工具：解决Github挂图及龟速访问
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/speedup-gitpage/" rel="next" title="🔨工具：使用vercel加速Hexo静态博客访问">
+                  🔨工具：使用vercel加速Hexo静态博客访问 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/orb-slam3/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

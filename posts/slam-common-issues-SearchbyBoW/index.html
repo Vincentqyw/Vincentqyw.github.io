@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ORB-SLAM中使用了多种特征匹配的奇技淫巧，其中之一就是利用词袋信息进行引导匹配SearchByBoW：利用了BOW里的正向引导进行两帧之间的匹配，核心点在于位于同一个节点处的特征才有可能属于同一匹配，相较于暴力匹配匹配速度更快。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：SLAM常见问题(一)：SearchByBoW">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="ORB-SLAM中使用了多种特征匹配的奇技淫巧，其中之一就是利用词袋信息进行引导匹配SearchByBoW：利用了BOW里的正向引导进行两帧之间的匹配，核心点在于位于同一个节点处的特征才有可能属于同一匹配，相较于暴力匹配匹配速度更快。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-04T15:18:14.000Z">
+<meta property="article:modified_time" content="2022-04-03T05:01:22.189Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="ORB">
+<meta property="article:tag" content="特征匹配">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/","path":"posts/slam-common-issues-SearchbyBoW/","title":"📝笔记：SLAM常见问题(一)：SearchByBoW"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：SLAM常见问题(一)：SearchByBoW | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：SLAM常见问题(一)：SearchByBoW | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：SLAM常见问题(一)：SearchByBoW
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-08-04 23:18:14" itemprop="dateCreated datePublished" datetime="2019-08-04T23:18:14+08:00">2019-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-04-03 13:01:22" itemprop="dateModified" datetime="2022-04-03T13:01:22+08:00">2022-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/slam-common-issues-SearchbyBoW/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/slam-common-issues-SearchbyBoW/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/slam-common-issues-SearchbyBoW/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><strong>ORB-SLAM</strong>中使用了多种特征匹配的奇技淫巧，其中之一就是利用<strong>词袋信息</strong>进行引导匹配<code>SearchByBoW</code>：利用了<code>BOW</code>里的正向引导进行两帧之间的匹配，核心点在于位于同一个节点处的特征才有可能属于同一匹配，相较于暴力匹配匹配速度更快。</p>
+<span id="more"></span>
+<p>注意：每幅图像都可以通过<code>ComputeBoW</code>得到其对应的词袋向量。<code>featureVector</code>存储的是节点的索引值以及对应图像feature对应的索引向量，即<code>map&lt;node_id,vector&lt;featureID&gt;</code>。这样的话就可以根据两帧图像的<code>node_id</code>来初步确定二者共有的特征点，然后根据该<code>id</code>取出<code>vector&lt;featureID&gt;</code>，根据featureID找到图像上的特征点以及描述子，通过比较二者描述子距离来判定该特征点是否为匹配点，若距离小于某一阈值，则二者为匹配对。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Bag of Words Representation</span></span><br><span class="line"><span class="comment"> * 计算词袋mBowVec和mFeatVec</span></span><br><span class="line"><span class="comment"> * @see CreateInitialMapMonocular() TrackReferenceKeyFrame() Relocalization()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//同样的，关键帧也有构造函数void KeyFrame::ComputeBoW()</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Frame::ComputeBoW</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(mBowVec.<span class="built_in">empty</span>())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 将描述子mDescriptors转换为DBOW要求的输入格式</span></span><br><span class="line">        vector&lt;cv::Mat&gt; vCurrentDesc = Converter::<span class="built_in">toDescriptorVector</span>(mDescriptors);</span><br><span class="line">        <span class="comment">// 转换成词袋向量mBowVec以及特征向量mFeatVec</span></span><br><span class="line">        <span class="comment">// mBowVec存储着单词及其对应的权重TF-IDF值</span></span><br><span class="line">        <span class="comment">// mFeatVec存储节点ID以及对应对应图像feature对应的索引向量</span></span><br><span class="line">        mpORBvocabulary-&gt;<span class="built_in">transform</span>(vCurrentDesc,mBowVec,mFeatVec,<span class="number">4</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该函数在<code>Tracking</code>线程中的<code>TrackReferenceKeyFrame()</code>/<code>Relocalization()</code>进行调用（注意：<code>LoopClosing</code>线程中<code>ComputeSim3()</code>也会调用该函数，与上述二者的区别在于，ComputeSim3()中的SearchByBoW是寻找关键帧之间的匹配，而非关键帧与当前帧之间的匹配）。</p>
+<p>下面给出<code>ORB-SLAM2</code>中用于<strong>关键帧与当前帧</strong>进行词袋引导匹配的源码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 通过词袋，对关键帧的特征点进行跟踪</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 通过bow对pKF和F中的特征点进行快速匹配（不属于同一node的特征点直接跳过匹配） \n</span></span><br><span class="line"><span class="comment"> * 对属于同一node的特征点通过描述子距离进行匹配 \n</span></span><br><span class="line"><span class="comment"> * 根据匹配，用pKF中特征点对应的MapPoint去更新F中特征点对应的MapPoints \n</span></span><br><span class="line"><span class="comment"> * 每个特征点都对应一个MapPoint，因此pKF中每个特征点的MapPoint也就是F中对应点的MapPoint \n</span></span><br><span class="line"><span class="comment"> * 通过距离阈值、比例阈值和角度投票进行剔除误匹配</span></span><br><span class="line"><span class="comment"> * @param  pKF               KeyFrame</span></span><br><span class="line"><span class="comment"> * @param  F                 Current Frame</span></span><br><span class="line"><span class="comment"> * @param  vpMapPointMatches F中MapPoints对应的匹配，NULL表示未匹配</span></span><br><span class="line"><span class="comment"> * @return                   成功匹配的数量</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> <span class="comment">//const int ORBmatcher::TH_HIGH = 100;</span></span><br><span class="line"> <span class="comment">//const int ORBmatcher::TH_LOW = 50;</span></span><br><span class="line"> <span class="comment">//const int ORBmatcher::HISTO_LENGTH = 30;</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">ORBmatcher::SearchByBoW</span><span class="params">(KeyFrame* pKF,Frame &amp;F, vector&lt;MapPoint*&gt; &amp;vpMapPointMatches)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// vpMapPointsKF：获取输入关键帧匹配到的地图点</span></span><br><span class="line">    <span class="type">const</span> vector&lt;MapPoint*&gt; vpMapPointsKF = pKF-&gt;<span class="built_in">GetMapPointMatches</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化当前帧MapPoints对应的匹配NULL</span></span><br><span class="line">    vpMapPointMatches = <span class="built_in">vector</span>&lt;MapPoint*&gt;(F.N,<span class="built_in">static_cast</span>&lt;MapPoint*&gt;(<span class="literal">NULL</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// FeatureVector数据类型 map&lt;node_id,vector&lt;featureID&gt;，</span></span><br><span class="line">    <span class="comment">// 可以快速根据node_id找到属于该node的特征点</span></span><br><span class="line">    <span class="type">const</span> DBoW2::FeatureVector &amp;vFeatVecKF = pKF-&gt;mFeatVec;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> nmatches=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; rotHist[HISTO_LENGTH];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;HISTO_LENGTH;i++)</span><br><span class="line">        rotHist[i].<span class="built_in">reserve</span>(<span class="number">500</span>);</span><br><span class="line">    <span class="type">const</span> <span class="type">float</span> factor = HISTO_LENGTH/<span class="number">360.0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// We perform the matching over ORB that belong to the same vocabulary node </span></span><br><span class="line">    <span class="comment">// (at a certain level)</span></span><br><span class="line">    <span class="comment">// 建立迭代器，将属于同一节点(特定层)的ORB特征进行匹配</span></span><br><span class="line">    DBoW2::FeatureVector::const_iterator KFit = vFeatVecKF.<span class="built_in">begin</span>();</span><br><span class="line">    DBoW2::FeatureVector::const_iterator Fit = F.mFeatVec.<span class="built_in">begin</span>();</span><br><span class="line">    DBoW2::FeatureVector::const_iterator KFend = vFeatVecKF.<span class="built_in">end</span>();</span><br><span class="line">    DBoW2::FeatureVector::const_iterator Fend = F.mFeatVec.<span class="built_in">end</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(KFit != KFend &amp;&amp; Fit != Fend)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 步骤1：分别取出属于同一node的ORB特征点(只有属于同一node，才有可能是匹配点)</span></span><br><span class="line">        <span class="comment">// first表示node_id，只有node_id相同才表示这些特征点位于同一层</span></span><br><span class="line">        <span class="keyword">if</span>(KFit-&gt;first == Fit-&gt;first) </span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// second中记录了这些特征对应图像中的ID</span></span><br><span class="line">            <span class="type">const</span> vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt; vIndicesKF = KFit-&gt;second;</span><br><span class="line">            <span class="type">const</span> vector&lt;<span class="type">unsigned</span> <span class="type">int</span>&gt; vIndicesF = Fit-&gt;second;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 步骤2：遍历KF中属于该node的特征点</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">size_t</span> iKF=<span class="number">0</span>; iKF&lt;vIndicesKF.<span class="built_in">size</span>(); iKF++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 获取关键帧上某一个特征点的ID</span></span><br><span class="line">                <span class="type">const</span> <span class="type">unsigned</span> <span class="type">int</span> realIdxKF = vIndicesKF[iKF];</span><br><span class="line">                <span class="comment">// 根据该ID得到该特征对应的MapPoint</span></span><br><span class="line">                MapPoint* pMP = vpMapPointsKF[realIdxKF]; </span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(!pMP) <span class="comment">//不存在</span></span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span>(pMP-&gt;<span class="built_in">isBad</span>())<span class="comment">//被标记为坏点</span></span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 根据该ID取出KF中该特征对应的描述子</span></span><br><span class="line">                <span class="type">const</span> cv::Mat &amp;dKF= pKF-&gt;mDescriptors.<span class="built_in">row</span>(realIdxKF); </span><br><span class="line"></span><br><span class="line">                <span class="type">int</span> bestDist1=<span class="number">256</span>; <span class="comment">// 最好的距离（最小距离）</span></span><br><span class="line">                <span class="type">int</span> bestIdxF =<span class="number">-1</span> ;</span><br><span class="line">                <span class="type">int</span> bestDist2=<span class="number">256</span>; <span class="comment">// 倒数第二好距离（倒数第二小距离）</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 步骤3：遍历当前帧中属于该node的特征点，找到了最佳匹配点</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="type">size_t</span> iF=<span class="number">0</span>; iF&lt;vIndicesF.<span class="built_in">size</span>(); iF++)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="comment">// 取出当前帧上位于该node上的某一个特征点的ID</span></span><br><span class="line">                    <span class="type">const</span> <span class="type">unsigned</span> <span class="type">int</span> realIdxF = vIndicesF[iF];</span><br><span class="line">                    <span class="comment">// 表明这个点已经被匹配过了，不再匹配，加快速度</span></span><br><span class="line">                    <span class="keyword">if</span>(vpMapPointMatches[realIdxF])</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="comment">// 取出F中该特征对应的描述子</span></span><br><span class="line">                    <span class="type">const</span> cv::Mat &amp;dF = F.mDescriptors.<span class="built_in">row</span>(realIdxF); </span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 计算描述子距离，这里是汉明距离，若非二进制描述子可选择用其他距离</span></span><br><span class="line">                    <span class="type">const</span> <span class="type">int</span> dist =  <span class="built_in">DescriptorDistance</span>(dKF,dF); </span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 下面的操作就是分别获得最小bestDist1以及次小bestDist2的描述子距离</span></span><br><span class="line">                    <span class="comment">// dist &lt; bestDist1 &lt; bestDist2，更新bestDist1 bestDist2</span></span><br><span class="line">                    <span class="keyword">if</span>(dist&lt;bestDist1)</span><br><span class="line">                    &#123;</span><br><span class="line">                        bestDist2=bestDist1;</span><br><span class="line">                        bestDist1=dist;</span><br><span class="line">                        bestIdxF=realIdxF;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span>(dist&lt;bestDist2)<span class="comment">// bestDist1 &lt; dist &lt; bestDist2，更新bestDist2</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        bestDist2=dist;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 步骤4：根据描述子距离阈值和角度投票剔除误匹配</span></span><br><span class="line">                <span class="comment">// 最小的描述子距离小于一个阈值 </span></span><br><span class="line">                <span class="keyword">if</span>(bestDist1&lt;=TH_LOW) </span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="comment">// trick!</span></span><br><span class="line">                    <span class="comment">// 最佳匹配比次佳匹配明显要好，那么最佳匹配才真正靠谱</span></span><br><span class="line">                    <span class="keyword">if</span>(<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(bestDist1)&lt;</span><br><span class="line">                    mfNNratio*<span class="built_in">static_cast</span>&lt;<span class="type">float</span>&gt;(bestDist2))</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="comment">// 步骤5：更新当前帧特征点的MapPoint</span></span><br><span class="line">                        <span class="comment">// 记录了特征点ID以及对应的特征点</span></span><br><span class="line">                        vpMapPointMatches[bestIdxF]=pMP;</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 获得关键帧上的特征点位置</span></span><br><span class="line">                        <span class="type">const</span> cv::KeyPoint &amp;kp = pKF-&gt;mvKeysUn[realIdxKF];</span><br><span class="line"></span><br><span class="line">                        <span class="comment">//</span></span><br><span class="line">                        <span class="keyword">if</span>(mbCheckOrientation)</span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="comment">// trick!</span></span><br><span class="line">                            <span class="comment">// angle：每个特征点在提取描述子时的旋转主方向角度，</span></span><br><span class="line">                            <span class="comment">// 如果图像旋转了，这个角度将发生改变</span></span><br><span class="line">                            <span class="comment">// 所有的特征点的角度变化应该是一致的，</span></span><br><span class="line">                            <span class="comment">// 通过直方图统计得到最准确的角度变化值</span></span><br><span class="line">                            <span class="comment">// 该特征点的角度变化值</span></span><br><span class="line">                            <span class="type">float</span> rot = kp.angle-F.mvKeys[bestIdxF].angle;</span><br><span class="line">                            <span class="keyword">if</span>(rot&lt;<span class="number">0.0</span>)</span><br><span class="line">                                rot+=<span class="number">360.0f</span>;</span><br><span class="line">                            <span class="type">int</span> bin = <span class="built_in">round</span>(rot*factor);<span class="comment">// 将rot分配到bin组</span></span><br><span class="line">                            <span class="keyword">if</span>(bin==HISTO_LENGTH)</span><br><span class="line">                                bin=<span class="number">0</span>;</span><br><span class="line">                            <span class="built_in">assert</span>(bin&gt;=<span class="number">0</span> &amp;&amp; bin&lt;HISTO_LENGTH);</span><br><span class="line">                            rotHist[bin].<span class="built_in">push_back</span>(bestIdxF);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 匹配点+1</span></span><br><span class="line">                        nmatches++;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            KFit++;</span><br><span class="line">            Fit++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(KFit-&gt;first &lt; Fit-&gt;first)</span><br><span class="line">        &#123;</span><br><span class="line">            KFit = vFeatVecKF.<span class="built_in">lower_bound</span>(Fit-&gt;first);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            Fit = F.mFeatVec.<span class="built_in">lower_bound</span>(KFit-&gt;first);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据方向剔除误匹配的点，即删除那些不属于特征点角度变化最多的三个类别的匹配点</span></span><br><span class="line">    <span class="keyword">if</span>(mbCheckOrientation)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> ind1=<span class="number">-1</span>;</span><br><span class="line">        <span class="type">int</span> ind2=<span class="number">-1</span>;</span><br><span class="line">        <span class="type">int</span> ind3=<span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算rotHist中最大的三个的index</span></span><br><span class="line">        <span class="built_in">ComputeThreeMaxima</span>(rotHist,HISTO_LENGTH,ind1,ind2,ind3);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;HISTO_LENGTH; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 如果特征点的旋转角度变化量属于这三个组，则保留</span></span><br><span class="line">            <span class="keyword">if</span>(i==ind1 || i==ind2 || i==ind3)</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 将除了ind1 ind2 ind3以外的匹配点去掉</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">size_t</span> j=<span class="number">0</span>, jend=rotHist[i].<span class="built_in">size</span>(); j&lt;jend; j++)</span><br><span class="line">            &#123;</span><br><span class="line">                vpMapPointMatches[rotHist[i][j]]=<span class="built_in">static_cast</span>&lt;MapPoint*&gt;(<span class="literal">NULL</span>);</span><br><span class="line">                nmatches--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> nmatches;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，<code>LoopClosing</code>线程中<code>ComputeSim3()</code>调用的<code>SearchByBoW</code>的函数声明为：
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">ORBmatcher::SearchByBoW</span><span class="params">(KeyFrame *pKF1, KeyFrame *pKF2, vector&lt;MapPoint *&gt; &amp;vpMatches12)</span></span></span><br></pre></td></tr></table></figure></p>
+<h2 id="参考链接">参考链接</h2>
+<ol type="1">
+<li>https://blog.csdn.net/qq_24893115/article/details/52629248</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/" title="📝笔记：SLAM常见问题(一)：SearchByBoW">https://www.vincentqin.tech/posts/slam-common-issues-SearchbyBoW/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/ORB/" rel="tag"># ORB</a>
+              <a href="/tags/%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" rel="tag"># 特征匹配</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/slam-summer-courses-CADCG-Lab/" rel="prev" title="📝笔记：2019年浙大CADCG暑假SLAM培训部分课件">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：2019年浙大CADCG暑假SLAM培训部分课件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/slam-common-issues-relocalisation/" rel="next" title="📝笔记：SLAM常见问题(二)：重定位Relocalisation">
+                  📝笔记：SLAM常见问题(二)：重定位Relocalisation <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/slam-common-issues-SearchbyBoW/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

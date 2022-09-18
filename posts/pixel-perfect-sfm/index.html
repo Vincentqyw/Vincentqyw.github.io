@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="论文题目“Pixel-Perfect Structure-from-Motion with Featuremetric Reﬁnement”（通过在特征尺度优化进行高精度 SFM），获得 ICCV 2021 最佳学生论文。 本文的优化框架可在任何基于局部特征点的 SFM 流程中使用，使用 CNN 提取图像特征图(dense features)，根据稀疏的特征匹配得到初始的 tracks，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/pixel-perfect-sfm/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="论文题目“Pixel-Perfect Structure-from-Motion with Featuremetric Reﬁnement”（通过在特征尺度优化进行高精度 SFM），获得 ICCV 2021 最佳学生论文。 本文的优化框架可在任何基于局部特征点的 SFM 流程中使用，使用 CNN 提取图像特征图(dense features)，根据稀疏的特征匹配得到初始的 tracks，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-10-17T08:41:53.000Z">
+<meta property="article:modified_time" content="2022-08-29T16:54:54.875Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SFM">
+<meta property="article:tag" content="Paper">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/pixel-perfect-sfm/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/pixel-perfect-sfm/","path":"posts/pixel-perfect-sfm/","title":"📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">2.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">关键技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E4%BD%8D%E7%BD%AE%E8%B0%83%E6%95%B4"><span class="nav-number">3.1.</span> <span class="nav-text">特征位置调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ba-%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">BA 优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#d-%E4%B8%89%E8%A7%92%E5%8C%96"><span class="nav-number">4.1.</span> <span class="nav-text">3D 三角化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E6%9C%BA%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A1"><span class="nav-number">4.2.</span> <span class="nav-text">相机位姿估计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sfm-%E6%80%A7%E8%83%BD"><span class="nav-number">4.3.</span> <span class="nav-text">SFM 性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">4.4.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">5.</span> <span class="nav-text">结论</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/pixel-perfect-sfm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-10-17 16:41:53" itemprop="dateCreated datePublished" datetime="2021-10-17T16:41:53+08:00">2021-10-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-08-30 00:54:54" itemprop="dateModified" datetime="2022-08-30T00:54:54+08:00">2022-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SFM/" itemprop="url" rel="index"><span itemprop="name">SFM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/pixel-perfect-sfm/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/pixel-perfect-sfm/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/pixel-perfect-sfm/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note default"><p>论文题目“<strong>Pixel-Perfect Structure-from-Motion with
+Featuremetric Reﬁnement</strong>”（通过在特征尺度优化进行高精度
+SFM），获得 ICCV 2021 最佳学生论文。</p>
+<p>本文的优化框架可在任何基于局部特征点的 SFM 流程中使用，使用 CNN
+提取图像特征图(dense features)，根据稀疏的特征匹配得到初始的
+tracks，调整每一个 track
+对应的特征点在图像中的位置；根据调整后的位置进行 SFM 重建，重建过程中的
+BA 优化残差由重投影误差变为 Featuremetric 误差。</p>
+</div>
+<span id="more"></span>
+<h2 id="背景">背景</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-title.jpg" /></p>
+<p>注意到本文的作者是<a href="主页：https://psarlin.com"
+title="Paul‑Edouard Sarlin">Paul‑Edouard
+Sarlin</a>，该作者近两年发表了几项高质量的成果，如<strong>superglue</strong>(CVPR
+2020)/<strong>pixloc</strong>(CVPR 2021)。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-author1.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-author2.jpg" /></p>
+<p>本文算法开源：<a
+target="_blank" rel="noopener" href="https://github.com/cvg/pixel-perfect-sfm">https://github.com/cvg/pixel-perfect-sfm</a>
+， 该算法后续会集成到视觉定位工具包<a
+target="_blank" rel="noopener" href="https://github.com/cvg/Hierarchical-Localization"
+title="hloc">hloc</a>中。</p>
+<p>论文：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2108.08291">https://arxiv.org/abs/2108.08291</a></p>
+<p>项目：<a
+target="_blank" rel="noopener" href="https://psarlin.com/pixsfm">https://psarlin.com/pixsfm</a></p>
+<p>SLIDES: <a
+target="_blank" rel="noopener" href="https://psarlin.com/pixsfm/assets/pixsfm_slides.pdf">https://psarlin.com/pixsfm/assets/pixsfm_slides.pdf</a></p>
+<h2 id="摘要">摘要</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig1.jpg" /></p>
+<p>在 3D 重建任务中，跨视角的可复检的特征点检测尤为重要。原有的 SFM
+框架中，特征提取之后其位置并不会发生改变，若这个过程中出现了一定误差，势必造成后续几何结构的误差累计。</p>
+<p>本文针对以上 SFM 框架中的两个步骤进行了优化：1. 特征匹配后使用
+Featuremetric 对特征点位置进行优化；2. 增量重建过程中通过类似的
+Featuremetric 进行 BA（重投影误差变为 Featuremetric
+误差）。本文算法通过大量实验验证，其在 SFM 任务中表现非常优秀。</p>
+<h2 id="关键技术点">关键技术点</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig2.jpg" /></p>
+<p>总览：本文的优化框架可在任何基于局部特征点的 SFM 流程中使用，首先使用
+CNN 提取图像特征图(dense features)，根据稀疏的特征匹配得到初始的
+tracks，调整每一个 track
+对应的特征点在图像中的位置；根据调整后的位置进行 SFM 重建，重建过程中的
+BA 优化残差由重投影误差变为 Featuremetric 误差。</p>
+<p>输入：<span class="math inline">\(N\)</span> 张 SFM 建图图像 <span
+class="math inline">\(\{\mathbf{I}_i\}\)</span></p>
+<p>输出：场景地图，包括 3D 点 <span
+class="math inline">\(\{\mathbf{P}_i\} \in
+\mathbb{R}^3\)</span>，相机位姿 <span
+class="math inline">\(\left(\mathbf{R}_i, \mathbf{t}_i\right) \in
+\mathbf{SE}(3)\)</span>，相机内参 <span
+class="math inline">\(\{\mathbf{C}_i\}\)</span></p>
+<h3 id="特征位置调整">特征位置调整</h3>
+<p><strong>图像表征</strong>：图像的像素强度表示对视角/光照等因素的变化较为敏感，本文采用了
+CNN feature 的方式表示一张图像。具体的，对于图像 <span
+class="math inline">\(\mathbf{I}_i\)</span>，使用<a
+target="_blank" rel="noopener" href="https://github.com/germain-hug/S2DNet-Minimal"
+title="S2DNet">S2DNet</a>提取到一个 <span
+class="math inline">\(D\)</span> 维特征图 <span
+class="math inline">\(\mathbf{F}_{i} \in \mathbb{R}^{W \times H \times
+D}\)</span>。注：特征图在通道上做了 <span
+class="math inline">\(L_2\)</span>
+归一化以提高泛化性，特征图的长宽与原图相同。</p>
+<p><strong>目标函数</strong>：对于每一个 track，调整它包含的 2D
+特征点的位置，构建如下 featurematric 误差：</p>
+<p><span class="math display">\[E_{\mathrm{FKA}}^{j}=\sum_{(u, v) \in
+\mathcal{M}(j)} w_{u
+v}\left\|\mathbf{F}_{i(u)}\left[\mathbf{p}_{u}\right]-\mathbf{F}_{i(v)}\left[\mathbf{p}_{v}\right]\right\|_{\gamma}\]</span></p>
+<p>其中 <span class="math inline">\(w_{u,v}\)</span> 表示特征点 <span
+class="math inline">\(u\)</span> 与 <span
+class="math inline">\(v\)</span>
+之间的关联置信度，该置信度可由特征描述子的余弦距离 <span
+class="math inline">\(\mathbf{d}_{u}^{\top} \mathbf{d}_{v}\)</span>
+表示。可以看到，该过程对于每一个 track
+是独立进行的，计算效率非常高。另外，为了保证例如视觉定位的性能，<strong>需要保持特征点复检率不发生较大改变</strong>，此时需要限制特征优化的最大变动距离
+<span
+class="math inline">\(\left\|\mathbf{p}_{u}-\mathbf{p}_{u}^{0}\right\|
+\leq K\)</span>，其中 <span
+class="math inline">\(\mathbf{p}_{u}^{0}\)</span>
+为未调整的原始位置，<span class="math inline">\(K\)</span>
+表示特征点位置调整的最大距离，实验中设为 8（pixels）。</p>
+<blockquote>
+<p><strong><mark> 注意
+</mark></strong>：上式中有一个小歧义需要指出。因为<span
+class="math inline">\(u\)</span>和<span
+class="math inline">\(v\)</span>来自于不同的图像，如它们分别位于图<span
+class="math inline">\(i\)</span>与图<span
+class="math inline">\(k\)</span>。但是上式中将特征图的下标都写成了<span
+class="math inline">\(\mathbf{F}_{i}\)</span>，这显然是有问题的。针对该问题，我在GitHub提交了一个<a
+target="_blank" rel="noopener" href="https://github.com/cvg/pixel-perfect-sfm/issues/31">#issue31</a>咨询了作者的看法，作者认同了我的理解。以下是作者的回复截图：</p>
+</blockquote>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-eq4.png" /></p>
+<h3 id="ba-优化">BA 优化</h3>
+<p>上述过程完成了特征点位置的优化，随后进行几何校验以及增量或者全局重建。对于重建过程，本文设计了如下误差函数：</p>
+<p><span class="math display">\[E_{\mathrm{FBA}}=\sum_{j} \sum_{(i, u)
+\in \mathcal{T}(j)}\left\|\mathbf{F}_{i}\left[\Pi\left(\mathbf{R}_{i}
+\mathbf{P}_{j}+\mathbf{t}_{i},
+\mathbf{C}_{i}\right)\right]-\mathbf{f}^{j}\right\|_{\gamma}\]</span></p>
+<p>其中 <span class="math inline">\(\gamma\)</span> 为 Huber
+核函数，<span class="math inline">\(\mathbf{f}^{j}\)</span>
+是某个固定的参考向量，它被定义为距离 track <span
+class="math inline">\(j\)</span> 观测均值特征最近点那个向量。</p>
+<p><span class="math display">\[\begin{aligned} \mathbf{f}^{j}
+&amp;=\underset{\mathbf{f}
+\in\left\{\mathbf{f}_{u}^{j}\right\}}{\operatorname{argmin}}\left\|\boldsymbol{\mu}^{j}-\mathbf{f}\right\|
+\\ \text { 其中 } \boldsymbol{\mu}^{j} &amp;=\underset{\boldsymbol{\mu}
+\in \mathbb{R}^{D}}{\operatorname{argmin}} \sum_{\mathbf{f}
+\in\left\{\mathbf{f}_{u}^{j}\right\}}\|\mathbf{f}-\boldsymbol{\mu}\|_{\gamma}
+\end{aligned}\]</span></p>
+<h2 id="实验">实验</h2>
+<p>实验平台：8 CPU cores (Intel Xeon E5-2630v4) and one NVIDIA RTX 1080
+Ti。</p>
+<h3 id="d-三角化">3D 三角化</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab1.jpg" /></p>
+<p>在给定相机内参与位姿的情况下评价本文算法的生成的地图点精度。上述表格中
+Accuracy 表示 3D 点满足不同阈值的比例，Completeness 表示有 3D
+点被成功三角化并满足阈值的比例（类似于召回率）。本文算法相比于 Patch
+Flow，能够提升在严格阈值下的精度与完整度，且均比未优化的精度与完整度高。</p>
+<h3 id="相机位姿估计">相机位姿估计</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab2.jpg" /></p>
+<p>上述表格展示了平移量的 AUC 精度曲线，本文算法相比于未优化与 Patch
+Flow 均有很大优势，SuperPoint
+特征相比于其他特征点提取器提升力度明显。</p>
+<h3 id="sfm-性能">SFM 性能</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab3.jpg" /></p>
+<p>本文算法在两个任务中获得显著的性能提升，其中 stereo
+任务评价的是图像之间的相对位姿精度，这对于全局 SFM
+的位姿初值计算尤为重要；multi-view 任务是针对包含 <span
+class="math inline">\(N\)</span>
+张图像的集合进行增量位姿优化，该任务评价的是该集合内部相机的相对位姿。</p>
+<p>下图是算法优化前后特征点位置的分布，可以看到本文方法得到的特征点位置(绿点)在不同视角间是保持一致的，而原始的特征点(蓝点)容易受到提取噪声的干扰，导致了
+SFM 重投影的 2D 点(红点)出现了非一致。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig4.jpg" /></p>
+<h3 id="其他">其他</h3>
+<ol type="1">
+<li>消融实验</li>
+</ol>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab4.jpg" /></p>
+<ol start="2" type="1">
+<li>耗时</li>
+</ol>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig3.jpg" /></p>
+<p>上图展示了本文算法进行 SFM 的耗时统计，相比
+Patch-Flow，本文算法耗时大幅度降低；在 Aachen Day-Night v1.1
+数据集测试，7K 图像规模耗时小于 2 小时。</p>
+<h2 id="结论">结论</h2>
+<ol type="1">
+<li>提供了一种用于优化 SFM
+建图精度的方案，能够大幅度提升建图精度与后续的视觉定位精度。</li>
+<li>本文算法在进行 BA 时需要占用较大的运行内存空间(feature
+maps)，特别是面对大规模场景重建时，具体使用时需要权衡计算量与精度。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/pixel-perfect-sfm/" title="📝笔记：ICCV 2021最佳学生论文 | COLMAP 优化建图组件 Pixel-Perfect SFM">https://www.vincentqin.tech/posts/pixel-perfect-sfm/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SFM/" rel="tag"># SFM</a>
+              <a href="/tags/Paper/" rel="tag"># Paper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/basic-bash-usage/" rel="prev" title="🔨工具：bash常用命令">
+                  <i class="fa fa-chevron-left"></i> 🔨工具：bash常用命令
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/eigen-alignment/" rel="next" title="🎃资料: 从Eigen向量化谈内存对齐">
+                  🎃资料: 从Eigen向量化谈内存对齐 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/pixel-perfect-sfm/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

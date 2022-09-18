@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文涉及学习Markdown文本标记语言的一些练习笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markdown 学习">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/learning-Markdown/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文涉及学习Markdown文本标记语言的一些练习笔记。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.vincentqin.tech/posts/learning-Markdown/i-love-markdown.png">
+<meta property="og:image" content="http://pic1.win4000.com/wallpaper/0/54cae8e69ac8b.jpg">
+<meta property="og:image" content="http://i2.wp.com/posturemag.com/online/wp-content/uploads/2015/07/Kaz7.jpg">
+<meta property="article:published_time" content="2016-08-08T14:10:22.000Z">
+<meta property="article:modified_time" content="2022-09-04T17:49:12.330Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="Markdown">
+<meta property="article:tag" content="资料">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.vincentqin.tech/posts/learning-Markdown/i-love-markdown.png">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/learning-Markdown/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/learning-Markdown/","path":"posts/learning-Markdown/","title":"Markdown 学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Markdown 学习 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#note-tag-%E6%B5%8B%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">Note Tag 测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#test-note-default"><span class="nav-number">1.1.</span> <span class="nav-text">Test note default</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-note-primary"><span class="nav-number">1.2.</span> <span class="nav-text">Test note primary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-note-success"><span class="nav-number">1.3.</span> <span class="nav-text">Test note success</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-note-info"><span class="nav-number">1.4.</span> <span class="nav-text">Test note info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-note-warning"><span class="nav-number">1.5.</span> <span class="nav-text">Test note warning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-note-danger"><span class="nav-number">1.6.</span> <span class="nav-text">Test note danger</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#button-%E6%A0%87%E7%AD%BE%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">Button 标签测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#button%E5%86%85%E5%B5%8C%E6%96%87%E5%AD%97"><span class="nav-number">2.1.</span> <span class="nav-text">Button内嵌文字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#button%E5%86%85%E5%B5%8Clogo"><span class="nav-number">2.2.</span> <span class="nav-text">Button内嵌logo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#button-margin"><span class="nav-number">2.3.</span> <span class="nav-text">Button Margin</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#label-tag%E6%B5%8B%E8%AF%95%E6%96%87%E4%B8%AD%E5%AD%97%E4%BD%93%E9%A2%9C%E8%89%B2"><span class="nav-number">3.</span> <span class="nav-text">Label Tag测试文中字体颜色</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BCtag%E6%B5%8B%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">表格Tag测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E4%B8%8D%E5%90%8C%E9%A2%9C%E8%89%B2%E7%9A%84%E5%AD%97%E4%BD%93"><span class="nav-number">4.1.</span> <span class="nav-text">插入不同颜色的字体</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">插入代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%A0%87%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">插入标题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E8%A1%A8"><span class="nav-number">7.</span> <span class="nav-text">列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%9B%BE%E5%83%8F"><span class="nav-number">8.</span> <span class="nav-text">插入图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E9%93%BE%E6%8E%A5"><span class="nav-number">9.</span> <span class="nav-text">插入链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%85%AC%E5%BC%8F"><span class="nav-number">10.</span> <span class="nav-text">插入公式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%8C%E8%85%8A%E5%AD%97%E6%AF%8D%E5%AF%B9%E5%BA%94%E8%A1%A8"><span class="nav-number">11.</span> <span class="nav-text">希腊字母对应表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">12.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/learning-Markdown/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Markdown 学习 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Markdown 学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2016-08-08 22:10:22" itemprop="dateCreated datePublished" datetime="2016-08-08T22:10:22+08:00">2016-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 01:49:12" itemprop="dateModified" datetime="2022-09-05T01:49:12+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BB%BA%E7%AB%99/" itemprop="url" rel="index"><span itemprop="name">建站</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/learning-Markdown/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/learning-Markdown/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/learning-Markdown/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.gitee.io/blogresource-1/learning-Markdown/guide-to-markdown-writing.png" /></p>
+<!--<a href="https://www.vincentqin.tech"><img border="0" data-src="i-love-markdown.png" /></a>-->
+<p>本文涉及学习Markdown文本标记语言的一些练习笔记。</p>
+<span id="more"></span>
+<h2 id="note-tag-测试">Note Tag 测试</h2>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * note.js | global hexo script.</span><br><span class="line"> *</span><br><span class="line"> * ATTENTION! No need to write this tag in 1 line if u don&#x27;t want see probally bugs.</span><br><span class="line"> *</span><br><span class="line"> * Usage:</span><br><span class="line"> *</span><br><span class="line"> * &#123;% note [class] %&#125;</span><br><span class="line"> * Any content (support inline tags too).</span><br><span class="line"> * &#123;% endnote %&#125;</span><br><span class="line"> *</span><br><span class="line"> * [class] : default | primary | success | info | warning | danger.</span><br><span class="line"> *           May be not defined.</span><br><span class="line"> */</span><br></pre></td></tr></table></figure>
+<div class="note default"><h3 id="test-note-default">Test note default</h3>
+<p>昏鴉盡，小立恨因誰 ?急雪乍翻香閣絮，輕風吹到膽瓶梅，心字已成灰。</p>
+</div>
+<div class="note primary"><h3 id="test-note-primary">Test note primary</h3>
+<p>昏鴉盡，小立恨因誰 ?急雪乍翻香閣絮，輕風吹到膽瓶梅，心字已成灰。</p>
+</div>
+<div class="note success"><h3 id="test-note-success">Test note success</h3>
+<p>昏鴉盡，小立恨因誰 ?急雪乍翻香閣絮，輕風吹到膽瓶梅，心字已成灰。</p>
+</div>
+<div class="note info"><h3 id="test-note-info">Test note info</h3>
+<p>昏鴉盡，小立恨因誰 ?急雪乍翻香閣絮，輕風吹到膽瓶梅，心字已成灰。</p>
+</div>
+<div class="note warning"><h3 id="test-note-warning">Test note warning</h3>
+<p>昏鴉盡，小立恨因誰 ?急雪乍翻香閣絮，輕風吹到膽瓶梅，心字已成灰。</p>
+</div>
+<div class="note danger"><h3 id="test-note-danger">Test note danger</h3>
+<p>昏鴉盡，小立恨因誰 ?急雪乍翻香閣絮，輕風吹到膽瓶梅，心字已成灰。</p>
+</div>
+<h2 id="button-标签测试">Button 标签测试</h2>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Usage: &#123;% button /path/to/url/, text, icon [class], title %&#125;</span><br><span class="line">Alias: &#123;% btn /path/to/url/, text, icon [class], title %&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="button内嵌文字">Button内嵌文字</h3>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% button #, Text %&#125;&#123;% button #插入不同颜色的字体, 插入不同颜色的字体,heart %&#125;</span><br></pre></td></tr></table></figure>
+<a class="btn" href="#">Text</a>
+<a class="btn" href="#插入不同颜色的字体"><i class="fa fa-heart"></i>插入不同颜色的字体</a>
+<h3 id="button内嵌logo">Button内嵌logo</h3>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;text-center&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;% btn ##插入不同颜色的字体,, header %&#125;&#123;% btn #,, edge %&#125;&#123;% btn #,, times %&#125;&#123;% btn #,, circle-o %&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;% btn #,, italic %&#125;&#123;% btn #,, scribd %&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;% btn #,, google %&#125;&#123;% btn #,, chrome %&#125;&#123;% btn #,, opera %&#125;&#123;% btn #,, diamond fa-rotate-270 %&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<div class="text-center">
+<span><a class="btn" href="#插入不同颜色的字体"><i class="fa fa-header"></i>插入不同颜色的字体</a><a class="btn" href="#"><i class="fa fa-edge"></i></a><a class="btn" href="#"><i class="fa fa-times"></i></a><a class="btn" href="#"><i class="fa fa-circle-o"></i></a></span>
+<span><a class="btn" href="#"><i class="fa fa-italic"></i></a><a class="btn" href="#"><i class="fa fa-scribd"></i></a></span>
+<span><a class="btn" href="#"><i class="fa fa-google"></i></a><a class="btn" href="#"><i class="fa fa-chrome"></i></a><a class="btn" href="#"><i class="fa fa-opera"></i></a><a class="btn" href="#"><i class="fa fa-diamond fa-rotate-270"></i></a></span>
+</div>
+<h3 id="button-margin">Button Margin</h3>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;text-center&quot;</span>&gt;</span>&#123;% btn #, Almost, adn fa-fw fa-lg %&#125; &#123;% btn #, Over, terminal fa-fw fa-lg %&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<div class="text-center">
+<a class="btn" href="#"><i class="fa fa-adn fa-fw fa-lg"></i>Almost</a>
+<a class="btn" href="#"><i class="fa fa-terminal fa-fw fa-lg"></i>Over</a>
+</div>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;text-right&quot;</span>&gt;</span></span><br><span class="line">&#123;% btn #, Test is finished., check fa-fw fa-lg, Button tag test is finished. %&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<div class="text-right">
+<a class="btn" href="#" title="Button tag test is finished."><i class="fa fa-check fa-fw fa-lg"></i>Test is finished.</a>
+</div>
+<h2 id="label-tag测试文中字体颜色">Label Tag测试文中字体颜色</h2>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">From &#123;% label @fairest creatures %&#125; we desire increase,</span><br><span class="line">That thereby &#123;% label primary@beauty&#x27;s rose %&#125; might never die,</span><br><span class="line">But as the &#123;% label success@riper %&#125; should by time decease,</span><br><span class="line">His tender heir might &#123;% label info@bear his memory %&#125;:</span><br><span class="line">But thou contracted to thine own bright eyes,</span><br><span class="line">Feed&#x27;st thy light&#x27;s flame with *&#123;% label warning @self-substantial fuel%&#125;*,</span><br><span class="line">Making a famine where ~~&#123;% label default @abundance lies %&#125;~~,</span><br><span class="line">Thy self thy foe, to thy <span class="tag">&lt;<span class="name">mark</span>&gt;</span>sweet self too cruel<span class="tag">&lt;/<span class="name">mark</span>&gt;</span>:</span><br><span class="line">Thou that art now the world&#x27;s fresh ornament,</span><br><span class="line">And only herald to the gaudy spring,</span><br><span class="line">Within thine own bud buriest thy content,</span><br><span class="line">And &#123;% label danger@tender churl mak&#x27;st waste in niggarding %&#125;:</span><br><span class="line">Pity the world, or else this glutton be,</span><br><span class="line">&#123;% label warning@To eat the world&#x27;s due, by the grave and thee %&#125;.</span><br></pre></td></tr></table></figure>
+<p>From <mark class="label ">fairest creatures</mark> we desire increase, That thereby <mark class="label primary">beauty's rose</mark>
+might never die, But as the <mark class="label success">riper</mark> should by time decease, His
+tender heir might <mark class="label info">bear his memory</mark>: But thou contracted to thine own
+bright eyes, Feed'st thy light's flame with <em><mark class="label warning">self-substantial fuel</mark></em>,
+Making a famine where <del><mark class="label default">abundance lies</mark></del>, Thy self thy foe, to
+thy <mark>sweet self too cruel</mark>: Thou that art now the world's
+fresh ornament, And only herald to the gaudy spring, Within thine own
+bud buriest thy content, And <mark class="label danger">tender churl mak'st waste in niggarding</mark>: Pity the world, or else
+this glutton be, <mark class="label warning">To eat the world's due, by the grave and thee</mark>.</p>
+<h2 id="表格tag测试">表格Tag测试</h2>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;% tabs First unique name %&#125;</span><br><span class="line"><span class="comment">&lt;!-- tab --&gt;</span></span><br><span class="line">**This is Tab 1.**</span><br><span class="line"><span class="comment">&lt;!-- endtab --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- tab --&gt;</span></span><br><span class="line">**This is Tab 2.**</span><br><span class="line"><span class="comment">&lt;!-- endtab --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- tab --&gt;</span></span><br><span class="line">**This is Tab 3.**</span><br><span class="line"><span class="comment">&lt;!-- endtab --&gt;</span></span><br><span class="line">&#123;% endtabs %&#125;</span><br></pre></td></tr></table></figure>
+<div class="tabs" id="first-unique-name"><ul class="nav-tabs"><li class="tab active"><a href="#first-unique-name-1">First unique name 1</a></li><li class="tab"><a href="#first-unique-name-2">First unique name 2</a></li><li class="tab"><a href="#first-unique-name-3">First unique name 3</a></li></ul><div class="tab-content"><div class="tab-pane active" id="first-unique-name-1"><p><strong>This is Tab 1.</strong></p></div><div class="tab-pane" id="first-unique-name-2"><p><strong>This is Tab 2.</strong></p></div><div class="tab-pane" id="first-unique-name-3"><p><strong>This is Tab 3.</strong></p></div></div></div>
+<h3 id="插入不同颜色的字体">插入不同颜色的字体</h3>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span><span class="tag">&lt;<span class="name">tr</span>&gt;</span><span class="tag">&lt;<span class="name">td</span> <span class="attr">bgcolor</span>=<span class="string">LimeGreen</span>&gt;</span><span class="tag">&lt;<span class="name">font</span> <span class="attr">color</span>=<span class="string">white</span> <span class="attr">size</span>=<span class="string">3</span>&gt;</span>我是白色的字体，背景是色的~<span class="tag">&lt;/<span class="name">font</span>&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span><span class="tag">&lt;/<span class="name">tr</span>&gt;</span><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<table>
+<tr>
+<td bgcolor="LimeGreen">
+<font color=white size=3>我是白色的字体，背景是色的~</font>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td bgcolor="SpringGreen">
+<font color=white size=3>我是白色的字体，背景是深灰色的~</font>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td bgcolor="LightSeaGreen">
+<font color=white size=3>我是白色的字体，背景是浅海绿的~</font>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td bgcolor="#0099ff">
+<font color=white size=3>我是白色的字体，背景是蓝色的~</font>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td bgcolor="Silver">
+<font color=white size=3>我是白色的字体，背景是银色的~</font>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td bgcolor="DarkGray">
+<font color=white size=3>我是白色的字体，背景是淡灰色的~</font>
+</td>
+</tr>
+</table>
+<table>
+<tr>
+<td bgcolor="DimGray">
+<font color=white size=3>我是白色的字体，背景是深灰色的~</font>
+</td>
+</tr>
+</table>
+<h2 id="插入代码">插入代码</h2>
+<p>这里是代码区域</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">% The following is the Matlab Code</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% I want to see the result</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line">temp=<span class="built_in">zeros</span>(<span class="number">5</span>,<span class="number">6</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">size</span>(temp,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:<span class="built_in">size</span>(temp,<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        temp(<span class="built_in">i</span>,<span class="built_in">j</span>)=<span class="built_in">rand</span>(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> temp(<span class="built_in">i</span>,<span class="built_in">j</span>)&gt;<span class="number">0.5</span></span><br><span class="line"></span><br><span class="line">            temp(<span class="built_in">i</span>,<span class="built_in">j</span>)=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> temp</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="插入标题">插入标题</h2>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># 一级标题</span></span><br><span class="line"></span><br><span class="line"><span class="section">## 二级标题</span></span><br><span class="line"></span><br><span class="line"><span class="section">### 三级标题</span></span><br><span class="line"></span><br><span class="line"><span class="section">#### 四级标题</span></span><br><span class="line"></span><br><span class="line"><span class="section">##### 五级标题</span></span><br><span class="line"></span><br><span class="line"><span class="section">###### 六级标题</span></span><br></pre></td></tr></table></figure>
+<h2 id="列表">列表</h2>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> 文本1</span><br><span class="line"><span class="bullet">-</span> 文本2</span><br><span class="line"><span class="bullet">-</span> 文本3</span><br><span class="line"><span class="bullet">1.</span> 文本一</span><br><span class="line"><span class="bullet">2.</span> 文本二</span><br><span class="line"><span class="bullet">3.</span> 文本三</span><br></pre></td></tr></table></figure>
+<ul>
+<li>文本1</li>
+<li>文本2</li>
+<li>文本3</li>
+</ul>
+<ol type="1">
+<li>文本一</li>
+<li>文本二</li>
+<li>文本三</li>
+</ol>
+<h2 id="插入图像">插入图像</h2>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![](http://pic1.win4000.com/wallpaper/0/54cae8e69ac8b.jpg)</span><br></pre></td></tr></table></figure>
+<!-- <center><img data-src="http://pic1.win4000.com/wallpaper/0/54cae8e69ac8b.jpg" width="100%"></center> -->
+<p>或者： <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">center</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;http://i2.wp.com/posturemag.com/online/wp-content/uploads/2015/07/Kaz7.jpg&quot;</span> <span class="attr">width</span>=<span class="string">&quot;100%&quot;</span> &gt;</span><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<center>
+<img data-src="http://i2.wp.com/posturemag.com/online/wp-content/uploads/2015/07/Kaz7.jpg" width="100%" >
+</center>
+<h2 id="插入链接">插入链接</h2>
+<ul>
+<li>segmentfault上的一个<a
+target="_blank" rel="noopener" href="https://segmentfault.com/markdown">Markdown学习手册</a></li>
+<li>有道云笔记的Markdown<a
+target="_blank" rel="noopener" href="http://note.youdao.com/iyoudao/?p=2411">学习指南-基础篇</a></li>
+<li><a target="_blank" rel="noopener" href="http://iissnan.com/progit/">Git学习手册</a></li>
+</ul>
+<h2 id="插入公式">插入公式</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$$E=mc^2$$</span><br></pre></td></tr></table></figure>
+<p><span class="math display">\[E=mc^2\]</span></p>
+<p>Hexo文档使用Markdown语言对文档进行编辑，Hexo自身对公式可以进行渲染但是效果不佳，我们采用的是mathjax对Markdown中的公式进行渲染。
+首先<a
+target="_blank" rel="noopener" href="http://2wildkids.com/2016/10/06/%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86Hexo%E5%92%8CMathJax%E7%9A%84%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98/#小结">修复Hexo与mathjax之间的渲染冲突</a>，然后可以参考mathjax的<a
+target="_blank" rel="noopener" href="http://mlworks.cn/posts/introduction-to-mathjax-and-latex-expression/">说明文档</a>编辑公式。</p>
+<h2 id="希腊字母对应表">希腊字母对应表</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">字母名称</th>
+<th style="text-align: center;">大写</th>
+<th style="text-align: center;">markdown原文</th>
+<th style="text-align: center;">小写</th>
+<th style="text-align: center;">markdown原文</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">alpha</td>
+<td style="text-align: center;"><span
+class="math inline">\(A\)</span></td>
+<td style="text-align: center;">A</td>
+<td style="text-align: center;"><span
+class="math inline">\(\alpha\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">beta</td>
+<td style="text-align: center;"><span
+class="math inline">\(B\)</span></td>
+<td style="text-align: center;">B</td>
+<td style="text-align: center;"><span
+class="math inline">\(\beta\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">gamma</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Gamma\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\gamma\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">delta</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Delta\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\delta\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">epsilon</td>
+<td style="text-align: center;"><span
+class="math inline">\(E\)</span></td>
+<td style="text-align: center;">E</td>
+<td style="text-align: center;"><span
+class="math inline">\(\epsilon\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><span
+class="math inline">\(\varepsilon\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">zeta</td>
+<td style="text-align: center;"><span
+class="math inline">\(Z\)</span></td>
+<td style="text-align: center;">Z</td>
+<td style="text-align: center;"><span
+class="math inline">\(\zeta\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">eta</td>
+<td style="text-align: center;"><span
+class="math inline">\(E\)</span></td>
+<td style="text-align: center;">E</td>
+<td style="text-align: center;"><span
+class="math inline">\(\eta\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">theta</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Theta\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\theta\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">iota</td>
+<td style="text-align: center;"><span
+class="math inline">\(I\)</span></td>
+<td style="text-align: center;">I</td>
+<td style="text-align: center;"><span
+class="math inline">\(\iota\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">kappa</td>
+<td style="text-align: center;"><span
+class="math inline">\(K\)</span></td>
+<td style="text-align: center;">K</td>
+<td style="text-align: center;"><span
+class="math inline">\(\kappa\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">lambda</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Lambda\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\lambda\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Mu</td>
+<td style="text-align: center;"><span
+class="math inline">\(M\)</span></td>
+<td style="text-align: center;">M</td>
+<td style="text-align: center;"><span
+class="math inline">\(\mu\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">nu</td>
+<td style="text-align: center;"><span
+class="math inline">\(N\)</span></td>
+<td style="text-align: center;">N</td>
+<td style="text-align: center;"><span
+class="math inline">\(\nu\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">xi</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Xi\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\xi\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">omicron</td>
+<td style="text-align: center;"><span
+class="math inline">\(O\)</span></td>
+<td style="text-align: center;">O</td>
+<td style="text-align: center;"><span
+class="math inline">\(\omicron\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">pi</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Pi\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\pi\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">rho</td>
+<td style="text-align: center;"><span
+class="math inline">\(P\)</span></td>
+<td style="text-align: center;">P</td>
+<td style="text-align: center;"><span
+class="math inline">\(\rho\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">sigma</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Sigma\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\sigma\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">tau</td>
+<td style="text-align: center;"><span
+class="math inline">\(T\)</span></td>
+<td style="text-align: center;">T</td>
+<td style="text-align: center;"><span
+class="math inline">\(\tau\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">upsilon</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Upsilon\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\upsilon\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">phi</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Phi\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\phi\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><span
+class="math inline">\(\varphi\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">chi</td>
+<td style="text-align: center;"><span
+class="math inline">\(X\)</span></td>
+<td style="text-align: center;">X</td>
+<td style="text-align: center;"><span
+class="math inline">\(\chi\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">psi</td>
+<td style="text-align: center;"><span
+class="math inline">\(\Psi\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span
+class="math inline">\(\psi\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="参考">参考</h2>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://almostover.ru/2016-01/hexo-theme-next-test/#">Hexo
+Theme Next Test</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://blog.csdn.net/testcs_dn/article/details/45719357/">Color
+map</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.mohu.org/info/lshort-cn.pdf">一个关于Latex不短的介绍</a></li>
+<li><a
+target="_blank" rel="noopener" href="http://www.mohu.org/info/symbols/symbols.htm">Latex常用命令摘录</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/learning-Markdown/" title="Markdown 学习">https://www.vincentqin.tech/posts/learning-Markdown/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Markdown/" rel="tag"># Markdown</a>
+              <a href="/tags/%E8%B5%84%E6%96%99/" rel="tag"># 资料</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/thu-postgraduate-exam/" rel="prev" title="复试那些事儿">
+                  <i class="fa fa-chevron-left"></i> 复试那些事儿
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/build-a-website-using-hexo/" rel="next" title="Hexo+Github+jsDelivr+Vercel建站备忘录">
+                  Hexo+Github+jsDelivr+Vercel建站备忘录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/learning-Markdown/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

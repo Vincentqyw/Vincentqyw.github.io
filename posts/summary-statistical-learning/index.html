@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。 所以统计学习方法有三个要素：模型、策略、算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="统计学习方法总结">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/summary-statistical-learning/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即假设空间；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由算法实现。 所以统计学习方法有三个要素：模型、策略、算法。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-09-23T11:47:38.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:02:32.166Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="统计学习方法">
+<meta property="article:tag" content="概率论">
+<meta property="article:tag" content="SVM">
+<meta property="article:tag" content="过拟合">
+<meta property="article:tag" content="朴素贝叶斯">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/summary-statistical-learning/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/summary-statistical-learning/","path":"posts/summary-statistical-learning/","title":"统计学习方法总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>统计学习方法总结 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.</span> <span class="nav-text">统计学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E7%A9%BA%E9%97%B4%E7%89%B9%E5%BE%81%E7%A9%BA%E9%97%B4%E4%B8%8E%E8%BE%93%E5%87%BA%E7%A9%BA%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">输入空间、特征空间与输出空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A3%8E%E9%99%A9%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">风险函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%A4%E5%88%AB%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">生成模型与判别模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%96%E7%95%A5"><span class="nav-number">5.</span> <span class="nav-text">策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9"><span class="nav-number">7.</span> <span class="nav-text">模型选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%8C%96"><span class="nav-number">7.1.</span> <span class="nav-text">正则化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#l2%E8%8C%83%E6%95%B0%E6%AD%A3%E5%88%99"><span class="nav-number">7.1.1.</span> <span class="nav-text">L2范数正则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#l1%E8%8C%83%E6%95%B0%E6%AD%A3%E5%88%99"><span class="nav-number">7.1.2.</span> <span class="nav-text">L1范数正则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">7.1.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">7.2.</span> <span class="nav-text">交叉验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1"><span class="nav-number">8.</span> <span class="nav-text">极大似然估计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%A4%A7%E7%86%B5%E5%8E%9F%E7%90%86"><span class="nav-number">8.1.</span> <span class="nav-text">最大熵原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-number">8.2.</span> <span class="nav-text">线性分类器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">8.3.</span> <span class="nav-text">评价指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF-naive-bayes"><span class="nav-number">9.</span> <span class="nav-text">朴素贝叶斯 \(Naive Bayes\)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">9.1.</span> <span class="nav-text">基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E4%BC%B0%E8%AE%A1"><span class="nav-number">9.2.</span> <span class="nav-text">参数估计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1-1"><span class="nav-number">9.2.1.</span> <span class="nav-text">极大似然估计</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/summary-statistical-learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="统计学习方法总结 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          统计学习方法总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-09-23 19:47:38" itemprop="dateCreated datePublished" datetime="2017-09-23T19:47:38+08:00">2017-09-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:02:32" itemprop="dateModified" datetime="2022-09-05T02:02:32+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Deep-Learning/" itemprop="url" rel="index"><span itemprop="name">Deep Learning</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/summary-statistical-learning/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/summary-statistical-learning/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/summary-statistical-learning/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/Captain_America.jpg" /></p>
+<p>本文主要研究监督学习，所谓的监督学习就是在给定的，有限的，用于学习的训练数据集合（training
+data）出发，假设数据是独立同分布产生的；并且假设要学习的模型属于某个集合，即<strong>假设空间</strong>；我们根据一定的评价准则，从假设空间中选取一个最优的模型，使它对已知的训练数据以及未知的测试数据在给定评价准则下有最优的预测，最优模型的选取由<strong>算法</strong>实现。
+所以统计学习方法有三个要素：<strong>模型</strong>、<strong>策略</strong>、<strong>算法</strong>。</p>
+<span id="more"></span>
+<h2 id="统计学习">统计学习</h2>
+<ul>
+<li>监督学习</li>
+<li>半监督学习</li>
+<li>无监督学习</li>
+<li>强化学习</li>
+</ul>
+<h2 id="输入空间特征空间与输出空间">输入空间、特征空间与输出空间</h2>
+<ol type="1">
+<li>输入变量&amp;输出变量均连续-&gt; 回归问题</li>
+<li>输出空间为有限个离散变量的预测问题-&gt; 分类问题</li>
+<li>输入与输出均为变量序列的预测问题-&gt; 标注问题</li>
+</ol>
+<h2 id="风险函数">风险函数</h2>
+<ul>
+<li>期望风险：模型关于联合分布的期望损失</li>
+<li>经验风险：模型关于训练样本的平均损失
+按照大数定律，当样本数据量区域无穷时，经验风险趋近于期望风险；
+但是当样本容量很小时，经验风险的效果就不会太好，此时容易出现过拟合现象。
+此时，结构风险就被提出。结构风险是在经验风险的基础上添加上表示模型复杂度的正则化项/罚项。
+极大似然估计是经验风险最小化的一个特例。
+最大后验概率估计是结构风险最小化的一个特例；</li>
+</ul>
+<h2 id="模型">模型</h2>
+<p>监督学习里要学习的模型就是<strong>决策函数或者条件概率分布</strong>。</p>
+<p>此时不得不提到生成方法以及判别方法。</p>
+<ul>
+<li>生成方法，由数据学习联合概率分布<span
+class="math inline">\(P(X,Y)\)</span>，然后求出条件概率分布模型，即生成模型：
+<span class="math display">\[
+P(Y|X)=\frac{P(X,Y)}{P(X)}
+\]</span></li>
+<li>判别方法是由数据直接学习决策函数或者条件概率分布作为预测模型，即判别模型。</li>
+</ul>
+<h3 id="生成模型与判别模型">生成模型与判别模型</h3>
+<ul>
+<li>生成模型常见的主要有：</li>
+</ul>
+<ol type="1">
+<li>高斯混合模型</li>
+<li>朴素贝叶斯</li>
+<li>混合高斯模型GMM</li>
+<li>隐马尔可夫模型HMM</li>
+<li>马尔可夫的随机场</li>
+<li>KNN</li>
+</ol>
+<ul>
+<li>常见的判别模型有：</li>
+</ul>
+<ol type="1">
+<li>支持向量机</li>
+<li>传统的神经网络</li>
+<li>线性判别分析</li>
+<li>线性回归</li>
+<li>条件随机场</li>
+<li>最大熵模型</li>
+<li>逻辑斯特回归</li>
+</ol>
+<!-- ![](https://vincentqin.gitee.io/blogresource-1/summary-statistical-learning/norm12.jpg) -->
+<h2 id="策略">策略</h2>
+<p>指定策略的目的就是为了挑选出假设空间中到底哪个模型才是我们真正需要的。此时会用到损失函数以及风险函数的概念。</p>
+<ul>
+<li><p>0-1 损失函数 <span class="math display">\[
+L(Y,f(X))=\left\{\begin{aligned}
+1,    &amp;&amp; Y \neq f(X)\\
+0,    &amp;&amp;Y = f(X)
+\end{aligned}\right.
+\]</span></p></li>
+<li><p>平法损失函数 <span class="math display">\[
+L(Y,f(X))=(Y-f(X)^2
+\]</span></p></li>
+<li><p>绝对值损失函数</p></li>
+</ul>
+<p><span class="math display">\[
+L(Y,f(X))=|Y-f(X)|
+\]</span></p>
+<ul>
+<li>对数损失函数 <span class="math display">\[
+L(Y,P(Y|X))=-logP(Y|X)
+\]</span></li>
+</ul>
+<p>损失函数越小的话代表模型越好。<span
+class="math inline">\((X,Y)\)</span>是随机变量符合联合分布概率<span
+class="math inline">\(P(X,Y)\)</span>，所以损失函数的期望被定义为：
+<span class="math display">\[
+R_{ref}(f)=E_p[L(Y,f(X))]=\int_{\mathcal{X} \times
+\mathcal{Y}}L(y,f(x))P(x,y)dxdy
+\]</span> 以上是模型<span
+class="math inline">\(f(X)\)</span>关于联合分布<span
+class="math inline">\(P(X,Y)\)</span>的平均意义下的损失，称为风险函数或者<strong>期望损失</strong>（expected
+loss）。
+但是呢，期望损失不易求解，我们一般用<strong>模型关于训练数据集的平均损失</strong>来逼近期望损失，即：
+<span class="math display">\[
+R_{emp}(f)=E_p[L(Y,f(X))]=\frac{1}{N} \sum_{i=1}^NL(y_i,f(x_i))
+\]</span>
+<strong>经验风险最小化</strong>的策略认为，经验风险最小的模型就是最优的模型，于是按照这种定义，我们有：
+<span class="math display">\[
+f^*={argmin}_{f \in \mathcal{F} } R_{emp}
+\]</span> 其中的<span
+class="math inline">\(\mathcal{F}\)</span>是假设空间。
+最大似然估计就是经验风险最小化的一个例子：当模型为条件概率，损失函数是对数损失时，经验风险最小化就等价于极大似然估计。
+根据大数定理可知，当样本容量N趋近于无限时，经验风险趋近于期望风险。但是如果样本数量是有限时，此时会出现过拟合现象，那么这时候需要结构风险的帮助。
+结构风险是为了防止过拟合而提出的策略，结构风险最小化等价于正则化（regularization）。其定义是
+<span class="math display">\[
+R_{srm}(f)=\frac{1}{N} \sum_{i=1}^NL(y_i,f(x_i))+\lambda J(f)
+\]</span> 其中的<span
+class="math inline">\(J(f)\)</span>是衡量模型复杂度的项，也叫罚项。当模型越复杂时，<span
+class="math inline">\(J(f)\)</span>越大；模型越简单时，<span
+class="math inline">\(J(f)\)</span>越小。
+最大后验概率估计（MAP）就是结构风险最小化的一个例子：当模型时条件概率，损失函数是对数损失函数，模型复杂度由先验概率表示时，结构风险最小化就等价于MAP。</p>
+<p>监督学习的模型可以分为概率模型与非概率模型，由条件概率分布<span
+class="math inline">\(P(Y|X)\)</span>或者决策函数<span
+class="math inline">\(Y=f(X)\)</span>表示。</p>
+<h2 id="算法">算法</h2>
+<p>算法是指学习模型的具体计算方法： <strong>find global optimization
+solution efficiently</strong>.</p>
+<h2 id="模型选择">模型选择</h2>
+<p><strong>模型选择的主要方式有：正则化与交叉验证</strong>。</p>
+<p>在经验风险最小化时已经了解到正则化的由来，正则化就是针对过拟合现象提出的解决策略。</p>
+<p><strong>过拟合</strong>是指学习模型时选择的模型包含的参数过多，以致于这一模型对已知数据的预测很好，而对未知数据的预测能力变得很差。
+以下介绍两种正则化的范数：<span class="math inline">\(L_1\)</span> and
+<span class="math inline">\(L_2\)</span></p>
+<h3 id="正则化">正则化</h3>
+<h4 id="l2范数正则">L2范数正则</h4>
+<p><span class="math display">\[
+C=C_0+ \frac{\alpha}{2n}\sum_ww^2
+\]</span></p>
+<p>对<span class="math inline">\(w\)</span>以及<span
+class="math inline">\(b\)</span>求导如下： <span class="math display">\[
+\frac{\partial C}{\partial w}= \frac{\partial C_0}{\partial
+w}+\frac{\lambda}{n}w
+\frac{\partial C}{\partial b}= \frac{\partial C_0}{\partial b}
+\]</span></p>
+<p>由梯度下降法可知：</p>
+<p><span class="math display">\[
+w \rightarrow w-\eta\frac{\partial C}{\partial
+w}=\left(1-\frac{\eta\lambda}{n} \right)w-\eta\frac{\partial
+C_0}{\partial w}
+\]</span></p>
+<p>系数<span class="math inline">\(\left(1-\frac{\eta\lambda}{n}
+\right)\)</span>是小于1的，相比于原来的系数等于一，此时的效果相当于就是权值衰减（weight
+decay）。</p>
+<p>注意到<strong>过拟合</strong>的时候，我们的假设函数要顾及到每一个数据点，模型就会尝试对所有数据点进行拟合，包括一些异常点；此时形成的拟合函数的波动性会非常大，可以看到此时的拟合参数会异常大。通过L2正则化处理可以使这些参数变小，解释如下：</p>
+<blockquote>
+<p>更小的权重，表示网络的复杂组更低，对数据拟合的刚刚好（奥卡姆剃须刀原理）</p>
+</blockquote>
+<h4 id="l1范数正则">L1范数正则</h4>
+<p>L1正则假设参数的先验分布是Laplace分布，可以保证模型的稀疏性，也就是某些参数等于0；
+L2正则假设参数的先验分布是Gaussian分布，可以保证模型的稳定性，也就是参数的值不会太大或太小</p>
+<figure>
+<img data-src="https://gss0.baidu.com/-fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/359b033b5bb5c9ea238f2f6cdd39b6003bf3b3c4.jpg"
+alt="两种正则化的对比" />
+<figcaption aria-hidden="true">两种正则化的对比</figcaption>
+</figure>
+<h4 id="参考链接">参考链接</h4>
+<p><a
+target="_blank" rel="noopener" href="http://freemind.pluskid.org/machine-learning/sparsity-and-some-basics-of-l1-regularization/#ed61992b37932e208ae114be75e42a3e6dc34cb3">lasso
+and ridge regularization</a></p>
+<h3 id="交叉验证">交叉验证</h3>
+<p>就是将整个数据集切分成三个部分，分别是训练集、验证集和测试集。训练集用来训练模型，验证集用于模型
+的选择，而测试集用于对学习方法的评估。</p>
+<p>但是一般情况下，训练数据是不足的，那么此时可以重复的利用数据，进行反复训练以得到最优模型。</p>
+<p>常见的方法有：</p>
+<ul>
+<li>S折交叉验证（S-fold cross validation）</li>
+<li>留一交叉验证（S=N，当S为数据集的容量时，S折交叉验证就变成了留一交叉验证）</li>
+</ul>
+<h2 id="极大似然估计">极大似然估计</h2>
+<p>最大似然估计提供了一种给定观察数据来评估模型参数的方法，即：“模型已定，参数未知”</p>
+<blockquote>
+<p>举个别人博客中的例子，假如有一个罐子，里面有黑白两种颜色的球，数目多少不知，两种颜色的比例也不知。我
+们想知道罐中白球和黑球的比例，但我们不能把罐中的球全部拿出来数。现在我们可以每次任意从已经摇匀的罐中拿一个球出来，记录球的颜色，然后把拿出来的球
+再放回罐中。这个过程可以重复，我们可以用记录的球的颜色来估计罐中黑白球的比例。假如在前面的一百次重复记录中，有七十次是白球，请问罐中白球所占的比例最有可能是多少？很多人马上就有答案了：70%。而其后的理论支撑是什么呢？</p>
+</blockquote>
+<p>我们假设罐中白球的比例是<span
+class="math inline">\(p\)</span>，那么黑球的比例就是<span
+class="math inline">\(1-p\)</span>。因为每抽一个球出来，在记录颜色之后，我们把抽出的球放回了罐中并摇匀，所以每次抽出来的球的颜
+色服从同一独立分布。这里我们把一次抽出来球的颜色称为一次抽样。题目中在一百次抽样中，七十次是白球的概率<span
+class="math inline">\(P(Data|M)\)</span>，这里Data是所有的数据，M是所给出的模型，表示每次抽出来的球是白色的概率为<span
+class="math inline">\(p\)</span>。如果第一抽样的结果记为<span
+class="math inline">\(x_1\)</span>，第二抽样的结果记为<span
+class="math inline">\(x_2\)</span>... 那么<span
+class="math inline">\(Data = (x_1,x_2,...,x_{100})\)</span>。这样，</p>
+<p><span class="math display">\[
+P(Data|M)= P(x_1,x_2,...,x_{100}|M)= P(x_1|M)P(x_2|M)...P(x_{100}|M)=
+p^{70}(1-p)^{30}
+\]</span></p>
+<p>那么p在取什么值的时候，<span
+class="math inline">\(P(Data|M)\)</span>的值最大呢？将<span
+class="math inline">\(p^{70}(1-p)^{30}\)</span>对<span
+class="math inline">\(p\)</span>求导，并其等于零。</p>
+<p><span class="math display">\[
+70p^{69}(1-p)^{30}-p^{70}*30(1-p)^{29}=0
+\]</span></p>
+<p>解方程可以得到<span class="math inline">\(p=0.7\)</span>。
+　　　　</p>
+<h3 id="最大熵原理">最大熵原理</h3>
+<p>最大熵原理使概率学习中的一个准则。学习概率模型时，在所有的可能概率模型（分布）中，熵最大的模型是最好的模型。最大熵原理也可以理解成在满足约束条件的模型中选择熵最大的模型！</p>
+<p><span class="math display">\[
+H(p)=-\sum_x{log(P(x))P(x)}
+\]</span></p>
+<p>其中<span class="math inline">\(X\)</span>服从的概率分布为<span
+class="math inline">\(P(X)\)</span>，<span
+class="math inline">\(X\)</span>服从均匀分布时，熵最大。当没有其他已知的约束时，<span
+class="math inline">\(\Sigma{P(x)}=1\)</span>，此时按照最大熵原理，当<span
+class="math inline">\(P(x_1)=P(x_2)=...=P(x_n)\)</span>时，熵最大；此时等概论，等概论意味着对事实的无知，因为没有更多可能的信息，所以此时的判断也是合情合理的。</p>
+<h3 id="线性分类器">线性分类器</h3>
+<p>线性分类器有三大类：感知器准则函数、<span
+class="math inline">\(SVM\)</span>、<span
+class="math inline">\(Fisher\)</span>准则，而贝叶斯分类器不是线性分类器。</p>
+<ul>
+<li>感知器准则函数：代价函数<span
+class="math inline">\(J=-(W*X+w_0)\)</span>，分类的准则是最小化代价函数。感知器是神经网络（<span
+class="math inline">\(NN\)</span>）的基础，网上有很多介绍。</li>
+<li><span
+class="math inline">\(SVM\)</span>：支持向量机也是很经典的算法，优化目标是最大化间隔（margin），又称最大间隔分类器，是一种典型的线性分类器。（使用核函数可解决非线性问题）</li>
+<li><span
+class="math inline">\(Fisher\)</span>准则：更广泛的称呼是线性判别分析（<span
+class="math inline">\(LDA\)</span>），将所有样本投影到一条远点出发的直线，使得同类样本距离尽可能小，不同类样本距离尽可能大，具体为最大化“广义瑞利商”。</li>
+</ul>
+<h3 id="评价指标">评价指标</h3>
+<ul>
+<li>召回率就是有多少正确的被你找回来了；准确率就是你找到的有多少是正确的；(一般情况下召回率和准确率呈负相关，所以可以用F值衡量整体效果)</li>
+<li>TP(True Positive)是你判断为正确的，实际就是正确的；</li>
+<li>FP(False Positive)是你判断是错误的，实际也是错误的；</li>
+<li>TN(True Negative)是你判断为正确的，但实际是错误的；</li>
+<li>FN(False Negative)是你判断是错误的，但实际是正确的；</li>
+</ul>
+<h2 id="朴素贝叶斯-naive-bayes">朴素贝叶斯 <span
+class="math inline">\(Naive Bayes\)</span></h2>
+<h3 id="基本方法">基本方法</h3>
+<p>朴素贝叶斯是基于贝叶斯定理与特征条件独立假设的分类方法。NB的核心在于它假设向量的所有分量之间是独立的。在贝叶斯理论系统中，都有一个重要的条件独立性假设：假设所有特征之间相互独立，这样才能将联合概率拆分。
+对于由<span class="math inline">\(P(X,Y)\)</span>独立产生的训练集<span
+class="math inline">\(T=\{(x_1,y_1),(x_2,y_2),...,
+(x_N,y_N),\}\)</span>而言通过朴素贝叶斯的方法学习这个联合概率分布。大致分两步：</p>
+<ol type="1">
+<li><p>计算先验分布： <span class="math display">\[
+P(Y=c_k),k=1,2...,K
+\]</span></p></li>
+<li><p>条件概率分布：</p></li>
+</ol>
+<p><span class="math display">\[
+\begin{equation}
+\begin{aligned}
+P(X=x|Y=c_k)&amp;=P(X^{(1)}=x^{(1)},X^{(2)}=x^{(2)},...,X^{(n)}=x^{(n)}|Y=c_k),\\
+&amp;k=1,2...,K
+\end{aligned}
+\end{equation}
+\]</span></p>
+<p>其中的<span class="math inline">\(x \in R^{n}\)</span>，<span
+class="math inline">\(n\)</span>表示这个样本的维度。</p>
+<p>但是在计算条件概率时因为朴素贝叶斯做了条件独立性假设，那么该条件概率分布可以写成：</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(X=x|Y=c_k)&amp;=P(X^{(1)}=x^{(1)},X^{(2)}=x^{(2)},...,X^{(n)}=x^{(n)}|Y=c_k)
+\\
+&amp;=\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)
+\end{aligned}
+\]</span></p>
+<p>在实际分类时，对于给定的输入x，通过学习到的模型估计后验概率<span
+class="math inline">\(P(Y=c_k|X=x)\)</span>将后验概率最大的类作为x的类的输出。</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(Y=c_k|X=x)
+&amp;=\frac{P(X=x|Y=c_k)P(Y=c_k)}{\sum_{k}P(X=x|Y=c_k)P(Y=c_k)}\\
+&amp;=\frac{P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)}{\sum_{k}P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)}
+\end{aligned}
+\]</span></p>
+<p>因为分母就是<span
+class="math inline">\(P(X=x)\)</span>的概率，这是不变的。因此我们仅需要知道分子哪个大就可以，也就是：</p>
+<p><span class="math display">\[
+y={argmax}_{c_k} P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)
+\]</span></p>
+<p>上式的意思是求解到底是哪些类别<span
+class="math inline">\(c_k\)</span>能够让最大后验概率最大化。</p>
+<h3 id="参数估计">参数估计</h3>
+<h4 id="极大似然估计-1">极大似然估计</h4>
+<ol type="1">
+<li>计算先验概率</li>
+</ol>
+<p><span class="math display">\[
+P(Y=c_k)=\frac{\sum_{i=1}^NI(y_i=c_k)}{N}
+\]</span></p>
+<ol start="2" type="1">
+<li><p>计算条件概率 <span class="math display">\[
+P(X=a_{jl}|Y=c_k)=\frac{\sum_{i=1}^NI(x_i^{(j)}=a_{jl},y_i=c_k)}{\sum_{i=1}^NI(y_i=c_k)}
+\]</span> 其中 <span class="math display">\[
+j=1,2...n;l=1,2...S_j;k=1,2...K
+\]</span></p></li>
+<li><p>对于给定的实例x，计算 <span class="math display">\[
+P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k)
+\]</span></p></li>
+<li><p>确定实例的类别</p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/summary-statistical-learning/" title="统计学习方法总结">https://www.vincentqin.tech/posts/summary-statistical-learning/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95/" rel="tag"># 统计学习方法</a>
+              <a href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/" rel="tag"># 概率论</a>
+              <a href="/tags/SVM/" rel="tag"># SVM</a>
+              <a href="/tags/%E8%BF%87%E6%8B%9F%E5%90%88/" rel="tag"># 过拟合</a>
+              <a href="/tags/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF/" rel="tag"># 朴素贝叶斯</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/git-notebook/" rel="prev" title="Ubuntu上使用Git以及GitHub">
+                  <i class="fa fa-chevron-left"></i> Ubuntu上使用Git以及GitHub
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/SIFT-and-SURF/" rel="next" title="📝笔记：SIFT和SURF特性提取总结">
+                  📝笔记：SIFT和SURF特性提取总结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/summary-statistical-learning/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

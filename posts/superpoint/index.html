@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="时隔三年，笔者重新研读了这篇论文，仍感觉极富参考价值。笔者更新了这篇于三年前写的文章，主要集中在特征点解码端65通道的解释以及损失函数的理解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/superpoint/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="时隔三年，笔者重新研读了这篇论文，仍感觉极富参考价值。笔者更新了这篇于三年前写的文章，主要集中在特征点解码端65通道的解释以及损失函数的理解。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg">
+<meta property="article:published_time" content="2019-06-23T06:02:06.000Z">
+<meta property="article:modified_time" content="2022-09-04T13:46:09.611Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="SuperPoint">
+<meta property="article:tag" content="特征提取">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="MagicLeap">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/superpoint/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/superpoint/","path":"posts/superpoint/","title":"📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E4%BC%98%E5%8A%A3%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">算法优劣对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">网络结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shared-encoder-%E5%85%B1%E4%BA%AB%E7%9A%84%E7%BC%96%E7%A0%81%E7%BD%91%E7%BB%9C"><span class="nav-number">3.1.</span> <span class="nav-text">1. Shared Encoder
+共享的编码网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interest-point-decoder"><span class="nav-number">3.2.</span> <span class="nav-text">2. Interest Point Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#descriptor-decoder"><span class="nav-number">3.3.</span> <span class="nav-text">3. Descriptor Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E6%9E%84%E5%BB%BA"><span class="nav-number">3.4.</span> <span class="nav-text">4. 误差构建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%AE%AD%E7%BB%83"><span class="nav-number">4.</span> <span class="nav-text">网络训练</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83magic-point"><span class="nav-number">4.1.</span> <span class="nav-text">预训练Magic Point</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#homographic-adaptation"><span class="nav-number">4.2.</span> <span class="nav-text">Homographic Adaptation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E6%AE%8B%E5%B7%AE%E8%BF%AD%E4%BB%A3%E4%BC%98%E5%8C%96%E6%8F%8F%E8%BF%B0%E5%AD%90%E4%BB%A5%E5%8F%8A%E6%A3%80%E6%B5%8B%E5%99%A8"><span class="nav-number">4.3.</span> <span class="nav-text">构建残差，迭代优化描述子以及检测器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">5.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">7.</span> <span class="nav-text">代码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/superpoint/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-06-23 14:02:06" itemprop="dateCreated datePublished" datetime="2019-06-23T14:02:06+08:00">2019-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-04 21:46:09" itemprop="dateModified" datetime="2022-09-04T21:46:09+08:00">2022-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/KeyPoint-Detection/" itemprop="url" rel="index"><span itemprop="name">KeyPoint Detection</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/superpoint/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/superpoint/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/superpoint/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note default"><p>时隔三年，笔者重新研读了这篇论文，仍感觉极富参考价值。笔者更新了这篇于三年前写的文章，主要集中在特征点解码端65通道的解释以及损失函数的理解。</p>
+</div>
+<span id="more"></span>
+<p>本文出自近几年备受瞩目的创业公司<a
+target="_blank" rel="noopener" href="https://www.magicleap.com/">MagicLeap</a>，发表在CVPR 2018,一作<a
+target="_blank" rel="noopener" href="http://www.danieldetone.com/">Daniel DeTone</a>，<strong>[<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1712.07629">paper</a>]</strong>，<strong>[<a
+target="_blank" rel="noopener" href="https://github.com/MagicLeapResearch/SuperPointPretrainedNetwork/blob/master/assets/DL4VSLAM_talk.pdf">slides</a>]</strong>，<strong>[<a
+target="_blank" rel="noopener" href="https://github.com/MagicLeapResearch/SuperPointPretrainedNetwork">code</a>]</strong>。</p>
+<p>这篇文章设计了一种自监督网络框架，能够同时提取特征点的位置以及描述子。相比于patch-based方法，本文提出的算法能够在原始图像提取到像素级精度的特征点的位置及其描述子。
+本文提出了一种单应性适应（<code>Homographic Adaptation</code>）的策略以增强特征点的复检率以及跨域的实用性（这里跨域指的是synthetic-to-real的能力，网络模型在虚拟数据集上训练完成，同样也可以在真实场景下表现优异的能力）。</p>
+<p>下面是一作Daniel DeTone关于SuperPoint的讲解(需要科学上网)。</p>
+<iframe width="1262" height="719" src="https://www.youtube.com/embed/kjaRRGLw4RA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h1 id="介绍">介绍</h1>
+<p>诸多应用（诸如SLAM/SfM/相机标定/立体匹配）的首要一步就是特征点提取，这里的特征点指的是<strong>能够在不同光照&amp;不同视角下都能够稳定且可重复检测的2D图像点位置</strong>。</p>
+<p>基于CNN的算法几乎在以图像作为输入的所有领域表现出相比于人类特征工程更加优秀的表达能力。目前已经有一些工作做类似的任务，例如人体位姿估计,目标检测以及室内布局估计等。这些算法以通常以大量的人工标注作为GT，这些精心设计的网络用来训练以得到人体上的角点，例如嘴唇的边缘点亦或人体的关节点，但是这里的问题是这里的点实际是ill-defined（我的理解是，这些点有可能是特征点，但仅仅是一个大概的位置，是特征点的子集，并没有真正的把特征点的概念定义清楚）。</p>
+<p>本文采用了非人工监督的方法提取真实场景的特征点。本文设计了一个由特征点检测器监督的具有伪真值数据集，而非是大量的人工标记。为了得到伪真值，本文首先在大量的虚拟数据集上训练了一个全卷积网络（FCNN），这些虚拟数据集由一些基本图形组成，例如有线段、三角形、矩形和立方体等，这些基本图形具有没有争议的特征点位置，文中称这些特征点为<code>MagicPoint</code>，这个pre-trained的检测器就是<code>MagicPoint</code>检测器。这些<code>MagicPoint</code>在虚拟场景的中检测特征点的性能明显优于传统方式，但是在真实的复杂场景中表现不佳，此时作者提出了一种多尺度多变换的方法<code>Homographic Adaptation</code>。对于输入图像而言，<code>Homographic Adaptation</code>通过对图像进行多次不同的尺度/角度变换来帮助网络能够在不同视角不同尺度观测到特征点。
+综上：<strong>SuperPoint = MagicPoint+Homographic
+Adaptation</strong></p>
+<h1 id="算法优劣对比">算法优劣对比</h1>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/tab_1.png"
+alt="fig1_table1" />
+<figcaption aria-hidden="true">fig1_table1</figcaption>
+</figure>
+<ul>
+<li>基于图像块的算法导致特征点位置精度不够准确；</li>
+<li>特征点与描述子分开进行训练导致运算资源的浪费，网络不够精简，实时性不足；或者仅仅训练特征点或者描述子的一种，不能用同一个网络进行联合训练；</li>
+</ul>
+<h1 id="网络结构">网络结构</h1>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_3.png"
+alt="fig3" />
+<figcaption aria-hidden="true">fig3</figcaption>
+</figure>
+<p>上图可见特征点检测器以及描述子网络共享一个单一的前向encoder，只是在decoder时采用了不同的结构，根据任务的不同学习不同的网络参数。这也是本框架与其他网络的不同之处：其他网络采用的是先训练好特征点检测网络，然后再去进行对特征点描述网络进行训练。
+网络共分成以下4个主要部分，在此进行详述。</p>
+<h2 id="shared-encoder-共享的编码网络">1. Shared Encoder
+共享的编码网络</h2>
+<p>从上图可以看到，整体而言，本质上有两个网络，只是前半部分共享了一部分而已。本文利用了VGG-style的encoder以用于降低图像尺寸，encoder包括卷积层，max-pooling层，以及非线性激活层。通过3个max-pooling层将图像的尺寸变成<span
+class="math inline">\(H_c = H/8\)</span>和<span
+class="math inline">\(W_c = W/8\)</span>，经过encoder之后，图像由<span
+class="math inline">\(I \in \mathcal{R}^{H \times
+W}\)</span>变为张量<span class="math inline">\(\mathcal{B} \in
+\mathbb{R}^{H_c \times W_c \times F}\)</span></p>
+<h2 id="interest-point-decoder">2. Interest Point Decoder</h2>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_10_magicPoint1.png"
+alt="fig_10_magicPoint1" />
+<figcaption aria-hidden="true">fig_10_magicPoint1</figcaption>
+</figure>
+<p>这里介绍的是特征点的解码端。每个像素的经过该解码器的输出是该像素是特征点的概率（probability
+of “point-ness”）。
+通常而言，我们可以通过反卷积得到上采样的图像，但是这种操作会导致计算量的骤增以及会引入一种“checkerboard
+artifacts”。因此本文设计了一种带有“特定解码器”（这种解码器没有参数）的特征点检测头以减小模型计算量（子像素卷积）。
+例如：输入张量的维度是<span class="math inline">\(\mathbb{R}^{H_c \times
+W_c \times 65}\)</span>，输出维度<span
+class="math inline">\(\mathbb{R}^{H \times
+W}\)</span>，即图像的尺寸。这里的65表示原图<span class="math inline">\(8
+\times
+8\)</span>的局部区域，加上一个非特征点<code>dustbin</code>。通过在channel维度上做softmax，非特征点dustbin会被删除，同时会做一步图像的<code>reshape</code>：<span
+class="math inline">\(\mathbb{R}^{H_c \times W_c \times 64} \Rightarrow
+\mathbb{R}^{H \times W}\)</span> 。（这就是<strong><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/leviopku/article/details/84975282">子像素卷积</a></strong>的意思，俗称像素洗牌）</p>
+<p>抛出特征点解码端部分代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Compute the dense keypoint scores</span></span><br><span class="line">cPa    = self.relu(self.convPa(x))</span><br><span class="line">scores = self.convPb(cPa)   <span class="comment"># DIM: N x 65 x H/8 x W/8</span></span><br><span class="line">scores = torch.nn.functional.softmax(scores, <span class="number">1</span>)[:, :-<span class="number">1</span>]     <span class="comment"># DIM: N x 64 x H/8 x W/8</span></span><br><span class="line">b, _, h, w = scores.shape</span><br><span class="line">scores = scores.permute(<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>).reshape(b, h, w, <span class="number">8</span>, <span class="number">8</span>)  <span class="comment"># DIM: N x H/8 x W/8 x 8 x 8</span></span><br><span class="line">scores = scores.permute(<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>).reshape(b, h*<span class="number">8</span>, w*<span class="number">8</span>) <span class="comment"># DIM: N x H x W</span></span><br></pre></td></tr></table></figure>
+<p>这个过程看似比较繁琐，但是这其实就是一个由<code>depth to space</code>的过程，以N
+= 1为例，上述过程如下图所示：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-dustbin-2.png" /></p>
+<p>上图中所示的3个蓝色小块的就是对应的一个cell经过<code>depth to space</code>后得到的，易知其尺寸是<span
+class="math inline">\(8 \times 8\)</span>。</p>
+<blockquote>
+<p><strong><mark> 注意
+</mark></strong>：这里解释一下为何此作者设置选择增加一个dustbin通道，以及为何先进行softmax再进行slice操作，先进行slice再进行softmax是否可行？（<code>scores = torch.nn.functional.softmax(scores, 1)[:, :-1]</code>）</p>
+</blockquote>
+<p>之所以要设置65个通道，这是因为算法要应对不存在特征点的情况。注意到之后的一步中使用了softmax，也就是说沿着通道维度把各个数值通过运算后加和为1。如果没有Dustbin通道，这里就会产生一个问题：若该cell处没有特征点，此时经过softmax后，每个通道上的响应就会出现受到噪声干扰造成异常随机，在随后的特征点选择一步中会将非特征点判定为特征，这个过程由下图左图所示。在添加Dustbin之后，在没有特征的情况下，只有在Dustbin通道的响应值很大，在后续的特征点判断阶段，此时该图像块的响应都很小，会成功判定为无特征点，这个过程由下图右图所示。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-dustbin-3.png" /></p>
+<p>上述过程中得到的<code>scores</code>就是图像上特征点的概率（或者叫做特征响应，后文中响应值即表示概率值），概率越大，该点越有可能是特征点。之后作者进行了一步nms，即非极大值抑制（<code>simple_nms</code>的实现见文末），随后选择响应值较大的位置作为特征点。
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scores    = simple_nms(scores, self.config[<span class="string">&#x27;nms_radius&#x27;</span>])</span><br><span class="line">keypoints = [ torch.nonzero(s &gt; self.config[<span class="string">&#x27;keypoint_threshold&#x27;</span>]) <span class="keyword">for</span> s <span class="keyword">in</span> scores]</span><br></pre></td></tr></table></figure>
+nms的效果如下，左图是未使用nms时score的样子，响应值极大的位置周围也聚集着响应较大的点，如果不进行nms，特征点将会很集中；右图是进行nms操作后的score，响应值极大的位置周围的响应为0。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-nms.png" /></p>
+<p>nms前后对应的特征点的位置如下所示，可见nms对于避免特征点位置过于集中起到了比较大的作用。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-nms-2.png" /></p>
+<p>熟悉SuperPoint的同学应该注意到了，<a
+target="_blank" rel="noopener" href="https://github.com/ddetone">Daniel</a>在CVPR
+2018公开的实现中nms在特征点提取之后，而<a
+target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>于CVPR 2020年公开<a
+target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork">SuperGlue</a>的同时对SuperPoint进行了重构，后者在score上进行nms，这两种实现上存在一些差异。</p>
+<p>下面给出的是<a target="_blank" rel="noopener" href="https://github.com/ddetone">Daniel</a>在CVPR
+2018开源的SuperPoint<a
+target="_blank" rel="noopener" href="https://github.com/magicleap/SuperPointPretrainedNetwork/blob/master/demo_superpoint.py#L247-L258">推理代码</a>节选。
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">nodust = nodust.transpose(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">heatmap = np.reshape(nodust, [Hc, Wc, self.cell, self.cell])</span><br><span class="line">heatmap = np.transpose(heatmap, [<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">3</span>])</span><br><span class="line">heatmap = np.reshape(heatmap, [Hc*self.cell, Wc*self.cell])</span><br><span class="line">xs, ys = np.where(heatmap &gt;= self.conf_thresh) <span class="comment"># Confidence threshold.</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(xs) == <span class="number">0</span>:</span><br><span class="line">  <span class="keyword">return</span> np.zeros((<span class="number">3</span>, <span class="number">0</span>)), <span class="literal">None</span>, <span class="literal">None</span></span><br><span class="line">pts = np.zeros((<span class="number">3</span>, <span class="built_in">len</span>(xs))) <span class="comment"># Populate point data sized 3xN.</span></span><br><span class="line">pts[<span class="number">0</span>, :] = ys</span><br><span class="line">pts[<span class="number">1</span>, :] = xs</span><br><span class="line">pts[<span class="number">2</span>, :] = heatmap[xs, ys]</span><br><span class="line">pts, _ = self.nms_fast(pts, H, W, dist_thresh=self.nms_dist) <span class="comment"># Apply NMS.</span></span><br></pre></td></tr></table></figure></p>
+<p>但<a
+target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>为何要这么做呢？本人在Github上提交了一个<a
+target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork/issues/112">#issue112</a>咨询了<a
+target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>，如下是他的回复，总结起来就重构后的代码优势有两点：<strong>1.
+更加快速，能够在GPU上运行，常数级时间复杂度；2.
+支持多图像输入。</strong></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-nms-3.png" /></p>
+<h2 id="descriptor-decoder">3. Descriptor Decoder</h2>
+<p>首先利用类似于UCN的网络得到一个半稠密的描述子（此处参考文献<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1606.03558">UCN</a>），这样可以减少算法训练内存开销同时减少算法运行时间。之后通过双三次多项式插值得到其余描述，然后通过<code>L2-normalizes</code>归一化描述子得到统一的长度描述。特征维度由<span
+class="math inline">\(\mathcal{D} \in \mathbb{R}^{H_c \times W_c \times
+D}\)</span>变为<span class="math inline">\(\mathbb{R}^{H\times W \times
+D}\)</span> 。</p>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_11_des_decoder.png"
+alt="fig_11_des_decoder" />
+<figcaption aria-hidden="true">fig_11_des_decoder</figcaption>
+</figure>
+<p>由特征点得到其描述子的过程文中没有细讲，看了一下<a
+target="_blank" rel="noopener" href="https://github.com/pytorch/pytorch/blob/f064c5aa33483061a48994608d890b968ae53fb5/aten/src/THNN/generic/SpatialGridSamplerBilinear.c">源代码</a>就明白了。其实该过程主要用了一个函数即<code>grid_sample</code>，画了一个草图作为解释。</p>
+<ul>
+<li>图像尺寸归一化：首先对图像的尺寸进行归一化，(-1,-1)表示原来图像的(0,0)位置，(1,1)表示原来图像的(H-1,W-1)位置，这样一来，特征点的位置也被归一化到了相应的位置。</li>
+<li>构建grid：将归一化后的特征点罗列起来，构成一个尺度为1*1*K*2的张量，其中K表示特征数量，2分别表示xy坐标。</li>
+<li>特征点位置反归一化：根据输入张量的H与W对grid(1,1,0,:)（表示第一个特征点，其余特征点类似）进行反归一化，其实就是按照比例进行缩放+平移，得到反归一化特征点在张量某个slice（通道）上的位置；但是这个位置可能并非为整像素，此时要对其进行双线性插值补齐，然后其余slice按照同样的方式进行双线性插值。注：代码中实际的就是双线性插值，并非文中讲的双三次插值；</li>
+<li>输出维度：1*C*1*K。</li>
+</ul>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/grid_sample.png" /></p>
+<p>描述子解码部分代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Compute the dense descriptors</span></span><br><span class="line">cDa = self.relu(self.convDa(x))</span><br><span class="line">descriptors = self.convDb(cDa) <span class="comment"># DIM: N x 256 x H/8 x W/8</span></span><br><span class="line">descriptors = torch.nn.functional.normalize(descriptors, p=<span class="number">2</span>, dim=<span class="number">1</span>) <span class="comment">#按通道进行归一化</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Extract descriptors</span></span><br><span class="line"><span class="comment"># 根据特征点位置插值得到描述子, DIM: N x 256 x M</span></span><br><span class="line"></span><br><span class="line">descriptors = [sample_descriptors(k[<span class="literal">None</span>], d[<span class="literal">None</span>], <span class="number">8</span>)[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">for</span> k, d <span class="keyword">in</span> <span class="built_in">zip</span>(keypoints, descriptors)]</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h2 id="误差构建">4. 误差构建</h2>
+<p><span class="math display">\[
+\begin{array}{l}{\mathcal{L}\left(\mathcal{X}, \mathcal{X}^{\prime},
+\mathcal{D}, \mathcal{D}^{\prime} ; Y, Y^{\prime}, S\right)=} \\ {\qquad
+\mathcal{L}_{p}(\mathcal{X},
+Y)+\mathcal{L}_{p}\left(\mathcal{X}^{\prime}, Y^{\prime}\right)+\lambda
+\mathcal{L}_{d}\left(\mathcal{D}, \mathcal{D}^{\prime},
+S\right)}\end{array}
+\]</span></p>
+<p>可见损失函数由两项组成，其中一项为特征点检测loss<span
+class="math inline">\(\mathcal{L}_{p}\)</span>
+，另外一项是描述子的loss<span
+class="math inline">\(\mathcal{L}_{d}\)</span>。</p>
+<p>对于检测项loss，此时采用了交叉熵损失函数:</p>
+<p><span class="math display">\[
+\mathcal{L}_{p}(\mathcal{X}, Y)=\frac{1}{H_{c} W_{c}} \sum_{h=1 \atop
+w=1}^{H_{c}, W_{c}} l_{p}\left(\mathbf{x}_{h w} ; y_{h w}\right)
+\]</span></p>
+<p>其中：</p>
+<p><span class="math display">\[
+l_{p}\left(\mathbf{x}_{h w} ; y\right)=-\log \left(\frac{\exp
+\left(\mathbf{x}_{h w y}\right)}{\sum_{k=1}^{65} \exp
+\left(\mathbf{x}_{h w k}\right)}\right)
+\]</span></p>
+<p>此时类似于一个多分类任务，<span class="math inline">\(\log\)</span>
+运算内部就是cell中元素为特征点的概率（即<code>softmax</code>之后的值），即样本<span
+class="math inline">\(\mathbf{x}_{hw}\)</span>属于特征的概率。这是一个2D
+location classifier，每个8x8的范围内只能有一个特征点，即图像中最多有$H W
+/ 64 $个SuperPoint特征点。</p>
+<p>描述子的损失函数:</p>
+<p><span class="math display">\[
+\mathcal{L}_{d}\left(\mathcal{D}, \mathcal{D}^{\prime},
+S\right)=\frac{1}{\left(H_{c} W_{c}\right)^{2}} \sum_{h=1 \atop
+w=1}^{H_{c}, W_{c}} \sum_{h^{\prime}=1 \atop w^{\prime}=1}^{H_{c},
+W_{c}} l_{d}\left(\mathbf{d}_{h w}, \mathbf{d}_{h^{\prime}
+w^{\prime}}^{\prime} ; s_{h w h^{\prime} w^{\prime}}\right)
+\]</span></p>
+<p>其中<span
+class="math inline">\(l_{d}\)</span>为<code>Hinge-loss</code>（合页损失函数，用于SVM，如支持向量的软间隔，可以保证最后解的稀疏性）；
+<span class="math display">\[
+l_{d}\left(\mathbf{d}, \mathbf{d}^{\prime} ; s\right)=\lambda_{d} * s *
+\max \left(0, m_{p}-\mathbf{d}^{T} \mathbf{d}^{\prime}\right)+(1-s) *
+\max \left(0, \mathbf{d}^{T} \mathbf{d}^{\prime}-m_{n}\right)
+\]</span> 同时指示函数为<span class="math inline">\(s_{h w h^{\prime}
+w^{\prime}}\)</span>,<span
+class="math inline">\(S\)</span>表示所有正确匹配对集合: <span
+class="math display">\[
+s_{h w h^{\prime} w^{\prime}}=\left\{\begin{array}{ll}{1,} &amp; {\text
+{ if }\left\|\widehat{\mathcal{H} \mathbf{p}_{h
+w}}-\mathbf{p}_{h^{\prime} w^{\prime}}\right\| \leq 8} \\ {0,} &amp;
+{\text { otherwise }}\end{array}\right.
+\]</span></p>
+<p>上式中的<span
+class="math inline">\(\mathbf{p}\)</span>是cell的中心点坐标，<span
+class="math inline">\(\mathcal{H} \mathbf{p}\)</span>与<span
+class="math inline">\(\mathbf{p}^{\prime}\)</span>的距离小于8个pixel的认为是正确的匹配，这其实对应于cell上的的1个pixel。</p>
+<p>让我们仔细看一下这个损失函数，这其实是一个<code>Double margin Siamese loss</code>。当正例描述子余弦相似度<span
+class="math inline">\(\mathbf{d}^T\mathbf{d}^{\prime}\)</span>大于<span
+class="math inline">\(m_p\)</span>时，此时不需要惩罚；但如果该相似度较小时，此时就要惩罚了；负样本时我们的目标是让<span
+class="math inline">\(\mathbf{d}^T\mathbf{d}^{\prime}\)</span>变小，但网络性能不佳时可能这个值很大(大于上式中的<span
+class="math inline">\(m_n\)</span>)，此时要惩罚这种现象，网络权重经过调整后使得该loss降低，对应的描述子相似度降低；</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-loss.png" /></p>
+<p>让我们再看一下这个所谓的<code>Double margin Siamese loss</code>，上图示中的连线表示<span
+class="math inline">\(dist\)</span>函数。想象一下，我们希望正例<span
+class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})\)</span>越小越好，如果<span
+class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&gt;𝑚_{𝑝1}\)</span>，网络要惩罚这种现象，会使得<span
+class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&lt;𝑚_{𝑝1}\)</span>.相应的的我们希望负例<span
+class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})\)</span>越大越好，如果<span
+class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&lt;𝑚_{𝑛1}\)</span>，网络要惩罚这种现象，最终会使得<span
+class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&gt;𝑚_{𝑛1}\)</span>。</p>
+<h1 id="网络训练">网络训练</h1>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_2.png"
+alt="fig2" />
+<figcaption aria-hidden="true">fig2</figcaption>
+</figure>
+<p>本文一共设计了两个网络，一个是<code>BaseDetector</code>，用于检测角点（注意，此处提取的并不是最终输出的特征点，可以理解为候选的特征点），另一个是<code>SuperPoint</code>网络，输出特征点和描述子。</p>
+<p>网络的训练共分为三个步骤： 1.
+第一步是采用虚拟的三维物体作为数据集，训练网络去提取角点，这里得到的是<code>BaseDetector</code>即，<code>MagicPoint</code>；
+2. 使用真实场景图片，用第一步训练出来的网络<code>MagicPoint</code>
++<code>Homographic Adaptation</code>提取角点（这一步迭代使用1-2次效果就可以非常棒），这一步称作兴趣点自标注（Interest
+Point Self-Labeling） 3.
+对第二步使用的图片进行几何变换（即单应变换）得到新的图片，这样就有了已知位姿关系的图片对，把这两张图片输入SuperPoint网络，提取特征点和描述子。</p>
+<p>这里需要注意的是，联合训练使用的单应变换相较于<code>Homographic Adaptation</code>中设置的单应变换更加严格，即没有特别离谱的in-plane的旋转。作者在论文中提到，这是由于在HPatches数据集中没有这样的数据才进行这种设置，原话是“we
+avoid sampling extreme in-plane rotations as they are rarely seen in
+HPatches”，这也是为什么SuperPoint无法有效地应对in-plane
+rotations的原因。</p>
+<h2 id="预训练magic-point">预训练Magic Point</h2>
+<p>此处参考作者之前发表的一篇论文<strong>[<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.07410">Toward Geometric Deep
+SLAM</a>]</strong>，其实就是<code>MagicPoint</code>，它仅仅保留了SuperPoint的主干网络以及特征点解码端，即SuperPoint的检测端就是MagicPoint。
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_10_magicPoint1.png"
+alt="fig2" /></p>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_4.png"
+alt="fig4" />
+<figcaption aria-hidden="true">fig4</figcaption>
+</figure>
+<h2 id="homographic-adaptation">Homographic Adaptation</h2>
+<p>算法在虚拟数据集上表现极其优秀，但是在真实场景下表示没有达到预期，此时本文进行了<code>Homographic Adaptation</code>。
+作者使用的数据集是<code>MS-COCO</code>，为了使网络的泛化能力更强，本文不仅使用原始了原始图片，而且对每张图片进行随机的旋转和缩放形成新的图片，新的图片也被用来进行识别。这一步其实就类似于训练里常用的数据增强。经过一系列的单应变换之后特征点的复检率以及普适性得以增强。值得注意的是，在实际训练时，这里采用了迭代使用单应变换的方式，例如使用优化后的特征点检测器重新进行单应变换进行训练，然后又可以得到更新后的检测器，如此迭代优化，这就是所谓的self-supervisd。
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_5.png"
+alt="fig5" /></p>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_9_HA.png"
+alt="fig_9_HA" />
+<figcaption aria-hidden="true">fig_9_HA</figcaption>
+</figure>
+<p>最后的关键点检测器，即<span class="math display">\[\hat{F}\left(I ;
+f_{\theta}\right)\]</span>，可以表示为再所有随机单应变换/反变换的聚合：</p>
+<p><span class="math display">\[
+\hat{F}\left(I ; f_{\theta}\right)=\frac{1}{N_{h}} \sum_{i=1}^{N_{h}}
+\mathcal{H}_{i}^{-1} f_{\theta}\left(\mathcal{H}_{i}(I)\right)
+\]</span></p>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_6.png"
+alt="fig_6" />
+<figcaption aria-hidden="true">fig_6</figcaption>
+</figure>
+<h2
+id="构建残差迭代优化描述子以及检测器">构建残差，迭代优化描述子以及检测器</h2>
+<p>利用上面网络得到的关键点位置以及描述子表示构建残差，利用<code>ADAM</code>进行优化。</p>
+<h1 id="实验结果">实验结果</h1>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg"
+alt="fig_8" />
+<figcaption aria-hidden="true">fig_8</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/tab_3.png"
+alt="tab_3" />
+<figcaption aria-hidden="true">tab_3</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/tab_4.png"
+alt="tab_4" />
+<figcaption aria-hidden="true">tab_4</figcaption>
+</figure>
+<h1 id="总结">总结</h1>
+<ol type="1">
+<li>it is possible to transfer knowledge from a synthetic dataset onto
+real-world images</li>
+<li>sparse interest point detection and description can be cast as a
+single, efficient convolutional neural network</li>
+<li>the resulting system works well for geometric computer vision
+matching tasks such as Homography Estimation</li>
+</ol>
+<p>未来工作:</p>
+<ol type="1">
+<li>研究Homographic
+Adaptation能否在语义分割任务或者目标检测任务中有提升作用</li>
+<li>兴趣点提取以及描述这两个任务是如何影响彼此的</li>
+</ol>
+<p>作者最后提到，他相信该网络能够解决SLAM或者SfM领域的数据关联<em>，并且</em><code>learning-based</code>前端可以使得诸如机器人或者AR等应用获得更加鲁棒。</p>
+<h1 id="代码">代码</h1>
+<p>以下给出的是<a target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>在<a
+target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork">SuperGlue</a>代码中重构的<a
+target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretrainedNetwork/blob/master/models/superpoint.py">SuperPoint</a>前向推理代码，与<a
+target="_blank" rel="noopener" href="https://github.com/ddetone">Daniel</a>于2018年的原始版本有些差异。不过<a
+target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>的版本与原版结果几乎一致，另外增加多batch的支持，执行效率更高。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># %BANNER_BEGIN%</span></span><br><span class="line"><span class="comment"># ---------------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># %COPYRIGHT_BEGIN%</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  Magic Leap, Inc. (&quot;COMPANY&quot;) CONFIDENTIAL</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  Unpublished Copyright (c) 2020</span></span><br><span class="line"><span class="comment">#  Magic Leap, Inc., All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># NOTICE:  All information contained herein is, and remains the property</span></span><br><span class="line"><span class="comment"># of COMPANY. The intellectual and technical concepts contained herein</span></span><br><span class="line"><span class="comment"># are proprietary to COMPANY and may be covered by U.S. and Foreign</span></span><br><span class="line"><span class="comment"># Patents, patents in process, and are protected by trade secret or</span></span><br><span class="line"><span class="comment"># copyright law.  Dissemination of this information or reproduction of</span></span><br><span class="line"><span class="comment"># this material is strictly forbidden unless prior written permission is</span></span><br><span class="line"><span class="comment"># obtained from COMPANY.  Access to the source code contained herein is</span></span><br><span class="line"><span class="comment"># hereby forbidden to anyone except current COMPANY employees, managers</span></span><br><span class="line"><span class="comment"># or contractors who have executed Confidentiality and Non-disclosure</span></span><br><span class="line"><span class="comment"># agreements explicitly covering such access.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The copyright notice above does not evidence any actual or intended</span></span><br><span class="line"><span class="comment"># publication or disclosure  of  this source code, which includes</span></span><br><span class="line"><span class="comment"># information that is confidential and/or proprietary, and is a trade</span></span><br><span class="line"><span class="comment"># secret, of  COMPANY.   ANY REPRODUCTION, MODIFICATION, DISTRIBUTION,</span></span><br><span class="line"><span class="comment"># PUBLIC  PERFORMANCE, OR PUBLIC DISPLAY OF OR THROUGH USE  OF THIS</span></span><br><span class="line"><span class="comment"># SOURCE CODE  WITHOUT THE EXPRESS WRITTEN CONSENT OF COMPANY IS</span></span><br><span class="line"><span class="comment"># STRICTLY PROHIBITED, AND IN VIOLATION OF APPLICABLE LAWS AND</span></span><br><span class="line"><span class="comment"># INTERNATIONAL TREATIES.  THE RECEIPT OR POSSESSION OF  THIS SOURCE</span></span><br><span class="line"><span class="comment"># CODE AND/OR RELATED INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS</span></span><br><span class="line"><span class="comment"># TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE,</span></span><br><span class="line"><span class="comment"># USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># %COPYRIGHT_END%</span></span><br><span class="line"><span class="comment"># ----------------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># %AUTHORS_BEGIN%</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  Originating Authors: Paul-Edouard Sarlin</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># %AUTHORS_END%</span></span><br><span class="line"><span class="comment"># --------------------------------------------------------------------*/</span></span><br><span class="line"><span class="comment"># %BANNER_END%</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">simple_nms</span>(<span class="params">scores, nms_radius: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Fast Non-maximum suppression to remove nearby points &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span>(nms_radius &gt;= <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">max_pool</span>(<span class="params">x</span>):</span><br><span class="line">        <span class="keyword">return</span> torch.nn.functional.max_pool2d(</span><br><span class="line">            x, kernel_size=nms_radius*<span class="number">2</span>+<span class="number">1</span>, stride=<span class="number">1</span>, padding=nms_radius)</span><br><span class="line"></span><br><span class="line">    zeros = torch.zeros_like(scores)</span><br><span class="line">    max_mask = scores == max_pool(scores)</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">        supp_mask = max_pool(max_mask.<span class="built_in">float</span>()) &gt; <span class="number">0</span></span><br><span class="line">        supp_scores = torch.where(supp_mask, zeros, scores)</span><br><span class="line">        new_max_mask = supp_scores == max_pool(supp_scores)</span><br><span class="line">        max_mask = max_mask | (new_max_mask &amp; (~supp_mask))</span><br><span class="line">    <span class="keyword">return</span> torch.where(max_mask, scores, zeros)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">remove_borders</span>(<span class="params">keypoints, scores, border: <span class="built_in">int</span>, height: <span class="built_in">int</span>, width: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Removes keypoints too close to the border &quot;&quot;&quot;</span></span><br><span class="line">    mask_h = (keypoints[:, <span class="number">0</span>] &gt;= border) &amp; (keypoints[:, <span class="number">0</span>] &lt; (height - border))</span><br><span class="line">    mask_w = (keypoints[:, <span class="number">1</span>] &gt;= border) &amp; (keypoints[:, <span class="number">1</span>] &lt; (width - border))</span><br><span class="line">    mask = mask_h &amp; mask_w</span><br><span class="line">    <span class="keyword">return</span> keypoints[mask], scores[mask]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">top_k_keypoints</span>(<span class="params">keypoints, scores, k: <span class="built_in">int</span></span>):</span><br><span class="line">    <span class="keyword">if</span> k &gt;= <span class="built_in">len</span>(keypoints):</span><br><span class="line">        <span class="keyword">return</span> keypoints, scores</span><br><span class="line">    scores, indices = torch.topk(scores, k, dim=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> keypoints[indices], scores</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sample_descriptors</span>(<span class="params">keypoints, descriptors, s: <span class="built_in">int</span> = <span class="number">8</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot; Interpolate descriptors at keypoint locations &quot;&quot;&quot;</span></span><br><span class="line">    b, c, h, w = descriptors.shape</span><br><span class="line">    keypoints = keypoints - s / <span class="number">2</span> + <span class="number">0.5</span></span><br><span class="line">    keypoints /= torch.tensor([(w*s - s/<span class="number">2</span> - <span class="number">0.5</span>), (h*s - s/<span class="number">2</span> - <span class="number">0.5</span>)],</span><br><span class="line">                              ).to(keypoints)[<span class="literal">None</span>]</span><br><span class="line">    keypoints = keypoints*<span class="number">2</span> - <span class="number">1</span>  <span class="comment"># normalize to (-1, 1)</span></span><br><span class="line">    args = &#123;<span class="string">&#x27;align_corners&#x27;</span>: <span class="literal">True</span>&#125; <span class="keyword">if</span> torch.__version__ &gt;= <span class="string">&#x27;1.3&#x27;</span> <span class="keyword">else</span> &#123;&#125;</span><br><span class="line">    descriptors = torch.nn.functional.grid_sample(</span><br><span class="line">        descriptors, keypoints.view(b, <span class="number">1</span>, -<span class="number">1</span>, <span class="number">2</span>), mode=<span class="string">&#x27;bilinear&#x27;</span>, **args)</span><br><span class="line">    descriptors = torch.nn.functional.normalize(</span><br><span class="line">        descriptors.reshape(b, c, -<span class="number">1</span>), p=<span class="number">2</span>, dim=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> descriptors</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SuperPoint</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;SuperPoint Convolutional Detector and Descriptor</span></span><br><span class="line"><span class="string">    SuperPoint: Self-Supervised Interest Point Detection and</span></span><br><span class="line"><span class="string">    Description. Daniel DeTone, Tomasz Malisiewicz, and Andrew</span></span><br><span class="line"><span class="string">    Rabinovich. In CVPRW, 2019. https://arxiv.org/abs/1712.07629</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    default_config = &#123;</span><br><span class="line">        <span class="string">&#x27;descriptor_dim&#x27;</span>: <span class="number">256</span>,</span><br><span class="line">        <span class="string">&#x27;nms_radius&#x27;</span>: <span class="number">4</span>,</span><br><span class="line">        <span class="string">&#x27;keypoint_threshold&#x27;</span>: <span class="number">0.005</span>,</span><br><span class="line">        <span class="string">&#x27;max_keypoints&#x27;</span>: -<span class="number">1</span>,</span><br><span class="line">        <span class="string">&#x27;remove_borders&#x27;</span>: <span class="number">4</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.config = &#123;**self.default_config, **config&#125;</span><br><span class="line"></span><br><span class="line">        self.relu = nn.ReLU(inplace=<span class="literal">True</span>)</span><br><span class="line">        self.pool = nn.MaxPool2d(kernel_size=<span class="number">2</span>, stride=<span class="number">2</span>)</span><br><span class="line">        c1, c2, c3, c4, c5 = <span class="number">64</span>, <span class="number">64</span>, <span class="number">128</span>, <span class="number">128</span>, <span class="number">256</span></span><br><span class="line"></span><br><span class="line">        self.conv1a = nn.Conv2d(<span class="number">1</span>, c1, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv1b = nn.Conv2d(c1, c1, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv2a = nn.Conv2d(c1, c2, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv2b = nn.Conv2d(c2, c2, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv3a = nn.Conv2d(c2, c3, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv3b = nn.Conv2d(c3, c3, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv4a = nn.Conv2d(c3, c4, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.conv4b = nn.Conv2d(c4, c4, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        self.convPa = nn.Conv2d(c4, c5, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.convPb = nn.Conv2d(c5, <span class="number">65</span>, kernel_size=<span class="number">1</span>, stride=<span class="number">1</span>, padding=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        self.convDa = nn.Conv2d(c4, c5, kernel_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">        self.convDb = nn.Conv2d(</span><br><span class="line">            c5, self.config[<span class="string">&#x27;descriptor_dim&#x27;</span>],</span><br><span class="line">            kernel_size=<span class="number">1</span>, stride=<span class="number">1</span>, padding=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        path = Path(__file__).parent / <span class="string">&#x27;weights/superpoint_v1.pth&#x27;</span></span><br><span class="line">        self.load_state_dict(torch.load(<span class="built_in">str</span>(path)))</span><br><span class="line"></span><br><span class="line">        mk = self.config[<span class="string">&#x27;max_keypoints&#x27;</span>]</span><br><span class="line">        <span class="keyword">if</span> mk == <span class="number">0</span> <span class="keyword">or</span> mk &lt; -<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&#x27;\&quot;max_keypoints\&quot; must be positive or \&quot;-1\&quot;&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;Loaded SuperPoint model&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, data</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot; Compute keypoints, scores, descriptors for image &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># Shared Encoder</span></span><br><span class="line">        x = self.relu(self.conv1a(data[<span class="string">&#x27;image&#x27;</span>]))</span><br><span class="line">        x = self.relu(self.conv1b(x))</span><br><span class="line">        x = self.pool(x)</span><br><span class="line">        x = self.relu(self.conv2a(x))</span><br><span class="line">        x = self.relu(self.conv2b(x))</span><br><span class="line">        x = self.pool(x)</span><br><span class="line">        x = self.relu(self.conv3a(x))</span><br><span class="line">        x = self.relu(self.conv3b(x))</span><br><span class="line">        x = self.pool(x)</span><br><span class="line">        x = self.relu(self.conv4a(x))</span><br><span class="line">        x = self.relu(self.conv4b(x))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Compute the dense keypoint scores</span></span><br><span class="line">        cPa = self.relu(self.convPa(x))</span><br><span class="line">        scores = self.convPb(cPa)</span><br><span class="line">        scores = torch.nn.functional.softmax(scores, <span class="number">1</span>)[:, :-<span class="number">1</span>]</span><br><span class="line">        b, _, h, w = scores.shape</span><br><span class="line">        scores = scores.permute(<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>).reshape(b, h, w, <span class="number">8</span>, <span class="number">8</span>)</span><br><span class="line">        scores = scores.permute(<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>).reshape(b, h*<span class="number">8</span>, w*<span class="number">8</span>)</span><br><span class="line">        scores = simple_nms(scores, self.config[<span class="string">&#x27;nms_radius&#x27;</span>])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Extract keypoints</span></span><br><span class="line">        keypoints = [</span><br><span class="line">            torch.nonzero(s &gt; self.config[<span class="string">&#x27;keypoint_threshold&#x27;</span>])</span><br><span class="line">            <span class="keyword">for</span> s <span class="keyword">in</span> scores]</span><br><span class="line">        scores = [s[<span class="built_in">tuple</span>(k.t())] <span class="keyword">for</span> s, k <span class="keyword">in</span> <span class="built_in">zip</span>(scores, keypoints)]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Discard keypoints near the image borders</span></span><br><span class="line">        keypoints, scores = <span class="built_in">list</span>(<span class="built_in">zip</span>(*[</span><br><span class="line">            remove_borders(k, s, self.config[<span class="string">&#x27;remove_borders&#x27;</span>], h*<span class="number">8</span>, w*<span class="number">8</span>)</span><br><span class="line">            <span class="keyword">for</span> k, s <span class="keyword">in</span> <span class="built_in">zip</span>(keypoints, scores)]))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Keep the k keypoints with highest score</span></span><br><span class="line">        <span class="keyword">if</span> self.config[<span class="string">&#x27;max_keypoints&#x27;</span>] &gt;= <span class="number">0</span>:</span><br><span class="line">            keypoints, scores = <span class="built_in">list</span>(<span class="built_in">zip</span>(*[</span><br><span class="line">                top_k_keypoints(k, s, self.config[<span class="string">&#x27;max_keypoints&#x27;</span>])</span><br><span class="line">                <span class="keyword">for</span> k, s <span class="keyword">in</span> <span class="built_in">zip</span>(keypoints, scores)]))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Convert (h, w) to (x, y)</span></span><br><span class="line">        keypoints = [torch.flip(k, [<span class="number">1</span>]).<span class="built_in">float</span>() <span class="keyword">for</span> k <span class="keyword">in</span> keypoints]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Compute the dense descriptors</span></span><br><span class="line">        cDa = self.relu(self.convDa(x))</span><br><span class="line">        descriptors = self.convDb(cDa)</span><br><span class="line">        descriptors = torch.nn.functional.normalize(descriptors, p=<span class="number">2</span>, dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Extract descriptors</span></span><br><span class="line">        descriptors = [sample_descriptors(k[<span class="literal">None</span>], d[<span class="literal">None</span>], <span class="number">8</span>)[<span class="number">0</span>]</span><br><span class="line">                       <span class="keyword">for</span> k, d <span class="keyword">in</span> <span class="built_in">zip</span>(keypoints, descriptors)]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&#x27;keypoints&#x27;</span>: keypoints,</span><br><span class="line">            <span class="string">&#x27;scores&#x27;</span>: scores,</span><br><span class="line">            <span class="string">&#x27;descriptors&#x27;</span>: descriptors,</span><br><span class="line">        &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/superpoint/" title="📝笔记：SuperPoint: Self-Supervised Interest Point Detection and Description 自监督深度学习特征点">https://www.vincentqin.tech/posts/superpoint/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/SuperPoint/" rel="tag"># SuperPoint</a>
+              <a href="/tags/%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/" rel="tag"># 特征提取</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/MagicLeap/" rel="tag"># MagicLeap</a>
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/first-black-hole/" rel="prev" title="Black Hole">
+                  <i class="fa fa-chevron-left"></i> Black Hole
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/build-filebrowser/" rel="next" title="🔨工具：Filebrowser：一款轻量级个人网盘">
+                  🔨工具：Filebrowser：一款轻量级个人网盘 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/superpoint/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

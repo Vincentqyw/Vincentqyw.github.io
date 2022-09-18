@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文测试了NVIDIA提出的 Instant NeRF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：5秒钟训练NeRF，NVIDIA Instant NeRF 测试">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/instant-ngp/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文测试了NVIDIA提出的 Instant NeRF">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-04-30T18:28:39.000Z">
+<meta property="article:modified_time" content="2022-08-31T16:15:09.227Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/instant-ngp/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/instant-ngp/","path":"posts/instant-ngp/","title":"📝笔记：5秒钟训练NeRF，NVIDIA Instant NeRF 测试"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：5秒钟训练NeRF，NVIDIA Instant NeRF 测试 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-instant-ngp"><span class="nav-number">1.</span> <span class="nav-text">安装 instant-ngp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vs-studio"><span class="nav-number">1.1.</span> <span class="nav-text">1. VS-STUDIO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cuda"><span class="nav-number">1.2.</span> <span class="nav-text">2. 安装CUDA</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85cudnn-optinal"><span class="nav-number">1.3.</span> <span class="nav-text">3. 安装CUDNN (optinal)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85optixoptinal"><span class="nav-number">1.4.</span> <span class="nav-text">4. 安装OPTIX(optinal)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text">5. 下载+编译程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85anaconda3"><span class="nav-number">1.6.</span> <span class="nav-text">安装Anaconda3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2pip%E6%BA%90"><span class="nav-number">1.7.</span> <span class="nav-text">更换pip源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEconda%E7%8E%AF%E5%A2%83"><span class="nav-number">1.8.</span> <span class="nav-text">配置conda环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E4%B8%80%E6%AD%A5%E5%AE%89%E8%A3%85colmap"><span class="nav-number">1.9.</span> <span class="nav-text">最后一步，安装COLMAP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9C%9F%E5%AE%9E%E4%B8%96%E7%95%8C%E6%BC%94%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">真实世界演示</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%9F%E5%AE%9E%E5%9C%BA%E6%99%AF%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE"><span class="nav-number">2.1.</span> <span class="nav-text">真实场景原始数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E8%84%9A%E6%9C%AC"><span class="nav-number">2.2.</span> <span class="nav-text">运行脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">2.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bug-fix"><span class="nav-number">3.</span> <span class="nav-text">Bug Fix</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vscode-%E7%BC%A9%E8%BF%9B%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">VSCode 缩进问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windows-11-power-shell%E6%8A%A5%E9%94%99"><span class="nav-number">3.2.</span> <span class="nav-text">Windows 11 POWER SHELL报错</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/instant-ngp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：5秒钟训练NeRF，NVIDIA Instant NeRF 测试 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：5秒钟训练NeRF，NVIDIA Instant NeRF 测试
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-05-01 02:28:39" itemprop="dateCreated datePublished" datetime="2022-05-01T02:28:39+08:00">2022-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-01 00:15:09" itemprop="dateModified" datetime="2022-09-01T00:15:09+08:00">2022-09-01</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/instant-ngp/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/instant-ngp/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/instant-ngp/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note default"><p>本文测试了NVIDIA提出的 <a
+target="_blank" rel="noopener" href="https://github.com/NVlabs/instant-ngp">Instant NeRF</a></p>
+</div>
+<span id="more"></span>
+<p><img data-src="https://vincentqin.tech/blog-resources/instant-ngp/fox.gif" /></p>
+<blockquote>
+<p><strong>Instant Neural Graphics Primitives with a Multiresolution
+Hash Encoding</strong> <a target="_blank" rel="noopener" href="https://tom94.net">Thomas Müller</a>, <a
+target="_blank" rel="noopener" href="https://research.nvidia.com/person/alex-evans">Alex Evans</a>, <a
+target="_blank" rel="noopener" href="https://research.nvidia.com/person/christoph-schied">Christoph
+Schied</a>, <a
+target="_blank" rel="noopener" href="https://research.nvidia.com/person/alex-keller">Alexander
+Keller</a><br />
+ACM Transactions on Graphics (<strong>SIGGRAPH</strong>), July 2022 <a
+target="_blank" rel="noopener" href="https://nvlabs.github.io/instant-ngp">Project page</a> / <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2201.05989">Paper</a> / <a
+target="_blank" rel="noopener" href="https://github.com/NVlabs/instant-ngp">Code</a> / <a
+target="_blank" rel="noopener" href="https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.mp4">Video</a> /
+<a
+target="_blank" rel="noopener" href="https://nvlabs.github.io/instant-ngp/assets/mueller2022instant.bib">BibTeX</a></p>
+</blockquote>
+<h1 id="安装-instant-ngp">安装 instant-ngp</h1>
+<p>完整的文字教程见这个链接<a
+target="_blank" rel="noopener" href="https://github.com/bycloudai/instant-ngp-Windows">instant-ngp-Windows</a>，视频教程见这个<a
+target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=kq9xlvz73Rg">链接</a>。</p>
+<p>安装该软件有以下要求: - NVIDIA GPU - A C++14 capable compiler.<br />
+- Windows: Visual Studio 2019 - Linux: GCC/G++ 7.5 or higher - <a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">CUDA</a> v10.2
+or higher - <a target="_blank" rel="noopener" href="https://cmake.org/">CMake</a> v3.21 or higher. -
+(optional)<a target="_blank" rel="noopener" href="https://developer.nvidia.com/optix">OptiX</a> 7.3 or
+higher - <a target="_blank" rel="noopener" href="https://colmap.github.io/">COLMAP</a></p>
+<p>接下来的安装以及操作过程全部是以 WINDOW 11为例进行介绍。</p>
+<h2 id="vs-studio">1. VS-STUDIO</h2>
+<p>安装<a
+target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/visualstudio/releases/2019/history">Visual
+Studio Community 2019</a>, 设置如下图：</p>
+<p><img data-src="https://user-images.githubusercontent.com/29135514/151634222-6ac236c9-5fa7-4762-9144-73e50959cb65.png" /></p>
+<h2 id="安装cuda">2. 安装CUDA</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/instant-ngp/intant-ngp-cuda.png" />
+根据当前系统显卡驱动的版本安装合适的CUDA，这里收集了所有的<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">CUDA版本</a>。
+例如，我电脑型号<code>R9000P</code>，显卡型号<code>NVIDIA RTX 3060 LAPTOP</code>，通过<code>nvidia-smi</code>，查看<code>CUDA Version</code>，可看到我的CUDA版本是11.4，于是我选择安装<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-11-4-4-download-archive?target_os=Windows&amp;target_arch=x86_64&amp;target_version=11&amp;target_type=exe_local">CUDA
+11.4.4</a>版本，大家可以根据自己的实际情况。</p>
+<p>安装好之后在终端输入<code>nvcc --version</code>查看nvcc版本。</p>
+<h2 id="安装cudnn-optinal">3. 安装CUDNN (optinal)</h2>
+<p>这一步可选，根据CUDA版本，选择合适的<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cudnn">CUDNN</a>版本安装，如我需要安装<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/compute/machine-learning/cudnn/secure/8.2.4/11.4_20210831/cudnn-11.4-windows-x64-v8.2.4.15.zip">cudnn-11.4</a>。</p>
+<p>注意：这一步需要开发者权限，需要输入账号密码等信息。</p>
+<h2 id="安装optixoptinal">4. 安装OPTIX(optinal)</h2>
+<p>此外需要安装<a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/rtx/ray-tracing/optix">OPTIX</a>，版本需要在7.3或者以上，随后将<code>OptiX_INSTALL_DIR</code>加入系统路径
+<img data-src="https://user-images.githubusercontent.com/29135514/151631220-7a934f5c-c299-41ab-a44e-184e2dc142b9.png" /></p>
+<h2 id="下载编译程序">5. 下载+编译程序</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone --recursive https://github.com/nvlabs/instant-ngp</span><br><span class="line">$ cd instant-ngp</span><br></pre></td></tr></table></figure>
+<p>由于原项目中有多个依赖项，GitHub限速严重，我上传了一份完整版到<a
+target="_blank" rel="noopener" href="https://drive.google.com/file/d/12Bx02hYsI1fN1SXsVIS7oEd_WUt4lG95/view?usp=sharing">Google
+drive</a>和[Aliyun ]</p>
+<p>进入<code>Developer Command Prompt</code>终端：</p>
+<p><img data-src="https://user-images.githubusercontent.com/29135514/151631759-ff8538ab-74c6-4c7b-962e-d7b097e819db.png" /></p>
+<p>从终端进入项目目录，进行编译:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmake . -B build</span><br><span class="line">cmake --build build --config RelWithDebInfo -j 16</span><br></pre></td></tr></table></figure>
+<h2 id="安装anaconda3">安装Anaconda3</h2>
+<p>在<a
+target="_blank" rel="noopener" href="https://www.anaconda.com/products/distribution">这里</a>选择合适的版本进行安装。</p>
+<h2 id="更换pip源">更换pip源</h2>
+<p>创建目录<code>C:\Users\realcat\AppData\Roaming\pip</code>，然后创建一个<code>pip.ini</code>文件，填入下面的内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple </span><br><span class="line">[install]  </span><br><span class="line">trusted-host=pypi.tuna.tsinghua.edu.cn</span><br><span class="line">disable-pip-version-check = true  </span><br><span class="line">timeout = 6000 </span><br></pre></td></tr></table></figure>
+<h2 id="配置conda环境">配置conda环境</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">conda create -n ngp python=3.9</span><br><span class="line">conda activate ngp</span><br><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<p>安装过程最后会出现一个关于openexr的ERROR！这个时候不要慌，在这个<a
+target="_blank" rel="noopener" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#openexr">地址</a>下载openexr，随后使用pip进行安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install OpenEXR-1.3.2-cp39-cp39-win_amd64.whl</span><br></pre></td></tr></table></figure>
+<h2 id="最后一步安装colmap">最后一步，安装COLMAP</h2>
+<p>这里笔者就不多说了，<a
+target="_blank" rel="noopener" href="https://github.com/colmap/colmap/releases">Release版本</a>，笔者安装的是<a
+target="_blank" rel="noopener" href="https://github.com/colmap/colmap/releases/download/3.7/COLMAP-3.7-windows-cuda.zip">COLMAP-3.7-windows-cuda.zip</a></p>
+<h1 id="真实世界演示">真实世界演示</h1>
+<p>这里有一些NeRF原作者提供的<a
+target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1">虚拟以及真实数据集</a>，不过我使用手机拍摄了真实世界的场景一段视频，随后将视频转换为图像，这些图像送入COLMAP使用SFM得到相机位姿（即posed
+images）。图像数据以及相机位姿文件要转换成intant-ngp输入需要的文件，最后运行intant-ngp编译好的可执行文件。这里需要注意的是，由于手机摄像机采集到的视频尺寸为<span
+class="math inline">\(1920 \times
+1080\)</span>，该分辨率在我的笔记本上造成了显存不足的问题，于是笔者对图像进行抽帧并降采样处理。</p>
+<p>笔者将数据集放在了 <a
+target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1DV6HG-4p-S5X1fKosZmVMRoEz4uhYmuM?usp=sharing">Google
+Drive: tussock_tiny</a>，<a
+target="_blank" rel="noopener" href="https://www.jianguoyun.com/p/DaGDaNwQ1vfFChiZnLwEIAA">备选地址:
+tussock_tiny</a></p>
+<h2 id="真实场景原始数据">真实场景原始数据</h2>
+<p>目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">📂instant-ngp/ # this is root</span><br><span class="line">├── 📂data/</span><br><span class="line">│	├── 📂toy_truck/</span><br><span class="line">│	│	├── 📜transforms.json # 这是要生成的文件</span><br><span class="line">│	│	├── 📂data/</span><br><span class="line">│	│	│	├── 📜toy_truck_001.jpg</span><br><span class="line">│	│	│	├── 📜toy_truck_002.jpg</span><br><span class="line">│	│	│	│...</span><br><span class="line">│	│	│...</span><br><span class="line">│	│...</span><br><span class="line">│...</span><br><span class="line"></span><br><span class="line">&lt;!-- 或者自采数据集 --&gt;</span><br><span class="line"></span><br><span class="line">📂F:/ # disk F or E or others, 任意位置</span><br><span class="line">├── 📂dataset/</span><br><span class="line">│	├── 📂tussock_tiny/</span><br><span class="line">│	│	├── 📜transforms.json # 这是要生成的文件</span><br><span class="line">│	│	├── 📂data/</span><br><span class="line">│	│	│	├── 📜image_20.png</span><br><span class="line">│	│	│	├── 📜image_40.png</span><br><span class="line">│	│	│	│...</span><br><span class="line">│	│	│...</span><br><span class="line">│	│...</span><br><span class="line">│...</span><br></pre></td></tr></table></figure>
+<p>原始的<code>instant-ngp</code>在Windows上是不支持上述目录结构的，笔者对处理脚本做了一点小小的改动：<a
+target="_blank" rel="noopener" href="https://github.com/Vincentqyw/instant-ngp/commit/309c7c77e4773f431eb0efc9945ae0bf255b59e0?diff=unified">DIFF</a></p>
+<h2 id="运行脚本">运行脚本</h2>
+<!-- 简单地说下步骤：使用手机拍摄某个静物的视频，随后视频解码成图像，对图像进行抽帧并降采样（避免后续显存爆掉）；之后使用COLMAP对这些图像进行稀疏重建（默认参数即可），保存稀疏模型文件；使用intant-ngp提供的脚本将COLMAP稀疏模型转换成intant-ngp需要的配置文件；最后一步运行NeRF重建脚本（配置文件作为参数）； -->
+<p>接下来展示如何使用<code>instant-ngp</code>创建模型的关键步骤。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># step1: 视频解码与缩放</span></span><br><span class="line"><span class="comment"># 脚本路径：https://github.com/Vincentqyw/instant-ngp/blob/master/scripts/convert_video.py</span></span><br><span class="line">python .\scripts\convert_video.py --input E:\NeRF\real_data\data\tussock_tiny\tussock.MOV  \</span><br><span class="line">                                  --output E:\NeRF\real_data\data\tussock_tiny\data\ \</span><br><span class="line">                                  --show_image 1 \</span><br><span class="line">                                  --scale 2</span><br><span class="line"></span><br><span class="line"><span class="comment"># step2：colmap重建，创建项目，选择图像路径以及数据库，</span></span><br><span class="line"><span class="comment"># 分别进行特征提取/匹配/稀疏重建，导出稀疏模型文件</span></span><br><span class="line">colmap gui </span><br><span class="line"></span><br><span class="line"><span class="comment"># step3: 生成intant-ngp输入需要的transforms.json文件</span></span><br><span class="line"><span class="comment"># 脚本路径：https://github.com/Vincentqyw/instant-ngp/blob/master/scripts/colmap2nerf.py</span></span><br><span class="line"><span class="comment"># aabb_scale: 模型超参，建议从16开始，分别尝试8，4，2以及1</span></span><br><span class="line"><span class="comment"># images    : 数据集路径</span></span><br><span class="line"><span class="comment"># text      : 稀疏模型路径</span></span><br><span class="line"><span class="comment"># out       : 配置文件输出路径</span></span><br><span class="line">python scripts/colmap2nerf.py --aabb_scale 16 \</span><br><span class="line">                              --images E:\NeRF\real_data\data\tussock_tiny\data \</span><br><span class="line">                              --text E:\NeRF\real_data\data\tussock_tiny\sparse\0 \</span><br><span class="line">                              --out E:\NeRF\real_data\data\tussock_tiny\transform.json</span><br><span class="line"></span><br><span class="line"><span class="comment"># step4: 跑起来吧</span></span><br><span class="line">.\build\testbed.exe --scene E:\NeRF\real_data\data\tussock_tiny</span><br></pre></td></tr></table></figure>
+<h2 id="结果">结果</h2>
+<p>将结果放在了Youtube，如下：</p>
+<iframe width="715" height="412" src="https://www.youtube.com/embed/kJ1jZXnyvzA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<iframe width="715" height="412" src="https://www.youtube.com/embed/rRMto-DslpU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>B站视频如下：</p>
+<iframe src="//player.bilibili.com/player.html?aid=511297898&amp;bvid=BV1su411r7s7&amp;cid=712925326&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+<iframe src="//player.bilibili.com/player.html?aid=938890038&amp;bvid=BV1tT4y167uU&amp;cid=715046367&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+<iframe src="//player.bilibili.com/player.html?aid=641390019&amp;bvid=BV1eY4y1b7xg&amp;cid=716332672&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+<p>由于时间有限，笔者没有测试更多场景，感兴趣的同学可以DIY一下:)</p>
+<h1 id="bug-fix">Bug Fix</h1>
+<h2 id="vscode-缩进问题">VSCode 缩进问题</h2>
+<p><code>Ctrl+Shift+P</code> 选择，<code>转缩进为空格</code> 或者
+<code>Convert Indentation to Spaces</code>。</p>
+<h2 id="windows-11-power-shell报错">Windows 11 POWER SHELL报错</h2>
+<p>运行python显示以下错误：
+<code>无法加载文件 C:\Users\32973\Documents\WindowsPowerShell\profile.ps1，因为在此系统上禁止运行脚本</code></p>
+<p>解决办法： 1. 以管理员身份运行PowerShell 2.
+输入：get-ExecutionPolicy，显示：Restricted,这表示状态是禁止的 3.
+这时输入:set-ExecutionPolicy RemoteSigned</p>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a
+target="_blank" rel="noopener" href="https://github.com/bycloudai/instant-ngp-Windows">instant-ngp-Windows</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/511604995">如何评价 NVIDIA
+最新技术 5 秒训练 NERF？</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/458632354">论文解读 | Instant
+Neural Graphics Primitives with a Multiresolution Hash Encoding</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://github.com/bycloudai/SwapCudaVersionWindows">WINDOW环境下修改CUDA版本</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/128yBriW1IG_3NJ5Rp7APSTZsJqdJdfc1">NeRF原作者提供的虚拟以及真实数据集</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/406131690">R9000P安装CUDA</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/instant-ngp/" title="📝笔记：5秒钟训练NeRF，NVIDIA Instant NeRF 测试">https://www.vincentqin.tech/posts/instant-ngp/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/visual-localization/" rel="prev" title="📝笔记：A brife history of Visualization Localization(under construction...)">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：A brife history of Visualization Localization(under construction...)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/imc2022/" rel="next" title="📝笔记：图像匹配挑战赛回顾(CVPR 2022)">
+                  📝笔记：图像匹配挑战赛回顾(CVPR 2022) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/instant-ngp/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

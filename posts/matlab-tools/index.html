@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MATLAB:多个不同维度的箱线图画在一起">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/matlab-tools/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/matlab-logo.jpg">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/issue-matlab-1.png">
+<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/issue-matlab-2.png">
+<meta property="article:published_time" content="2017-01-16T02:43:01.000Z">
+<meta property="article:modified_time" content="2022-04-03T05:52:19.595Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="Matlab">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/matlab-logo.jpg">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/matlab-tools/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/matlab-tools/","path":"posts/matlab-tools/","title":"MATLAB:多个不同维度的箱线图画在一起"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MATLAB:多个不同维度的箱线图画在一起 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E4%B8%8D%E5%90%8C%E7%BB%B4%E5%BA%A6%E7%9A%84%E7%AE%B1%E7%BA%BF%E5%9B%BE%E7%94%BB%E5%9C%A8%E4%B8%80%E8%B5%B7"><span class="nav-number">1.</span> <span class="nav-text">多个不同维度的箱线图画在一起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab%E7%BB%98%E5%88%B6gif%E5%8A%A8%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">Matlab绘制GIF动图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab-%E5%B1%80%E9%83%A8%E6%94%BE%E5%A4%A7%E5%9B%BE%E5%83%8F"><span class="nav-number">3.</span> <span class="nav-text">Matlab 局部放大图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab-%E4%BF%9D%E5%AD%98%E8%B6%85%E9%AB%98%E8%B4%A8%E9%87%8F%E5%9B%BE%E5%83%8F"><span class="nav-number">4.</span> <span class="nav-text">Matlab 保存超高质量图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab-%E5%86%99%E5%85%A5excel%E9%94%99%E8%AF%AF"><span class="nav-number">5.</span> <span class="nav-text">Matlab 写入Excel错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">5.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E4%B9%8B%E9%81%93"><span class="nav-number">5.2.</span> <span class="nav-text">解决之道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab%E8%AE%BE%E7%BD%AE%E7%BB%98%E5%9B%BE%E5%9D%90%E6%A0%87%E8%BD%B4%E4%BF%A1%E6%81%AF"><span class="nav-number">6.</span> <span class="nav-text">Matlab设置绘图坐标轴信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">6.1.</span> <span class="nav-text">问题描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#matlab%E6%98%BE%E7%A4%BA%E5%9B%BE%E7%89%87%E9%94%99%E8%AF%AF"><span class="nav-number">7.</span> <span class="nav-text">Matlab显示图片错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">7.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E4%B9%8B%E9%81%93-1"><span class="nav-number">7.2.</span> <span class="nav-text">解决之道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB"><span class="nav-number">8.</span> <span class="nav-text">常用命令汇总</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%A9%E8%9B%8B"><span class="nav-number">9.</span> <span class="nav-text">彩蛋</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/matlab-tools/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MATLAB:多个不同维度的箱线图画在一起 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MATLAB:多个不同维度的箱线图画在一起
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2017-01-16 10:43:01" itemprop="dateCreated datePublished" datetime="2017-01-16T10:43:01+08:00">2017-01-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-04-03 13:52:19" itemprop="dateModified" datetime="2022-04-03T13:52:19+08:00">2022-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7%E7%B1%BB/" itemprop="url" rel="index"><span itemprop="name">工具类</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/matlab-tools/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/matlab-tools/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/matlab-tools/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/matlab-logo.jpg" width=1000px></p>
+<p>以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。
+<span id="more"></span></p>
+<h2 id="多个不同维度的箱线图画在一起">多个不同维度的箱线图画在一起</h2>
+<figure class="highlight m"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">%%  GENERATE RANDOM DATA</span></span><br><span class="line"></span><br><span class="line">dataA <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">100</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(121);boxplot(dataA)</span></span><br><span class="line"></span><br><span class="line">dataB <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">200</span>,<span class="number">1</span>) - <span class="number">5</span>*rand(<span class="number">200</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(122);boxplot(dataB)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% CONSTRUCT MPGs</span></span><br><span class="line"></span><br><span class="line">MPGs&#123;<span class="number">1</span>&#125; <span class="built_in">=</span> dataA;</span><br><span class="line">MPGs&#123;<span class="number">2</span>&#125; <span class="built_in">=</span> dataB;</span><br><span class="line"></span><br><span class="line">figure;</span><br><span class="line">data <span class="built_in">=</span> [MPGs&#123;<span class="number">1</span>&#125; ;MPGs&#123;<span class="number">2</span>&#125; ];</span><br><span class="line"></span><br><span class="line">s_groupA <span class="built_in">=</span> repmat(&#123;<span class="string">&#x27;item 1&#x27;</span>&#125;,numel(MPGs&#123;<span class="number">1</span>&#125;),<span class="number">1</span>);</span><br><span class="line">s_groupB <span class="built_in">=</span> repmat(&#123;<span class="string">&#x27;item 2&#x27;</span>&#125;,numel(MPGs&#123;<span class="number">2</span>&#125;),<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">group <span class="built_in">=</span> [s_groupA;s_groupB];</span><br><span class="line"></span><br><span class="line"><span class="comment">%% BEGIN DRAW</span></span><br><span class="line">boxplot(data,group);</span><br><span class="line"></span><br><span class="line">FONTSIZE <span class="built_in">=</span> <span class="number">30</span>;</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>])</span><br><span class="line">ylabel(<span class="string">&#x27;items value&#x27;</span>);</span><br><span class="line">set(gca,<span class="string">&#x27;fontsize&#x27;</span>,FONTSIZE)</span><br><span class="line">set(gcf,<span class="string">&#x27;pos&#x27;</span>,[ <span class="number">986</span>,  <span class="number">414</span>, <span class="number">1274</span>, <span class="number">826</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/multi-boxplot.png" /></p>
+<h2 id="matlab绘制gif动图">Matlab绘制GIF动图</h2>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">input_file_path=<span class="string">&#x27;your image folder&#x27;</span>;</span><br><span class="line">out_name = <span class="string">&#x27;out&#x27;</span>; <span class="comment">%output name</span></span><br><span class="line"></span><br><span class="line">img_path_list=dir(strcat(input_file_path,<span class="string">&#x27;*.jpg&#x27;</span>)); <span class="comment">%image format</span></span><br><span class="line">[~, ind] = <span class="built_in">sort</span>([img_path_list(:).datenum], <span class="string">&#x27;ascend&#x27;</span>);</span><br><span class="line">img_path_list = img_path_list(ind);</span><br><span class="line">img_num=<span class="built_in">length</span>(img_path_list);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> img_num == <span class="number">0</span></span><br><span class="line">    <span class="built_in">disp</span>(<span class="string">&#x27;No images in the folder!&#x27;</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:img_num</span><br><span class="line">        image_name = img_path_list(<span class="built_in">j</span>).name;</span><br><span class="line">        read_image = imread(strcat(input_file_path,image_name));</span><br><span class="line">        imshow(read_image,<span class="string">&#x27;border&#x27;</span>,<span class="string">&#x27;tight&#x27;</span>,<span class="string">&#x27;initialmagnification&#x27;</span>,<span class="string">&#x27;fit&#x27;</span>);</span><br><span class="line">        axis normal;</span><br><span class="line">        <span class="built_in">true</span><span class="built_in">size</span>;</span><br><span class="line"></span><br><span class="line">        n=<span class="built_in">j</span>;</span><br><span class="line">        frame(n)=getframe(gcf); <span class="comment">% get the frame</span></span><br><span class="line">        image=frame(n).cdata;</span><br><span class="line">        [image,map]     =  rgb2ind(image,<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> n==<span class="number">1</span></span><br><span class="line"><span class="comment">%              imwrite(image,map,outname,&#x27;gif&#x27;);</span></span><br><span class="line">             imwrite(image,map,[out_name <span class="string">&#x27;.gif&#x27;</span>],<span class="string">&#x27;gif&#x27;</span>,<span class="string">&#x27;Loopcount&#x27;</span>,<span class="built_in">inf</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">             imwrite(image,map,[out_name <span class="string">&#x27;.gif&#x27;</span>],<span class="string">&#x27;WriteMode&#x27;</span>,<span class="string">&#x27;append&#x27;</span>,<span class="string">&#x27;DelayTime&#x27;</span>,<span class="number">0.2</span>);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="matlab-局部放大图像">Matlab 局部放大图像</h2>
+<p>论文里的局部放大图，再也不用每次手动截了。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">small_im</span>=<span class="title">ZoomIm_</span><span class="params">(im,pos)</span></span></span><br><span class="line"><span class="comment">% im= imread(&#x27;lena.jpg&#x27;);</span></span><br><span class="line"><span class="comment">% pos=[226,221,340,384];</span></span><br><span class="line"><span class="comment">% [左上X，左上Y，右下X，右下Y]</span></span><br><span class="line"></span><br><span class="line">clc</span><br><span class="line">close all;</span><br><span class="line"><span class="built_in">figure</span>;</span><br><span class="line"></span><br><span class="line">up_leftX=pos(<span class="number">1</span>);</span><br><span class="line">up_leftY=pos(<span class="number">2</span>);</span><br><span class="line">down_rightX=pos(<span class="number">3</span>);</span><br><span class="line">down_rightY=pos(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% mark rectangle in source image</span></span><br><span class="line">imshow(im);<span class="built_in">hold</span> on;</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]);</span><br><span class="line">line([up_leftX, down_rightX]   ,[up_leftY   ,up_leftY],<span class="string">&#x27;linestyle&#x27;</span>,<span class="string">&#x27;-&#x27;</span>,<span class="string">&#x27;linewidth&#x27;</span>,<span class="number">3</span>,<span class="string">&#x27;color&#x27;</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line">line([up_leftX, up_leftX]      ,[up_leftY   ,down_rightY],<span class="string">&#x27;linestyle&#x27;</span>,<span class="string">&#x27;-&#x27;</span>,<span class="string">&#x27;linewidth&#x27;</span>,<span class="number">3</span>,<span class="string">&#x27;color&#x27;</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line">line([down_rightX, down_rightX],[up_leftY   ,down_rightY],<span class="string">&#x27;linestyle&#x27;</span>,<span class="string">&#x27;-&#x27;</span>,<span class="string">&#x27;linewidth&#x27;</span>,<span class="number">3</span>,<span class="string">&#x27;color&#x27;</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line">line([up_leftX, down_rightX]   ,[down_rightY,down_rightY],<span class="string">&#x27;linestyle&#x27;</span>,<span class="string">&#x27;-&#x27;</span>,<span class="string">&#x27;linewidth&#x27;</span>,<span class="number">3</span>,<span class="string">&#x27;color&#x27;</span>,<span class="string">&#x27;r&#x27;</span>);</span><br><span class="line"><span class="built_in">hold</span> off;</span><br><span class="line"></span><br><span class="line"><span class="comment">%% get rect image</span></span><br><span class="line"><span class="built_in">figure</span>;</span><br><span class="line">small_im=im(up_leftY:down_rightY,up_leftX:down_rightX,:);</span><br><span class="line">imagesc(small_im);</span><br><span class="line">axis equal</span><br><span class="line">axis off</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>]);</span><br><span class="line">set(gca,<span class="string">&#x27;xtick&#x27;</span>,[],<span class="string">&#x27;ytick&#x27;</span>,[]);</span><br><span class="line"><span class="comment">% set(gca,&#x27;position&#x27;,[0.1 0.1,0.8 0.8])</span></span><br><span class="line">set(<span class="number">0</span>,<span class="string">&#x27;DefaultFigureMenu&#x27;</span>,<span class="string">&#x27;figure&#x27;</span>);</span><br><span class="line"><span class="comment">% figure(&#x27;menubar&#x27;,&#x27;on&#x27;);</span></span><br><span class="line"><span class="comment">% set(0,&#x27;Default&#x27;);</span></span><br><span class="line">set(gcf,<span class="string">&#x27;Position&#x27;</span>,[<span class="number">500</span>,<span class="number">200</span>,<span class="number">800</span>,<span class="number">500</span>])</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h2 id="matlab-保存超高质量图像">Matlab 保存超高质量图像</h2>
+<p>除了直接保存成<code>eps</code>或者<code>emf</code>格式之外，也可直接在绘制完图像之后，保持当前绘图窗口不要关闭，在<strong>命令行窗口</strong>键入如下命令，然后在word文档/PPT里<code>ctrl+v</code>粘贴即可。
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uimenufcn(gcf,<span class="string">&#x27;EditCopyFigure&#x27;</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="matlab-写入excel错误">Matlab 写入Excel错误</h2>
+<h3 id="问题描述">问题描述</h3>
+<blockquote>
+<p>Matlab 在创建EXCEL文件的时候总是出错，即使使用MATLAB自带的程序。
+问题描述：在Matlab中使用xlswrite函数时，如果excel文件存在时，则程序能够正常运行；当excel文件不存在时，则会出现错误：</p>
+</blockquote>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error using xlswrite (line <span class="number">220</span>) Error: 服务器出现意外情况。</span><br></pre></td></tr></table></figure>
+<h3 id="解决之道">解决之道</h3>
+<p>xlswrite函数在调用时会占用Excel的com端口，所以要保证在调用时这个端口是开放的，也就是没有被其他程序占用。打开任意一个Excel（我的是16版）文档，点击<strong>文件</strong>--<strong>选项</strong>，弹出Excel选项卡，在<strong>加载项</strong>中可以看到，活动应用程序加载项，以及非活动应用程序加载项；
+由于我的系统中装了一个福昕阅读器，该程序占用了Excel的com端口，所以当Matlab再去调用这个端口时就会出现异常。具体解决方法：点击管理旁边的下拉菜单，选择COM加载项，点击转到，把福昕阅读器的前面的勾去掉，然后确定。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/issue-matlab-1.png" width="100%">
+<img data-src="https://vincentqin.gitee.io/blogresource-1/issues-Matlab/issue-matlab-2.png" width="100%"></p>
+<h2 id="matlab设置绘图坐标轴信息">Matlab设置绘图坐标轴信息</h2>
+<h3 id="问题描述-1">问题描述</h3>
+<blockquote>
+<p>Matlab 作图时更改纵轴刻度为科学计数法，指数放在框左上方</p>
+</blockquote>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">plot</span>([<span class="number">0</span> <span class="number">1</span>],[<span class="number">0</span> <span class="number">.02</span>]) <span class="comment">% 作图，换成自己的图像就可以~</span></span><br><span class="line">oldLabels = str2num(get(gca,<span class="string">&#x27;YTickLabel&#x27;</span>));</span><br><span class="line">scale = <span class="number">10</span>^<span class="number">2</span>;newLabels = num2str(oldLabels*scale);</span><br><span class="line">set(gca,<span class="string">&#x27;YTickLabel&#x27;</span>,newLabels,<span class="string">&#x27;units&#x27;</span>,<span class="string">&#x27;normalized&#x27;</span>);</span><br><span class="line">posAxes = get(gca,<span class="string">&#x27;position&#x27;</span>);</span><br><span class="line">textBox = annotation(<span class="string">&#x27;textbox&#x27;</span>,<span class="string">&#x27;linestyle&#x27;</span>,<span class="string">&#x27;none&#x27;</span>,<span class="string">&#x27;string&#x27;</span>,[<span class="string">&#x27;x 10\it^&#123;&#x27;</span> sprintf(<span class="string">&#x27;%d&#x27;</span>,<span class="built_in">log10</span>(<span class="number">1.</span>/scale)) <span class="string">&#x27;&#125;&#x27;</span>]);</span><br><span class="line">posAn = get(textBox,<span class="string">&#x27;position&#x27;</span>);</span><br><span class="line">set(textBox,<span class="string">&#x27;position&#x27;</span>,[posAxes(<span class="number">1</span>) posAxes(<span class="number">2</span>)+posAxes(<span class="number">4</span>) posAn(<span class="number">3</span>) posAn(<span class="number">4</span>)],<span class="string">&#x27;VerticalAlignment&#x27;</span>,<span class="string">&#x27;cap&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="matlab显示图片错误">Matlab显示图片错误</h2>
+<h3 id="问题描述-2">问题描述</h3>
+<blockquote>
+<p>MATLAB图像显示总是白色</p>
+</blockquote>
+<p><code>imshow</code>是一个很强大的"武器"，显示图像简直无所不能，但这其中往往会出现问题。在处理图像时，我们的图像经常是经过了某种运算，为了保证其精度，系统会自动的将<code>uint8</code>型数据类型转化成<code>double</code>型。</p>
+<p>如果直接运行<code>imshow(I)</code>，我们会发现显示的是一个白色的图像。这是因为imshow()显示图像时对<code>double</code>型是认为在0<sub>1范围内，即大于1时都是显示为白色，而<code>imshow</code>显示<code>uint8</code>型时是0</sub>255范围。而经过运算的范围在0-255之间的<code>double</code>型数据就被不正常得显示为白色图像了。</p>
+<h3 id="解决之道-1">解决之道</h3>
+<ul>
+<li>可以利用<code>mat2gray()</code>函数，这个函数是归一化函数，可以把数据归一化到0-1之间，再用<code>imshow()</code>就可以了；</li>
+<li>或者对于一个处理后的黑白图像Img，若为double型可以这样写：<code>imshow(Img/max(Img(:)))</code>；</li>
+<li>还有一种就是：<code>imshow(Img,[])</code>;就是加一个<code>[]</code>，即可以自动调整显示；</li>
+</ul>
+<h2 id="常用命令汇总">常用命令汇总</h2>
+<ul>
+<li>（2016.05.19）今天学到一个特别简单的语句，删除元胞数组中空元素：
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a(<span class="built_in">cellfun</span>(@<span class="built_in">isempty</span>,a))=[];</span><br></pre></td></tr></table></figure></li>
+<li>（2018年6月1日）在命令行敲入如下命令，如果运行出现错误，matlab会自动停在出错的那行，并且保存所有相关变量。
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dbstop <span class="keyword">if</span> error</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="彩蛋">彩蛋</h2>
+<ul>
+<li>大神教我们怎么画图，#MATLAB无所不能#，<a
+target="_blank" rel="noopener" href="http://blogs.mathworks.com/graphics/">戳戳这里</a>~</li>
+<li>Matlab 字体困扰了我很长时间，终于在网上找到了一个比较好的组合，<a
+target="_blank" rel="noopener" href="http://pan.baidu.com/s/1geIRi2R">猛戳这里</a>！<a
+target="_blank" rel="noopener" href="http://blog.csdn.net/whoispo/article/details/50383362">原文地址</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://vincentqin.gitee.io/blogresource-1/cv-books/matlab-cmex.pdf">Matlab与C混合编程</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://vincentqin.gitee.io/blogresource-1/cv-books/matlab-parallel.pdf">Matlab并行</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://vincentqin.gitee.io/blogresource-1/cv-books/Writing-Fast-Matlab-Code.pdf">Matlab代码优化：教你写出漂亮的Matlab代码</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/matlab-tools/" title="MATLAB:多个不同维度的箱线图画在一起">https://www.vincentqin.tech/posts/matlab-tools/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Matlab/" rel="tag"># Matlab</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/AR-applications/" rel="prev" title="AR形势与应用">
+                  <i class="fa fa-chevron-left"></i> AR形势与应用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/LightField-Toolbox/" rel="next" title="Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明">
+                  Light Field 光场以及MATLAB光场工具包(LightField ToolBox)的使用说明 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/matlab-tools/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

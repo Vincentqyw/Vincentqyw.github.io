@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-17T04:23:09.000Z">
+<meta property="article:modified_time" content="2022-09-04T13:14:20.730Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="SIFT">
+<meta property="article:tag" content="ORB">
+<meta property="article:tag" content="特征匹配">
+<meta property="article:tag" content="SuperPoint">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/2020-image-matching-cvpr/","path":"posts/2020-image-matching-cvpr/","title":"📝笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！ | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E7%89%B9%E5%BE%81"><span class="nav-number">2.1.</span> <span class="nav-text">局部特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%B2%81%E6%A3%92%E5%8C%B9%E9%85%8D"><span class="nav-number">2.2.</span> <span class="nav-text">鲁棒匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E5%8A%A8%E6%81%A2%E5%A4%8D%E7%BB%93%E6%9E%84sfm"><span class="nav-number">2.3.</span> <span class="nav-text">运动恢复结构（SfM）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E5%92%8C%E6%A0%87%E5%87%86"><span class="nav-number">2.4.</span> <span class="nav-text">数据集和标准</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#phototourism-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">Phototourism 数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BEpipeline"><span class="nav-number">4.</span> <span class="nav-text">处理流程图Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">4.1.</span> <span class="nav-text">特征提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D"><span class="nav-number">4.2.</span> <span class="nav-text">特征匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%96%E7%82%B9%E6%BB%A4%E9%99%A4"><span class="nav-number">4.3.</span> <span class="nav-text">外点滤除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stereo-task"><span class="nav-number">4.4.</span> <span class="nav-text">Stereo task</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-view-task"><span class="nav-number">4.5.</span> <span class="nav-text">Multi-view task</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E6%8C%87%E6%A0%87"><span class="nav-number">4.6.</span> <span class="nav-text">误差指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AE%E7%BB%86%E8%8A%82%E5%BE%88%E9%87%8D%E8%A6%81"><span class="nav-number">5.</span> <span class="nav-text">实验开始——配置细节很重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">6.</span> <span class="nav-text">结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k%E7%89%B9%E5%BE%81"><span class="nav-number">6.1.</span> <span class="nav-text">8k特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k%E7%89%B9%E5%BE%81-1"><span class="nav-number">6.2.</span> <span class="nav-text">2k特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k-vs.-2k"><span class="nav-number">6.3.</span> <span class="nav-text">8k vs. 2k</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E7%85%A7%E5%8F%98%E5%8C%96"><span class="nav-number">6.4.</span> <span class="nav-text">光照变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E6%8C%87%E6%A0%87-vs.-%E4%BC%A0%E7%BB%9F%E6%8C%87%E6%A0%87"><span class="nav-number">6.5.</span> <span class="nav-text">新指标 vs. 传统指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#references"><span class="nav-number">7.</span> <span class="nav-text">References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！ | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-05-17 12:23:09" itemprop="dateCreated datePublished" datetime="2020-05-17T12:23:09+08:00">2020-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-04 21:14:20" itemprop="dateModified" datetime="2022-09-04T21:14:20+08:00">2022-09-04</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/2020-image-matching-cvpr/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/2020-image-matching-cvpr/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/2020-image-matching-cvpr/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><div class="note success"><p>从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google
+map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。</p>
+</div>
+<span id="more"></span>
+<!-- ![A 3D reconstruction generated from over 3000 images, including those from the previous figure](https://1.bp.blogspot.com/-loSqCB3NnM0/XoTiOGP9SYI/AAAAAAAAFlE/rs8iCTq63FYapA7HbljF8iWa7fyHvh3UgCLcBGAsYHQ/s400/image3.gif) -->
+<!-- ![](https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/image_sfm.gif) -->
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/image_sfm.gif" /></p>
+<p>为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 <a
+target="_blank" rel="noopener" href="https://www.uvic.ca/">UVIC</a>, <a
+target="_blank" rel="noopener" href="https://www.cvut.cz/en">CTU</a>以及EPFL发表了这篇文章 “<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2003.01587">Image Matching across Wide
+Baselines: From Paper to Practice</a>”，[<strong><a
+target="_blank" rel="noopener" href="http://xxx.itp.ac.cn/pdf/2003.01587v2">PDF</a></strong>]，旨在公布一种新的衡量用于3D重建方法的标准模块+数据集，这里主要是指2D图像间的匹配。这个评价模块可以很方便地集成并评估现有流行的特征匹配算法，包括传统方法或者基于机器学习的方法。</p>
+<p>谷歌公布2020图像匹配挑战的数据集：<a
+target="_blank" rel="noopener" href="https://image-matching-workshop.github.io/">官网</a>，<a
+target="_blank" rel="noopener" href="http://ai.googleblog.com/2020/04/announcing-2020-image-matching.html">博客</a>，文末有排行榜。</p>
+<h2 id="前言">前言</h2>
+<p>图像特征匹配是计算机视觉的基础+核心问题之一，包括image retrieval
+<sup id="fnref:48"><a href="#fn:48" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="David G. Lowe. Distinctive Image Features from ScaleInvariant Keypoints. IJCV, 20(2):91–110, November 2004. 1, 2, 3, 4, 6, 8, 15">48</span></a></sup>
+<sup id="fnref:7"><a href="#fn:7" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Relja Arandjelovic, Petr Gronat, Akihiko Torii, Tomas Pajdla, and Josef Sivic. NetVLAD: CNN Architecture for Weakly Supervised Place Recognition. In CVPR, 2016. 1">7</span></a></sup>
+<sup id="fnref:69"><a href="#fn:69" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Filip Radenovic, Georgios Tolias, and Ondra Chum. CNN image retrieval learns from BoW: Unsupervised ﬁne-tuning with hard examples. In ECCV, 2016. 1">69</span></a></sup>
+<sup id="fnref:91"><a href="#fn:91" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Giorgos Tolias, Yannis Avrithis, and Herv´e J´egou. Image Search with Selective Match Kernels: Aggregation Across Single and Multiple Images. IJCV, 116(3):247–261, Feb 2016. 1">91</span></a></sup>
+<sup id="fnref:63"><a href="#fn:63" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Hyeonwoo Noh, Andre Araujo, Jack Sim, and Tobias Weyanda nd Bohyung Han. Large-Scale Image Retrieval with Attentive Deep Local Features. In ICCV, 2017. 1, 2">63</span></a></sup>,
+3D reconstruction<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="S. Agarwal, N. Snavely, I. Simon, S.M. Seitz, and R. Szeliski. Building Rome in One Day. In ICCV, 2009. 1, 2">3</span></a></sup>
+<sup id="fnref:43"><a href="#fn:43" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J. Heinly, J.L. Schoenberger, E. Dunn, and J-M. Frahm. Reconstructing the World in Six Days. In CVPR, 2015. 1, 2, 3">43</span></a></sup>
+<sup id="fnref:79"><a href="#fn:79" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR, 2016. 1, 2, 3, 4, 6">79</span></a></sup>
+<sup id="fnref:106"><a href="#fn:106" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Siyu Zhu, Runze Zhang, Lei Zhou, Tianwei Shen, Tian Fang, Ping Tan, and Long Quan. Very Large-Scale Global SfM by Distributed Motion Averaging. In CVPR, June 2018. 1, 2">106</span></a></sup>，re-localization
+<sup id="fnref:74"><a href="#fn:74" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Torsten Sattler, Bastian Leibe, and Leif Kobbelt. Improving Image-Based Localization by Active Correspondence Search. In ECCV, 2012. 1">74</span></a></sup>
+<sup id="fnref:75"><a href="#fn:75" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="T. Sattler, W. Maddern, C. Toft, A. Torii, L. Hammarstrand, E. Stenborg, D. Safari, M. Okutomi, M. Pollefeys, J. Sivic, F. Kahl, and T. Pajdla. Benchmarking 6DOF Outdoor Visual Localization in Changing Conditions. In CVPR, 2018. 1, 2">75</span></a></sup>
+<sup id="fnref:51"><a href="#fn:51" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Simon Lynen, Bernhard Zeisl, Dror Aiger, Michael Bosse, Joel Hesch, Marc Pollefeys, Roland Siegwart, and Torsten Sattler. Large-scale, real-time visual-inertial localization revisited. arXiv Preprint, 2019. 1">51</span></a></sup>以及
+SLAM <sup id="fnref:61"><a href="#fn:61" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R. Mur-Artal, J. Montiel, and J. Tardos. Orb-Slam: A Versatile and Accurate Monocular Slam System. IEEE Transactions on Robotics, 31(5):1147–1163, 2015. 1">61</span></a></sup>
+<sup id="fnref:30"><a href="#fn:30" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Detone, T. Malisiewicz, and A. Rabinovich. Toward Geometric Deep SLAM. arXiv preprint arXiv:1707.07410, 2017. 1">30</span></a></sup>
+<sup id="fnref:31"><a href="#fn:31" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Detone, T. Malisiewicz, and A. Rabinovich. Superpoint: Self-Supervised Interest Point Detection and Description. CVPR Workshop on Deep Learning for Visual SLAM, 2018. 1, 2, 3, 8">31</span></a></sup>等在内的诸多研究领域都会用到特征匹配。这个问题已经研究了几十年，但仍未被很好地解决。特征匹配面临的问题很多，主要包括以下挑战：视角，尺度，旋转，光照，遮挡以及相机渲染等。</p>
+<p>近些年来，研究者开始将视线转移到端到端的学习方法（图像-&gt;位姿），但是这些方法甚至没有达到传统的方法（图像-&gt;匹配-&gt;BA优化）的性能。我们可以看到，传统的方法将3D重建问题拆分成为2个子问题：特征匹配与位姿解算。解决每个子问题的新方法，诸如特征匹配/位姿解算，都使用了“临时指标”，但是单独地评价单个子问题的性能不足以说明整体性能。例如，一些研究仅在某个数据集上展现了相较于手工特征SIFT的优势，但是这些算法是否能够在真实应用中仍然展现出优势呢？我们通过后续实验说明传统算法经过调整之后也可匹敌现有的标称“sota”的算法（着实打脸）。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig1.png" /></p>
+<p>是时候换一种方式进行评价了，本文不去过多关注在临时指标上的表现，而关注在下游任务上的表现。本文贡献：</p>
+<ol type="1">
+<li>30k图像+深度图+真实位姿（posed image）</li>
+<li>模块化流水线处理流程，结合了数十种经典的和最新的特征提取和匹配以及姿态估计方法，以及多种启发式方法，可以分别交换和调整</li>
+<li>两个下游任务，双目/多视角重建</li>
+<li>全面研究了手工特征以及学习特征数十种方法和技术，以及它们的结合以及超参数选择的过程</li>
+</ol>
+<h2 id="相关工作">相关工作</h2>
+<h3 id="局部特征">局部特征</h3>
+<p>在引入SIFT特征之后，局部特征变成了主流。它的处理流程主要分为几个步骤：特征提取，旋转估计，描述子提取。除了SIFT，手工特征还有SURF
+<sup id="fnref:15"><a href="#fn:15" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="H. Bay, T. Tuytelaars, and L. Van Gool. SURF: Speeded Up Robust Features. In ECCV, 2006. 2, 3">15</span></a></sup>,
+ORB <sup id="fnref:73"><a href="#fn:73" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="E. Rublee, V. Rabaud, K. Konolidge, and G. Bradski. ORB: An Efﬁcient Alternative to SIFT or SURF. In ICCV, 2011. 2, 3, 6">73</span></a></sup>,
+以及 AKAZE <sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="P. F. Alcantarilla, J. Nuevo, and A. Bartoli. Fast Explicit Diffusion for Accelerated Features in Nonlinear Scale Spaces. In BMVC, 2013. 2, 3">4</span></a></sup>等。</p>
+<p>现代描述子通常在SIFT关键点（即DoG）的预裁剪图像块上训练深度网络，其中包括：Deepdesc
+<sup id="fnref:82"><a href="#fn:82" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="E. Simo-serra, E. Trulls, L. Ferraz, I. Kokkinos, P. Fua, and F. Moreno-Noguer. Discriminative Learning of Deep Convolutional Feature Point Descriptors. In ICCV, 2015. 2">82</span></a></sup>,
+TFeat <sup id="fnref:11"><a href="#fn:11" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="V. Balntas, E. Riba, D. Ponsa, and K. Mikolajczyk. Learning Local Feature Descriptors with Triplets and Shallow Convolutional Neural Networks. In BMVC, 2016. 2">11</span></a></sup>,
+L2-Net <sup id="fnref:89"><a href="#fn:89" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Y. Tian, B. Fan, and F. Wu. L2-Net: Deep Learning of Discriminative Patch Descriptor in Euclidean Space. In CVPR, 2017. 2, 3">89</span></a></sup>,
+Hardnet <sup id="fnref:57"><a href="#fn:57" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="A. Mishchuk, D. Mishkin, F. Radenovic, and J. Matas. Working Hard to Know Your Neighbor’s Margins: Local Descriptor Learning Loss. In NeurIPS, 2017. 2, 3, 6">57</span></a></sup>,
+SOSNet [90]以及 LogPolarDesc
+<sup id="fnref:34"><a href="#fn:34" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Patrick Ebel, Anastasiia Mishchuk, Kwang Moo Yi, Pascal Fua, and Eduard Trulls. Beyond Cartesian Representations for Local Descriptors. In ICCV, 2019. 2, 3, 6">34</span></a></sup>（它们中绝大多数都是在同一个数据集上进行的训练）。</p>
+<p>最近有一些工作利用了其它线索，诸如几何或全局上下文信息进行训练，其中包括GeoDesc
+[50] and ContextDesc
+<sup id="fnref:49"><a href="#fn:49" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Zixin Luo, Tianwei Shen, Lei Zhou, Jiahui Zhang, Yao Yao, Shiwei Li, Tian Fang, and Long Quan. ContextDesc: Local Descriptor Augmentation with Cross-Modality Context. In CVPR, 2019. 2, 3">49</span></a></sup>。</p>
+<p>另外还有一些方法将特征点以及描述子进行单独训练，例如TILDE
+<sup id="fnref:95"><a href="#fn:95" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Y. Verdie, K. M. Yi, P. Fua, and V. Lepetit. TILDE: A Temporally Invariant Learned DEtector. In CVPR, 2015. 2">95</span></a></sup>,
+TCDet <sup id="fnref:103"><a href="#fn:103" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Xu Zhang, Felix X. Yu, Svebor Karaman, and Shih-Fu Chang. Learning Discriminative and Transformation Covariant Local Feature Detectors. In The IEEE Conference on Computer Vision and Pattern Recognition (CVPR), July 2017. 2">103</span></a></sup>,
+QuadNet <sup id="fnref:78"><a href="#fn:78" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="N. Savinov, A. Seki, L. Ladicky, T. Sattler, and M. Pollefeys. Quad-Networks: Unsupervised Learning to Rank for Interest Point Detection. CVPR, 2017. 2">78</span></a></sup>,
+and Key.Net <sup id="fnref:13"><a href="#fn:13" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Axel Barroso-Laguna, Edgar Riba, Daniel Ponsa, and Krystian Mikolajczyk. Key.Net: Keypoint Detection by Handcrafted and Learned CNN Filters. In Proceedings of the 2019 IEEE/CVF International Conference on Computer Vision, 2019. 2, 3">13</span></a></sup>。当前还有一些算法将二者联合起来训练，例如LIFT
+<sup id="fnref:99"><a href="#fn:99" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Kwang Moo Yi, Eduard Trulls, Vincent Lepetit, and Pascal Fua. LIFT: Learned Invariant Feature Transform. In ECCV, 2016. 2">99</span></a></sup>,DELF
+<sup id="fnref:63"><a href="#fn:63" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Hyeonwoo Noh, Andre Araujo, Jack Sim, and Tobias Weyanda nd Bohyung Han. Large-Scale Image Retrieval with Attentive Deep Local Features. In ICCV, 2017. 1, 2">63</span></a></sup>,
+SuperPoint <sup id="fnref:31"><a href="#fn:31" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Detone, T. Malisiewicz, and A. Rabinovich. Superpoint: Self-Supervised Interest Point Detection and Description. CVPR Workshop on Deep Learning for Visual SLAM, 2018. 1, 2, 3, 8">31</span></a></sup>,
+LF-Net <sup id="fnref:64"><a href="#fn:64" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Yuki Ono, Eduard Trulls, Pascal Fua, and Kwang Moo Yi. LF-Net: Learning Local Features from Images. In NeurIPS, 2018. 2, 3">64</span></a></sup>,
+D2-Net <sup id="fnref:33"><a href="#fn:33" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Dusmanu, I. Rocco, T. Pajdla, M. Pollefeys, J. Sivic, A. Torii, and T. Sattler. D2-Net: A Trainable CNN for Joint Detection and Description of Local Features. In CVPR, 2019. 1, 2, 3, 8">33</span></a></sup>,R2D2
+<sup id="fnref:72"><a href="#fn:72" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J´erˆome Revaud, Philippe Weinzaepfel, C´esar Roberto de Souza, Noe Pion, Gabriela Csurka, Yohann Cabon, and Martin Humenberger. R2D2: Repeatable and Reliable Detector and Descriptor. In NeurIPS, 2019. 2">72</span></a></sup>。</p>
+<h3 id="鲁棒匹配">鲁棒匹配</h3>
+<p>大基线的双目匹配的外点内点率可低至10%，甚至更低。要做匹配的话需要从中选择出能够解算出位姿的算法。常用的方式包括基于随机一致采样RANSAC的5-<sup id="fnref:62"><a href="#fn:62" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Nister. An Efficient Solution to the Five-Point Relative Pose Problem. In CVPR, June 2003. 2">62</span></a></sup>，7-<sup id="fnref:41"><a href="#fn:41" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R. I. Hartley. Projective reconstruction and invariants from multiple images. IEEE Transactions on Pattern Analysis and Machine Intelligence, 16(10):1036–1041, Oct 1994. 1, 2">41</span></a></sup>，8-point<sup id="fnref:39"><a href="#fn:39" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R.I. Hartley. In Defense of the Eight-Point Algorithm. PAMI, 19(6):580–593, June 1997. 2">39</span></a></sup>算法。它的改进算法包括local
+optimization <sup id="fnref:24"><a href="#fn:24" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Ondˇrej Chum, Jiˇr´ı Matas, and Josef Kittler. Locally Optimized RANSAC. In PR, 2003. 2">24</span></a></sup>,
+MLESAC <sup id="fnref:92"><a href="#fn:92" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="P.H.S. Torr and A. Zisserman. MLESAC: A New Robust Estimator with Application to Estimating Image Geometry. CVIU, 78:138–156, 2000. 2">92</span></a></sup>,
+PROSAC <sup id="fnref:23"><a href="#fn:23" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Ondˇrej Chum and Jiˇr´ı Matas. Matching with PROSAC Progressive Sample Consensus. In CVPR, pages 220–226, June 2005. 2">23</span></a></sup>,
+DEGENSAC <sup id="fnref:26"><a href="#fn:26" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Ondrej Chum, Tomas Werner, and Jiri Matas. Two-View Geometry Estimation Unaffected by a Dominant Plane. In CVPR, 2005. 2, 4">26</span></a></sup>,
+GC-RANSAC <sup id="fnref:12"><a href="#fn:12" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Daniel Barath and Ji Matas. Graph-cut ransac. In The IEEE Conference on Computer Vision and Pattern Recognition (CVPR), June 2018. 2, 4">12</span></a></sup>,
+MAGSAC <sup id="fnref:29"><a href="#fn:29" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Jana Noskova Daniel Barath, Jiri Matas. MAGSAC: marginalizing sample consensus. In CVPR, 2019. 1, 2, 4">29</span></a></sup>，CNe
+(Context Networks)
+<sup id="fnref:100"><a href="#fn:100" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. M. Yi, E. Trulls, Y. Ono, V. Lepetit, M. Salzmann, and P. Fua. Learning to Find Good Correspondences. In CVPR, 2018. 2, 3, 4, 7, 13, 17">100</span></a></sup>+RANSAC，同样还有<sup id="fnref:70"><a href="#fn:70" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R. Ranftl and V. Koltun. Deep Fundamental Matrix Estimation. In ECCV, 2018. 2, 4">70</span></a></sup>
+<sup id="fnref:104"><a href="#fn:104" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Chen Zhao, Zhiguo Cao, Chi Li, Xin Li, and Jiaqi Yang. NM-Net: Mining Reliable Neighbors for Robust Feature Correspondences. In CVPR, 2019. 2, 4">104</span></a></sup>
+<sup id="fnref:85"><a href="#fn:85" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Weiwei Sun, Wei Jiang, Eduard Trulls, Andrea Tagliasacchi, and Kwang Moo Yi. Attentive Context Normalization for Robust Permutation-Equivariant Learning. In arXiv Preprint, 2019. 2, 4, 8">85</span></a></sup>
+<sup id="fnref:102"><a href="#fn:102" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Jiahui Zhang, Dawei Sun, Zixin Luo, Anbang Yao, Lei Zhou, Tianwei Shen, Yurong Chen, Long Quan, and Hongen Liao. Learning Two-View Correspondences and Geometry Using Order-Aware Network. ICCV, 2019. 2, 3, 4">102</span></a></sup>。作者最后加了一句“Despite
+their promise, it remains unclear how well they perform in real
+settings”（质疑中，哈哈）。</p>
+<h3 id="运动恢复结构sfm">运动恢复结构（SfM）</h3>
+<p>方法 <sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="S. Agarwal, N. Snavely, I. Simon, S.M. Seitz, and R. Szeliski. Building Rome in One Day. In ICCV, 2009. 1, 2">3</span></a></sup>
+<sup id="fnref:43"><a href="#fn:43" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J. Heinly, J.L. Schoenberger, E. Dunn, and J-M. Frahm. Reconstructing the World in Six Days. In CVPR, 2015. 1, 2, 3">43</span></a></sup>
+<sup id="fnref:27"><a href="#fn:27" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Hainan Cui, Xiang Gao, Shuhan Shen, and Zhanyi Hu. Hsfm: Hybrid structure-from-motion. In CVPR, July 2017. 2">27</span></a></sup>
+<sup id="fnref:37"><a href="#fn:37" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="P. Gay, V. Bansal, C. Rubino, and A. D. Bue. Probabilistic Structure from Motion with Objects (PSfMO). In ICCV, 2017. 2">37</span></a></sup>
+<sup id="fnref:106"><a href="#fn:106" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Siyu Zhu, Runze Zhang, Lei Zhou, Tianwei Shen, Tian Fang, Ping Tan, and Long Quan. Very Large-Scale Global SfM by Distributed Motion Averaging. In CVPR, June 2018. 1, 2">106</span></a></sup>，最流行的包括VisualSFM
+<sup id="fnref:98"><a href="#fn:98" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Changchang Wu. Towards Linear-Time Incremental Structure from Motion. In 3DV, 2013. 2, 6">98</span></a></sup>以及COLMAP
+<sup id="fnref:79"><a href="#fn:79" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR, 2016. 1, 2, 3, 4, 6">79</span></a></sup>（作为真值）。</p>
+<h3 id="数据集和标准">数据集和标准</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig2.jpg" /></p>
+<p>以前的特征匹配数据集如下：</p>
+<ul>
+<li>Oxford dataset
+<sup id="fnref:54"><a href="#fn:54" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. Mikolajczyk and C. Schmid. A Performance Evaluation of Local Descriptors. PAMI, 27(10):1615–1630, 2004. 2">54</span></a></sup>,
+48张图像+真值单应矩阵</li>
+<li>HPatches <sup id="fnref:9"><a href="#fn:9" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="V. Balntas, K. Lenc, A. Vedaldi, and K. Mikolajczyk. HPatches: A Benchmark and Evaluation of Handcrafted and Learned Local Descriptors. In CVPR, 2017. 2, 7">9</span></a></sup>,
+696张光照以及视角变化，无遮挡平面图像</li>
+<li>DTU <sup id="fnref:1"><a href="#fn:1" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="H. Aanaes, A. L. Dahl, and K. Steenstrup Pedersen. Interesting Interest Points. IJCV, 97:18–35, 2012. 2">1</span></a></sup>,
+Edge Foci <sup id="fnref:107"><a href="#fn:107" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="C.L. Zitnick and K. Ramnath. Edge Foci Interest Points. In ICCV, 2011. 2
+">107</span></a></sup>, Webcam
+<sup id="fnref:95"><a href="#fn:95" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Y. Verdie, K. M. Yi, P. Fua, and V. Lepetit. TILDE: A Temporally Invariant Learned DEtector. In CVPR, 2015. 2">95</span></a></sup>,
+AMOS <sup id="fnref:67"><a href="#fn:67" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Pultar, D. Mishkin, and J. Matas. Leveraging Outdoor Webcams for Local Descriptor Learning. In Computer Vision Winter Workshop, 2019. 2, 7">67</span></a></sup>,
+以及 Strecha’s <sup id="fnref:83"><a href="#fn:83" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="C. Strecha, W.V. Hansen, L. Van Gool, P. Fua, and U. Thoennessen. On Benchmarking Camera Calibration and Multi-View Stereo for High Resolution Imagery. In CVPR, 2008. 2">83</span></a></sup></li>
+</ul>
+<p>上述数据集都有其限制：窄基线，真值噪声大，图像数量少。基于学习的描述子通常在<sup id="fnref:21"><a href="#fn:21" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Brown and D. Lowe. Automatic Panoramic Image Stitching Using Invariant Features. IJCV, 74:59–73, 2007. 2">21</span></a></sup>上进行训练，它们之所以比SIFT好的原因可能在于过拟合了（作者看到会不会脸红）。
+另外，用于导航/重定位以及slam的数据集包括Kitti
+<sup id="fnref:38"><a href="#fn:38" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Andreas Geiger, Philip Lenz, and Raquel Urtasun. Are we ready for Autonomous Driving? The KITTI Vision Benchmark Suite. In CVPR, 2012. 2">38</span></a></sup>,
+Aachen <sup id="fnref:76"><a href="#fn:76" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Torsten Sattler, Tobias Weyand, Bastian Leibe, and Leif Kobbelt. Image Retrieval for Image-Based Localization Revisited. In BMVC, 2012. 2">76</span></a></sup>,
+Robotcar <sup id="fnref:52"><a href="#fn:52" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Will Maddern, Geoffrey Pascoe, Chris Linegar, and Paul Newman. 1 year, 1000 km: The Oxford RobotCar dataset. IJRR, 36(1):3–15, 2017. 2">52</span></a></sup>以及CMU
+seasons <sup id="fnref:75"><a href="#fn:75" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="T. Sattler, W. Maddern, C. Toft, A. Torii, L. Hammarstrand, E. Stenborg, D. Safari, M. Okutomi, M. Pollefeys, J. Sivic, F. Kahl, and T. Pajdla. Benchmarking 6DOF Outdoor Visual Localization in Changing Conditions. In CVPR, 2018. 1, 2">75</span></a></sup>
+<sup id="fnref:8"><a href="#fn:8" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Hernan Badino, Daniel Huber, and Takeo Kanade. The CMU Visual Localization Data Set. http://3dvis. ri.cmu.edu/data-sets/localization, 2011. 2">8</span></a></sup>，但并不包含Phototourism数据中的多种变换。</p>
+<h2 id="phototourism-数据集">Phototourism 数据集</h2>
+<p>上述数据集这么“烂”，于是作者搞出了他们心目中最好的公开数据集——Phototourism
+数据集。作者从<sup id="fnref:43"><a href="#fn:43" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J. Heinly, J.L. Schoenberger, E. Dunn, and J-M. Frahm. Reconstructing the World in Six Days. In CVPR, 2015. 1, 2, 3">43</span></a></sup>
+<sup id="fnref:88"><a href="#fn:88" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="B. Thomee, D.A. Shamma, G. Friedland, B. Elizalde, K. Ni, D. Poland, D. Borth, and L. Li. YFCC100M: the New Data in Multimedia Research. In CACM, 2016. 3">88</span></a></sup>中选择的25个受欢迎的地标集合（共30k）为基础，每个地标都有成百上千的图像。论文中，作者从中选择出11个场景，其中9个测试集和2个验证集做实验。将它们缩减为最大尺寸为1024像素，并使用COLMAP
+<sup id="fnref:79"><a href="#fn:79" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR, 2016. 1, 2, 3, 4, 6">79</span></a></sup>对其进行求解位姿以及点云和深度，通过建立好的模型去除遮挡物。</p>
+<p>具体地，如下2个表格所示：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab1.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab2.png" /></p>
+<h2 id="处理流程图pipeline">处理流程图Pipeline</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig7.png" /></p>
+<p>流程如上图，蓝色框就是要进行的几个处理，分别介绍一下。</p>
+<h3 id="特征提取">特征提取</h3>
+<p>作者选择了3大类特征： 1. 完全手工特征: SIFT
+<sup id="fnref:48"><a href="#fn:48" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="David G. Lowe. Distinctive Image Features from ScaleInvariant Keypoints. IJCV, 20(2):91–110, November 2004. 1, 2, 3, 4, 6, 8, 15">48</span></a></sup>
+(以及RootSIFT <sup id="fnref:6"><a href="#fn:6" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Relja Arandjelovic. Three things everyone should know to improve object retrieval. In CVPR, 2012. 3">6</span></a></sup>),
+SURF <sup id="fnref:15"><a href="#fn:15" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="H. Bay, T. Tuytelaars, and L. Van Gool. SURF: Speeded Up Robust Features. In ECCV, 2006. 2, 3">15</span></a></sup>,
+ORB <sup id="fnref:73"><a href="#fn:73" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="E. Rublee, V. Rabaud, K. Konolidge, and G. Bradski. ORB: An Efﬁcient Alternative to SIFT or SURF. In ICCV, 2011. 2, 3, 6">73</span></a></sup>,
+AKAZE <sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="P. F. Alcantarilla, J. Nuevo, and A. Bartoli. Fast Explicit Diffusion for Accelerated Features in Nonlinear Scale Spaces. In BMVC, 2013. 2, 3">4</span></a></sup>，FREAK
+<sup id="fnref:107"><a href="#fn:107" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="C.L. Zitnick and K. Ramnath. Edge Foci Interest Points. In ICCV, 2011. 2
+">107</span></a></sup>描述子+BRISK
+<sup id="fnref:108"><a href="#fn:108" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="A. Alahi, R. Ortiz, and P. Vandergheynst. FREAK: Fast Retina Keypoint. In CVPR, 2012. 7, 11">108</span></a></sup>特征点，使用OpenCV的实现，除了ORB特征，降低特征提取阈值以多提取一些特征；
+除此之外，也考虑VLFeat<sup id="fnref:94"><a href="#fn:94" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Andrea Vedaldi and Brian Fulkerson. Vlfeat: An open and portable library of computer vision algorithms. In Proceedings of the 18th ACM International Conference on Multimedia, MM ’10, pages 1469–1472, 2010. 3">94</span></a></sup>中DoG的一些变种：(VL-)DoG,
+Hessian <sup id="fnref:16"><a href="#fn:16" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="P. R. Beaudet. Rotationally invariant image operators. In Proceedings of the 4th International Joint Conference on Pattern Recognition, pages 579–583, Kyoto, Japan, Nov. 1978. 3, 6">16</span></a></sup>,
+Hessian-Laplace <sup id="fnref:55"><a href="#fn:55" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. Mikolajczyk, C. Schmid, and A. Zisserman. Human Detection Based on a Probabilistic Assembly of Robust Part Detectors. In ECCV, pages 69–82, 2004. 3, 6">55</span></a></sup>,
+Harris-Laplace <sup id="fnref:55"><a href="#fn:55" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. Mikolajczyk, C. Schmid, and A. Zisserman. Human Detection Based on a Probabilistic Assembly of Robust Part Detectors. In ECCV, pages 69–82, 2004. 3, 6">55</span></a></sup>,
+MSER <sup id="fnref:53"><a href="#fn:53" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J. Matas, O. Chum, M. Urban, and T. Pajdla. Robust WideBaseline Stereo from Maximally Stable Extremal Regions. IVC, 22(10):761–767, 2004. 3, 6">53</span></a></sup>;
+以及它们的仿射变种: DoG-Affine, Hessian-Affine
+<sup id="fnref:55"><a href="#fn:55" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. Mikolajczyk, C. Schmid, and A. Zisserman. Human Detection Based on a Probabilistic Assembly of Robust Part Detectors. In ECCV, pages 69–82, 2004. 3, 6">55</span></a></sup>
+<sup id="fnref:14"><a href="#fn:14" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="A. Baumberg. Reliable Feature Matching Across Widely Separated Views. In CVPR, pages 774–781, 2000. 3, 6">14</span></a></sup>,
+DoG-AffNet <sup id="fnref:59"><a href="#fn:59" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Mishkin, F. Radenovic, and J. Matas. Repeatability is Not Enough: Learning Affine Regions via Discriminability. In ECCV, 2018. 3, 6">59</span></a></sup>,
+Hessian-AffNet <sup id="fnref:59"><a href="#fn:59" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Mishkin, F. Radenovic, and J. Matas. Repeatability is Not Enough: Learning Affine Regions via Discriminability. In ECCV, 2018. 3, 6">59</span></a></sup>
+2. 描述子从DoG特征学习得到的特征： L2-Net
+<sup id="fnref:89"><a href="#fn:89" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Y. Tian, B. Fan, and F. Wu. L2-Net: Deep Learning of Discriminative Patch Descriptor in Euclidean Space. In CVPR, 2017. 2, 3">89</span></a></sup>,
+Hardnet <sup id="fnref:57"><a href="#fn:57" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="A. Mishchuk, D. Mishkin, F. Radenovic, and J. Matas. Working Hard to Know Your Neighbor’s Margins: Local Descriptor Learning Loss. In NeurIPS, 2017. 2, 3, 6">57</span></a></sup>,Geodesc
+<sup id="fnref:50"><a href="#fn:50" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Z. Luo, T. Shen, L. Zhou, S. Zhu, R. Zhang, Y. Yao, T. Fang, and L. Quan. Geodesc: Learning Local Descriptors by Integrating Geometry Constraints. In ECCV, 2018. 2, 3">50</span></a></sup>,
+SOSNet <sup id="fnref:90"><a href="#fn:90" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Yurun Tian, Xin Yu, Bin Fan, Fuchao Wu, Huub Heijnen, and Vassileios Balntas. SOSNet: Second Order Similarity Regularization for Local Descriptor Learning. In CVPR, 2019. 1, 2, 3">90</span></a></sup>,
+ContextDesc <sup id="fnref:49"><a href="#fn:49" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Zixin Luo, Tianwei Shen, Lei Zhou, Jiahui Zhang, Yao Yao, Shiwei Li, Tian Fang, and Long Quan. ContextDesc: Local Descriptor Augmentation with Cross-Modality Context. In CVPR, 2019. 2, 3">49</span></a></sup>,
+LogPolarDesc <sup id="fnref:34"><a href="#fn:34" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Patrick Ebel, Anastasiia Mishchuk, Kwang Moo Yi, Pascal Fua, and Eduard Trulls. Beyond Cartesian Representations for Local Descriptors. In ICCV, 2019. 2, 3, 6">34</span></a></sup>
+3. 端到端学习来的特征： Superpoint
+<sup id="fnref:31"><a href="#fn:31" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. Detone, T. Malisiewicz, and A. Rabinovich. Superpoint: Self-Supervised Interest Point Detection and Description. CVPR Workshop on Deep Learning for Visual SLAM, 2018. 1, 2, 3, 8">31</span></a></sup>,
+LF-Net <sup id="fnref:64"><a href="#fn:64" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Yuki Ono, Eduard Trulls, Pascal Fua, and Kwang Moo Yi. LF-Net: Learning Local Features from Images. In NeurIPS, 2018. 2, 3">64</span></a></sup>,
+and D2-Net <sup id="fnref:33"><a href="#fn:33" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Dusmanu, I. Rocco, T. Pajdla, M. Pollefeys, J. Sivic, A. Torii, and T. Sattler. D2-Net: A Trainable CNN for Joint Detection and Description of Local Features. In CVPR, 2019. 1, 2, 3, 8">33</span></a></sup>以及它们的多尺度变种：single-
+(SS) 以及 multi-scale (MS)</p>
+<h3 id="特征匹配">特征匹配</h3>
+<p>此处用的是最近邻。</p>
+<h3 id="外点滤除">外点滤除</h3>
+<p>Context Networks
+<sup id="fnref:100"><a href="#fn:100" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. M. Yi, E. Trulls, Y. Ono, V. Lepetit, M. Salzmann, and P. Fua. Learning to Find Good Correspondences. In CVPR, 2018. 2, 3, 4, 7, 13, 17">100</span></a></sup>+RANSAC<sup id="fnref:100"><a href="#fn:100" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. M. Yi, E. Trulls, Y. Ono, V. Lepetit, M. Salzmann, and P. Fua. Learning to Find Good Correspondences. In CVPR, 2018. 2, 3, 4, 7, 13, 17">100</span></a></sup>
+<sup id="fnref:85"><a href="#fn:85" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Weiwei Sun, Wei Jiang, Eduard Trulls, Andrea Tagliasacchi, and Kwang Moo Yi. Attentive Context Normalization for Robust Permutation-Equivariant Learning. In arXiv Preprint, 2019. 2, 4, 8">85</span></a></sup>，简称CNe，效果如下：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig3.png" /></p>
+<h3 id="stereo-task">Stereo task</h3>
+<p>给定图像<span class="math inline">\(\mathbf{I}_i\)</span>以及<span
+class="math inline">\(\mathbf{I}_j\)</span>，解算基础矩阵 <span
+class="math inline">\(\mathbf{F}_{i,j}\)</span>，除了现有的OpenCV<sup id="fnref:19"><a href="#fn:19" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="G. Bradski. The OpenCV Library. Dr. Dobb’s Journal of Software Tools, 2000. 4">19</span></a></sup>以及sklearn<sup id="fnref:65"><a href="#fn:65" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="F. Pedregosa, G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O. Grisel, M. Blondel, P. Prettenhofer, R. Weiss, V. Dubourg, J. Vanderplas, A. Passos, D. Cournapeau, M. Brucher, M. Perrot, and E. Duchesnay. Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12:2825–2830, 2011. 4">65</span></a></sup>中实现的RANSAC
+<sup id="fnref:36"><a href="#fn:36" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M.A Fischler and R.C. Bolles. Random Sample Consensus: A Paradigm for Model Fitting with Applications to Image Analysis and Automated Cartography. Communications ACM, 24(6):381–395, 1981. 1, 2, 4">36</span></a></sup>
+<sup id="fnref:25"><a href="#fn:25" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Ondˇrej Chum, Jiˇr´ı Matas, and Josef Kittler. Locally optimized ransac. In Pattern Recognition, 2003. 4">25</span></a></sup>，作者也用到了DEGENSAC
+<sup id="fnref:26"><a href="#fn:26" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Ondrej Chum, Tomas Werner, and Jiri Matas. Two-View Geometry Estimation Unaffected by a Dominant Plane. In CVPR, 2005. 2, 4">26</span></a></sup>,
+GC-RANSAC <sup id="fnref:12"><a href="#fn:12" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Daniel Barath and Ji Matas. Graph-cut ransac. In The IEEE Conference on Computer Vision and Pattern Recognition (CVPR), June 2018. 2, 4">12</span></a></sup>
+and MAGSAC <sup id="fnref:29"><a href="#fn:29" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Jana Noskova Daniel Barath, Jiri Matas. MAGSAC: marginalizing sample consensus. In CVPR, 2019. 1, 2, 4">29</span></a></sup>。最后通过OpenCV的<code>recoverPose</code>函数解算位姿。</p>
+<h3 id="multi-view-task">Multi-view task</h3>
+<p>由于是评价<strong>特征的好坏</strong>而不是SfM算法，作者从几个大场景中<strong>随机选择</strong>出图片构成几个小的数据集，称为"bags"。其中包含3/5张图像的各有100bags，10张图像的各有50bags，25张图像的各有25bags，总共275个bags。将外点滤除后的结果送入COLMAP
+<sup id="fnref:79"><a href="#fn:79" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR, 2016. 1, 2, 3, 4, 6">79</span></a></sup>作为输入进行SfM重建。</p>
+<h3 id="误差指标">误差指标</h3>
+<ol type="1">
+<li>mAA(mean Average Accuracy): Stereo task/Multi-view task</li>
+<li>ATE(Absolute Trajectory Error): Multi-view task</li>
+</ol>
+<h2 id="实验开始配置细节很重要">实验开始——配置细节很重要</h2>
+<p>首先比较了RANSAC在不同参数配置（置信度，极线对齐误差阈值以及最大迭代次数）下的表现：
+<img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig8.png" />
+总体来说，MAGSAC表现最好，DEGENSAC表现次之。另外，作者提到“default
+settings can be woefully inadequate. For example, OpenCV sets τ = 0.99
+and η = 3 pixels, which results in a mAP at 10o of 0.5292 on the
+validation set – a performance drop of 23.9% relative.”
+所以在日常使用OpenCV的RANSAC函数时需要自己调整下参数。</p>
+<p>作者认为RANSAC的内点阈值对于每种局部特征也是不同的，作者做了如下实验。
+<img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig9.png"
+alt="Figure 5. RANSAC – Inlier threshold \eta" />
+上图可以直观看到从DOG学习的特征都聚集在了一起，其它特征比较分散，这也是太难选择了，于是作者使用了其他论文作者推荐的配置参数或者一些合理的参数作为内点阈值。</p>
+<h2 id="结果">结果</h2>
+<p>作者列出了很多结果以及结论，我们仅去关注几个感兴趣的。</p>
+<h3 id="k特征">8k特征</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab5.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab6.png" /></p>
+<p>大家期待已久的真的sota到底是谁呢？作者在以上特征的超参调整到最优后进行了实验，测试结果如下：
+1.
+mAA指标上DoG特征点占据了Top的位置，其中SOSNet排名#1，紧随其后的是HardNet。
+2. ‘HardNetAmos+’
+<sup id="fnref:56"><a href="#fn:56" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Jiri Matas Milan Pultar, Dmytro Mishkin. Leveraging Outdoor Webcams for Local Descriptor Learning. In Proceedings of CVWW 2019, 2019. 7">56</span></a></sup>,它在更多的数据(Brown
+<sup id="fnref:20"><a href="#fn:20" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Brown, G. Hua, and S. Winder. Discriminative Learning of Local Image Descriptors. PAMI, 2011. 1, 2, 7">20</span></a></sup>,
+HPatches <sup id="fnref:9"><a href="#fn:9" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="V. Balntas, K. Lenc, A. Vedaldi, and K. Mikolajczyk. HPatches: A Benchmark and Evaluation of Handcrafted and Learned Local Descriptors. In CVPR, 2017. 2, 7">9</span></a></sup>,
+AMOS <sup id="fnref:67"><a href="#fn:67" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Pultar, D. Mishkin, and J. Matas. Leveraging Outdoor Webcams for Local Descriptor Learning. In Computer Vision Winter Workshop, 2019. 2, 7">67</span></a></sup>)上进行了训练，但是效果却比不上在Brown的‘Liberty’上训练模型的效果。
+3. multi-view任务中，DoG+HardNet表现属于top水平，略优于ContextDesc,
+SOSNet，LogpolarDesc； 4.
+R2D2是表现最好的端到端方法，同样在multi-view任务中表现较好（#6），但是在stereo任务中不如SIFT；
+5. D2-net表现并不太好，可能由于图像下采样造成了较差的定位误差； 6.
+适当调整参数后的SIFT尤其是RootSIFT能够在stereo任务中排名#9，multi-view任务中排名#9，与所谓sota相差13.1%以及4.9%.（真为咱传统特征争气！）</p>
+<h3 id="k特征-1">2k特征</h3>
+<p>这样做的理由是能够与LF-Net与Superpoint进行比较，结果如下图：</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab7.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab8.png" /></p>
+<p>结论： 1. Key.Net+HardNet获得最好的表现，第二名是LogPolarDesc； 2.
+R2D2在stereo任务中排名#2，multi-view任务中排名#7</p>
+<h3 id="k-vs.-2k">8k vs. 2k</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig16.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig17.png" /></p>
+<p>结论： 1.
+<strong>基于DoG的方法容易受益于多个特征，而学习的方法收益于重新训练</strong>（该结论来自于Key.Net+Hardnet的组合，作者进行了重新训练，表现优异）
+2. 整体来说基于学习的特征KeyNet, SuperPoint, R2D2,
+LF-Net在multi-view任务配置下比stereo任务配置下表现更好；(作者的假设是它们的鲁棒性好，但定位精度低)</p>
+<h3 id="光照变化">光照变化</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig26.png" /></p>
+<p>作者用了直方图均衡化（CLAHE<sup id="fnref:66"><a href="#fn:66" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Stephen M. Pizer, E. Philip Amburn, John D. Austin, Robert Cromartie, Ari Geselowitz, Trey Greer, Bart ter Haar Romeny, John B. Zimmerman, and Karel Zuiderveld. Adaptive histogram equalization and its variations. Computer vision, graphics, and image processing, 1987. 15">66</span></a></sup>）去调整图像光度，结果如上图，可以看到几乎所有的基于学习的方法的测试效果都下降了，这可能由于没有专门地在这种场景中进行训练。而SIFT也没有得到明显提升，可能在于SIFT描述子是在某些假设条件下最佳表现。</p>
+<h3 id="新指标-vs.-传统指标">新指标 vs. 传统指标</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig18.png" /></p>
+<p>这里要说明的是传统的评价方式与本文提出方式的关系。 1. matching
+score的选择还是比较明智的，它似乎与mAA相关，但也很难保证高的匹配得分就一定有助于提升mAA，例如RootSIFT
+vs ContextDesc； 2.
+repeatability则比较难去诠释它对最后位姿解算的效果。AKAZE的repeatability最好但是matching
+score和pose mAA都非常差，作者的原话(arxiv版本1)就是<strong>descriptor
+may hurt its performance</strong>。 3.
+Key.Net获得最好的repeatability，但是在mAA指标上弱于DoG的方法，即使使用了相同的描述子HardNet;</p>
+<p><strong>注意</strong>，以上结果都是论文发布在arxiv平台时给出的结果，最新结果参考这个官网<a
+target="_blank" rel="noopener" href="https://vision.uvic.ca/image-matching-challenge/leaderboard/">排行榜</a>。</p>
+<p>由于目前正在使用superpoint特征（SuperPoint (2k features, NMS=4),
+DEGENSAC），所以比较关注它的表现。感觉在2k特征阵营，它的表现并不好（屈居#35,目前共52个算法），然而SuperPoint
++ SuperGlue + DEGENSAC以及SuperPoint+GIFT+Graph Motion Coherence
+Network+DEGENSAC分别位列#1以及#2，这也是结果很让人欣慰！</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/leadboard_superglue.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/leadboard_superpoint.png" /></p>
+<h2 id="references">References</h2>
+<!-- ![](https://vincentqin.tech/blog-resources/wechat-qcode.gif) -->
+<div id="footnotes">
+<hr>
+<div id="footnotelist">
+<ol style="list-style: none; padding-left: 0; margin-left: 40px">
+<li id="fn:1">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">H.
+Aanaes, A. L. Dahl, and K. Steenstrup Pedersen. Interesting Interest
+Points. IJCV, 97:18–35, 2012.
+2<a href="#fnref:1" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:2">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">H.
+Aanaes and F. Kahl. Estimation of Deformable Structure and Motion. In
+Vision and Modelling of Dynamic Scenes Workshop, 2002.
+6<a href="#fnref:2" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:3">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">S.
+Agarwal, N. Snavely, I. Simon, S.M. Seitz, and R. Szeliski. Building
+Rome in One Day. In ICCV, 2009. 1,
+2<a href="#fnref:3" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:4">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">P.
+F. Alcantarilla, J. Nuevo, and A. Bartoli. Fast Explicit Diffusion for
+Accelerated Features in Nonlinear Scale Spaces. In BMVC, 2013. 2,
+3<a href="#fnref:4" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:5">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Anonymous.
+DeepSFM: Structure From Motion Via Deep Bundle Adjustment. In Submission
+to ICLR, 2020. 2<a href="#fnref:5" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:6">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Relja
+Arandjelovic. Three things everyone should know to improve object
+retrieval. In CVPR, 2012.
+3<a href="#fnref:6" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:7">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">7.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Relja
+Arandjelovic, Petr Gronat, Akihiko Torii, Tomas Pajdla, and Josef Sivic.
+NetVLAD: CNN Architecture for Weakly Supervised Place Recognition. In
+CVPR, 2016. 1<a href="#fnref:7" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:8">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">8.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Hernan
+Badino, Daniel Huber, and Takeo Kanade. The CMU Visual Localization Data
+Set. http://3dvis. ri.cmu.edu/data-sets/localization, 2011.
+2<a href="#fnref:8" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:9">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">9.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">V.
+Balntas, K. Lenc, A. Vedaldi, and K. Mikolajczyk. HPatches: A Benchmark
+and Evaluation of Handcrafted and Learned Local Descriptors. In CVPR,
+2017. 2, 7<a href="#fnref:9" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:10">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">10.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Vassileios
+Balntas, Shuda Li, and Victor Prisacariu. RelocNet: Continuous Metric
+Learning Relocalisation using Neural Nets. In The European Conference on
+Computer Vision (ECCV), September 2018.
+1<a href="#fnref:10" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:11">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">11.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">V.
+Balntas, E. Riba, D. Ponsa, and K. Mikolajczyk. Learning Local Feature
+Descriptors with Triplets and Shallow Convolutional Neural Networks. In
+BMVC, 2016. 2<a href="#fnref:11" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:12">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">12.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Daniel
+Barath and Ji Matas. Graph-cut ransac. In The IEEE Conference on
+Computer Vision and Pattern Recognition (CVPR), June 2018. 2,
+4<a href="#fnref:12" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:13">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">13.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Axel
+Barroso-Laguna, Edgar Riba, Daniel Ponsa, and Krystian Mikolajczyk.
+Key.Net: Keypoint Detection by Handcrafted and Learned CNN Filters. In
+Proceedings of the 2019 IEEE/CVF International Conference on Computer
+Vision, 2019. 2, 3<a href="#fnref:13" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:14">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">14.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">A.
+Baumberg. Reliable Feature Matching Across Widely Separated Views. In
+CVPR, pages 774–781, 2000. 3,
+6<a href="#fnref:14" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:15">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">15.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">H.
+Bay, T. Tuytelaars, and L. Van Gool. SURF: Speeded Up Robust Features.
+In ECCV, 2006. 2, 3<a href="#fnref:15" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:16">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">16.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">P.
+R. Beaudet. Rotationally invariant image operators. In Proceedings of
+the 4th International Joint Conference on Pattern Recognition, pages
+579–583, Kyoto, Japan, Nov. 1978. 3,
+6<a href="#fnref:16" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:17">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">17.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Jia-Wang
+Bian, Yu-Huan Wu, Ji Zhao, Yun Liu, Le Zhang, Ming-Ming Cheng, and Ian
+Reid. An Evaluation of Feature Matchers for Fundamental Matrix
+Estimation. In BMVC, 2019.
+2<a href="#fnref:17" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:18">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">18.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Eric
+Brachmann and Carsten Rother. Neural- Guided RANSAC: Learning Where to
+Sample Model Hypotheses. In ICCV, 2019.
+2<a href="#fnref:18" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:19">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">19.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">G.
+Bradski. The OpenCV Library. Dr. Dobb’s Journal of Software Tools, 2000.
+4<a href="#fnref:19" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:20">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">20.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.
+Brown, G. Hua, and S. Winder. Discriminative Learning of Local Image
+Descriptors. PAMI, 2011. 1, 2,
+7<a href="#fnref:20" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:21">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">21.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.
+Brown and D. Lowe. Automatic Panoramic Image Stitching Using Invariant
+Features. IJCV, 74:59–73, 2007.
+2<a href="#fnref:21" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:22">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">22.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Mai
+Bui, Christoph Baur, Nassir Navab, Slobodan Ilic, and Shadi Albarqouni.
+Adversarial Networks for Camera Pose Regression and Reﬁnement. In The
+IEEE International Conference on Computer Vision (ICCV) Workshops, Oct
+2019. 1<a href="#fnref:22" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:23">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">23.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Ondˇrej
+Chum and Jiˇr´ı Matas. Matching with PROSAC Progressive Sample
+Consensus. In CVPR, pages 220–226, June 2005.
+2<a href="#fnref:23" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:24">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">24.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Ondˇrej
+Chum, Jiˇr´ı Matas, and Josef Kittler. Locally Optimized RANSAC. In PR,
+2003. 2<a href="#fnref:24" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:25">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">25.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Ondˇrej
+Chum, Jiˇr´ı Matas, and Josef Kittler. Locally optimized ransac. In
+Pattern Recognition, 2003.
+4<a href="#fnref:25" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:26">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">26.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Ondrej
+Chum, Tomas Werner, and Jiri Matas. Two-View Geometry Estimation
+Unaffected by a Dominant Plane. In CVPR, 2005. 2,
+4<a href="#fnref:26" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:27">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">27.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Hainan
+Cui, Xiang Gao, Shuhan Shen, and Zhanyi Hu. Hsfm: Hybrid
+structure-from-motion. In CVPR, July 2017.
+2<a href="#fnref:27" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:28">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">28.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Zheng
+Dang, Kwang Moo Yi, Yinlin Hu, Fei Wang, Pascal Fua, and Mathieu
+Salzmann. Eigendecomposition-Free Training of Deep Networks with Zero
+Eigenvalue-Based Losses. In ECCV, 2018.
+4<a href="#fnref:28" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:29">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">29.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Jana
+Noskova Daniel Barath, Jiri Matas. MAGSAC: marginalizing sample
+consensus. In CVPR, 2019. 1, 2,
+4<a href="#fnref:29" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:30">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">30.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">D.
+Detone, T. Malisiewicz, and A. Rabinovich. Toward Geometric Deep SLAM.
+arXiv preprint arXiv:1707.07410, 2017.
+1<a href="#fnref:30" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:31">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">31.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">D.
+Detone, T. Malisiewicz, and A. Rabinovich. Superpoint: Self-Supervised
+Interest Point Detection and Description. CVPR Workshop on Deep Learning
+for Visual SLAM, 2018. 1, 2, 3,
+8<a href="#fnref:31" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:32">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">32.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.
+Dong and S. Soatto. Domain-Size Pooling in Local Descriptors: DSP-SIFT.
+In CVPR, 2015. 6<a href="#fnref:32" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:33">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">33.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.
+Dusmanu, I. Rocco, T. Pajdla, M. Pollefeys, J. Sivic, A. Torii, and T.
+Sattler. D2-Net: A Trainable CNN for Joint Detection and Description of
+Local Features. In CVPR, 2019. 1, 2, 3,
+8<a href="#fnref:33" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:34">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">34.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Patrick
+Ebel, Anastasiia Mishchuk, Kwang Moo Yi, Pascal Fua, and Eduard Trulls.
+Beyond Cartesian Representations for Local Descriptors. In ICCV, 2019.
+2, 3, 6<a href="#fnref:34" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:35">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">35.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Vassileios
+Balntas et.al. SILDa: A Multi-Task Dataset for Evaluating Visual
+Localization. https://github. com/scape-research/silda, 2018.
+2<a href="#fnref:35" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:36">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">36.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.A
+Fischler and R.C. Bolles. Random Sample Consensus: A Paradigm for Model
+Fitting with Applications to Image Analysis and Automated Cartography.
+Communications ACM, 24(6):381–395, 1981. 1, 2,
+4<a href="#fnref:36" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:37">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">37.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">P.
+Gay, V. Bansal, C. Rubino, and A. D. Bue. Probabilistic Structure from
+Motion with Objects (PSfMO). In ICCV, 2017.
+2<a href="#fnref:37" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:38">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">38.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Andreas
+Geiger, Philip Lenz, and Raquel Urtasun. Are we ready for Autonomous
+Driving? The KITTI Vision Benchmark Suite. In CVPR, 2012.
+2<a href="#fnref:38" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:39">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">39.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.I.
+Hartley. In Defense of the Eight-Point Algorithm. PAMI, 19(6):580–593,
+June 1997. 2<a href="#fnref:39" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:40">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">40.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+Hartley and A. Zisserman. Multiple View Geometry in Computer Vision.
+Cambridge University Press, 2000.
+1<a href="#fnref:40" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:41">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">41.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+I. Hartley. Projective reconstruction and invariants from multiple
+images. IEEE Transactions on Pattern Analysis and Machine Intelligence,
+16(10):1036–1041, Oct 1994. 1,
+2<a href="#fnref:41" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:42">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">42.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">K.
+He, Y. Lu, and S. Sclaroff. Local Descriptors Optimized for Average
+Precision. In CVPR, 2018.
+1<a href="#fnref:42" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:43">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">43.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.
+Heinly, J.L. Schoenberger, E. Dunn, and J-M. Frahm. Reconstructing the
+World in Six Days. In CVPR, 2015. 1, 2,
+3<a href="#fnref:43" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:44">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">44.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Karel
+Lenc and Varun Gulshan and Andrea Vedaldi. VLBenchmarks.
+http://www.vlfeat.org/ benchmarks/, 2011.
+2<a href="#fnref:44" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:45">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">45.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">A.
+Kendall, M. Grimes, and R. Cipolla. Posenet: A Convolutional Network for
+Real-Time 6-DOF Camera Relocalization. In ICCV, pages 2938–2946, 2015.
+1<a href="#fnref:45" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:46">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">46.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.
+Krishna Murthy, Ganesh Iyer, and Liam Paull. gradSLAM: Dense SLAM meets
+Automatic Differentiation. arXiv, 2019.
+2<a href="#fnref:46" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:47">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">47.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Zhengqi
+Li and Noah Snavely. MegaDepth: Learning Single-View Depth Prediction
+from Internet Photos. In CVPR, 2018.
+2<a href="#fnref:47" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:48">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">48.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">David
+G. Lowe. Distinctive Image Features from ScaleInvariant Keypoints. IJCV,
+20(2):91–110, November 2004. 1, 2, 3, 4, 6, 8,
+15<a href="#fnref:48" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:49">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">49.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Zixin
+Luo, Tianwei Shen, Lei Zhou, Jiahui Zhang, Yao Yao, Shiwei Li, Tian
+Fang, and Long Quan. ContextDesc: Local Descriptor Augmentation with
+Cross-Modality Context. In CVPR, 2019. 2,
+3<a href="#fnref:49" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:50">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">50.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Z.
+Luo, T. Shen, L. Zhou, S. Zhu, R. Zhang, Y. Yao, T. Fang, and L. Quan.
+Geodesc: Learning Local Descriptors by Integrating Geometry Constraints.
+In ECCV, 2018. 2, 3<a href="#fnref:50" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:51">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">51.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Simon
+Lynen, Bernhard Zeisl, Dror Aiger, Michael Bosse, Joel Hesch, Marc
+Pollefeys, Roland Siegwart, and Torsten Sattler. Large-scale, real-time
+visual-inertial localization revisited. arXiv Preprint, 2019.
+1<a href="#fnref:51" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:52">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">52.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Will
+Maddern, Geoffrey Pascoe, Chris Linegar, and Paul Newman. 1 year, 1000
+km: The Oxford RobotCar dataset. IJRR, 36(1):3–15, 2017.
+2<a href="#fnref:52" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:53">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">53.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.
+Matas, O. Chum, M. Urban, and T. Pajdla. Robust WideBaseline Stereo from
+Maximally Stable Extremal Regions. IVC, 22(10):761–767, 2004. 3,
+6<a href="#fnref:53" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:54">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">54.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">K.
+Mikolajczyk and C. Schmid. A Performance Evaluation of Local
+Descriptors. PAMI, 27(10):1615–1630, 2004.
+2<a href="#fnref:54" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:55">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">55.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">K.
+Mikolajczyk, C. Schmid, and A. Zisserman. Human Detection Based on a
+Probabilistic Assembly of Robust Part Detectors. In ECCV, pages 69–82,
+2004. 3, 6<a href="#fnref:55" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:56">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">56.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Jiri
+Matas Milan Pultar, Dmytro Mishkin. Leveraging Outdoor Webcams for Local
+Descriptor Learning. In Proceedings of CVWW 2019, 2019.
+7<a href="#fnref:56" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:57">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">57.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">A.
+Mishchuk, D. Mishkin, F. Radenovic, and J. Matas. Working Hard to Know
+Your Neighbor’s Margins: Local Descriptor Learning Loss. In NeurIPS,
+2017. 2, 3, 6<a href="#fnref:57" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:58">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">58.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Dmytro
+Mishkin, Jiri Matas, and Michal Perdoch. MODS: PAMI, 19(6):580–593, June
+1997. 2 Fast and robust method for two-view matching. CVIU, 2015. 6,
+15<a href="#fnref:58" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:59">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">59.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">D.
+Mishkin, F. Radenovic, and J. Matas. Repeatability is Not Enough:
+Learning Affine Regions via Discriminability. In ECCV, 2018. 3,
+6<a href="#fnref:59" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:60">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">60.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Arun
+Mukundan, Giorgos Tolias, and Ondrej Chum. Explicit Spatial Encoding for
+Deep Local Descriptors. In CVPR, 2019.
+1<a href="#fnref:60" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:61">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">61.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+Mur-Artal, J. Montiel, and J. Tardos. Orb-Slam: A Versatile and Accurate
+Monocular Slam System. IEEE Transactions on Robotics, 31(5):1147–1163,
+2015. 1<a href="#fnref:61" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:62">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">62.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">D.
+Nister. An Efficient Solution to the Five-Point Relative Pose Problem.
+In CVPR, June 2003. 2<a href="#fnref:62" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:63">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">63.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Hyeonwoo
+Noh, Andre Araujo, Jack Sim, and Tobias Weyanda nd Bohyung Han.
+Large-Scale Image Retrieval with Attentive Deep Local Features. In ICCV,
+2017. 1, 2<a href="#fnref:63" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:64">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">64.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Yuki
+Ono, Eduard Trulls, Pascal Fua, and Kwang Moo Yi. LF-Net: Learning Local
+Features from Images. In NeurIPS, 2018. 2,
+3<a href="#fnref:64" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:65">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">65.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">F.
+Pedregosa, G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O. Grisel,
+M. Blondel, P. Prettenhofer, R. Weiss, V. Dubourg, J. Vanderplas, A.
+Passos, D. Cournapeau, M. Brucher, M. Perrot, and E. Duchesnay.
+Scikit-learn: Machine learning in Python. Journal of Machine Learning
+Research, 12:2825–2830, 2011.
+4<a href="#fnref:65" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:66">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">66.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Stephen
+M. Pizer, E. Philip Amburn, John D. Austin, Robert Cromartie, Ari
+Geselowitz, Trey Greer, Bart ter Haar Romeny, John B. Zimmerman, and
+Karel Zuiderveld. Adaptive histogram equalization and its variations.
+Computer vision, graphics, and image processing, 1987.
+15<a href="#fnref:66" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:67">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">67.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.
+Pultar, D. Mishkin, and J. Matas. Leveraging Outdoor Webcams for Local
+Descriptor Learning. In Computer Vision Winter Workshop, 2019. 2,
+7<a href="#fnref:67" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:68">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">68.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">C.R.
+Qi, H. Su, K. Mo, and L.J. Guibas. Pointnet: Deep Learning on Point Sets
+for 3D Classiﬁcation and Segmentation. In CVPR, 2017.
+4<a href="#fnref:68" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:69">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">69.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Filip
+Radenovic, Georgios Tolias, and Ondra Chum. CNN image retrieval learns
+from BoW: Unsupervised ﬁne-tuning with hard examples. In ECCV, 2016.
+1<a href="#fnref:69" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:70">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">70.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+Ranftl and V. Koltun. Deep Fundamental Matrix Estimation. In ECCV, 2018.
+2, 4<a href="#fnref:70" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:71">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">71.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.
+Revaud, P. Weinzaepfel, C. De Souza, N. Pion, G. Csurka, Y. Cabon, and
+M. Humenberger. R2D2: Repeatable and Reliable Detector and Descriptor.
+In arXiv Preprint, 2019.
+8<a href="#fnref:71" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:72">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">72.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J´erˆome
+Revaud, Philippe Weinzaepfel, C´esar Roberto de Souza, Noe Pion,
+Gabriela Csurka, Yohann Cabon, and Martin Humenberger. R2D2: Repeatable
+and Reliable Detector and Descriptor. In NeurIPS, 2019.
+2<a href="#fnref:72" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:73">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">73.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">E.
+Rublee, V. Rabaud, K. Konolidge, and G. Bradski. ORB: An Efﬁcient
+Alternative to SIFT or SURF. In ICCV, 2011. 2, 3,
+6<a href="#fnref:73" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:74">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">74.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Torsten
+Sattler, Bastian Leibe, and Leif Kobbelt. Improving Image-Based
+Localization by Active Correspondence Search. In ECCV, 2012.
+1<a href="#fnref:74" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:75">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">75.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">T.
+Sattler, W. Maddern, C. Toft, A. Torii, L. Hammarstrand, E. Stenborg, D.
+Safari, M. Okutomi, M. Pollefeys, J. Sivic, F. Kahl, and T. Pajdla.
+Benchmarking 6DOF Outdoor Visual Localization in Changing Conditions. In
+CVPR, 2018. 1, 2<a href="#fnref:75" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:76">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">76.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Torsten
+Sattler, Tobias Weyand, Bastian Leibe, and Leif Kobbelt. Image Retrieval
+for Image-Based Localization Revisited. In BMVC, 2012.
+2<a href="#fnref:76" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:77">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">77.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Torsten
+Sattler, Qunjie Zhou, Marc Pollefeys, and Laura Leal-Taixe.
+Understanding the Limitations of CNN-based Absolute Camera Pose
+Regression. In CVPR, 2019.
+1<a href="#fnref:77" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:78">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">78.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">N.
+Savinov, A. Seki, L. Ladicky, T. Sattler, and M. Pollefeys.
+Quad-Networks: Unsupervised Learning to Rank for Interest Point
+Detection. CVPR, 2017. 2<a href="#fnref:78" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:79">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">79.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.L.
+Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR,
+2016. 1, 2, 3, 4, 6<a href="#fnref:79" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:80">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">80.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.L.
+Sch¨onberger, H. Hardmeier, T. Sattler, and M. Pollefeys. Comparative
+Evaluation of Hand-Crafted and Learned Local Features. In CVPR, 2017.
+2<a href="#fnref:80" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:81">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">81.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Yunxiao
+Shi, Jing Zhu, Yi Fang, Kuochin Lien, and Junli Gu. Self-Supervised
+Learning of Depth and Ego-motion with Differentiable Bundle Adjustment.
+arXiv Preprint, 2019. 2<a href="#fnref:81" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:82">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">82.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">E.
+Simo-serra, E. Trulls, L. Ferraz, I. Kokkinos, P. Fua, and F.
+Moreno-Noguer. Discriminative Learning of Deep Convolutional Feature
+Point Descriptors. In ICCV, 2015.
+2<a href="#fnref:82" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:83">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">83.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">C.
+Strecha, W.V. Hansen, L. Van Gool, P. Fua, and U. Thoennessen. On
+Benchmarking Camera Calibration and Multi-View Stereo for High
+Resolution Imagery. In CVPR, 2008.
+2<a href="#fnref:83" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:84">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">84.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">J.
+Sturm, N. Engelhard, F. Endres, W. Burgard, and D. Cremers. A Benchmark
+for the Evaluation of RGB-D SLAM Systems. In IROS, 2012.
+4<a href="#fnref:84" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:85">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">85.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Weiwei
+Sun, Wei Jiang, Eduard Trulls, Andrea Tagliasacchi, and Kwang Moo Yi.
+Attentive Context Normalization for Robust Permutation-Equivariant
+Learning. In arXiv Preprint, 2019. 2, 4,
+8<a href="#fnref:85" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:86">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">86.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Chengzhou
+Tang and Ping Tan. Ba-Net: Dense Bundle Adjustment Network. In ICLR,
+2019. 2<a href="#fnref:86" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:87">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">87.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Keisuke
+Tateno, Federico Tombari, Iro Laina, and Nassir Navab. Cnn-slam:
+Real-time dense monocular slam with learned depth prediction. In CVPR,
+July 2017. 2<a href="#fnref:87" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:88">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">88.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">B.
+Thomee, D.A. Shamma, G. Friedland, B. Elizalde, K. Ni, D. Poland, D.
+Borth, and L. Li. YFCC100M: the New Data in Multimedia Research. In
+CACM, 2016. 3<a href="#fnref:88" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:89">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">89.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Y.
+Tian, B. Fan, and F. Wu. L2-Net: Deep Learning of Discriminative Patch
+Descriptor in Euclidean Space. In CVPR, 2017. 2,
+3<a href="#fnref:89" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:90">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">90.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Yurun
+Tian, Xin Yu, Bin Fan, Fuchao Wu, Huub Heijnen, and Vassileios Balntas.
+SOSNet: Second Order Similarity Regularization for Local Descriptor
+Learning. In CVPR, 2019. 1, 2,
+3<a href="#fnref:90" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:91">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">91.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Giorgos
+Tolias, Yannis Avrithis, and Herv´e J´egou. Image Search with Selective
+Match Kernels: Aggregation Across Single and Multiple Images. IJCV,
+116(3):247–261, Feb 2016.
+1<a href="#fnref:91" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:92">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">92.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">P.H.S.
+Torr and A. Zisserman. MLESAC: A New Robust Estimator with Application
+to Estimating Image Geometry. CVIU, 78:138–156, 2000.
+2<a href="#fnref:92" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:93">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">93.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">B.
+Triggs, P. Mclauchlan, R. Hartley, and A. Fitzgibbon. Bundle Adjustment
+– A Modern Synthesis. In Vision Algorithms: Theory and Practice, pages
+298–372, 2000. 1<a href="#fnref:93" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:94">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">94.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Andrea
+Vedaldi and Brian Fulkerson. Vlfeat: An open and portable library of
+computer vision algorithms. In Proceedings of the 18th ACM International
+Conference on Multimedia, MM ’10, pages 1469–1472, 2010.
+3<a href="#fnref:94" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:95">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">95.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Y.
+Verdie, K. M. Yi, P. Fua, and V. Lepetit. TILDE: A Temporally Invariant
+Learned DEtector. In CVPR, 2015.
+2<a href="#fnref:95" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:96">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">96.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">S.
+Vijayanarasimhan, S. Ricco, C. Schmid, R. Sukthankar, and K.
+Fragkiadaki. Sfm-Net: Learning of Structure and Motion from Video. arXiv
+Preprint, 2017. 2<a href="#fnref:96" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:97">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">97.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">X.
+Wei, Y. Zhang, Y. Gong, and N. Zheng. Kernelized Subspace Pooling for
+Deep Local Descriptors. In CVPR, 2018.
+1<a href="#fnref:97" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:98">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">98.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Changchang
+Wu. Towards Linear-Time Incremental Structure from Motion. In 3DV, 2013.
+2, 6<a href="#fnref:98" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:99">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">99.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Kwang
+Moo Yi, Eduard Trulls, Vincent Lepetit, and Pascal Fua. LIFT: Learned
+Invariant Feature Transform. In ECCV, 2016.
+2<a href="#fnref:99" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:100">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">100.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">K.
+M. Yi, E. Trulls, Y. Ono, V. Lepetit, M. Salzmann, and P. Fua. Learning
+to Find Good Correspondences. In CVPR, 2018. 2, 3, 4, 7, 13,
+17<a href="#fnref:100" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:101">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">101.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">S.
+Zagoruyko and N. Komodakis. Learning to Compare Image Patches via
+Convolutional Neural Networks. In CVPR, 2015.
+6<a href="#fnref:101" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:102">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">102.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Jiahui
+Zhang, Dawei Sun, Zixin Luo, Anbang Yao, Lei Zhou, Tianwei Shen, Yurong
+Chen, Long Quan, and Hongen Liao. Learning Two-View Correspondences and
+Geometry Using Order-Aware Network. ICCV, 2019. 2, 3,
+4<a href="#fnref:102" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:103">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">103.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Xu
+Zhang, Felix X. Yu, Svebor Karaman, and Shih-Fu Chang. Learning
+Discriminative and Transformation Covariant Local Feature Detectors. In
+The IEEE Conference on Computer Vision and Pattern Recognition (CVPR),
+July 2017. 2<a href="#fnref:103" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:104">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">104.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Chen
+Zhao, Zhiguo Cao, Chi Li, Xin Li, and Jiaqi Yang. NM-Net: Mining
+Reliable Neighbors for Robust Feature Correspondences. In CVPR, 2019. 2,
+4<a href="#fnref:104" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:105">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">105.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Qunjie
+Zhou, Torsten Sattler, Marc Pollefeys, and Laura Leal-Taixe. To learn or
+not to learn: Visual localization from essential matrices. arXiv
+Preprint, 2019. 1<a href="#fnref:105" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:106">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">106.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Siyu
+Zhu, Runze Zhang, Lei Zhou, Tianwei Shen, Tian Fang, Ping Tan, and Long
+Quan. Very Large-Scale Global SfM by Distributed Motion Averaging. In
+CVPR, June 2018. 1, 2<a href="#fnref:106" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:107">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">107.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">C.L.
+Zitnick and K. Ramnath. Edge Foci Interest Points. In ICCV, 2011.
+2<a href="#fnref:107" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:108">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">108.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">A.
+Alahi, R. Ortiz, and P. Vandergheynst. FREAK: Fast Retina Keypoint. In
+CVPR, 2012. 7, 11<a href="#fnref:108" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:109">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">109.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">S.
+Leutenegger, M. Chli, and R. Y. Siegwart. Brisk: Binary robust invariant
+scalable keypoints. In ICCV, pages 2548–2555,
+2011.7<a href="#fnref:109" rev="footnote">↩︎</a></span>
+</li>
+</ol>
+</div>
+</div>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/2020-image-matching-cvpr/" title="📝笔记：CVPR2020图像匹配挑战赛，新数据集+新评测方法，SOTA正瑟瑟发抖！">https://www.vincentqin.tech/posts/2020-image-matching-cvpr/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/SIFT/" rel="tag"># SIFT</a>
+              <a href="/tags/ORB/" rel="tag"># ORB</a>
+              <a href="/tags/%E7%89%B9%E5%BE%81%E5%8C%B9%E9%85%8D/" rel="tag"># 特征匹配</a>
+              <a href="/tags/SuperPoint/" rel="tag"># SuperPoint</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/superglue/" rel="prev" title="📝笔记：SuperGlue:Learning Feature Matching with Graph Neural Networks论文阅读">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：SuperGlue:Learning Feature Matching with Graph Neural Networks论文阅读
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/redirect-arxiv/" rel="next" title="🔨工具：国内加速访问arxiv">
+                  🔨工具：国内加速访问arxiv <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/2020-image-matching-cvpr/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

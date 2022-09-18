@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="PNP即“Perspective-N-Points”，是求解 3D 到 2D 点对运动的方法。它描述了当我们知道n个3D空间点以及它们在图像上的位置时，如何估计相机所在的位姿。PnP 问题有很多种求解方法，例如用三对点估计位姿的 P3P（通常需要额外一个点进行验证结果），直接线性变换（DLT），EPnP（Efficient PnP，已知内参时用），UPnP（内参未知时用） 等等）。此外，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：SLAM常见问题(三)：PNP">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/slam-common-issues-PNP/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="PNP即“Perspective-N-Points”，是求解 3D 到 2D 点对运动的方法。它描述了当我们知道n个3D空间点以及它们在图像上的位置时，如何估计相机所在的位姿。PnP 问题有很多种求解方法，例如用三对点估计位姿的 P3P（通常需要额外一个点进行验证结果），直接线性变换（DLT），EPnP（Efficient PnP，已知内参时用），UPnP（内参未知时用） 等等）。此外，">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-11T13:29:24.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:24:13.447Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="位姿">
+<meta property="article:tag" content="PNP">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/slam-common-issues-PNP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/slam-common-issues-PNP/","path":"posts/slam-common-issues-PNP/","title":"📝笔记：SLAM常见问题(三)：PNP"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：SLAM常见问题(三)：PNP | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#p3p"><span class="nav-number">1.</span> <span class="nav-text">P3P</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#epnp"><span class="nav-number">2.</span> <span class="nav-text">EPnP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E5%81%87%E8%AE%BE"><span class="nav-number">2.2.</span> <span class="nav-text">算法假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E7%82%B9%E7%9A%84%E5%AD%98%E5%9C%A8%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text">控制点的存在性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E6%8E%A7%E5%88%B6%E7%82%B9"><span class="nav-number">2.4.</span> <span class="nav-text">如何选择控制点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%E6%8E%A7%E5%88%B6%E7%82%B9%E5%9C%A8%E7%9B%B8%E6%9C%BA%E7%B3%BB%E4%B8%8B%E7%9A%84%E5%9D%90%E6%A0%87"><span class="nav-number">2.5.</span> <span class="nav-text">求解控制点在相机系下的坐标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/slam-common-issues-PNP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：SLAM常见问题(三)：PNP | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：SLAM常见问题(三)：PNP
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-08-11 21:29:24" itemprop="dateCreated datePublished" datetime="2019-08-11T21:29:24+08:00">2019-08-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:24:13" itemprop="dateModified" datetime="2022-09-05T02:24:13+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/slam-common-issues-PNP/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/slam-common-issues-PNP/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/slam-common-issues-PNP/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><code>PNP</code>即“Perspective-N-Points”，是求解 3D 到 2D
+点对运动的方法。它描述了当我们知道n个3D空间点以及它们在图像上的位置时，如何估计相机所在的位姿。PnP
+问题有很多种求解方法，例如用三对点估计位姿的
+<code>P3P</code>（通常需要额外一个点进行验证结果），直接线性变换（<code>DLT</code>），<code>EPnP</code>（Efficient
+PnP，已知内参时用），<code>UPnP</code>（内参未知时用）
+等等）。此外，还能用非线性优化的方式，构建最小二乘问题并迭代求解，也就是万金油式的
+<code>Bundle Adjustment</code>。</p>
+<span id="more"></span>
+<h2 id="p3p">P3P</h2>
+<p>已知：<span class="math inline">\(3D-2D\)</span>匹配点，<span
+class="math inline">\(3D\)</span>点的<strong>世界坐标</strong>记为<span
+class="math inline">\(A, B, C\)</span>，图像上的2D点记为<span
+class="math inline">\(a, b, c\)</span>。</p>
+<p>未知：<strong>相机系下3D点的坐标是未知的</strong>，即<span
+class="math inline">\(OA,OB,OC\)</span>，一旦$ 3D$
+点在相机坐标系下的坐标能够算出，我们就得到了<span
+class="math inline">\(3D-3D\)</span>的对应点，把<code>PnP</code>问题转换为了<code>ICP</code>问题。</p>
+<p>我们的目标就是通过<strong>纯几何的方法</strong>求出上述未知量，过程如下。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-3/slam-common-issues-PNP/p3p.png" /></p>
+<p>由于余弦定理可知：</p>
+<p><span class="math display">\[
+\begin{array}{l}{O A^{2}+O B^{2}-2 O A \cdot O B \cdot \cos \langle a,
+b\rangle= A B^{2}} \\ {O B^{2}+O C^{2}-2 O B \cdot O C \cdot \cos
+\langle b, c\rangle= B C^{2}} \\ {O A^{2}+O C^{2}-2 O A \cdot O C \cdot
+\cos \langle a, c\rangle= A C^{2}}\end{array}
+\]</span></p>
+<p>对上面三式全体除以<span
+class="math inline">\(OC^{2}\)</span>，记<span class="math inline">\(x=O
+A / O C, y=O B / O C\)</span>，得：</p>
+<p><span class="math display">\[
+\begin{array}{l}{x^{2}+y^{2}-2 x y \cos \langle a, b\rangle= A B^{2} / O
+C^{2}} \\ {y^{2}+1^{2}-2 y \cos \langle b, c\rangle= B C^{2} / O C^{2}}
+\\ {x^{2}+1^{2}-2 x \cos \langle a, c\rangle= A C^{2} / O
+C^{2}}\end{array}
+\]</span></p>
+<p>记<span class="math inline">\(v=A B^{2} / O C^{2}, u v=B C^{2} / O
+C^{2}, w v=A C^{2} / O C^{2}\)</span>，得：</p>
+<p><span class="math display">\[
+\begin{array}{l}{x^{2}+y^{2}-2 x y \cos \langle a, b\rangle- v=0} \\
+{y^{2}+1^{2}-2 y \cos \langle b, c\rangle- u v=0} \\ {x^{2}+1^{2}-2 x
+\cos \langle a, c\rangle- w v=0}\end{array}
+\]</span></p>
+<p>将第一个式子中<span class="math inline">\(v = x^{2}+y^{2}-2 x y \cos
+\langle a, b\rangle\)</span>带入后面两个式子中，得：</p>
+<p><span class="math display">\[
+\begin{array}{l}{(1-u) y^{2}-u x^{2}-\cos \langle b, c\rangle y+2 u x y
+\cos \langle a, b\rangle+ 1=0} \\ {(1-w) x^{2}-w y^{2}-\cos \langle a,
+c\rangle x+2 w x y \cos \langle a, b\rangle+ 1=0}\end{array}
+\]</span></p>
+<p>上式中几个余弦角度<span class="math inline">\(\cos \langle a,
+b\rangle, \cos \langle b, c\rangle, \cos \langle a,
+c\rangle\)</span>是已知的，<span class="math inline">\(u=B C^{2} / A
+B^{2}, w=A C^{2} / A B^{2}\)</span>也是已知的，所以未知量仅有<span
+class="math inline">\(x,y\)</span>，解析地求解该方程组是一个复杂的过程，需要用<strong><a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%90%B4%E6%B6%88%E5%85%83%E6%B3%95">吴消元法</a></strong>。这样就可以求得<span
+class="math inline">\(x,y\)</span>，然后带入<span
+class="math inline">\(v = x^{2}+y^{2}-2 x y \cos \langle a,
+b\rangle\)</span>求解<span
+class="math inline">\(v\)</span>，即可得到<span
+class="math inline">\(OC\)</span>，进而得到<span
+class="math inline">\(OB,OA\)</span>。该方程最多可能得到四个解，但我们可以用第4个验证点来计算最可能的解，得到$
+A, B, C$ 在相机坐标系下的<span
+class="math inline">\(3D\)</span>坐标。然后，根据$ 3D-3D
+$的点对，计算相机的运动 <span
+class="math inline">\(R,t\)</span>，此处可参考文献<a
+target="_blank" rel="noopener" href="https://igl.ethz.ch/projects/ARAP/svd_rot.pdf">Least-Squares Rigid
+Motion Using SVD</a></p>
+<h2 id="epnp">EPnP</h2>
+<h3 id="问题描述">问题描述</h3>
+<p><code>EPnP</code>即Efficient PnP，参考文献 <a
+target="_blank" rel="noopener" href="https://icwww.epfl.ch/~lepetit/papers/lepetit_ijcv08.pdf">EPnP: An
+Accurate O(n) Solution to the PnP Problem</a>。</p>
+<p>问题描述如PnP，更加具体的，我们已知一组特征点，对于每个特征点<span
+class="math inline">\(i\)</span>，我们有如下信息：</p>
+<ul>
+<li><p>特征点 <span class="math inline">\(i\)</span>
+在世界坐标系的坐标<span
+class="math display">\[P_{i}^{w}=\left[\begin{array}{c}{x_{i}^{w}} \\
+{y_{i}^{w}} \\ {z_{i}^{w}}\end{array}\right]\]</span></p></li>
+<li><p>特征点在成像平面上的坐标<span
+class="math display">\[p_{i}=\left[\begin{array}{l}{u_{i}} \\
+{v_{i}}\end{array}\right]\]</span></p></li>
+<li><p>已知相机内参<span class="math inline">\(K\)</span></p></li>
+</ul>
+<p>求：世界坐标系到相机系的变换矩阵<span class="math display">\[T_{c
+w}=\left[\begin{array}{cc}{R_{c w}} &amp; {t} \\ {0} &amp;
+{1}\end{array}\right]\]</span></p>
+<h3 id="算法假设">算法假设</h3>
+<p><code>EPnP</code>的思想是无论世界系还是相机系下的<span
+class="math inline">\(3D\)</span>点都可以由<strong>4个控制点线性组合</strong>，记：</p>
+<ul>
+<li>世界系下4个控制点表示为:<span
+class="math inline">\(\mathbf{c}_{j}^{w}, j=1, \cdots, 4\)</span></li>
+<li>相机系下4个控制点表示为:<span
+class="math inline">\(\mathbf{c}_{j}^{c}, j=1, \cdots, 4\)</span></li>
+</ul>
+<p>EPnP算法将参考点的坐标表示为控制点坐标的加权和： <span
+class="math display">\[
+\mathbf{p}_{i}^{w}=\sum_{j=1}^{4} \alpha_{i j} \mathbf{c}_{j}^{w}, \text
+{ with } \sum_{j=1}^{4} \alpha_{i j}=1
+\]</span> 其中<span class="math inline">\(\alpha_{i, j}, j=1, \cdots,
+4\)</span>是加权系数，一旦虚拟控制点确定后，且满足4个控制点不共面的前提，<span
+class="math inline">\(\alpha_{i, j}\)</span>是唯一的。</p>
+<h3 id="控制点的存在性">控制点的存在性</h3>
+<p>现在讨论控制点的存在性，上式可以写成： <span class="math display">\[
+\left[\begin{array}{c}{p_{i}^{w}} \\
+{1}\end{array}\right]=\left[\begin{array}{cccc}{C_{1}^{w}} &amp;
+{C_{2}^{w}} &amp; {C_{3}^{w}} &amp; {C_{4}^{w}} \\ {1} &amp; {1} &amp;
+{1} &amp; {1}\end{array}\right] \alpha_{i} \stackrel{令}{=} C \alpha_{i}
+\]</span> 可见只要<span
+class="math inline">\(C\)</span>非奇异，就一定可以找到满足条件的<span
+class="math inline">\(\alpha_{i}\)</span>，即：</p>
+<p><span class="math display">\[
+\left[\begin{array}{l}{\alpha_{i 1}} \\ {\alpha_{i 2}} \\ {\alpha_{i 3}}
+\\ {\alpha_{i
+4}}\end{array}\right]=C^{-1}\left[\begin{array}{c}{\mathbf{p}_{i}^{w}}
+\\ {1}\end{array}\right]
+\]</span></p>
+<p>接下来，我们讨论相机坐标系下，控制点和参考<span
+class="math inline">\(3D\)</span>点之间的关系： <span
+class="math display">\[
+p_{i}^{c}=R_{c w} p_{i}^{w}+t=R_{c w}\left(\sum_{j=1}^{4} \alpha_{i j}
+c_{i}^{w}\right)+t
+\]</span> 由于<span class="math inline">\(\sum_{j=1}^{4} \alpha_{i
+j}=1\)</span>，因此<span class="math inline">\(t=\sum_{j=1}^{4}
+\alpha_{i j} t\)</span>,带入上式，得： <span class="math display">\[
+p_{i}^{c}=\sum_{j=1}^{4} \alpha_{i j}\left(R_{c w} c_{i}^{w}\right)+t
+)=\sum_{j=1}^{4} \alpha_{i j} c_{i}^{c}
+\]</span> 可见系数<span
+class="math inline">\(\alpha_{i}\)</span>具有不变性，如果我们能够求出控制点在相机坐标系中的坐标<span
+class="math inline">\(c_{1}^{c},
+c_{2}^{c},c_{3}^{c},c_{4}^{c}\)</span>，那么对于任意一个3D点k，我们可以求得其在相机系下的坐标：<span
+class="math inline">\(p_{k}^{c}=\sum_{j=1}^{4} \alpha_{k j}
+c_{i}^{c}\)</span>，这就变成了如P3P同样的问题了，即求解<code>3D-3D</code>位姿估计问题。</p>
+<h3 id="如何选择控制点">如何选择控制点</h3>
+<p>记世界系下所有3D点集为<span
+class="math inline">\(\left\{\mathbf{p}_{i}^{w}, i=1, \cdots,
+n\right\}\)</span>,第一个控制点是所有3D点的重心:</p>
+<p><span class="math display">\[
+\mathbf{c}_{1}^{w}=\frac{1}{n} \sum_{i=1}^{n} \mathbf{p}_{i}^{w}
+\]</span> 对所有3D点去中心化，这些点罗列成矩阵形式： <span
+class="math display">\[
+A=\left[\begin{array}{c}{\mathbf{p}_{1}^{w^{T}}-\mathbf{c}_{1}^{w^{T}}}
+\\ {\cdots} \\
+{\mathbf{p}_{n}^{w^{T}}-\mathbf{c}_{1}^{w^{T}}}\end{array}\right]
+\]</span> 对<span
+class="math inline">\(A^TA\)</span>进行特征值分解（注意此时并非对A进行<code>SVD</code>分解，是为了减低时间复杂度，<code>SVD</code>分解的复杂度为<span
+class="math inline">\(SO(3)\)</span>），其特征值为<span
+class="math inline">\(\lambda_{c, i},
+i=1,2,3\)</span>，对应的特征向量为<span
+class="math inline">\(\mathbf{v}_{c, i},
+i=1,2,3\)</span>，则剩余的3个控制点表示为如下公式：</p>
+<p><span class="math display">\[
+\mathbf{c}_{j}^{w}=\mathbf{c}_{1}^{w}+\lambda_{c, j-1}^{\frac{1}{2}}
+\mathbf{v}_{c, j-1}, j=2,3,4
+\]</span></p>
+<h3 id="求解控制点在相机系下的坐标">求解控制点在相机系下的坐标</h3>
+<p>记<span class="math inline">\(\left\{\mathbf{u}_{i}\right\}_{i=1,
+\cdots, n}\)</span>为相机下<span
+class="math inline">\(3D\)</span>点<span
+class="math inline">\(\left\{\mathbf{p}^c_{i}\right\}_{i=1, \cdots,
+n}\)</span>的图像坐标，则： <span class="math display">\[
+\forall i, \quad w_{i}\left[\begin{array}{c}{\mathbf{u}_{i}} \\
+{1}\end{array}\right]=K \mathbf{p}_{i}^{c}=K \sum_{j=1}^{4} \alpha_{i j}
+\mathbf{c}_{j}^{c}
+\]</span></p>
+<p>其中<span class="math inline">\(w_i\)</span>是尺度因子，将控制点<span
+class="math inline">\(\mathbf{c}_{j}^{c}=\left[x_{j}^{c}, y_{j}^{c},
+z_{j}^{c}\right]^{T}\)</span>带入上式，得： <span
+class="math display">\[
+\forall i, \quad w_{i}\left[\begin{array}{c}{u_{i}} \\ {v_{i}} \\
+{1}\end{array}\right]=\left[\begin{array}{ccc}{f_{u}} &amp; {0} &amp;
+{u_{c}} \\ {0} &amp; {f_{v}} &amp; {v_{c}} \\ {0} &amp; {0} &amp;
+{1}\end{array}\right] \sum_{j=1}^{4} \alpha_{i
+j}\left[\begin{array}{c}{x_{j}^{c}} \\ {y_{j}^{c}} \\
+{z_{j}^{c}}\end{array}\right]
+\]</span> 上式可以得到两个线性方程： <span class="math display">\[
+\begin{array}{l}{\sum_{j=1}^{4} \alpha_{i j} f_{u} x_{j}^{c}+\alpha_{i
+j}\left(u_{c}-u_{i}\right) z_{j}^{c}=0} \\ {\sum_{j=1}^{4} \alpha_{i j}
+f_{v} y_{j}^{c}+\alpha_{i j}\left(v_{c}-v_{j}\right)
+z_{j}^{c}=0}\end{array}
+\]</span> 把这N个点的约束罗列在一起，我们就可以得到如下矩阵： <span
+class="math display">\[
+M\mathbf{x} = \mathbf{0}
+\]</span> 其中<span
+class="math inline">\(\mathbf{x}=\left[\mathbf{c}_{1}^{c \top},
+\mathbf{c}_{2}^{c \top}, \mathbf{c}_{3}^{c \top}, \mathbf{c}_{4}^{c
+\top}\right]^{\top}\)</span>为<strong>12</strong>维向量，<span
+class="math inline">\(\mathbf{M}\)</span>维度<span
+class="math inline">\(2n\times 12\)</span>，如下形式:</p>
+<p><img src = https://cdn.mathpix.com/snip/images/XRV8zRc_TojEnL-nnDpP-eSDrWxXmwLRJ0zOt5FmAzg.original.fullsize.png width =75%></p>
+<!-- ### 未完待续... -->
+<h2 id="参考">参考</h2>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/jessecw79/article/details/82945918">深入EPnP算法</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/46695068">3d-2d位姿估计之EPnP算法</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/slam-common-issues-PNP/" title="📝笔记：SLAM常见问题(三)：PNP">https://www.vincentqin.tech/posts/slam-common-issues-PNP/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/%E4%BD%8D%E5%A7%BF/" rel="tag"># 位姿</a>
+              <a href="/tags/PNP/" rel="tag"># PNP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/slam-common-issues-relocalisation/" rel="prev" title="📝笔记：SLAM常见问题(二)：重定位Relocalisation">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：SLAM常见问题(二)：重定位Relocalisation
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/slam-common-issues-ICP/" rel="next" title="📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵">
+                  📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/slam-common-issues-PNP/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

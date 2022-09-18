@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="AdaLAM的全称是Adaptive Locally-Affine Matching(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/adalam/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="AdaLAM的全称是Adaptive Locally-Affine Matching(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-17T12:37:12.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:38:21.881Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="Matching">
+<meta property="article:tag" content="CV">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/adalam/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/adalam/","path":"posts/adalam/","title":"📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E6%9C%89%E6%8A%80%E6%9C%AF%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">原有技术问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%8A%80%E6%9C%AF%E5%88%9B%E6%96%B0%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">新技术创新点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%BB%E8%A6%81%E6%A1%86%E6%9E%B6%E4%BB%A5%E5%8F%8A%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">新技术主要框架以及关键技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%8D%E5%AD%90%E7%82%B9%E9%80%89%E6%8B%A9"><span class="nav-number">3.1.</span> <span class="nav-text">种子点选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E9%80%89%E6%8B%A9%E4%B8%8E%E8%BF%87%E6%BB%A4"><span class="nav-number">3.2.</span> <span class="nav-text">局部选择与过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E9%80%82%E5%BA%94%E4%BB%BF%E5%B0%84%E6%A0%A1%E9%AA%8C"><span class="nav-number">3.3.</span> <span class="nav-text">自适应仿射校验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E9%89%B4%E6%84%8F%E4%B9%89"><span class="nav-number">5.</span> <span class="nav-text">借鉴意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">6.</span> <span class="nav-text">附录</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/adalam/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-08-17 20:37:12" itemprop="dateCreated datePublished" datetime="2020-08-17T20:37:12+08:00">2020-08-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:38:21" itemprop="dateModified" datetime="2022-09-05T02:38:21+08:00">2022-09-05</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/adalam/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/adalam/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/adalam/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><div class="note success"><p><code>AdaLAM</code>的全称是<code>Adaptive Locally-Affine Matching</code>(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。</p>
+</div>
+<span id="more"></span>
+<p>先祭出Github <a
+target="_blank" rel="noopener" href="https://github.com/cavalli1234/AdaLAM">Repo</a>: <a
+target="_blank" rel="noopener" href="https://github.com/cavalli1234/AdaLAM"><img data-src="https://github-readme-stats.vercel.app/api/pin/?username=cavalli1234&amp;repo=AdaLAM&amp;show_owner=false&amp;theme=default"
+alt="ReadMe Card" /></a></p>
+<h2 id="原有技术问题">原有技术问题</h2>
+<p>在图像匹配任务中初始匹配中外点较多，目前难以高效快速地滤除外点。</p>
+<h2 id="新技术创新点">新技术创新点</h2>
+<ol type="1">
+<li>基于目前已有的外点滤除算法（spatial
+matching），提出了现有的鲁棒快速的图像一致性空域验证算法；</li>
+<li>本框架基于一种几何假设（局部仿射），场景实用性较强；经实验验证，该算法目前达到了SOTA（很自信啊）。</li>
+</ol>
+<h2 id="新技术主要框架以及关键技术点">新技术主要框架以及关键技术点</h2>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/adalam/fig-1.png" /></p>
+<p>总共分四步：</p>
+<ol type="1">
+<li>找到初始匹配（最近邻top1）;</li>
+<li>找到置信度高且分布较好的点作为“种子点”；</li>
+<li>在初始匹配中选择与该种子点在同一个区域的匹配点；</li>
+<li>保留那些局部一致较好匹配；</li>
+</ol>
+<p>接下来重点介绍后3点。</p>
+<h3 id="种子点选择">种子点选择</h3>
+<p>将<code>ratio-test</code>得到的<code>最优次优比</code>作为左图上匹配点的匹配置信度，选择那些在半径<span
+class="math inline">\(R\)</span>内匹配置信度最大的点作为种子点。由于每个匹配点都是独立的，此时可用GPU对该过程进行并行加速。</p>
+<h3 id="局部选择与过滤">局部选择与过滤</h3>
+<p>接下来要寻找一些可以支持种子匹配的匹配对。</p>
+<p>令<span class="math inline">\(S_{i}=\left(\mathbf{x}_{1}^{S_{i}},
+\mathbf{x}_{2}^{S_{i}}\right)\)</span>，其中<span
+class="math inline">\(\mathbf{x}_{1}^{S_{i}},
+\mathbf{x}_{2}^{S_{i}}\)</span>分别表示两张图上的第<span
+class="math inline">\(i\)</span>个种子匹配对，它们之间符合<strong>相似变换</strong>（即旋转+缩放，其中旋转<span
+class="math inline">\(\alpha^{S_{i}}=\alpha_{2}^{S_{i}}-\alpha_{1}^{S_{i}}\)</span>,
+缩放为<span class="math inline">\(\sigma^{S_{i}}=\sigma_{2}^{S_{i}} /
+\sigma_{1}^{S_{i}}\)</span>）。那么对于任意匹配<span
+class="math inline">\(\left(p_{1},
+p_{2}\right)=\left(\left(\mathbf{x}_{1}, \mathbf{d}_{1}, \sigma_{1},
+\alpha_{1}\right),\left(\mathbf{x}_{2}, \mathbf{d}_{2}, \sigma_{2},
+\alpha_{2}\right)\right) \in \mathcal{M}\)</span>，其中<span
+class="math inline">\(\mathbf{d}\)</span>表示描述子，如果上述匹配满足如下约束关系，就能够被纳入到<strong>支持种子点的匹配集合</strong><span
+class="math inline">\(\mathcal{N}_{i} \subseteq
+\mathcal{M}\)</span>中，该约束关系为：</p>
+<p><span class="math display">\[
+\begin{array}{c}
+\left(\left\|\mathbf{x}_{1}^{S_{i}}-\mathbf{x}_{1}\right\| \leq \lambda
+R_{1}\right) \wedge
+\left(\left\|\mathbf{x}_{2}^{S_{i}}-\mathbf{x}_{2}\right\| \leq \lambda
+R_{2}\right)
+\end{array}
+\]</span></p>
+<p><span class="math display">\[
+\begin{array}{c}
+\left(\left|\alpha^{S_{i}}-\alpha^{p}\right| \leq t_{\alpha}\right)
+\wedge\left(\left|\ln
+\left(\frac{\sigma^{S_{i}}}{\sigma^{p}}\right)\right| \leq
+t_{\sigma}\right)
+\end{array}
+\]</span></p>
+<p>上式中<span class="math inline">\(\alpha^{p}=\alpha_{2}-\alpha_{1},
+\sigma^{p}=\sigma_{2} /
+\sigma_{1}\)</span>表示两个匹配点之间的角度与尺度差异；<span
+class="math inline">\(R_1\)</span>与<span
+class="math inline">\(R_2\)</span>分别表示图像<span
+class="math inline">\(I_1\)</span>与<span
+class="math inline">\(I_2\)</span>的种子点扩散半径；<span
+class="math inline">\(\lambda\)</span>表示邻域圈圈的覆盖程度的正则项。</p>
+<p>上面的第一个式子表示：初始匹配中与种子点相对位置差不多且在半径在<span
+class="math inline">\(\lambda R\)</span>的匹配会加入到<span
+class="math inline">\(\mathcal{N}_{i}\)</span>；第二个式子告诉我们：上面加入的这些匹配对需要满足角度以及尺度一致性才能够被加入，否则免谈。上面的两个条件需要同时满足才能得到<span
+class="math inline">\(\mathcal{N}_{i}\)</span>。</p>
+<h3 id="自适应仿射校验">自适应仿射校验</h3>
+<p>我们假设匹配对之间符合<strong>局部仿射变换</strong>，即上述的每个<span
+class="math inline">\(\mathcal{N}_{i}\)</span>都满足该假设，那么接下来可利用该假设去滤除一些错误的匹配对：使用RANSAC的思想找到最小解集去拟合仿射矩阵，然后滤除置信度低的匹配对。</p>
+<p>由于仅<strong>使用2对匹配点就可以得到仿射矩阵</strong>，那么即使对每个圈圈求仿射也并不耗时。对于第<span
+class="math inline">\(j\)</span>次迭代，我们可以得到匹配关系<span
+class="math inline">\(k\)</span>，对于集合<span
+class="math inline">\(\mathcal{N}_{i}\)</span>，我们可以从中随机选择一对匹配<span
+class="math inline">\(\mathbf{x}_{1}^{k},
+\mathbf{x}_{2}^{k}\)</span>，进而得到二者之间的仿射矩阵<span
+class="math inline">\(A_{i}^{j}\)</span>，然后我们就可以得到<strong>匹配关系对两个匹配对产生的残差</strong>，如下式：</p>
+<p><span class="math display">\[
+r_{k}\left(A_{i}^{j}\right)=\left\|A_{i}^{j}
+\mathbf{x}_{1}^{k}-\mathbf{x}_{2}^{k}\right\|
+\]</span></p>
+<p>然后作者参考文献<sup id="fnref:36"><a href="#fn:36" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="">36</span></a></sup>，设计了置信度<span
+class="math inline">\(c_{k}\)</span>（不展开讲），当置信度大于某个阈值，表示该模型对该匹配关系拟合的较好，视该匹配被视为内点；否则为外点。</p>
+<p>注意每次迭代需要更新上述残差/置信度以及内点，后一次利用前一次得到的内点去拟合新的仿射矩阵，然后做校验，直至达到最大迭代次数，最后输出内点。</p>
+<h2 id="实验">实验</h2>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/adalam/tab-1.png" /></p>
+<p>看到没，竟然超过了效果极好的<strong>GMS</strong>。</p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/adalam/fig-2.png" /></p>
+<p><img data-src="https://vincentqin.gitee.io/blogresource-5/adalam/fig-3.png" /></p>
+<p>实时性：在RTX2080Ti平台下处理4000-8000个点耗时15-25ms。</p>
+<h2 id="借鉴意义">借鉴意义</h2>
+<p>本文提出了一种高效快速的外点滤除算法，可加入到任何特征匹配算法中，预期能够提高位姿解算的精度。但上述实验结果中对GPU的要求较高，目前不清楚在低配版GPU或者在CPU平台下的表现。</p>
+<h2 id="附录">附录</h2>
+<ol type="1">
+<li><strong><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2006.04250">Paper: AdaLAM:
+Revisiting Handcrafted Outlier Detection</a></strong>
+<!-- 2. [Github Code](https://github.com/cavalli1234/AdaLAM)： --></li>
+</ol>
+<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/adalam/" title="📝笔记：AdaLAM: Revisiting Handcrafted Outlier Detection 超强外点滤除算法">https://www.vincentqin.tech/posts/adalam/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/Matching/" rel="tag"># Matching</a>
+              <a href="/tags/CV/" rel="tag"># CV</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/speedup-gitpage/" rel="prev" title="🔨工具：使用vercel加速Hexo静态博客访问">
+                  <i class="fa fa-chevron-left"></i> 🔨工具：使用vercel加速Hexo静态博客访问
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/westlake/" rel="next" title="🌡️秋天到了，还是很热">
+                  🌡️秋天到了，还是很热 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/adalam/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

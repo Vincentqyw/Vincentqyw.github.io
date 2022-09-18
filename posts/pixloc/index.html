@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="今天要介绍的文章是“Back to the Feature: Learning Robust Camera Localization from Pixels to Pose”，发表于CVPR 2021，本文的一作正是SuperGlue的作者，本文实现一种端到端场景无关的相机定位网络，在公开数据集上表现优异。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品)">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/pixloc/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="今天要介绍的文章是“Back to the Feature: Learning Robust Camera Localization from Pixels to Pose”，发表于CVPR 2021，本文的一作正是SuperGlue的作者，本文实现一种端到端场景无关的相机定位网络，在公开数据集上表现优异。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab1.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab2.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab3.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig7.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig6.png">
+<meta property="article:published_time" content="2021-10-17T15:00:08.000Z">
+<meta property="article:modified_time" content="2022-08-31T16:16:27.695Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="Paper">
+<meta property="article:tag" content="Localization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab1.png">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/pixloc/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/pixloc/","path":"posts/pixloc/","title":"📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品) | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E6%9C%89%E6%8A%80%E6%9C%AF%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">原有技术问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%8A%80%E6%9C%AF%E5%88%9B%E6%96%B0%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">新技术创新点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">关键技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E5%AF%B9%E9%BD%90"><span class="nav-number">4.1.</span> <span class="nav-text">图像对齐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E4%BD%8D%E5%A7%BF%E4%B8%AD%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.2.</span> <span class="nav-text">从位姿中学习</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E7%8E%B0%E6%9C%89%E7%AE%97%E6%B3%95%E6%AF%94%E8%BE%83"><span class="nav-number">4.3.</span> <span class="nav-text">与现有算法比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E6%B5%81%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">定位流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">5.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d%E7%BB%93%E6%9E%84"><span class="nav-number">5.2.</span> <span class="nav-text">3D结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">6.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E7%AE%97%E6%B3%95%E5%AF%B9%E6%AF%94"><span class="nav-number">6.1.</span> <span class="nav-text">端到端算法对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E5%9C%BA%E6%99%AF%E5%AE%9A%E4%BD%8D%E7%AE%97%E6%B3%95%E6%AF%94%E8%BE%83"><span class="nav-number">6.2.</span> <span class="nav-text">大场景定位算法比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%81%E8%A7%A3"><span class="nav-number">6.3.</span> <span class="nav-text">见解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E9%89%B4%E6%84%8F%E4%B9%89"><span class="nav-number">7.</span> <span class="nav-text">借鉴意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="nav-number">8.</span> <span class="nav-text">代码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#retrievallocalizer"><span class="nav-number">8.1.</span> <span class="nav-text">RetrievalLocalizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#poselocalizer"><span class="nav-number">8.2.</span> <span class="nav-text">PoseLocalizer</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/pixloc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品) | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-10-17 23:00:08" itemprop="dateCreated datePublished" datetime="2021-10-17T23:00:08+08:00">2021-10-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-01 00:16:27" itemprop="dateModified" datetime="2022-09-01T00:16:27+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Visual-Localization/" itemprop="url" rel="index"><span itemprop="name">Visual Localization</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/pixloc/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/pixloc/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/pixloc/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><div class="note default"><p>今天要介绍的文章是“<strong>Back to the Feature: Learning Robust
+Camera Localization from Pixels to Pose</strong>”，发表于CVPR
+2021，本文的一作正是SuperGlue的作者，本文实现一种端到端场景无关的相机定位网络，在公开数据集上表现优异。</p>
+</div>
+<span id="more"></span>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-title.png" /></p>
+<p>代码：<a href="github.com/cvg/pixloc">github.com/cvg/pixloc</a></p>
+<p>论文：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2103.09213">https://arxiv.org/abs/2103.09213</a></p>
+<h2 id="摘要">摘要</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig1.png" /></p>
+<p>最近在相机位姿估计任务中涌现了不少基于学习的算法。其中很多是回归出某些几何量（如位姿回归或者3D坐标回归）来实现定位，但这些方法的泛化性在视角变化或者模型参数变换后会大打折扣。</p>
+<p>本文提出了一种<strong>场景无关的算法</strong>PixLoc，输入为一张图像以及3D模型，输出图像对应的相机位姿。本文方法基于直接对齐多尺度深度特征，将相机定位问题转换成度量学习。<strong>PixLoc端到端地学习了从像素到位姿的数据先验</strong>，这种能力可以在新的场景以及模型下表现优异。本文算法不仅能够在给定粗略姿先验的情况下定位，而且能够对位姿以及特征点进行联合优化。</p>
+<h2 id="原有技术问题">原有技术问题</h2>
+<p>端到端地回<strong>归出相机相对位姿</strong>（pose
+regression）或者<strong>场景的3D坐标</strong>（ coordinate
+regression）通常是场景相关的，无法有效地拓展到新的场景，如场景出现了较大的光照变化，如训练集中仅有白天的图像而定位集出现晚上的图片，或者视角发生较大的变化时位姿的精度通常是较低的；另外一点就是精度相较于视觉定位（2D-3D）的方式精度低。</p>
+<h2 id="新技术创新点">新技术创新点</h2>
+<p>作者提到，端到端的视觉定位算法应该着重于表征学习，<strong>不是让网络学习基本的几何关系亦或编码的3D图，而是让网络能够较好地理解几何原则以及鲁棒地应对外观以及结构变化</strong>。</p>
+<p>本文作者提出的PixLoc能够做到场景无关的端到端学习位姿，且能够较好地做到跨场景（室外到室内）的相机定位。</p>
+<h2 id="关键技术点">关键技术点</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig3.png" /></p>
+<p>总览：利用已知的3D模型将query图与reference图像直接对齐对位姿进行解算，其中对齐过程中用了一种面向深度特征的非线性优化。</p>
+<p>输入：稀疏3D模型（如SfM稀疏模型），粗略的初始位姿<span
+class="math inline">\(\left(\mathbf{R}_{0},
+\mathbf{t}_{0}\right)\)</span> （可以通过图像召回获取）</p>
+<p>输出：查询图像对应的相机位姿</p>
+<p>公式化：目标是估计查询图像 <span
+class="math inline">\(\mathbf{I}_{q}\)</span> 的 6-DOF 相机位姿<span
+class="math inline">\(\left(\mathbf{R},
+\mathbf{t}\right)\)</span>，稀疏3D模型中3D点云表示为<span
+class="math inline">\(\left\{\mathbf{P}_{i}\right\}\)</span>，其中的参考图表示为<span
+class="math inline">\(\left\{\mathbf{I}_{k}\right\}\)</span></p>
+<h3 id="图像对齐">图像对齐</h3>
+<p><strong>图像表征</strong>：对于输入的查询图像 <span
+class="math inline">\(\mathbf{I}_{q}\)</span> 以及参考图像<span
+class="math inline">\(\mathbf{I}_{k}\)</span>，利用CNN提取多尺度的特征，可以在第<span
+class="math inline">\(l \in \{L,...,1\}\)</span>尺度上得到<span
+class="math inline">\(D_l\)</span>维的特征图<span
+class="math inline">\(\mathbf{F}^{l} \in \mathbb{R}^{W_{l} \times H_{l}
+\times D_l}\)</span> ，其中<span
+class="math inline">\(l\)</span>越小尺度越小，注：特征图在通道上做了<span
+class="math inline">\(L_2\)</span>归一化以提高泛化性。</p>
+<p><strong>直接对齐</strong>：目标是找到6-DOF 相机位姿<span
+class="math inline">\(\left(\mathbf{R},
+\mathbf{t}\right)\)</span>以最小化查询图像与参考图像之间的外观差异。对于给定的特征尺度<span
+class="math inline">\(l\)</span>以及被参考图像<span
+class="math inline">\(k\)</span>观测到的3D点<span
+class="math inline">\(i\)</span>，定义如下残差项：</p>
+<p><span
+class="math display">\[\mathbf{r}_{k}^{i}=\mathbf{F}_{q}^{l}\left[\mathbf{p}_{q}^{i}\right]-\mathbf{F}_{k}^{l}\left[\mathbf{p}_{k}^{i}\right]
+\in \mathbb{R}^{D}\]</span></p>
+<p>其中<span
+class="math inline">\(\mathbf{p}_{q}^{i}=\Pi\left(\mathbf{R}
+\mathbf{P}_{i}+\mathbf{t}\right)\)</span>表示3D点在查询图像上点投影坐标，<span
+class="math inline">\([.]\)</span>表示亚像素差值操作。于是对于所有的<span
+class="math inline">\(N\)</span>个观测的残差可以定义为如下形式：</p>
+<p><span class="math display">\[E_{l}(\mathbf{R}, \mathbf{t})=\sum_{i,
+k} w_{k}^{i}
+\rho\left(\left\|\mathbf{r}_{k}^{i}\right\|_{2}^{2}\right)\]</span></p>
+<p>其中<span class="math inline">\(\rho\)</span>表示代价函数，$w_{k}^{i}
+$表示每个残差的权重（后续介绍），通过LM算法迭代优化得到待优化位姿。</p>
+<p>为了增大收敛域（convergence basin），本文从<span
+class="math inline">\(l=1\)</span>最coarse的一个尺度进行连续优化，下一尺度优化的初值是上一个尺度优化的结果。所以说，<strong>低分辨率的特征负责位姿预测的鲁棒性，而高分辨率的特征负责精化位姿精度</strong>。</p>
+<p><strong>引入视觉先验</strong>：上述过程其实可以等价于传统的光度对齐的思路，考虑到CNN拥有强大的学习复杂视觉先验的能力，本文试图将这种视觉先验引入位姿优化。为了达到这个目标，CNN对每个尺度<span
+class="math inline">\(l\)</span>的特征图预测了一张对应的不确定图<span
+class="math inline">\(\mathbf{U}_{k}^{l} \in \mathbb{R}_{&gt;0}^{W_{l}
+\times
+H_{l}}\)</span>（笔者：文中没有具体说是如何得到该量），于是查询图与参考图像逐点权重可以通过下述方式进行计算：</p>
+<p><span class="math display">\[w_{k}^{i}=u_{q}^{i}
+u_{k}^{i}=\frac{1}{1+\mathbf{U}_{q}^{l}\left[\mathbf{p}_{q}^{i}\right]}
+\frac{1}{1+\mathbf{U}_{k}^{l}\left[\mathbf{p}_{k}^{i}\right]}
+\in[0,1]\]</span></p>
+<p>如果3D点重投影的不确定性小，那么这个权重会趋向于1，若该不确定性较大，这个权重趋近于0；</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig4.png" /></p>
+<p><strong>将优化器与数据相匹配</strong>：LM是一种通用的优化算法，其中包括很多启发式的操作，例如代价函数<span
+class="math inline">\(\rho\)</span>的选择，阻尼参数<span
+class="math inline">\(\lambda\)</span>的选择等。作者认为上述参数的选择会极大地削弱模型推广到新的数据的能力，因为它将优化器与训练数据进行了“绑定”（笔者：即优化器与数据相关，泛化能力就会变弱）。所以，<strong>若优化器能够具有泛化性，就要让优化器适应姿势或残差的分布，而不是场景的语义内容</strong>。本文的方法是将阻尼因子<span
+class="math inline">\(\lambda\)</span>作为一个网络学习的参数来对待，对于位姿的6参数而言，每个参数对应着不同的阻尼量，即将原来的标量<span
+class="math inline">\(\lambda\)</span>替换成了向量<span
+class="math inline">\(\mathbf{\lambda}_l \in \mathbb{R}^6\)</span>
+，将其参数化为如下形式（笔者：<span
+class="math inline">\({\theta}_l\)</span>没有明确表示什么）：</p>
+<p><span class="math display">\[\log _{10}
+\boldsymbol{\lambda}_{l}=\lambda_{\min
+}+\operatorname{sigmoid}\left(\boldsymbol{\theta}_{l}\right)\left(\lambda_{\max
+}-\lambda_{\min }\right)\]</span></p>
+<p>该方法在训练过程中调整各个姿态参数的曲率，直接从数据中学习运动先验知识。例如，当相机安装在汽车或一个基本直立的机器人上时，我们期望平面内旋转的阻尼很大。相反，普通的启发式算法对所有姿态参数一视同仁，不允许每个参数拥有不同阻尼量。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig8.png" /></p>
+<h3 id="从位姿中学习">从位姿中学习</h3>
+<p>这部分实际上对应着对已有的位姿进行优化，即后文介绍的PoseLocalizer。</p>
+<p>由于CNN本身是不关注3D点的类型的，无论是通过视觉SfM来的，或者来自RGBD传感器/LiDAR扫描等，PixLoc可以用于以上各种3D点云的输入（笔者：如何做到异构特征的数据关联，如LiDAR地图与视觉图像？）。</p>
+<p><strong>训练</strong>：由于上述不确定图以及代价函数的存在，PixLoc能够适应于噪声很大的稀疏SfM模型作为输入，在训练过程中一个不完美的3D结构是完全够用的（无需高精度稠密3D模型）。</p>
+<p><strong>损失函数</strong>：对于每一个尺度<span
+class="math inline">\(l\)</span>，都可以计算出一个<span
+class="math inline">\(\left(\mathbf{R}_l,
+\mathbf{t}_l\right)\)</span>，其真值为<span
+class="math inline">\(\left(\bar{\mathbf{R}},
+\bar{\mathbf{t}}\right)\)</span>，损失函数被构建为3D点点平均重投影误差：</p>
+<p><span class="math display">\[\mathcal{L}=\frac{1}{L} \sum_{l}
+\sum_{i}\left\|\Pi\left(\mathbf{R}_{l}
+\mathbf{P}_{i}+\mathbf{t}_{l}\right)-\Pi\left(\overline{\mathbf{R}}
+\mathbf{P}_{i}+\overline{\mathbf{t}}\right)\right\|_{\gamma}\]</span></p>
+<p>其中<span class="math inline">\(\gamma\)</span>为 Huber核函数。</p>
+<h3 id="与现有算法比较">与现有算法比较</h3>
+<p><strong>PixLoc</strong> vs. <strong>sparse matching</strong>:
+传统的局部特征匹配的方式包括多种数据操作，这些操作并不可微，例如特征点点提取/匹配/RANSAC。相比于需要大量训练的强化学习的方式而言，本文端到端的方式可微分并且操作简单。</p>
+<p><strong>PixLoc vs. GN-Net</strong>：Von
+Stumberg等人最近也提出了一些使用直接对齐的跨季节定位算法，他们的工作主要为了解决小基线场景且需要非常准确的逐像素真值对应关系以及大量的超参调整。作为对比，本文算法能够应对含有噪声的数据，且做到鲁棒定位。</p>
+<h2 id="定位流程">定位流程</h2>
+<p>配合图像检索（即首先要做一步图像召回），PixLoc可以是一个独立的定位模块，但也可以对之前方法估计的姿势进行优化。因为该算法只需要一个三维模型和一个粗略的初始姿势。</p>
+<h3 id="初始化">初始化</h3>
+<p>初始位姿的精度应该取决于对齐过程中收敛域的大小，经过深度CNN处理后一个特征点的感受野可以保证是非常大的，如下图所示，左图红色的点位于参考图像，右侧的高亮区域表示查询图像的多尺度收敛域，可见这个范围是比较大的。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig5.png" /></p>
+<h3 id="d结构">3D结构</h3>
+<p>本文使用了用HLoc+COLMAP重建的稀疏SfM模型，对于召回的参考图像，如top5～10，将它们观测的3D点云收集起来并在其对应的2D点提取多尺度特征图（对于每个3D点至少有一个内点），详见Fig3。</p>
+<h2 id="实验">实验</h2>
+<p><strong>网络结构</strong>：特征提取阶段使用了在ImageNet上预训练的VGG19编码器，<span
+class="math inline">\(L=3\)</span>,<span
+class="math inline">\(D_l=32,128,128\)</span>。算法使用Pytorch实现，特征提取耗时100ms，位姿优化200ms~1s。</p>
+<h3 id="端到端算法对比">端到端算法对比</h3>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab1.png"
+alt="Cambridge Landmarks以及7Scenes datasets定位效果" />
+<figcaption aria-hidden="true">Cambridge Landmarks以及7Scenes
+datasets定位效果</figcaption>
+</figure>
+<p>上图展示了不同算法在Cambridge Landmarks以及7Scenes
+datasets定位精度对比，数字表示在给定阈值（5cm/5deg）条件下的召回率以及平移和旋转误差中值。可以看到PixLoc能够与复杂的特征匹配（FM）的流程定位效果相当，与几何回归模型的定位效果相近；以上标红的算法表示模型针对每个场景进行了训练，而本文算法仅在室外场景中训练了一次，便可以很好地泛化到没有见过的室内外场景。</p>
+<h3 id="大场景定位算法比较">大场景定位算法比较</h3>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab2.png"
+alt="在 Aachen, RobotCar, CMU dataset大尺度场景定位对比" />
+<figcaption aria-hidden="true">在 Aachen, RobotCar, CMU
+dataset大尺度场景定位对比</figcaption>
+</figure>
+<p>以上给出了在大场景中定位召回率统计（ 阈值分别为(25cm, 2deg), (50cm,
+5deg),(5m,
+10deg）。在初始位姿是由图像召回给定给定时，本文算法既简单又能够在挑战场景如夜晚获得相比ESAC精度更高的结果。作者提到，PixLoc（使用的NetVLAD召回图像，无reranking）相较于FM的方式不够鲁棒，这是由于错误的图像召回会导致初始位姿不佳，使得算法无法收敛。此时若使用了召回效果较好的oracle，召回率会有比较明显的提升。</p>
+<p>PixLoc还可以作为后处理位姿优化模块对定位位姿进行优化，上表中列出了使用PixLoc优化hloc的定位位姿的前后对比，平均增加了2.4%的召回率。</p>
+<h3 id="见解">见解</h3>
+<p><strong>消融实验</strong>：作者也尝试了 Gauss-Newton
+loss，但是模型没有收敛；作者比较了添加每个改进后的AUC，可以看到每个小改进都有一定作用。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab3.png"
+alt="pixloc-tab3" />
+<figcaption aria-hidden="true">pixloc-tab3</figcaption>
+</figure>
+<p><strong>局限性</strong>：PixLoc受限于CNN感受野的大小，如果初始位姿的重投影误差较大，模型预测会陷入局部最优；因此，PixLoc容易受到视角变化/遮挡物的影响，也对错误的相机标定敏感。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig7.png"
+alt="pixloc-fig7" />
+<figcaption aria-hidden="true">pixloc-fig7</figcaption>
+</figure>
+<p><strong>可解释性</strong>：对权重图进行可视化可以帮助我们理解PixLoc到底关注场景的何种线索。A-D为室外驾驶场景，PixLoc可以忽略动态物体如车辆，同时也可以忽略掉短期的特征如雪(A)，落叶(B)，垃圾桶(C)以及影子等；PixLoc更加关注于柱子，树干，路标，电线以及建筑轮廓。重复的纹理如窗户在一开始会被忽略但到后期会被用来做优化。不同是，对于城市场景E，网络更加关注于固定的建筑物而不是大树。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig6.png"
+alt="pixloc-fig6" />
+<figcaption aria-hidden="true">pixloc-fig6</figcaption>
+</figure>
+<h2 id="借鉴意义">借鉴意义</h2>
+<ol type="1">
+<li>提供了一种场景无关的端到端视觉定位算法，一次模型训练，可用于多个场景的相机定位；</li>
+<li>精度较高，能够与目前最优的端到端的相机定位算法精度相当甚至更好；</li>
+<li>可以对相机位姿进行后处理以精化定位位姿；</li>
+</ol>
+<h2 id="代码解析">代码解析</h2>
+<p>建议从<code>pixloc/run_Aachen.py</code>开始阅读。</p>
+<ul>
+<li>配置项<code>default_confs</code>，分为两种模式：from_retrieval 和
+from_poses 模式，它们分别对应RetrievalLocalizer以及PoseLocalizer
+，两种模式的区别在于前者没有直接给出初始位姿，由召回的参考帧给定初始位姿；后者使用已有的位姿使用
+feature map 进行优化；此二者均继承 Localizer
+基类；只是成员函数实现存在一定差异；此外，配置项目录<code>pixloc/pixlib/configs</code>，在demo文件中设置<code>experiment = 'pixloc_megadepth'</code>来决定使用的配置文件为<code>train_pixloc_megadepth.yaml</code>，这个文件中定义了数据data/model等配置</li>
+</ul>
+<figure class="highlight python"><figcaption><span>file:pixloc/run_Aachen.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> args.from_poses:</span><br><span class="line">    localizer = PoseLocalizer(paths, conf)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    localizer = RetrievalLocalizer(paths, conf)</span><br><span class="line">poses, logs = localizer.run_batched(skip=args.skip)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>基类Localizer有两个非常重要的函数：特征提取器 extractor 以及
+optimizer ；其中 optimizer 是最核心的位姿优化器；</li>
+</ul>
+<figure class="highlight python"><figcaption><span>file:pixloc/localization/localizer.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Loading feature extractor and optimizer from experiment or scratch</span></span><br><span class="line">conf = oc.create(conf)</span><br><span class="line">conf_features = conf.features.get(<span class="string">&#x27;conf&#x27;</span>, &#123;&#125;)</span><br><span class="line">conf_optim = conf.get(<span class="string">&#x27;optimizer&#x27;</span>, &#123;&#125;)</span><br><span class="line"><span class="keyword">if</span> conf.get(<span class="string">&#x27;experiment&#x27;</span>):</span><br><span class="line">    pipeline = load_experiment(</span><br><span class="line">            conf.experiment,</span><br><span class="line">            &#123;<span class="string">&#x27;extractor&#x27;</span>: conf_features, <span class="string">&#x27;optimizer&#x27;</span>: conf_optim&#125;)</span><br><span class="line">    pipeline = pipeline.to(device)</span><br><span class="line">    logger.debug(</span><br><span class="line">        <span class="string">&#x27;Use full pipeline from experiment %s with config:\n%s&#x27;</span>,</span><br><span class="line">        conf.experiment, oc.to_yaml(pipeline.conf))</span><br><span class="line">    extractor = pipeline.extractor</span><br><span class="line">    optimizer = pipeline.optimizer</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(optimizer, torch.nn.ModuleList):</span><br><span class="line">        optimizer = <span class="built_in">list</span>(optimizer)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">assert</span> <span class="string">&#x27;name&#x27;</span> <span class="keyword">in</span> conf.features</span><br><span class="line">    extractor = get_model(conf.features.name)(conf_features)</span><br><span class="line">    optimizer = get_model(conf.optimizer.name)(conf_optim)</span><br><span class="line"></span><br><span class="line">self.paths = paths</span><br><span class="line">self.conf = conf</span><br><span class="line">self.device = device</span><br><span class="line">self.optimizer = optimizer</span><br><span class="line">self.extractor = FeatureExtractor(</span><br><span class="line">    extractor, device, conf.features.get(<span class="string">&#x27;preprocessing&#x27;</span>, &#123;&#125;))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>此外，值得注意的是pixloc的代码习惯非常值得我们学习， 如 pixloc
+加载模型的方式（根据yaml配置文件自动选择加载对应的模型文件，使用了omegaconf），在推理时采用了
+<code>learned_optimizer</code>（继承了BaseOptimizer，其中_run()函数实现在feature
+map上进行LM）；Python中面向对象的编程模式被应用地非常娴熟，可复用的模块颇多，为后续算法设计提供了不少资源...</li>
+</ul>
+<h3 id="retrievallocalizer">RetrievalLocalizer</h3>
+<p>对于 pose from retrieval (RetrievalLocalizer):
+<code>pixloc/localization/localizer.py</code>，其优化器refiner为
+RetrievalRefiner（继承BaseRefiner），其操作过程如下:</p>
+<ul>
+<li><p>初始化 RetrievalLocalizer 中各个成员函数/变量，其中比较重要是
+<strong>RetrievalRefiner</strong>，即优化器；</p></li>
+<li><p>在初始化该优化器时，可选地输入全局描述子，后续会根据该全局描述子估计一个大概的初始位姿<span
+class="math inline">\(T_{init}\)</span>，若没有全局描述子则使用topk1的位姿作为初始位姿；</p></li>
+</ul>
+<p>接下来执行位姿估计的主流程run_query：</p>
+<ul>
+<li>获取参考帧上观测到的3D点，并记录其被哪些参考帧观测，记为
+p3did_to_dbids ；</li>
+<li>上述过程准备好了查询帧相机内参，初始位姿<span
+class="math inline">\(T_{init}\)</span>，3D点 p3did_to_dbids
+等信息；</li>
+<li>调用 BaseRefiner 的 <code>refine_query_pose</code>
+函数对查询帧位姿进行优化，输入量为上述信息；
+<ul>
+<li>获取参考帧图像：由 p3did_to_dbids
+获取参考帧id，然后得到参考帧名字，随后根据给定的参考帧路径得到参考帧图像；</li>
+<li>同样地根据参考很获得其关联的3D点集合：dbid_to_p3dids[db_id] -&gt; a
+lot of p3ds 初始化优化的尺度，默认是1；</li>
+<li>提取参考帧的稠密特征图 dense_feature_extraction
+，获得每个3D点在参考帧上的特征集合 dbid_p3did_to_feats[dbid] -&gt; a lot
+of p3ds' feats</li>
+<li>3D点特征聚合
+aggregate_features，输入上述3D点在参考帧上的特征，以及3D点对应的参考帧，输出每个3D点的多尺度响应；在其实现中，若开启
+average_observations，则对多帧观测进行加权或者平均；</li>
+<li>读取查询图像，提取特征图；</li>
+<li>在feature map上对查询帧初始位姿<span
+class="math inline">\(T_{init}\)</span>进行优化
+<code>refine_pose_using_features</code>，详见
+<code>pixloc/pixlib/models/learned_optimizer.py</code>；使用 pytorch
+实现了LM迭代过程，对位姿进行优化；这个过程从coarse尺度到fine尺度进行优化，也是一个迭代优化的过程；之所以要这么做，是由于多尺度的策略可以实现较大的收敛区间，比较好地应对初始位姿不准的问题；</li>
+</ul></li>
+</ul>
+<p>接下来对
+<code>refine_pose_using_features</code>函数进行详细介绍，在该函数中有个变量<code>opt = self.optimizer</code>，在优化时使用了它的run()方法。我们重点看下这话run()里面做了什么事情：追溯一下不难发现这个方法实际上调用了<code>LearnedOptimizer</code>类的<code>_run()</code>。对于<code>_run()</code>函数，源码如下:</p>
+<figure class="highlight python"><figcaption><span>file:pixloc/pixlib/models/learned_optimizer.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">_run</span>(<span class="params">self, p3D: Tensor, F_ref: Tensor, F_query: Tensor,</span></span><br><span class="line"><span class="params">          T_init: Pose, camera: Camera, mask: <span class="type">Optional</span>[Tensor] = <span class="literal">None</span>,</span></span><br><span class="line"><span class="params">          W_ref_query: <span class="type">Optional</span>[<span class="type">Tuple</span>[Tensor, Tensor]] = <span class="literal">None</span></span>):</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 初始位姿</span></span><br><span class="line">    T = T_init</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 多尺度雅可比矩阵</span></span><br><span class="line">    J_scaling = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">if</span> self.conf.normalize_features:</span><br><span class="line">        F_ref = torch.nn.functional.normalize(F_ref, dim=-<span class="number">1</span>)</span><br><span class="line">    args = (camera, p3D, F_ref, F_query, W_ref_query)</span><br><span class="line">    failed = torch.full(T.shape, <span class="literal">False</span>, dtype=torch.<span class="built_in">bool</span>, device=T.device)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># LM时的\lambda为可学习的参数</span></span><br><span class="line">    lambda_ = self.dampingnet()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(self.conf.num_iters):</span><br><span class="line">        <span class="comment"># 公式3，雅可比矩阵</span></span><br><span class="line">        res, valid, w_unc, _, J = self.cost_fn.residual_jacobian(T, *args)</span><br><span class="line">        <span class="keyword">if</span> mask <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            valid &amp;= mask</span><br><span class="line">        failed = failed | (valid.long().<span class="built_in">sum</span>(-<span class="number">1</span>) &lt; <span class="number">10</span>)  <span class="comment"># too few points</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># compute the cost and aggregate the weights</span></span><br><span class="line">        cost = (res**<span class="number">2</span>).<span class="built_in">sum</span>(-<span class="number">1</span>)</span><br><span class="line">        cost, w_loss, _ = self.loss_fn(cost)</span><br><span class="line">        weights = w_loss * valid.<span class="built_in">float</span>()</span><br><span class="line">        <span class="keyword">if</span> w_unc <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            weights *= w_unc</span><br><span class="line">        <span class="keyword">if</span> self.conf.jacobi_scaling:</span><br><span class="line">            J, J_scaling = self.J_scaling(J, J_scaling, valid)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># solve the linear system</span></span><br><span class="line">        <span class="comment"># 公式3：海塞矩阵， H * delta = g</span></span><br><span class="line">        g, H = self.build_system(J, res, weights)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 使用cholesky_solve求解正规方程得到delta</span></span><br><span class="line">        delta = optimizer_step(g, H, lambda_, mask=~failed)</span><br><span class="line">        <span class="keyword">if</span> self.conf.jacobi_scaling:</span><br><span class="line">            delta = delta * J_scaling</span><br><span class="line"></span><br><span class="line">        <span class="comment"># compute the pose update</span></span><br><span class="line">        <span class="comment"># 公式4：位姿更新量</span></span><br><span class="line">        dt, dw = delta.split([<span class="number">3</span>, <span class="number">3</span>], dim=-<span class="number">1</span>)</span><br><span class="line">        T_delta = Pose.from_aa(dw, dt)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 公式5：更新后的位姿</span></span><br><span class="line">        T = T_delta @ T</span><br><span class="line"></span><br><span class="line">        self.log(i=i, T_init=T_init, T=T, T_delta=T_delta, cost=cost,</span><br><span class="line">                  valid=valid, w_unc=w_unc, w_loss=w_loss, H=H, J=J)</span><br><span class="line">        <span class="keyword">if</span> self.early_stop(i=i, T_delta=T_delta, grad=g, cost=cost):</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> failed.<span class="built_in">any</span>():</span><br><span class="line">        logger.debug(<span class="string">&#x27;One batch element had too few valid points.&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> T, failed</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如下是<code>optimizer_step</code>函数的实现：</p>
+<figure class="highlight python"><figcaption><span>file:pixloc/pixlib/geometry/optimization.py</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">optimizer_step</span>(<span class="params">g, H, lambda_=<span class="number">0</span>, mute=<span class="literal">False</span>, mask=<span class="literal">None</span>, eps=<span class="number">1e-6</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;One optimization step with Gauss-Newton or Levenberg-Marquardt.</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        g: batched gradient tensor of size (..., N).</span></span><br><span class="line"><span class="string">        H: batched hessian tensor of size (..., N, N).</span></span><br><span class="line"><span class="string">        lambda_: damping factor for LM (use GN if lambda_=0).</span></span><br><span class="line"><span class="string">        mask: denotes valid elements of the batch (optional).</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> lambda_ <span class="keyword">is</span> <span class="number">0</span>:  <span class="comment"># noqa</span></span><br><span class="line">        diag = torch.zeros_like(g)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        diag = H.diagonal(dim1=-<span class="number">2</span>, dim2=-<span class="number">1</span>) * lambda_</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 公式4：(H + \lambda \times diag(H))    </span></span><br><span class="line">    H = H + diag.clamp(<span class="built_in">min</span>=eps).diag_embed()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> mask <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="comment"># make sure that masked elements are not singular</span></span><br><span class="line">        H = torch.where(mask[..., <span class="literal">None</span>, <span class="literal">None</span>], H, torch.eye(H.shape[-<span class="number">1</span>]).to(H))</span><br><span class="line">        <span class="comment"># set g to 0 to delta is 0 for masked elements</span></span><br><span class="line">        g = g.masked_fill(~mask[..., <span class="literal">None</span>], <span class="number">0.</span>)</span><br><span class="line"></span><br><span class="line">    H_, g_ = H.cpu(), g.cpu()</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        U = cholesky(H_)</span><br><span class="line">    <span class="keyword">except</span> RuntimeError <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;singular U&#x27;</span> <span class="keyword">in</span> <span class="built_in">str</span>(e):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> mute:</span><br><span class="line">                logger.debug(</span><br><span class="line">                    <span class="string">&#x27;Cholesky decomposition failed, fallback to LU.&#x27;</span>)</span><br><span class="line">            delta = -torch.solve(g_[..., <span class="literal">None</span>], H_)[<span class="number">0</span>][..., <span class="number">0</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        delta = -torch.cholesky_solve(g_[..., <span class="literal">None</span>], U)[..., <span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> delta.to(H.device)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="poselocalizer">PoseLocalizer</h3>
+<p>对于pose from localizer (PoseLocalizer):
+pixloc/localization/localizer.py，其优化器refiner为
+<strong>PoseRefiner</strong>（继承BaseRefiner），其操作过程如下:</p>
+<ul>
+<li><p>初始化 PoseLocalizer 中各个成员函数/变量，其中比较重要是
+PoseRefiner，即优化器；</p></li>
+<li><p>在初始化该优化器时，由于已经有了初始位姿，此时并不需要全局描述子，这是与上述
+RetrievalLocalizer 的不同之处；至于初始位姿如何获取，PoseLocalizer
+依赖<code>hloc</code>对查询帧进行定位后输出的log文件（该文件中保存了查询帧的位姿）；</p></li>
+<li><p>接下来对初始位姿进行优化 run_query，过程与上述过程相同，
+唯一不同的是，初始位姿获取方式的差异，从位姿进行定位的初始位姿时根据log文件得到的初始位姿<span
+class="math inline">\(T_{init}\)</span>，后续过程略。</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/pixloc/" title="📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品)">https://www.vincentqin.tech/posts/pixloc/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Paper/" rel="tag"># Paper</a>
+              <a href="/tags/Localization/" rel="tag"># Localization</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/imw2021/" rel="prev" title="📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年)">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/cv-arxiv-daily/" rel="next" title="🔨工具：每日自动获取arXiv论文摘要">
+                  🔨工具：每日自动获取arXiv论文摘要 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/pixloc/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

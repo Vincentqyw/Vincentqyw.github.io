@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2021年6月25日（晚），CVPR 2021图像匹配研讨会27（简称IMW 2021）在线上成功举行。研讨会直播总时长4个多小时，由于时差原因，笔者当晚仅看了前一个小时，困得实在不行了，又次日看了回播，随后的几天晚上陆续对整个研讨会整理了一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年)">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/imw2021/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="2021年6月25日（晚），CVPR 2021图像匹配研讨会27（简称IMW 2021）在线上成功举行。研讨会直播总时长4个多小时，由于时差原因，笔者当晚仅看了前一个小时，困得实在不行了，又次日看了回播，随后的几天晚上陆续对整个研讨会整理了一下。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-10-17T10:37:13.000Z">
+<meta property="article:modified_time" content="2022-08-31T16:16:27.695Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/imw2021/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/imw2021/","path":"posts/imw2021/","title":"📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年) | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">时间表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E6%BC%94%E8%AE%B2"><span class="nav-number">2.</span> <span class="nav-text">主题演讲</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#event-cameras5-prof.-davide-scaramuzza----eth-zuich-univ.-zurich"><span class="nav-number">2.1.</span> <span class="nav-text">Event
+cameras5 (Prof. Davide Scaramuzza -- ETH Zuich, Univ.
+Zurich)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#image-matching-and-sfm-classical-recent-results-and-privacy-prof.-marc-pollefeys----eth-zurich-microsoft"><span class="nav-number">2.2.</span> <span class="nav-text">Image
+matching and SfM: Classical, recent results and privacy (Prof. Marc
+Pollefeys -- ETH Zurich, Microsoft)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%94%E8%AE%A8%E4%BC%9A%E8%AE%BA%E6%96%87"><span class="nav-number">3.</span> <span class="nav-text">研讨会论文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#workshop-paper-perceptual-loss-for-robust-unsupervised-homography-estimation-by-daniel-koguciuk11-navinfo"><span class="nav-number">3.1.</span> <span class="nav-text">Workshop
+paper, “Perceptual Loss for Robust Unsupervised Homography Estimation”,
+by Daniel
+Koguciuk11 (NavInfo)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#workshop-paper-dfm-a-performance-baseline-for-deep-feature-matching-by-ufuk-efe12-roketsan-metu-center-for-image-analysis"><span class="nav-number">3.2.</span> <span class="nav-text">Workshop
+paper, “DFM: A Performance Baseline for Deep Feature Matching”, by Ufuk
+Efe12 (Roketsan &amp; METU Center for Image
+Analysis)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E5%8C%B9%E9%85%8D%E6%8C%91%E6%88%98%E8%B5%9B"><span class="nav-number">4.</span> <span class="nav-text">图像匹配挑战赛</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rere-introducing-the-image-matching-benchmark-kwang-moo-yi13"><span class="nav-number">4.1.</span> <span class="nav-text">(ReRe-)Introducing
+the Image Matching Benchmark (Kwang Moo
+Yi13)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phototourism-and-googleurban-datasets-eduar-trulls14"><span class="nav-number">4.2.</span> <span class="nav-text">PhotoTourism
+and GoogleUrban Datasets (Eduar
+Trulls14)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pragueparks-dataset-challenge-results-dmytro-mishkin15"><span class="nav-number">4.3.</span> <span class="nav-text">PragueParks
+Dataset &amp; Challenge Results (Dmytro
+Mishkin15)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#simlocmatch-challenge-vassileios-balntas16"><span class="nav-number">4.4.</span> <span class="nav-text">SimLocMatch
+Challenge (Vassileios
+Balntas16)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#open-discussion"><span class="nav-number">4.5.</span> <span class="nav-text">Open Discussion</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E8%B5%9B%E4%BD%9C%E5%93%81%E6%8A%A5%E5%91%8A"><span class="nav-number">5.</span> <span class="nav-text">挑战赛作品报告</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#imc2021simlocmatch-submission-fabio-bellavia"><span class="nav-number">5.1.</span> <span class="nav-text">IMC2021&#x2F;SimLocMatch
+Submission (Fabio Bellavia)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#learning-accurate-dense-correspondence-and-when-to-trust-them-prune-truong"><span class="nav-number">5.2.</span> <span class="nav-text">Learning
+Accurate Dense Correspondence and When to Trust Them (Prune Truong)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loftr-detector-free-local-feature-matching-with-transformers-jiaming-sun"><span class="nav-number">5.3.</span> <span class="nav-text">LoFTR:
+Detector-Free Local Feature Matching with Transformers (Jiaming
+Sun)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cotr-correspondence-transformer-for-matching-across-images-wei-jiang"><span class="nav-number">5.4.</span> <span class="nav-text">COTR:
+Correspondence Transformer for Matching Across Images (Wei Jiang)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#imc-8k-simlocmatch-winner-method-towards-cvpr-2021-image-matching-challenge-megvii"><span class="nav-number">5.5.</span> <span class="nav-text">(IMC
+8k+, SimLocMatch Winner) Method Towards CVPR 2021 Image Matching
+Challenge (Megvii)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#imc-2k-winner-imw2021-workshop-report-tencent-xiamen-university"><span class="nav-number">5.6.</span> <span class="nav-text">(IMC
+2k Winner) IMW2021 Workshop Report (Tencent, Xiamen University)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/imw2021/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年) | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-10-17 18:37:13" itemprop="dateCreated datePublished" datetime="2021-10-17T18:37:13+08:00">2021-10-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-01 00:16:27" itemprop="dateModified" datetime="2022-09-01T00:16:27+08:00">2022-09-01</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/imw2021/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/imw2021/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/imw2021/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><div class="note default"><p>2021年6月25日（晚），CVPR
+2021图像匹配研讨会<sup id="fnref:27"><a href="#fn:27" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="**ICCV 2021 Workshop on Long-Term Visual Localization under Changing Conditions**, https://sites.google.com/view/ltvl2021/home">27</span></a></sup>（简称IMW
+2021）在线上成功举行。研讨会直播总时长4个多小时，由于时差原因，笔者当晚仅看了前一个小时，困得实在不行了，又次日看了回播，随后的几天晚上陆续对整个研讨会整理了一下。</p>
+</div>
+<p><img data-src="https://vincentqin.tech/blog-resources/imw2021/v2-7dc60ce34451b2cd1f052d478a37334e_r.jpg" /></p>
+<span id="more"></span>
+<p>去年（2020年5月17日）我对<a
+target="_blank" rel="noopener" href="https://vincentqin.tech/posts/2020-image-matching-cvpr">IMW
+2020</a>
+进行了介绍，当时涌现了诸如<code>SuperPoint + SuperGlue + DEGENSAC</code>以及<code>SuperPoint + GIFT + Graph Motion Coherence Network + DEGENSAC</code>令人振奋的算法。那今年相比于去年又有什么改变呢？接下来的时间，且跟我一起回顾这次研讨会。</p>
+<p><strong>会议PDF</strong>: <a
+target="_blank" rel="noopener" href="https://image-matching-workshop.github.io/slides/slides-imw2021.pdf">slides-imw2021</a></p>
+<h2 id="时间表">时间表</h2>
+<p>下图是本次IMW
+2021的时间表，上午是两位大佬带来的主题演讲以及两篇workshop
+papers，下午对挑战赛规则以及获奖算法进行介绍。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-schedule.jpg" /></p>
+<p>笔者将这次大会的全部视频搬运到了B站，感兴趣的同学欢迎一键三连。</p>
+<iframe src="//player.bilibili.com/player.html?aid=546334039&amp;bvid=BV1uq4y1s74P&amp;cid=359863091&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
+</iframe>
+<p>Youtube用户可查看下面的链接:</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/9cVV9m_b5Ys" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h2 id="主题演讲">主题演讲</h2>
+<h3
+id="event-cameras5-prof.-davide-scaramuzza----eth-zuich-univ.-zurich"><strong>Event
+cameras<sup id="fnref:5"><a href="#fn:5" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Event Camera, http://rpg.ifi.uzh.ch/research_dvs.html
+">5</span></a></sup> (Prof. Davide Scaramuzza -- ETH Zuich, Univ.
+Zurich)</strong></h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_invited_talk_davide_scaramuzza_profile_1.jpg" /></p>
+<p>ETHZ RPG实验室<sup id="fnref:7"><a href="#fn:7" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Robotics and Perception Group, http://rpg.ifi.uzh.ch
+">7</span></a></sup>的带头人 <strong>Davide
+Scaramuzza</strong><sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Davide Scaramuzza,  http://rpg.ifi.uzh.ch/people_scaramuzza.html
+">4</span></a></sup>
+教授带来了关于<strong>事件相机</strong>原理以及应用方面的主题演讲（大致看了下Slides，基本上还是CVPR
+2019年的内容）。Davide教授在事件相机研究方面做了大量工作，但由于时间有限，Davide教授仅介绍了约50min。但是值得注意的是，RPG实验室在另外一个会场组织了"CVPR
+2021 Workshop on Event-based
+Vision"<sup id="fnref:6"><a href="#fn:6" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="CVPR 2021 Workshop on Event-based Vision, https://tub-rip.github.io/eventvision2021
+">6</span></a></sup>，这个研讨会召集了事件视觉方向的研究学者，非常详尽地介绍了基于事件视觉的最新进展，感兴趣的同学可以关注下这个主题。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_event_camera_tutorial_1.jpg" /></p>
+<h3
+id="image-matching-and-sfm-classical-recent-results-and-privacy-prof.-marc-pollefeys----eth-zurich-microsoft">Image
+matching and SfM: Classical, recent results and privacy (Prof. Marc
+Pollefeys -- ETH Zurich, Microsoft)</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_invited_talk_marc_pollefeys_profile_1.jpg" /></p>
+<p>来自ETHZ CVG
+实验室<sup id="fnref:9"><a href="#fn:9" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Computer Vision and Geometry Group, https://www.cvg.ethz.ch/research
+">9</span></a></sup>的 Marc Pollefeys
+<sup id="fnref:8"><a href="#fn:8" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Marc Pollefeys, https://people.inf.ethz.ch/pomarc/research.html
+">8</span></a></sup>
+教授简短地介绍了有关图像特征匹配以及SFM的经典方法，然后介绍了他们团队最近在SFM方向有关隐私保护的相关工作。</p>
+<p>首先 Marc
+展示了他们团队多年前（2004年）做过的一项有意思的工作：从视频恢复3D模型。从展示效果上看已经很不错，
+但从现在来看，这项工作还有很大的局限性，其中最大的局限性就是feature
+detectors。对于视频序列的帧间追踪可以用KLT，若对于非专业人员采集的图像序列，就需要对其采集过程进行约束（否则使用当时比较弱的特征提取器+描述子难以应对较大的帧间运动）。</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/2mvzHvPYX0k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>直到出现了SIFT，做CV的应该都比较熟悉该特征具有良好的尺度不变性，这使得它目前仍然应用于多个SFM框架，如<a
+target="_blank" rel="noopener" href="https://vincentqin.tech/posts/colmap">COLMAP</a>,openMVG,openMVS等。</p>
+<p>随后提到了基于深度学习的特征提取器+描述子D2-NET<sup id="fnref:20"><a href="#fn:20" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Dusmanu et al., “D2-Net: A Trainable CNN for Joint Detection and Description of Local Features,” May 2019. Accessed: Jun. 27, 2021. [Online]. Available: http://arxiv.org/abs/1905.03561
+">20</span></a></sup>等。紧接着是SOLD2<sup id="fnref:21"><a href="#fn:21" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R. Pautrat, J.-T. Lin, V. Larsson, M. R. Oswald, and M. Pollefeys, “SOLD2: Self-supervised Occlusion-aware Line Description and Detection,” arXiv:2104.03362 [cs], Apr. 2021, Accessed: Jun. 27, 2021. [Online]. Available: http://arxiv.org/abs/2104.03362
+">21</span></a></sup>，一种线段提取器+描述子，具体方法很大程度上借鉴了SuperPoint<sup id="fnref:22"><a href="#fn:22" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="D. DeTone, T. Malisiewicz, and A. Rabinovich, “SuperPoint: Self-Supervised Interest Point Detection and Description,” arXiv:1712.07629 [cs], Apr. 2018, Accessed: Jun. 27, 2021. [Online]. Available: http://arxiv.org/abs/1712.07629
+">22</span></a></sup>。它能够在如下场景提取相比点特征更多的线特征。</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/HadE8YnCIRw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>接下来又讲解了Pixloc<sup id="fnref:23"><a href="#fn:23" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="P.-E. Sarlin et al., “Back to the Feature: Learning Robust Camera Localization from Pixels to Pose,” arXiv:2103.09213 [cs], Apr. 2021. [Online]. Available: http://arxiv.org/abs/2103.09213
+">23</span></a></sup>，作者是SuperGlue的一作Paul-Edouard
+Sarlin<sup id="fnref:24"><a href="#fn:24" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Paul-Edouard Sarlin,  https://psarlin.com/ 
+">24</span></a></sup>，即给定查询帧+初始粗糙的位姿以及局部地图，使用Pixloc即可优化获得其精确位姿。</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/vPkXhKQn2oI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>之前介绍了在SFM以及视觉定位方面的相关工作， Marc
+教授接下来介绍了<strong>"Privacy-Preserving
+Localization/Mapping"</strong>相关工作。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_SfM_marc_prollefeys_14.jpg"
+alt="IMW_2021_Image_matching_SfM_marc_prollefeys_14" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_SfM_marc_prollefeys_14</figcaption>
+</figure>
+<p>首先是基于线段特征隐私保护的定位与建图<sup id="fnref:25"><a href="#fn:25" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Privacy Preserving Structure-from-Motion, ECCV 2020, Homepage: http://cvg.ethz.ch/research/privacy-preserving-sfm/
+">25</span></a></sup>，这项工作发表于ECCV 2020。</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/4mYn5H7Pyck" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>紧接着是发表在CVPR 2021上的工作，"Privacy-Preserving Image
+Features"<sup id="fnref:26"><a href="#fn:26" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="M. Dusmanu, J. L. Schönberger, S. N. Sinha, and M. Pollefeys, “Privacy-Preserving Image Features via Adversarial Affine Subspace Embeddings,” arXiv:2006.06634 [cs], Mar. 2021 [Online]. Available: http://arxiv.org/abs/2006.06634
+">26</span></a></sup></p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/KSo_E2s7Y_E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h2 id="研讨会论文">研讨会论文</h2>
+<h3
+id="workshop-paper-perceptual-loss-for-robust-unsupervised-homography-estimation-by-daniel-koguciuk11-navinfo">Workshop
+paper, “Perceptual Loss for Robust Unsupervised Homography Estimation”,
+by Daniel
+Koguciuk<sup id="fnref:11"><a href="#fn:11" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Daniel Koguciuk, https://github.com/dkoguciuk
+">11</span></a></sup> (NavInfo)</h3>
+<p>摘要：单应估计是许多计算机视觉任务中不可缺少的一步。然而，现有的方法对光照和/或较大的视点变化不鲁棒。本文提出了双向隐式单应估计（biHomE）损失的进行无监督单应估计。biHomE使原视点的扭曲图像和目标视点的对应图像在特征空间中的距离最小化。本文使用了一个固定的预先训练的特征抽取器，本框架中唯一可学习的部分是单应网络，因此本框架有效地将单应估计与表示学习解耦。我们在合成COCO数据集生成中使用了额外的光度失真步骤，以更好地表示真实场景的照明变化。本文证明了biHomE在合成COCO数据集上达到了最先进的性能，这与有监督的方法相比也是相当或更好的。此外，与现有方法相比，实验结果证明了该方法对光照变化的鲁棒性。</p>
+<p>paper: https://arxiv.org/abs/2104.10011</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/X6aRM2ctxXI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h3
+id="workshop-paper-dfm-a-performance-baseline-for-deep-feature-matching-by-ufuk-efe12-roketsan-metu-center-for-image-analysis">Workshop
+paper, “DFM: A Performance Baseline for Deep Feature Matching”, by Ufuk
+Efe<sup id="fnref:12"><a href="#fn:12" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Ufuk Efe, https://github.com/ufukefe
+">12</span></a></sup> (Roketsan &amp; METU Center for Image
+Analysis)</h3>
+<p>摘要：本文提出了一种新型的图像匹配方法，它利用现成的(off-the-shelf，即预训练好的)深度神经网络提取的特征点，获得了不错的性能。本文方法使用预训练的VGG架构网络作为特征提取器，不需要任何额外的训练以改善匹配。受<strong>认知心理学领域</strong>成熟的概念启发，如心理旋转（Mental
+Rotation）范式，估计初步的几何变换并对图像进行初步对齐。这些估计是基于待匹配图像的VGG网络最终输出层的最近邻的密集匹配得到。在这个初步对齐之后，同样的方法在参考图像和对齐图像之间以分级的方式（hierarchical
+manner）再次重复，以达到良好的定位和匹配性能。在Hpatches数据集上，我们的算法在1个像素和2个像素的阈值上分别达到了0.57和0.80的平均匹配精度（MMA），这个结果比目前最先进的匹配器性能更优。</p>
+<p>目前算法论文已开源。</p>
+<p>code: https://github.com/ufukefe/DFM</p>
+<p>paper: https://arxiv.org/abs/2106.07791</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/9oN09WkTwvo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h2 id="图像匹配挑战赛">图像匹配挑战赛</h2>
+<h3
+id="rere-introducing-the-image-matching-benchmark-kwang-moo-yi13">(ReRe-)Introducing
+the Image Matching Benchmark (Kwang Moo
+Yi<sup id="fnref:13"><a href="#fn:13" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Kwang Moo Yi, https://www.cs.ubc.ca/~kmyi
+">13</span></a></sup>)</h3>
+<p>研讨会组织者之一的Kwang Moo
+Yi<sup id="fnref:13"><a href="#fn:13" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Kwang Moo Yi, https://www.cs.ubc.ca/~kmyi
+">13</span></a></sup>再次（因为2019，2020年已经介绍了）介绍图像匹配挑战赛是什么以及比赛规则等（此处略过）。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_1.jpg"
+alt="IMW_2021_Image_matching_chanllenge_1" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_1</figcaption>
+</figure>
+<h3
+id="phototourism-and-googleurban-datasets-eduar-trulls14">PhotoTourism
+and GoogleUrban Datasets (Eduar
+Trulls<sup id="fnref:14"><a href="#fn:14" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Eduard Trulls, https://etrulls.github.io
+">14</span></a></sup>)</h3>
+<p>本次挑战赛共有三个数据集：Phototourism ，GoogleUrban
+以及PragueParks，其中第一个数据集与2020年相同；后面两个是本次研讨会新增的。研讨会组织者之一的Eduar
+Trulls<sup id="fnref:14"><a href="#fn:14" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Eduard Trulls, https://etrulls.github.io
+">14</span></a></sup>前两个数据集（城市场景）进行介绍。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_4.jpg"
+alt="IMW_2021_Image_matching_chanllenge_4" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_4</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_5.jpg"
+alt="IMW_2021_Image_matching_chanllenge_5" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_5</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_6.jpg"
+alt="IMW_2021_Image_matching_chanllenge_6" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_6</figcaption>
+</figure>
+<h3
+id="pragueparks-dataset-challenge-results-dmytro-mishkin15">PragueParks
+Dataset &amp; Challenge Results (Dmytro
+Mishkin<sup id="fnref:15"><a href="#fn:15" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Dmytro Mishkin, https://dmytro.ai
+">15</span></a></sup>)</h3>
+<p>组织者之一的Dmytro
+Mishkin<sup id="fnref:15"><a href="#fn:15" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Dmytro Mishkin, https://dmytro.ai
+">15</span></a></sup>首先对非城市场景数据集PragueParks
+进行介绍，这个数据集有更多野外场景图像。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_7.jpg"
+alt="IMW_2021_Image_matching_chanllenge_7" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_7</figcaption>
+</figure>
+<p>这个数据集是由iPhone11采集的视频，处理得到的24fps的图像，它有如下几个特点：</p>
+<ol type="1">
+<li>场景中没有人</li>
+<li>多个相机焦距</li>
+<li>无人造建筑</li>
+<li>野外场景，更多植物</li>
+<li>偶尔有运动模糊</li>
+<li>高分辨率</li>
+<li>真值由三维重建商业软件<strong>Capturing
+Reality</strong>快速获得（比COLMAP快100倍）</li>
+</ol>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_8.jpg"
+alt="IMW_2021_Image_matching_chanllenge_8" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_8</figcaption>
+</figure>
+<p>介绍完数据集后，Dmytro
+Mishkin对挑战赛结果进行介绍。2021年图像挑战赛的规则相比于2019和2020年删除了显示描述子维度的限制。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_10.jpg"
+alt="IMW_2021_Image_matching_chanllenge_10" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_10</figcaption>
+</figure>
+<p>今年提交的数相比去年有所减少，为何降低呢？延期是主要因素（新数据集，COVID等）。另外有则轶事：今年没有那么多人使用Aachen数据集以及HPatches数据集了。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_11.jpg"
+alt="亮点" />
+<figcaption aria-hidden="true">亮点</figcaption>
+</figure>
+<p>接下来就是本次挑战赛的冠亚军获得者。</p>
+<p>无限制特征点数量组别：来自旷视科技Research
+3D团队获得冠军，腾讯优图与厦大人工智能学院获得亚军。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_12.jpg"
+alt="IMC2021无限制特征点" />
+<figcaption aria-hidden="true">IMC2021无限制特征点</figcaption>
+</figure>
+<p>限制特征点数量组别：腾讯优图与厦大人工智能学院获得冠军，旷视科技Research
+3D团队获得亚军。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_13.jpg"
+alt="IMC2021有限制特征点" />
+<figcaption aria-hidden="true">IMC2021有限制特征点</figcaption>
+</figure>
+<p>对于<strong>无限制点数量的Stereo任务</strong>，有如下特点：</p>
+<ul>
+<li>新数据集（GU,PP）相比PT具备更好的判别性；</li>
+<li>DoG（SIFT）在GU上表现较差；</li>
+<li>DISK在PP上表现极差；</li>
+<li>所有的方法最后都使用了DEGENSAC；</li>
+</ul>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_14.jpg"
+alt="Stereo 8K" />
+<figcaption aria-hidden="true">Stereo 8K</figcaption>
+</figure>
+<p>对于<strong>无限制点数量的Multiview任务</strong>，有如下特点：</p>
+<ul>
+<li>各个算法的差异性小于stereo任务；</li>
+<li>GU上的判别性还是最强的；</li>
+<li>前三名都使用了基于学习的匹配器；</li>
+<li>所有的方法最后都使用了DEGENSAC；</li>
+</ul>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_15.jpg"
+alt="Multiview 8K" />
+<figcaption aria-hidden="true">Multiview 8K</figcaption>
+</figure>
+<p>对于<strong>有限制点数量的Stereo任务</strong>，有如下特点：</p>
+<ul>
+<li>位居TOP2的算法比原始的SP+SG的提升非常小；</li>
+<li>DISK对于建筑物过拟合（在PP上表现非常差）；</li>
+<li>所有的方法最后都使用了DEGENSAC；</li>
+</ul>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_16.jpg"
+alt="IMW_2021_Image_matching_chanllenge_16" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_16</figcaption>
+</figure>
+<p>对于<strong>有限制点数量的Multiview任务</strong>，有如下特点：</p>
+<ul>
+<li>各个算法的差异性小于stereo任务；</li>
+<li>RootSIFT在GU上表现特别差；</li>
+<li>所有的方法最后都使用了DEGENSAC；</li>
+</ul>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_17.jpg"
+alt="IMW_2021_Image_matching_chanllenge_17" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_17</figcaption>
+</figure>
+<h3 id="simlocmatch-challenge-vassileios-balntas16">SimLocMatch
+Challenge (Vassileios
+Balntas<sup id="fnref:16"><a href="#fn:16" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Vassileios Balntas, http://vbalnt.github.io
+">16</span></a></sup>)</h3>
+<p>组织者Vassileios
+Balntas<sup id="fnref:16"><a href="#fn:16" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Vassileios Balntas, http://vbalnt.github.io
+">16</span></a></sup>介绍了SimLocMatch
+Challenge<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Challenge Website2, https://simlocmatch.com
+">3</span></a></sup>，并对该挑战战报进行介绍。</p>
+<p>首先介绍了什么是SimLocMatch<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Challenge Website2, https://simlocmatch.com
+">3</span></a></sup>。它是一个基于合成序列的数据集和基准，在不同的挑战性条件下呈现。SimLocMatch<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Challenge Website2, https://simlocmatch.com
+">3</span></a></sup>的一个显著优点是可以获得真实和完全准确的真值。这可以对匹配方法的进行严格评估，该数据集能够获得相比使用真实数据更加准确的真值，这是使用SFM流程获得真值不具备的优势。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_18.jpg"
+alt="IMW_2021_Image_matching_chanllenge_18" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_18</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_19.jpg"
+alt="IMW_2021_Image_matching_chanllenge_19" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_19</figcaption>
+</figure>
+<p>紧接着汇报了此次SimLocMatch<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Challenge Website2, https://simlocmatch.com
+">3</span></a></sup>挑战赛的TOP3算法。第一名来自旷视研究院，第二名是商汤的LoFTR，第三名是来自巴勒莫大学和捷克理工大学的HarrisZ+。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_26.jpg"
+alt="IMW_2021_Image_matching_chanllenge_26" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_26</figcaption>
+</figure>
+<p>几点总结:</p>
+<ul>
+<li>错误匹配仍然比较明显:
+<ul>
+<li>最优的方法如Megvii&amp;LoFTR，匹配FP与TP的比值仍然有约10%；</li>
+<li>大多数方法匹配FP与TP的比值在30%~50%；</li>
+<li>还有一些方法接近无法辨识（D2NET丢人啊，快到90%了）；</li>
+</ul></li>
+<li>最好的基于transformer的方法匹配性能优于局部特征+基于深度学习元素的方法（HarrisZ+）,但是提升并不是很大（相较于从SIFT到HarrisZ+的提升）；</li>
+</ul>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_27.jpg"
+alt="IMW_2021_Image_matching_chanllenge_27" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_27</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_chanllenge_28.jpg"
+alt="IMW_2021_Image_matching_chanllenge_28" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_chanllenge_28</figcaption>
+</figure>
+<h3 id="open-discussion">Open Discussion</h3>
+<ul>
+<li><p>在PP数据集上的性能没有
+达到饱和，绝大部分算法在这个数据集上表现相当，仍有提升空间；</p></li>
+<li><p>几乎所有的提交算法都是用了自定义的匹配器；</p></li>
+<li><p><strong>不少打榜算法并非重磅“原创”，SP+SG缝缝补补还能撑一年！</strong></p></li>
+</ul>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_open_discussion_1.jpg"
+alt="IMW_2021_Image_matching_open_discussion_1" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_1</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/IMW_2021_Image_matching_open_discussion_2.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<h2 id="挑战赛作品报告">挑战赛作品报告</h2>
+<h3
+id="imc2021simlocmatch-submission-fabio-bellavia">IMC2021/SimLocMatch
+Submission (Fabio Bellavia)</h3>
+<p>摘要：作者介绍了一种混合使用人工设计的特征点+深度学习描述子+人工设计的匹配器的方法。首先使用了手工设计的特征点HarrisZ+提取角点，随后使用AFFNet+HardNet8计算深度学习描述子；最后使用blob匹配和Delaunay
+Triangulation匹配（DTM）对特征进行匹配。</p>
+<p>paper: https://arxiv.org/abs/2106.09584</p>
+<p>video: <a target="_blank" rel="noopener" href="https://youtu.be/9cVV9m_b5Ys?t=13303">3:41:40 --
+IMC2021/SimLocMatch Submission (Fabio Bellavia)</a></p>
+<h3
+id="learning-accurate-dense-correspondence-and-when-to-trust-them-prune-truong">Learning
+Accurate Dense Correspondence and When to Trust Them (Prune Truong)</h3>
+<p>摘要：在一对图像之间建立稠密的对应关系是一个重要而普遍的问题。然而，在大位移或同质区域的情况下，稠密光流估计往往是不准确的。对于大多数应用和下游任务，如姿势估计、图像处理或三维重建，知道何时何地要相信估计的匹配是至关重要的。在这项工作中，我们旨在估计一个与两幅图像相关的稠密光流场，同时给出像素级的置信图，用以表明预测匹配的可靠性和准确性。我们开发了一种灵活的概率方法，联合学习光流预测和它的不确定性。特别是，我们将预测分布参数化为一个受限的混合模型，确保对准确的光流预测和异常值进行更好的建模。我们的方法在多个具有挑战性的几何匹配和光流数据集上取得了最先进的结果。我们进一步验证了概率置信估计对姿势估计任务的有用性。</p>
+<p>code: https://github.com/PruneTruong/PDCNet</p>
+<p>paper: https://arxiv.org/abs/2101.01710</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/bX0rEaSf88o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h3
+id="loftr-detector-free-local-feature-matching-with-transformers-jiaming-sun">LoFTR:
+Detector-Free Local Feature Matching with Transformers (Jiaming
+Sun)</h3>
+<p>摘要：本文提出了一种新颖的用于局部图像特征匹配的方法。代替了传统的顺序执行图像特征检测，描述和匹配的步骤，本文提出首先在粗粒度上建立逐像素的密集匹配，然后在精粒度上完善精修匹配的算法。与使用cost
+volume搜索对应关系的稠密匹配方法相比，本文使用了Transformers中的使用自我和交叉注意力层(self
+and cross attention
+layers)来获取两个图像的特征描述符。Transformers提供的全局感受野使图像能够在弱纹理区域产生密集匹配（通常情况下在低纹理区域，特征检测器通常难以产生可重复的特征点）。在室内和室外数据集上进行的实验表明，LoFTR在很大程度上优于现有技术。</p>
+<p>code: https://github.com/zju3dv/LoFTR</p>
+<p>paper: https://arxiv.org/abs/2104.00680</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/ep015Dda0T0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h3
+id="cotr-correspondence-transformer-for-matching-across-images-wei-jiang">COTR:
+Correspondence Transformer for Matching Across Images (Wei Jiang)</h3>
+<p>摘要：本文作者提出了一种匹配网络，输入为两张图像以及其中一张图像中的任意一点，输出为另外一张图像上的对应匹配点。为了使用图像的局部与全局信息，同时让模型能够捕获图像区域间的相似度，作者设计了基于Transformer的网络结构。在网络实际前向推理时，网络通过迭代地在估计点周围进行缩放，这能够使该匹配网络能够获得非常高的匹配精度。该网络能够在多项任务中获得最佳效果，其中包括稀疏匹配，稠密匹配，大视角立体视觉以及光流估计。</p>
+<p>code: https://github.com/ubc-vision/COTR</p>
+<p>paper: https://arxiv.org/abs/2103.14167</p>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/bOZ12kgfn3E" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h3
+id="imc-8k-simlocmatch-winner-method-towards-cvpr-2021-image-matching-challenge-megvii">(IMC
+8k+, SimLocMatch Winner) Method Towards CVPR 2021 Image Matching
+Challenge (Megvii)</h3>
+<p>摘要：旷视团队主要是对SuperPoint +
+SuperGlue做了如下修改：预处理：增加掩模，不使用诸如人，车等动态物体上提取点；使用softmax函数对特征点位置进行精化，可以使特征点更加精准；另外使用了较大半径的NMS使特征点分布更加均匀。最后关键的一步特征匹配，旷视团队提供了3种思路：重新训练SuperPoint增强器描述能力；使用DISK特征对SuperGlue重新训练；联合使用上面两种方式。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-megvii-1.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-megvii-2.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-megvii-3.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-megvii-4.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/9cVV9m_b5Ys?t=16032" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h3
+id="imc-2k-winner-imw2021-workshop-report-tencent-xiamen-university">(IMC
+2k Winner) IMW2021 Workshop Report (Tencent, Xiamen University)</h3>
+<p>摘要：优图团队也是对SuperPoint+SuperGlue做了修改。具体地，待匹配图像对经过一系列的仿射变换（增强特征点旋转不变性）以及前/背景分割后喂给SuperPoint提取特征点以及描述子（通过一个自动编码器将描述子降维到128维）；随后是特征匹配，此处还是利用了SuperGlue（为了适配SuperGlue的输入，解码器还需将128维的特征解码到256维），作者对其SuperGlue网络进行了重新训练调整参数。</p>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-youtu-1.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<figure>
+<img data-src="https://vincentqin.tech/blog-resources/imw2021/imw2021-youtu-2.jpg"
+alt="IMW_2021_Image_matching_open_discussion_2" />
+<figcaption
+aria-hidden="true">IMW_2021_Image_matching_open_discussion_2</figcaption>
+</figure>
+<iframe width="1290" height="735" src="https://www.youtube.com/embed/9cVV9m_b5Ys?t=16610" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h2 id="总结">总结</h2>
+<p>总结一下，说实话这次IMW2021并没有带来太大的惊喜，截至目前最好的（用于位姿估计）特征匹配算法还是基于SuperPoint(CVPR
+2018) + SuperGlue (CVPR
+2020)的变种。不过回顾整个的研讨会还是有如下几点体会：</p>
+<ol type="1">
+<li>特征匹配本身不再是最终目的，而是更加专注于它的下游任务，如单应矩阵估计，SFM，视觉定位等任务；之前评价特征匹配性能指标，如特征点的repeatibility，match
+score等已不再受到“欢迎”（顺带老牌Hpatches数据集也接近弃用）；</li>
+<li>基于Transformers注意力机制的特征匹配已经成为趋势，同时detector-free的稠密匹配方法也逐渐变多；二者结合能够较好处理大视角以及稀疏纹理下的图像匹配问题；</li>
+<li>以前使用SFM生成的位姿“真值”不再真实，SimLocMatch
+虚拟数据集似乎能够解决真值问题。但该数据集对世界的表示能力到底有多强仍值得探讨；若某个算法在该数据集表现完美之后，是否在现实场景中依旧完美？是否到最后还是陷入不可测的境地？</li>
+<li>挑战数据集（GU,PP）进一步得到扩充，二者对不同算法具有更好的判别性；</li>
+<li>位姿解算容易受外点影响，特征匹配的最后一步诸多算法都使用了DEGENSAC对外点进行过滤；</li>
+<li>期待下一届。</li>
+</ol>
+<h2 id="参考">参考</h2>
+<div id="footnotes">
+<hr>
+<div id="footnotelist">
+<ol style="list-style: none; padding-left: 0; margin-left: 40px">
+<li id="fn:1">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Workshop
+Website,
+https://image-matching-workshop.github.io<a href="#fnref:1" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:2">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Challenge
+Website1,
+https://cs.ubc.ca/research/image-matching-challenge/current<a href="#fnref:2" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:3">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Challenge
+Website2,
+https://simlocmatch.com<a href="#fnref:3" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:4">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Davide
+Scaramuzza,
+http://rpg.ifi.uzh.ch/people_scaramuzza.html<a href="#fnref:4" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:5">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Event
+Camera,
+http://rpg.ifi.uzh.ch/research_dvs.html<a href="#fnref:5" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:6">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">CVPR
+2021 Workshop on Event-based Vision,
+https://tub-rip.github.io/eventvision2021<a href="#fnref:6" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:7">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">7.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Robotics
+and Perception Group,
+http://rpg.ifi.uzh.ch<a href="#fnref:7" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:8">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">8.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Marc
+Pollefeys,
+https://people.inf.ethz.ch/pomarc/research.html<a href="#fnref:8" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:9">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">9.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Computer
+Vision and Geometry Group,
+https://www.cvg.ethz.ch/research<a href="#fnref:9" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:10">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">10.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">capture
+the world in 3D with your mobile device anywhere - anytime - in
+real-time,
+https://www.astrivis.com/<a href="#fnref:10" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:11">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">11.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Daniel
+Koguciuk,
+https://github.com/dkoguciuk<a href="#fnref:11" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:12">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">12.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Ufuk
+Efe,
+https://github.com/ufukefe<a href="#fnref:12" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:13">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">13.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Kwang
+Moo Yi,
+https://www.cs.ubc.ca/~kmyi<a href="#fnref:13" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:14">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">14.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Eduard
+Trulls,
+https://etrulls.github.io<a href="#fnref:14" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:15">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">15.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Dmytro
+Mishkin,
+https://dmytro.ai<a href="#fnref:15" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:16">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">16.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Vassileios
+Balntas,
+http://vbalnt.github.io<a href="#fnref:16" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:17">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">17.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Prune
+Truong,
+https://prunetruong.com<a href="#fnref:17" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:18">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">18.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Jiaming
+Sun,
+https://github.com/JiamingSuen<a href="#fnref:18" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:19">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">19.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Wei
+Jiang,
+https://jiangwei221.github.io<a href="#fnref:19" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:20">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">20.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.
+Dusmanu et al., “D2-Net: A Trainable CNN for Joint Detection and
+Description of Local Features,” May 2019. Accessed: Jun. 27, 2021.
+[Online]. Available:
+http://arxiv.org/abs/1905.03561<a href="#fnref:20" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:21">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">21.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+Pautrat, J.-T. Lin, V. Larsson, M. R. Oswald, and M. Pollefeys, “SOLD2:
+Self-supervised Occlusion-aware Line Description and Detection,”
+arXiv:2104.03362 [cs], Apr. 2021, Accessed: Jun. 27, 2021. [Online].
+Available:
+http://arxiv.org/abs/2104.03362<a href="#fnref:21" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:22">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">22.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">D.
+DeTone, T. Malisiewicz, and A. Rabinovich, “SuperPoint: Self-Supervised
+Interest Point Detection and Description,” arXiv:1712.07629 [cs], Apr.
+2018, Accessed: Jun. 27, 2021. [Online]. Available:
+http://arxiv.org/abs/1712.07629<a href="#fnref:22" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:23">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">23.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">P.-E.
+Sarlin et al., “Back to the Feature: Learning Robust Camera Localization
+from Pixels to Pose,” arXiv:2103.09213 [cs], Apr. 2021. [Online].
+Available:
+http://arxiv.org/abs/2103.09213<a href="#fnref:23" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:24">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">24.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Paul-Edouard
+Sarlin,
+https://psarlin.com/<a href="#fnref:24" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:25">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">25.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Privacy
+Preserving Structure-from-Motion, ECCV 2020, Homepage:
+http://cvg.ethz.ch/research/privacy-preserving-sfm/<a href="#fnref:25" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:26">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">26.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">M.
+Dusmanu, J. L. Schönberger, S. N. Sinha, and M. Pollefeys,
+“Privacy-Preserving Image Features via Adversarial Affine Subspace
+Embeddings,” arXiv:2006.06634 [cs], Mar. 2021 [Online]. Available:
+http://arxiv.org/abs/2006.06634<a href="#fnref:26" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:27">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">27.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;"><strong>ICCV
+2021 Workshop on Long-Term Visual Localization under Changing
+Conditions</strong>,
+https://sites.google.com/view/ltvl2021/home<a href="#fnref:27" rev="footnote">↩︎</a></span>
+</li>
+</ol>
+</div>
+</div>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/imw2021/" title="📝笔记：图像匹配挑战赛总结 (SuperPoint + SuperGlue 缝缝补补还能再战一年)">https://www.vincentqin.tech/posts/imw2021/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/r3live/" rel="prev" title="📝笔记：港大MARS实验室 R3LIVE (R2LIVE升级) 鲁棒实时RGB雷达视觉惯导紧耦合状态估计">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：港大MARS实验室 R3LIVE (R2LIVE升级) 鲁棒实时RGB雷达视觉惯导紧耦合状态估计
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/pixloc/" rel="next" title="📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品)">
+                  📝笔记：CVPR 2021 | PixLoc: 端到端场景无关视觉定位算法(SuperGlue一作出品) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/imw2021/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

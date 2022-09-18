@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文是J. L. Sconberger等人于2016年发表在CVPR的文章COLMAP。本文针对增量式SFM中三角化&#x2F;BA等步骤进行了改进，能够比较明显地提升SFM的精确率&#x2F;鲁棒性以及重建完整性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/colmap/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="本文是J. L. Sconberger等人于2016年发表在CVPR的文章COLMAP。本文针对增量式SFM中三角化&#x2F;BA等步骤进行了改进，能够比较明显地提升SFM的精确率&#x2F;鲁棒性以及重建完整性。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-10-29T14:28:26.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:41:54.296Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SFM">
+<meta property="article:tag" content="Paper">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/colmap/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/colmap/","path":"posts/colmap/","title":"📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sfm-%E5%9F%BA%E6%9C%AC%E5%A5%97%E8%B7%AF%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.</span> <span class="nav-text">SFM 基本套路回顾</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E7%B4%A2%E5%8C%B9%E9%85%8D"><span class="nav-number">1.1.</span> <span class="nav-text">检索匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E9%87%8D%E5%BB%BA"><span class="nav-number">1.2.</span> <span class="nav-text">增量重建</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E7%AE%97%E6%B3%95%E7%9A%84%E5%88%9B%E6%96%B0%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">本算法的创新点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E5%9B%BE%E5%A2%9E%E5%BC%BA"><span class="nav-number">2.1.</span> <span class="nav-text">场景图增强</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD%E6%9C%80%E4%BC%98%E5%B8%A7%E9%80%89%E6%8B%A9"><span class="nav-number">2.2.</span> <span class="nav-text">后续最优帧选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%B2%81%E6%A3%92%E9%AB%98%E6%95%88%E4%B8%89%E8%A7%92%E5%8C%96"><span class="nav-number">2.3.</span> <span class="nav-text">鲁棒高效三角化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ba%E4%BC%98%E5%8C%96"><span class="nav-number">2.4.</span> <span class="nav-text">BA优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%97%E4%BD%99%E8%A7%86%E8%A7%92%E5%88%A0%E9%99%A4"><span class="nav-number">2.5.</span> <span class="nav-text">冗余视角删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">3.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E6%B5%8B%E8%AF%95"><span class="nav-number">3.1.</span> <span class="nav-text">模块测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%B5%8B%E8%AF%95"><span class="nav-number">3.2.</span> <span class="nav-text">系统测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/colmap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-10-29 22:28:26" itemprop="dateCreated datePublished" datetime="2020-10-29T22:28:26+08:00">2020-10-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:41:54" itemprop="dateModified" datetime="2022-09-05T02:41:54+08:00">2022-09-05</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/colmap/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/colmap/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/colmap/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><div class="note warning"><p>本文是J. L.
+Sconberger等人于2016年发表在CVPR的文章COLMAP。本文针对增量式SFM中三角化/BA等步骤进行了改进，能够比较明显地提升SFM的精确率/鲁棒性以及重建完整性。</p>
+</div>
+<span id="more"></span>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-1.png" /></p>
+<p>首先给出论文<a
+target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2016/papers/Schonberger_Structure-From-Motion_Revisited_CVPR_2016_paper.pdf">PDF</a>,<a
+target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2016/html/Schonberger_Structure-From-Motion_Revisited_CVPR_2016_paper.html">Paper
+Page</a>, 这里提供了<a
+target="_blank" rel="noopener" href="https://colmap.github.io/">使用教程</a>，目前代码已经开源，如下：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/colmap/colmap"><img data-src="https://github-readme-stats.vercel.app/api/pin/?username=colmap&amp;repo=colmap&amp;show_owner=false&amp;theme=default"
+alt="ReadMe Card" /></a></p>
+<h2 id="sfm-基本套路回顾">SFM 基本套路回顾</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-2.png" /></p>
+<p>SFM通常首先进行特征提取/匹配以及后续的几何校验滤出外点，经过上述步骤可以得到所谓的场景图（Scene
+Graph），该场景图是后续的增量式的基础（提供数据关联等信息）。增量式重建中需要非常仔细地挑选两帧进行重建，在图像进行注册（即定位当前帧在地图中的位姿）之前，需要进行三角化场景点/滤出外点以及BA优化当前的模型。</p>
+<h3 id="检索匹配">检索匹配</h3>
+<p>输入：一系列图片；输出：经过几何校验后的图像匹配关系。</p>
+<p>为了得到尽可能准确的匹配关系，该步骤中涉及特征提取，匹配以及几何校验。</p>
+<ul>
+<li><p>特征匹配：可以是任何一种特异性较强的特征，如SIFT（COLMAP默认用SIFT），主要为后续的特征匹配服务；</p></li>
+<li><p>匹配阶段，将输入的图像两两之间进行匹配（可以发现，这一步的时间复杂度非常大），得到潜在的场景重合部分；</p></li>
+<li><p>几何校验：初始匹配的外点势必很多，此时需要滤出外点。通常情况下会用到基础矩阵（未标定）/本质矩阵（已标定）以及单应矩阵（纯旋转/共面）。图像经过上述三个步骤之后的输出为<strong>scene
+graph</strong>，即图像是节点，几何校验后的匹配对是边。</p></li>
+</ul>
+<h3 id="增量重建">增量重建</h3>
+<p>输入：<strong>scene graph</strong>；输出：相机位姿以及3D路标点；</p>
+<p>为了完成增量重建，需要完成初始化，图像注册，三角化以及BA优化这些步骤。</p>
+<ul>
+<li><p>初始化：SfM在初始化时需要非常仔细的选择两帧进行重建；此时需要尽量选择<strong>scene
+graph</strong>中相机间可视区域多的两视角进行初始化，文中称这种选择增加了“redundancy”进而增加了重建的鲁棒性与精确性。</p></li>
+<li><p>图像注册：即根据已有的SfM模型估计图片的位姿（更准确的是估计拍摄该图像相机的位姿）；根据未知的图像与地图中图像的2D-2D匹配，进而得到二者之间的2D-3D匹配，然后利用RANSAC-PNP解算出该相机位姿，完成图像注册。为了提高位姿解算精度以及可靠的三角化，本文设计了新颖的鲁棒后续帧选择策略，后续章节进行介绍。</p></li>
+<li><p>三角化：新注册的图像需要对已有的场景点有足够多的观测，同时也可以通过三角化扩展场景点。现有的三角化方法鲁棒性不足且耗时严重。本文设计了一种全新的三角化策略，后续章节进行介绍。</p></li>
+<li><p>BA优化：由于图像注册与三角化是分开进行的，但二者是强相关的两个过程：错误的位姿会导致错误的三角化点点产生，反之亦然。所以此时，我们做SLAM的都知道是时候让BA上马了！BA能够同时优化相机位姿以及地图点，使模型的redundancy更强。这里顺便提一下BA，优化目标是通过调整相机位姿与地图点位置使重投影误差最小：
+<span class="math display">\[
+E=\sum_{j} \rho_{j}\left(\left\|\pi\left(\mathbf{P}_{c},
+\mathbf{X}_{k}\right)-\mathbf{x}_{j}\right\|_{2}^{2}\right).
+\]</span>
+BA问题通常可以通过LM算法进行求解。作者提到，当SfM面对网络图像时，特别对于那些几乎一样的图像时，上述优化过程会占用极长的时间。本文尝试对该问题进行解决，后续章节进行介绍。</p></li>
+</ul>
+<h2 id="本算法的创新点">本算法的创新点</h2>
+<p>本文的贡献主要有以下5个方面：</p>
+<ul>
+<li>提出了一种多模型几何校验策略：提高了初始化与三角化的鲁棒性；</li>
+<li>后续最优帧选择策略：提升位姿解算鲁棒性与精度；</li>
+<li>提出鲁棒三角化方法：使得重建的场景结构更加完整；</li>
+<li>提出迭代BA，重三角化以及外点滤除策略对重建的完整性与精度都有贡献；</li>
+<li>高效BA参数化方法对稠密图像的重建具有帮助；</li>
+</ul>
+<h3 id="场景图增强">场景图增强</h3>
+<p>采用了一种多模型几何校验策略增强场景图。对于输入的图像对，具体过程如下：</p>
+<ul>
+<li>首先估计基础矩阵<span
+class="math inline">\(F\)</span>，若此时的内点数大于<span
+class="math inline">\(N_F\)</span>，则认为图像对满足几何校验通过；</li>
+<li>然后估计单应矩阵<span
+class="math inline">\(H\)</span>，记内点数为<span
+class="math inline">\(N_H\)</span>；若<span class="math inline">\(N_{H}
+/ N_{F}&lt;\epsilon_{H
+F}\)</span>，则认为该场景为常规场景(<code>general scene</code>);</li>
+<li>对于已经标定的相机，估计本质矩阵<span
+class="math inline">\(E\)</span>，记内点数为<span
+class="math inline">\(N_E\)</span>；
+<ul>
+<li>若<span class="math inline">\(N_{E} / N_{F}&gt;\epsilon_{E
+F}\)</span>，则认为此时相机标定参数是符合要求的；</li>
+<li>若此时场景符合标定且为常规场景，通过分解本质矩阵得到相机位姿，然后对点三角化，计算三角化点点平均角度<span
+class="math inline">\(\alpha_m\)</span>；随后利用该角度判断场景是纯旋转(pure
+rotation, panoramic)还是平面(planar scenes, planar）。</li>
+</ul></li>
+<li>最后一步是为了应对网络图片存在的问题而设计的，网络图像可能存在的问题有水印(watermarks)/时间戳(timestamps)/镶边(frames),
+WTFs。此时计算图像对的相似矩阵<span
+class="math inline">\(S\)</span>，记录图像对在图像边缘的内点数<span
+class="math inline">\(N_S\)</span>；若此时<span
+class="math inline">\(N_{S} / N_{F}&gt;\epsilon_{S F} \vee N_{S} /
+N_{E}&gt;\epsilon_{S
+E}\)</span>，则认为该场景为WTFs，此时该图像不加入场景图。</li>
+</ul>
+<p>综上，通过统计几种几何校验的内点数，根据设计的条件，判断出了该模型的类型：常规，全景，平面(general,
+panoramic, planar)。模型类型用于仅从非全景和已标定图像才参与重建。</p>
+<p>注意：不对全景图像进行三角化，以避免退化点，可以提高三角化和后续图像注册的鲁棒性。</p>
+<h3 id="后续最优帧选择">后续最优帧选择</h3>
+<p>参与重建的图像的选择对重建的效果的影响是非常大，若选择了不好的图像，可能会导致相机无法注册或者三角化失败。</p>
+<p>通常的做法是选择能看到三角化点最多的图像进行注册。但仅数量多并不意味着好，文献<sup id="fnref:1"><a href="#fn:1" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="V. Lepetit, F. Moreno-Noguer, and P. Fua. EPnP: An accurate O(n) solution to the PnP problem. IJCV, 2009. 2, 4.
+">1</span></a></sup>已经通过实验验证<strong>PNP位姿解算多精度不仅与观测点数量相关而且与观测点在图像上的分布有关</strong>：若点分布越均匀，位姿解算精度越高。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-3.png" /></p>
+<p>作者认为：可见点的数量越多且分布越均匀得分<span
+class="math inline">\(S\)</span>越高，得分越高点的图像越会被先注册。于是作者设计了一种多尺度统计点分布点算法，具体见上图。将图像划分成<span
+class="math inline">\(L\)</span>层，每层划分为<span
+class="math inline">\(K_l^2\)</span>个格子，其中<span
+class="math inline">\(K_l=2^l\)</span>（<span
+class="math inline">\(l=1,2...L\)</span>），同时给每一层设计一个权重<span
+class="math inline">\(w_l=K_l\)</span>（原文有误），然后统计可见点在每层上的得分并累加。上图所示的得分计算如下：</p>
+<p><span class="math display">\[
+\begin{equation}
+\begin{aligned}
+&amp;1\times2^1+4\times2^2+6\times2^3=66; \\
+&amp;4\times2^1+6\times2^2+6\times2^3=80;
+\\   &amp;1\times2^1+4\times2^2+16\times2^3=146; \\
+&amp;4\times2^1+16\times2^2+16\times2^3=200;
+\end{aligned}
+\end{equation}
+\]</span></p>
+<p>可见在同样点数量下，点分布越均匀得分越高。</p>
+<h3 id="鲁棒高效三角化">鲁棒高效三角化</h3>
+<p>作者提到，如果地图点能够被持续观测，这样就可以使大基线情况下的图像也能够关联得不错，这对重建是有利的。但与此同时，特征追踪过程中可能由于外观相似的特征导致错误匹配，这样帧间三角化就会出现错误，这种现象在实际过程中是比较常见的！</p>
+<p>本文使用了RANSAC对多帧观测进行三角化。记特征追踪<span
+class="math inline">\(\mathcal{T}=\left\{T_{n} \mid
+n=1...N_T\right\}\)</span>，它是由一系列的外点率<span
+class="math inline">\(\epsilon\)</span>未知的观测构成的集合。观测<span
+class="math inline">\(T_n\)</span>包括归一化坐标<span
+class="math inline">\(\overline{\mathbf{x}}_{n} \in
+\mathbb{R}^{2}\)</span>以及它对应的投影矩阵<span
+class="math inline">\(\mathbf{P}_{n} \in \mathbf{S
+E}(3)\)</span>。最终目标是最大化三角化模型对观测的复合程度，于是三角化的点<span
+class="math inline">\(\mathbf{X}_{a b}\)</span>为：</p>
+<p><span class="math display">\[\mathbf{X}_{a b} \sim
+\tau\left(\overline{\mathbf{x}}_{a}, \overline{\mathbf{x}}_{b},
+\mathbf{P}_{a}, \mathbf{P}_{b}\right) \text { with } a \neq
+b\]</span></p>
+<p>其中<span
+class="math inline">\(\tau\)</span>是任何一种三角化方法(本文使用了DLT<sup id="fnref:2"><a href="#fn:2" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="R. Hartley and A. Zisserman. Multiple view geometry in computer vision. 2003.
+">2</span></a></sup>方法)。一个比较好的三角化点需要满足两个条件：</p>
+<ul>
+<li>足够大的三角化角度<span class="math inline">\(\cos
+\alpha=\frac{\mathbf{t}_{a}-\mathbf{X}_{a
+b}}{\left\|\mathbf{t}_{a}-\mathbf{X}_{a b}\right\|_{2}} \cdot
+\frac{\mathbf{t}_{b}-\mathbf{X}_{a
+b}}{\left\|\mathbf{t}_{b}-\mathbf{X}_{a b}\right\|_{2}}\)</span>；</li>
+<li>三角化点深度为正，且该点的重投影误差小于阈值<span
+class="math inline">\(t\)</span>；</li>
+</ul>
+<p>值得注意的是，三角化的过程中使用了RANSAC，即从上述特征追踪中随机选择2个点(一对点)进行三角化，统计内点数(即，重投影误差小于阈值记为内点)，选择内点数最多的那个作为三角化点。这个过程中存在一个问题就是，假如该点被追踪到了比较少的次数<span
+class="math inline">\(N_T\)</span>，此时随机采样会重复选择相同的一对点进行三角化，这样会造成不必要的资源消耗。本文设计了一种可以产生不重复随机组的<code>random sampler</code>；另外，为了能够保证以置信度为<span
+class="math inline">\(\eta\)</span>的概率至少选择一对无外点的最小解集，该过程至少重复进行<span
+class="math inline">\(K\)</span>次。</p>
+<h3 id="ba优化">BA优化</h3>
+<p>为了消除累计误差，在图像注册以及三角化之后需要进行BA优化。由于增量式重建仅会影响邻近帧，所以没有必要每次都做GBA。因此，当图像被注册之后仅对相关性最好的图像集合进行LBA即可。只有当模型增长到了一定程度才会对进行GBA，这可以分摊时间消耗。</p>
+<ul>
+<li>参数化：LBA中使用柯西核函数应对外点；当优化中有数百个相机时，使用PCG求解器；</li>
+<li>滤外点：BA之后，由于相机位姿/地图点发生了变化，此时会有很多不符合要求的观测，删除掉那些重投影误差较大的观测；然后检查几何校验条件是否满足；对于GBA，还要检查相机是否退化；</li>
+<li>重三角化(post Re-Triangulation, post
+RT)：由于BA对位姿进行了优化，这使得之前由于不准确/错误位姿导致无法三角化的点有了能够被重新三角化的可能性，所以在BA之后执行一步重三角化(类比于BA之前的三角化)；</li>
+<li>迭代优化：受到外点的影响，一次BA通常会导致很大一部分点被滤出，然后经过post
+RT对地图点进行了扩充；作者提到，上述过程需要多做几遍，一般是做完第二遍之后模型的完整性就会得到非常不错的提升。</li>
+</ul>
+<h3 id="冗余视角删除">冗余视角删除</h3>
+<p>BA是SfM的瓶颈，本文针对“稠密数据采集”带来的问题设计了一种高场景覆盖度的图像聚类的BA参数化策略。</p>
+<p>本文主要改进了文献<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="K. Ni, D. Steedly, and F. Dellaert. Out-of-core bundle adjustment for large-scale 3d reconstruction. ICCV, 2007.
+">3</span></a></sup>提出的方法，具体操作如下：</p>
+<p>图像与地图点根据重建过程中是否受到最新帧点影响分为两类。对于比较大的重建问题，最新的重建帧仅会影响其邻近的图像以及地图点，很大一部分图像/点并不会发生改变。本文将不受影响的那部分定义很多组的集合<span
+class="math inline">\(\mathcal{G}=\left\{G_{r} \mid r=1 \ldots
+N_{G}\right\}\)</span>，其中<span
+class="math inline">\(G_{r}\)</span>表示一组<strong>高重合度</strong>的相机，它被参数化为<strong>一个相机</strong>。那么问题来了，什么才叫做高重合度呢？作者提到，一个组内相机的共视区域必须高度重合。令场景中共有<span
+class="math inline">\(N_X\)</span>个点，那么每一张图像都可表示成一个二值向量<span
+class="math inline">\(\mathbf{v}_{i}
+\in\{0,1\}^{N_{X}}\)</span>，其中当某个地图点被观测到时为1，否则为0；有了以上定义之后，我们可以定义图像<span
+class="math inline">\(a\)</span>与图像<span
+class="math inline">\(b\)</span>之间的重合度<span
+class="math inline">\(V_{ab}\)</span>为：</p>
+<p><span class="math display">\[V_{a b}=\left\|\mathbf{v}_{a} \wedge
+\mathbf{v}_{b}\right\| /\left\|\mathbf{v}_{a} \vee
+\mathbf{v}_{b}\right\|\]</span></p>
+<p>之后呢，对待处理帧的<span
+class="math inline">\(K_r\)</span>个空间最近邻的那些图像计算重合度得分并排序，这样可以构造一组<strong>高重合度</strong>的相机集合。对于这一个相机组的BA
+(Group BA)损失被构造为如下形式： <span class="math display">\[
+E_{g}=\sum_{j} \rho_{j}\left(\left\|\pi_{g}\left(\mathbf{G}_{r},
+\mathbf{P}_{c},
+\mathbf{X}_{k}\right)-\mathbf{x}_{j}\right\|_{2}^{2}\right)
+\]</span> 上式中<span class="math inline">\(\mathbf{G}_{r} \in \mathbf{S
+E}(3)\)</span>表示该组的外参变换，<span
+class="math inline">\(\mathbf{P}_{c}\)</span>表示组的固定位姿。全局的损失函数是所有组/非组的BA损失之和。经过上面一顿操作之后，BA优化的效率得到了大幅度提升。</p>
+<h2 id="实验">实验</h2>
+<h3 id="模块测试">模块测试</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/tab-2.png" /></p>
+<p>可以看到三角化采样的数量有了大幅度减少。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-8.png" /></p>
+<p>增加GroupBA之后，GBA的次数大幅度减少。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-7.png" /></p>
+<p>三角化以及GBA耗时下降。</p>
+<h3 id="系统测试">系统测试</h3>
+<p><img data-src="https://vincentqin.tech/blog-resources/colmap/tab-1.png" /></p>
+<h2 id="总结">总结</h2>
+<p>本文提出了一套集精度/鲁棒性以及完整性为一体的通用SfM框架，实验表明该方法能够获得非常好重建效果。该框架进行了模块化实现，且开源，到目前为止很多视觉三维重建的任务(如视觉定位<sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
+class="hint--top hint--error hint--medium hint--rounded hint--bounce"
+aria-label="Long-Term Visual Localization, https://www.visuallocalization.net/">4</span></a></sup>)基于此项目完成(框架不变，提升模块性能)，可谓“功德无量”。</p>
+<h2 id="参考">参考</h2>
+<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+<div id="footnotes">
+<hr>
+<div id="footnotelist">
+<ol style="list-style: none; padding-left: 0; margin-left: 40px">
+<li id="fn:1">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">V.
+Lepetit, F. Moreno-Noguer, and P. Fua. EPnP: An accurate O(n) solution
+to the PnP problem. IJCV, 2009. 2,
+4.<a href="#fnref:1" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:2">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">R.
+Hartley and A. Zisserman. Multiple view geometry in computer vision.
+2003.<a href="#fnref:2" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:3">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">K.
+Ni, D. Steedly, and F. Dellaert. Out-of-core bundle adjustment for
+large-scale 3d reconstruction. ICCV,
+2007.<a href="#fnref:3" rev="footnote">↩︎</a></span>
+</li>
+<li id="fn:4">
+<span
+style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span
+style="display: inline-block; vertical-align: top; margin-left: 10px;">Long-Term
+Visual Localization,
+https://www.visuallocalization.net/<a href="#fnref:4" rev="footnote">↩︎</a></span>
+</li>
+</ol>
+</div>
+</div>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/colmap/" title="📝笔记：三维重建系列 COLMAP: Structure-from-Motion Revisited">https://www.vincentqin.tech/posts/colmap/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SFM/" rel="tag"># SFM</a>
+              <a href="/tags/Paper/" rel="tag"># Paper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/realcat-mango/" rel="prev" title="🐈芒果驾到">
+                  <i class="fa fa-chevron-left"></i> 🐈芒果驾到
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/cvpr-2020-localization/" rel="next" title="📝笔记：CVPR 2020 视觉定位挑战赛冠军方案">
+                  📝笔记：CVPR 2020 视觉定位挑战赛冠军方案 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/colmap/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

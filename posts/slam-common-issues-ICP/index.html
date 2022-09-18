@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="今天讲一篇关于利用SVD方法求解ICP问题的文献《Least-Squares Rigid Motion Using SVD》，这篇文章非常精彩地推导出将\(3D\)点对齐问题的解析解，同时总结了求解该问题的统一范式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/slam-common-issues-ICP/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="今天讲一篇关于利用SVD方法求解ICP问题的文献《Least-Squares Rigid Motion Using SVD》，这篇文章非常精彩地推导出将\(3D\)点对齐问题的解析解，同时总结了求解该问题的统一范式。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-18T03:43:04.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:26:19.629Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="ICP">
+<meta property="article:tag" content="位姿">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/slam-common-issues-ICP/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/slam-common-issues-ICP/","path":"posts/slam-common-issues-ICP/","title":"📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E5%B9%B3%E7%A7%BB%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">计算平移量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%97%8B%E8%BD%AC%E9%87%8F"><span class="nav-number">3.</span> <span class="nav-text">计算旋转量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E4%BB%A5%E6%80%BB%E7%BB%93%E7%9A%84%E5%A5%97%E8%B7%AF"><span class="nav-number">4.</span> <span class="nav-text">可以总结的套路</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/slam-common-issues-ICP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-08-18 11:43:04" itemprop="dateCreated datePublished" datetime="2019-08-18T11:43:04+08:00">2019-08-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:26:19" itemprop="dateModified" datetime="2022-09-05T02:26:19+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/slam-common-issues-ICP/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/slam-common-issues-ICP/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/slam-common-issues-ICP/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p>今天讲一篇关于利用<code>SVD</code>方法求解<code>ICP</code>问题的文献<a
+target="_blank" rel="noopener" href="https://vincentqin.gitee.io/blogresource-3/slam-common-issues-ICP/svd_rot.pdf">《Least-Squares
+Rigid Motion Using SVD》</a>，这篇文章非常精彩地推导出将<span
+class="math inline">\(3D\)</span>点对齐问题的解析解，同时总结了求解该问题的统一范式。</p>
+<span id="more"></span>
+<h2 id="问题描述">问题描述</h2>
+<p>已知<span class="math display">\[{\mathcal{P}=\left\{\mathbf{p}_{1},
+\mathbf{p}_{2}, \ldots, \mathbf{p}_{n}\right\}}\]</span>以及<span
+class="math display">\[{\mathcal{Q}=\left\{\mathbf{q}_{1},
+\mathbf{q}_{2}, \ldots,
+\mathbf{q}_{n}\right\}}\]</span>是空间中（文中说的更加普适，<span
+class="math inline">\(\mathbf{p}_i , \mathbf{q}_i \in
+\mathbb{R}^{d}\)</span>，可以表示<span
+class="math inline">\(d\)</span>维空间）的匹配点集，我们试图找到这样的旋转矩阵<span
+class="math inline">\(R\)</span>和平移向量<span
+class="math inline">\(\mathbf{t}\)</span>最小化如下对齐误差（即<code>ICP</code>问题的形式）：</p>
+<p><span class="math display">\[
+(R, \mathbf{t})=\underset{R \in S O(d), \mathbf{t} \in
+\mathbb{R}^{d}}{\operatorname{argmin}} \sum_{i=1}^{n}
+w_{i}\left\|\left(R
+\mathbf{p}_{i}+\mathbf{t}\right)-\mathbf{q}_{i}\right\|^{2} \tag{1}
+\]</span></p>
+<p>接下来文章分别推导了平移向量<span
+class="math inline">\(\mathbf{t}\)</span>以及旋转矩阵<span
+class="math inline">\(R\)</span>的解析解。</p>
+<h2 id="计算平移量">计算平移量</h2>
+<p>此时假定旋转矩阵<span
+class="math inline">\(R\)</span>是固定的，令<span
+class="math display">\[F(\mathbf{t}) = \sum_{i=1}^{n}
+w_{i}\left\|\left(R
+\mathbf{p}_{i}+\mathbf{t}\right)-\mathbf{q}_{i}\right\|^{2}\]</span>，我们可以通过<span
+class="math inline">\(F\)</span>对<span
+class="math inline">\(\mathbf{t}\)</span>求导的方式得到平移量的最优解，如下：
+<span class="math display">\[
+\begin{aligned}
+0 &amp;=\frac{\partial F}{\partial \mathbf{t}}=\sum_{i=1}^{n} 2
+w_{i}\left(R \mathbf{p}_{i}+\mathbf{t}-\mathbf{q}_{i}\right)=\\ &amp;=2
+\mathbf{t}\left(\sum_{i=1}^{n} w_{i}\right)+2 R\left(\sum_{i=1}^{n}
+w_{i} \mathbf{p}_{i}\right)-2 \sum_{i=1}^{n} w_{i} \mathbf{q}_{i}  
+\end{aligned} \tag{2}
+\]</span></p>
+<p>令： <span class="math display">\[
+\overline{\mathbf{p}}=\frac{\sum_{i=1}^{n} w_{i}
+\mathbf{p}_{i}}{\sum_{i=1}^{n}
+w_{i}},  \overline{\mathbf{q}}=\frac{\sum_{i=1}^{n} w_{i}
+\mathbf{q}_{i}}{\sum_{i=1}^{n} w_{i}} \tag{3}
+\]</span></p>
+<p>于是我们得到<span class="math inline">\(\mathbf{t}\)</span>的解：</p>
+<p><span class="math display">\[
+\mathbf{t} = \overline{\mathbf{q}} - R\overline{\mathbf{p}} \tag{4}
+\]</span></p>
+<p>从上式看出最优的平移量<span
+class="math inline">\(\mathbf{t}\)</span>将<span
+class="math inline">\(\mathcal{P}\)</span>点集的加权中心映射到了<span
+class="math inline">\(\mathcal{Q}\)</span>点集的中心。接下来将上式带入优化方程，得：
+<span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^{n} w_{i}\left\|\left(R
+\mathbf{p}_{i}+\mathbf{t}\right)-\mathbf{q}_{i}\right\|^{2} &amp;=
+\sum_{i=1}^{n} w_{i}\left\| R \mathbf{p}_{i}+ \overline{\mathbf{q}} -
+R\overline{\mathbf{p}} -\mathbf{q}_{i}\right\|^{2}  \\
+&amp;= \sum_{i=1}^{n} w_{i}\left\|R (\mathbf{p}_{i}
+-\overline{\mathbf{p}}) - (\mathbf{q}_{i} - \overline{\mathbf{q}} )
+\right\|^{2}
+\end{aligned} \tag{5}
+\]</span></p>
+<p>由此我们将原问题转换成了无平移量的优化问题，令：</p>
+<p><span class="math display">\[
+\mathbf{x}_i := \mathbf{p}_{i} -\overline{\mathbf{p}}，
+\mathbf{y}_i := \mathbf{q}_{i} -\overline{\mathbf{q}}，\tag{6}
+\]</span> 我们把问题简写成如下形式：</p>
+<p><span class="math display">\[
+R = \underset{R \in S O(d)}{\operatorname{argmin}} \sum_{i=1}^{n}
+w_{i}\left\|R \mathbf{x}_{i}-\mathbf{y}_{i}\right\|^{2} \tag{7}
+\]</span></p>
+<h2 id="计算旋转量">计算旋转量</h2>
+<p>简化上式： <span class="math display">\[
+\begin{aligned}
+\left\|R \mathbf{x}_{i}-\mathbf{y}_{i}\right\|^{2} &amp;= \left(
+R\mathbf{x}_i - \mathbf{y}_i\right)^T\left( R\mathbf{x}_i -
+\mathbf{y}_i\right)  = \left( \mathbf{x}_i^TR^T -
+\mathbf{y}_i^T\right)\left( R\mathbf{x}_i - \mathbf{y}_i\right)  \\
+&amp;= \mathbf{x}_i^TR^TR\mathbf{x}_i - \mathbf{x}_i^TR^T\mathbf{y}_i -
+\mathbf{y}_i^TR\mathbf{x}_i +\mathbf{y}_i^T\mathbf{y}_i
+\end{aligned}\tag{8}
+\]</span> 又因为旋转矩阵的正交性：<span
+class="math inline">\(R^TR=I\)</span>；另外<span
+class="math inline">\(\mathbf{x}_i^TR^T\mathbf{y}_i\)</span>是标量：<span
+class="math inline">\(\mathbf{x}_i\)</span>维度为<span
+class="math inline">\(1 \times d\)</span>，<span
+class="math inline">\(R^T\)</span>维度为<span class="math inline">\(d
+\times d\)</span>，<span
+class="math inline">\(\mathbf{y}_i\)</span>维度为<span
+class="math inline">\(d \times 1\)</span>。于是有下式： <span
+class="math display">\[
+\mathbf{x}_i^TR^T\mathbf{y}_i = (\mathbf{x}_i^TR^T\mathbf{y}_i)^T =
+\mathbf{y}_i^TR\mathbf{x}_i \tag{9}
+\]</span> 得： <span class="math display">\[
+\left\|R \mathbf{x}_{i}-\mathbf{y}_{i}\right\|^{2} =
+\mathbf{x}_i^T\mathbf{x}_i -  2\mathbf{y}_i^TR\mathbf{x}_i
++\mathbf{y}_i^T\mathbf{y}_i  \tag{10}
+\]</span></p>
+<p>将整理好的上式带入简化后的<span
+class="math inline">\(R\)</span>优化问题，得：</p>
+<p><span class="math display">\[
+\begin{aligned} &amp; \underset{R \in S O(d)}{\operatorname{argmin}}
+\sum_{i=1}^{n} w_{i}\left\|R
+\mathbf{x}_{i}-\mathbf{y}_{i}\right\|^{2}=\underset{R \in S
+O(d)}{\operatorname{argmin}} \sum_{i=1}^{n}
+w_{i}\left(\mathbf{x}_{i}^{\top} \mathbf{x}_{i}-2 \mathbf{y}_{i}^{\top}
+R \mathbf{x}_{i}+\mathbf{y}_{i}^{\top} \mathbf{y}_{i}\right)=\\=&amp;
+\underset{R \in S O(d)}{\operatorname{argmin}}\left(\sum_{i=1}^{n} w_{i}
+\mathbf{x}_{i}^{\top} \mathbf{x}_{i}-2 \sum_{i=1}^{n} w_{i}
+\mathbf{y}_{i}^{\top} R \mathbf{x}_{i}+\sum_{i=1}^{n} w_{i}
+\mathbf{y}_{i}^{\top} \mathbf{y}_{i}\right)=\\=&amp;
+\operatorname{argmin}_{R \in S O(d)}\left(-2 \sum_{i=1}^{n} w_{i}
+\mathbf{y}_{i}^{\top} R \mathbf{x}_{i}\right) \end{aligned}\tag{11}
+\]</span> 接下来将要利用到如下关于迹的技巧:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\left[
+\begin{array}
+{cccc}{w_1} \\
+{} &amp; {w_1} &amp; {} &amp;{} \\
+{} &amp; {} &amp; {\ddots} &amp; {}\\
+{} &amp; {} &amp; {} &amp; {w_n}
+\end{array}
+\right]
+\left[
+\begin{array}
+{ccc}
+{—}&amp; {\mathbf{y}_1^T}&amp;{—}   \\
+{—}&amp; {\mathbf{y}_2^T}&amp;{—}   \\
+{—}  &amp; {\vdots} &amp; {—}\\
+{—}&amp; {\mathbf{y}_n^T}&amp;{—}
+\end{array}
+\right]
+\left[
+\begin{array}
+{ccc}
+{}&amp; {} &amp;{}   \\
+{}&amp; {R} &amp;{}   \\
+{}&amp; {} &amp;{}   \\
+\end{array}
+\right]
+\left[
+\begin{array}
+{cccc}
+{|}&amp; {|} &amp;{|} &amp;{|}  \\
+{\mathbf{x}_1}&amp; {\mathbf{x}_2} &amp;{\dots} &amp;{\mathbf{x}_n}  \\
+{|}&amp; {|} &amp;{|} &amp;{|}  \\
+\end{array}
+\right]  \\
+=
+\left[
+\begin{array}
+{ccc}
+{—}&amp; {w_1\mathbf{y}_1^T}&amp;{—}   \\
+{—}&amp; {w_2\mathbf{y}_2^T}&amp;{—}   \\
+{—}  &amp; {\vdots} &amp; {—}\\
+{—}&amp; {w_n\mathbf{y}_n^T}&amp;{—}
+\end{array}
+\right]
+\left[
+\begin{array}
+{cccc}
+{|}&amp; {|} &amp;{|} &amp;{|}  \\
+{R\mathbf{x}_1}&amp; {R\mathbf{x}_2} &amp;{\dots}
+&amp;{R\mathbf{x}_n}  \\
+{|}&amp; {|} &amp;{|} &amp;{|}  \\
+\end{array}
+\right] \\
+=
+\left[
+\begin{array}
+{cccc}
+{w_1\mathbf{y}_1^TR\mathbf{x}_1}&amp; {} &amp;{} &amp;{*}  \\
+{}&amp; {w_2\mathbf{y}_2^TR\mathbf{x}_2} &amp;{} &amp;{}  \\
+{}&amp; {} &amp;{\ddots} &amp;{}  \\
+{*}&amp; {} &amp;{} &amp;{w_n\mathbf{y}_n^TR\mathbf{x}_n} \\
+\end{array}
+\right]
+\end{aligned}
+\]</span></p>
+<p>上式就是对<span class="math display">\[\sum_{i=1}^{n} w_{i}
+\mathbf{y}_{i}^{\top} R \mathbf{x}_{i} =  \operatorname{tr}\left(
+WY^TRX\right)\]</span>的完美解释。</p>
+<p>利用上式，式<span class="math inline">\((11)\)</span>可以整理得：</p>
+<p><span class="math display">\[
+\begin{aligned}
+\underset{R \in S O(d)}{\operatorname{argmin}}\left(-2 \sum_{i=1}^{n}
+w_{i} \mathbf{y}_{i}^{\top} R \mathbf{x}_{i}\right) &amp;= \underset{R
+\in S O(d)}{\operatorname{argmax}}\left(\sum_{i=1}^{n} w_{i}
+\mathbf{y}_{i}^{\top} R \mathbf{x}_{i}\right) \\
+&amp;= \underset{R \in S O(d)}{\operatorname{argmax}}
+\operatorname{tr}\left( WY^TRX\right)
+\end{aligned}\tag{12}
+\]</span> 这里说明一下维度：<span class="math inline">\(W =
+diag(w_1,w_2,...,w_n)\)</span>维度为<span class="math inline">\(n \times
+n\)</span>，<span class="math inline">\(Y^T\)</span>维度为<span
+class="math inline">\(n \times d\)</span>，<span
+class="math inline">\(R\)</span>维度为<span class="math inline">\(d
+\times d\)</span>，<span class="math inline">\(X\)</span>维度为<span
+class="math inline">\(d \times n\)</span>。</p>
+<p>接下来回顾一下迹的性质：<span
+class="math inline">\(\operatorname{tr}(AB) =
+\operatorname{tr}(BA)\)</span>，因此有下式： <span
+class="math display">\[
+\operatorname{tr}\left( WY^TRX\right) = \operatorname{tr}\left(
+(WY^T)(RX)\right) =\operatorname{tr}\left( RXWY^T\right) \tag{13}
+\]</span></p>
+<p>令<span class="math inline">\(d\times
+d\)</span>的“covariance”矩阵<span class="math inline">\(S =
+XWY^T\)</span>，求<span
+class="math inline">\(S\)</span>的<code>SVD</code>分解：</p>
+<p><span class="math display">\[
+S= U\Sigma V^T.\tag{14}
+\]</span></p>
+<p>于是式<span class="math inline">\((13)\)</span>变为：</p>
+<p><span class="math display">\[
+\operatorname{tr}\left( WY^TRX\right) =\operatorname{tr}\left( RS\right)
+=\operatorname{tr}\left( RU\Sigma V^T\right)=\operatorname{tr}\left(
+\Sigma V^TRU\right) \tag{15}
+\]</span></p>
+<p>由于<span class="math inline">\(V,T,R\)</span>均为正交矩阵，因此<span
+class="math inline">\(M = V^TRU\)</span>也是正交阵，也就是说<span
+class="math inline">\(M\)</span>的列向量<span
+class="math inline">\(\mathbf{m}_j\)</span>是互相正交的单位向量，即<span
+class="math inline">\(\mathbf{m}_j^T\mathbf{m}_j=1\)</span>，于是：</p>
+<p><span class="math display">\[
+1=\mathbf{m}_{j}^{\top} \mathbf{m}_{j}=\sum_{i=1}^{d} m_{i j}^{2}
+\Rightarrow m_{i j}^{2} \leq 1 \Rightarrow\left|m_{i j}\right| \leq 1
+\tag{16}
+\]</span></p>
+<p>由于<code>SVD</code>分解的性质可知<span
+class="math inline">\(\sigma\)</span>的元素均为非负数：<span
+class="math inline">\({\sigma}_1,{\sigma}_2,{\sigma}_d \geq
+0\)</span>，于是式<span
+class="math inline">\((18)\)</span>变为如下形式：</p>
+<p><span class="math display">\[
+\operatorname{tr}(\Sigma M)=\left(\begin{array}{ccccc}{\sigma_{1}} &amp;
+{} &amp; {} &amp; {} &amp; {} \\ {} &amp; {\sigma_{2}} &amp; {} &amp; {}
+&amp; {} \\ {} &amp; {} &amp; {\ddots} &amp; {} &amp; {} \\ {} &amp; {}
+&amp; {} &amp; {} &amp;
+{\sigma_{d}}\end{array}\right)\left(\begin{array}{cccc}{m_{11}} &amp;
+{m_{12}} &amp; {\dots} &amp; {m_{1 d}} \\ {m_{21}} &amp; {m_{22}} &amp;
+{\dots} &amp; {m_{2 d}} \\ {\vdots} &amp; {\vdots} &amp; {\vdots} &amp;
+{\vdots} \\ {m_{d 1}} &amp; {m_{d 2}} &amp; {\dots} &amp; {m_{d
+d}}\end{array}\right)
+=\sum_{i=1}^{d} \sigma_{i} m_{i i} \leq \sum_{i=1}^{d} \sigma_{i}
+\tag{17}
+\]</span></p>
+<p>可见，当迹最大时<span class="math inline">\(m_{ii} =
+1\)</span>，又由于<span
+class="math inline">\(M\)</span>是正交阵，这使得<span
+class="math inline">\(M\)</span>为单位阵！</p>
+<p><span class="math display">\[I = M = V^TRU \Rightarrow R = VU^T
+\tag{18}\]</span></p>
+<p>看到没，R的解析解竟然如此简单，并且与<code>SVD</code>分解产生了联系，让人感觉到了数学的美妙。不过到这里还没完，后面作者进行了一步方向矫正，大意是这样的：利用公式<span
+class="math inline">\((18)\)</span>得到的矩阵并不一定是一个旋转矩阵，也可能为<code>反射矩阵</code>，此时可以通过验证<span
+class="math inline">\(VU^T\)</span>的行列式来判断到底是旋转（行列式 =
+1）还是反射（行列式 = -1）。但我们要求的是旋转矩阵，这时需要对公式<span
+class="math inline">\((18)\)</span>进行一步处理。</p>
+<p>假设<span class="math inline">\(\operatorname{det}(VU^T) =
+-1\)</span>，则限制<span
+class="math inline">\(R\)</span>为旋转就意味着<span
+class="math inline">\(M = V^TRU\)</span>为<code>反射矩阵</code>，
+于是我们试图找到一个<code>反射矩阵</code><span
+class="math inline">\(M\)</span>最大化下式： <span
+class="math display">\[
+\operatorname{tr}(\Sigma M) = {\sigma}_1 m_{11} + {\sigma}_2 m_{22}
++...+ {\sigma}_d m_{dd} := f(m_{11},m_{11},...,m_{dd})  \tag{19}
+\]</span> 即<span class="math inline">\(f\)</span>是以<span
+class="math inline">\(m_{11},m_{11},...,m_{dd}\)</span>为变量的线性函数，由于<span
+class="math inline">\(m_{ii} \in \left[
+-1,1\right]\)</span>，其极大值肯定在其定义域的边界处。于是当<span
+class="math inline">\({\forall} i, m_{ii} = 1\)</span>时，<span
+class="math inline">\(f\)</span>取得极大值，但是此时的<span
+class="math inline">\(R\)</span>为<code>反射矩阵</code>，所以并不能这样取值。然后我们看第二个极大值点<span
+class="math inline">\((1,1,...,-1)\)</span>，有： <span
+class="math display">\[
+f = \operatorname{tr}(\Sigma M) = {\sigma}_1 + {\sigma}_2+...+
+{\sigma}_{d-1} -  {\sigma}_d \tag{20}
+\]</span> 这个值大于任何其它的自变量取值<span class="math inline">\((\pm
+1,\pm 1,...,\pm 1)\)</span>的组合（除了<span class="math inline">\(( 1,
+1,..., 1)\)</span>），因为奇异值是经过排序的，<span
+class="math inline">\({\sigma}_d\)</span>是最小的一个奇异值。</p>
+<p>综上，为了将解转换为旋转矩阵要进行如下处理： <span
+class="math display">\[
+R=V\left(\begin{array}{cccc}{1} \\
+{} &amp; {\ddots} &amp; {} &amp;{} \\
+{} &amp; {} &amp; 1 &amp; {}\\
+{} &amp; {} &amp; {} &amp; {\operatorname{det}\left(V
+U^{\top}\right)}\end{array}\right) U^{\top} \tag{21}
+\]</span></p>
+<h2 id="可以总结的套路">可以总结的套路</h2>
+<p>为了得到<code>ICP</code>问题的最优解，我们可以采取如下套路：</p>
+<p><strong>step1</strong>. 计算两组匹配点的加权中心：</p>
+<p><span class="math display">\[
+\overline{\mathbf{p}}=\frac{\sum_{i=1}^{n} w_{i}
+\mathbf{p}_{i}}{\sum_{i=1}^{n}
+w_{i}},  \overline{\mathbf{q}}=\frac{\sum_{i=1}^{n} w_{i}
+\mathbf{q}_{i}}{\sum_{i=1}^{n} w_{i}}
+\]</span></p>
+<p><strong>step2</strong>. 得到去中心化的点集：</p>
+<p><span class="math display">\[
+\mathbf{x}_i := \mathbf{p}_{i} -\overline{\mathbf{p}}，
+\mathbf{y}_i := \mathbf{q}_{i} -\overline{\mathbf{q}}, i = 1,2...n
+\]</span></p>
+<p><strong>step3</strong>. 计算<span class="math inline">\(d \times
+d\)</span>的covariance矩阵：</p>
+<p><span class="math display">\[
+S = XWY^T
+\]</span></p>
+<p>其中，<span class="math inline">\(X,Y\)</span>为<span
+class="math inline">\(d \times n\)</span>的矩阵，<span
+class="math inline">\(\mathbf{x}_i,\mathbf{y}_i\)</span>分别是它们的列元素，另外<span
+class="math inline">\(W = diag(w_1,w_2,...,w_n)\)</span>。</p>
+<p><strong>step4</strong>. 对<span
+class="math inline">\(S\)</span>进行<code>SVD</code>分解<span
+class="math inline">\(S = U\Sigma V^T\)</span>，得到旋转矩阵：</p>
+<p><span class="math display">\[
+R=V\left(\begin{array}{cccc}{1} \\
+{} &amp; {\ddots} &amp; {} &amp;{} \\
+{} &amp; {} &amp; 1 &amp; {}\\
+{} &amp; {} &amp; {} &amp; {\operatorname{det}\left(V
+U^{\top}\right)}\end{array}\right) U^{\top}
+\]</span></p>
+<p><strong>step5</strong>. 计算平移量：</p>
+<p><span class="math display">\[
+\mathbf{t} = \overline{\mathbf{q}} - R\overline{\mathbf{p}}
+\]</span></p>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/slam-common-issues-ICP/" title="📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵">https://www.vincentqin.tech/posts/slam-common-issues-ICP/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/ICP/" rel="tag"># ICP</a>
+              <a href="/tags/%E4%BD%8D%E5%A7%BF/" rel="tag"># 位姿</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/slam-common-issues-PNP/" rel="prev" title="📝笔记：SLAM常见问题(三)：PNP">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：SLAM常见问题(三)：PNP
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/slam-common-issues-SVD/" rel="next" title="📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解">
+                  📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/slam-common-issues-ICP/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>

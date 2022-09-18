@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/realcat-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/realcat-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/realcat-32x32.png">
+  <link rel="mask-icon" href="/images/realcat-safari-pinned-tab.svg" color="#222">
+  <meta name="google-site-verification" content="u46QTaG_Dv3OZLpOBKYtqyuiNtIdnhSG5ASKoNvGBCM">
+  <meta name="baidu-site-verification" content="MtcbwE45ft">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.vincentqin.tech","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"show_result":true,"style":"flat"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"waline","storage":true,"lazyload":true,"nav":null,"activeClass":"waline"},"stickytabs":true,"motion":{"enable":false,"async":true,"transition":{"post_block":"fadeIn","post_header":"fadeIn","post_body":"fadeIn","coll_header":"fadeIn","sidebar":"fadeIn"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="SVD分解就是一种矩阵拆解术，它能够把任意矩阵\(A \in \mathbb{R}^{m \times n}\)拆解成3个矩阵的乘积形式，即： \[ A &#x3D; U \Sigma V^T \] 其中，\(U \in \mathbb{R}^{m \times m}\)，\(V \in \mathbb{R}^{n \times n}\)都是正交矩阵，即\(U^T U &#x3D; I, V^T V">
+<meta property="og:type" content="article">
+<meta property="og:title" content="📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解">
+<meta property="og:url" content="https://www.vincentqin.tech/posts/slam-common-issues-SVD/index.html">
+<meta property="og:site_name" content="RealCat">
+<meta property="og:description" content="SVD分解就是一种矩阵拆解术，它能够把任意矩阵\(A \in \mathbb{R}^{m \times n}\)拆解成3个矩阵的乘积形式，即： \[ A &#x3D; U \Sigma V^T \] 其中，\(U \in \mathbb{R}^{m \times m}\)，\(V \in \mathbb{R}^{n \times n}\)都是正交矩阵，即\(U^T U &#x3D; I, V^T V">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.vincentqin.tech/posts/slam-common-issues-SVD/alita_svd_quality.svg">
+<meta property="article:published_time" content="2019-08-18T11:12:28.000Z">
+<meta property="article:modified_time" content="2022-09-04T18:29:10.369Z">
+<meta property="article:author" content="Vincent Qin">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="位姿">
+<meta property="article:tag" content="SVD">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.vincentqin.tech/posts/slam-common-issues-SVD/alita_svd_quality.svg">
+
+
+<link rel="canonical" href="https://www.vincentqin.tech/posts/slam-common-issues-SVD/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://www.vincentqin.tech/posts/slam-common-issues-SVD/","path":"posts/slam-common-issues-SVD/","title":"📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解 | RealCat</title>
+  
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-97856334-1","only_pageview":true}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+<link rel="dns-prefetch" href="https://comments.vincentqin.tech">
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">RealCat</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Turn on, Tune in, Drop out</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">76</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">14</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">111</span></a></li><li class="menu-item menu-item-collections"><a href="/collections" rel="section"><i class="fa fa-diamond fa-fw"></i>Collections</a></li><li class="menu-item menu-item-guest_comments"><a href="/guestbook" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F-skinny-svd-%E4%B8%8E-full-svd"><span class="nav-number">1.</span> <span class="nav-text">形式： skinny SVD 与 full SVD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97-ata"><span class="nav-number">2.</span> <span class="nav-text">计算 \(A^TA\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97-aat"><span class="nav-number">3.</span> <span class="nav-text">计算 \(AA^T\)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%8D%E7%BB%B4"><span class="nav-number">4.</span> <span class="nav-text">降维</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">5.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E4%BE%8B%E5%AD%90"><span class="nav-number">5.1.</span> <span class="nav-text">数字例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98-least-square%E9%97%AE%E9%A2%98"><span class="nav-number">5.2.</span> <span class="nav-text">最小二乘 least square问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E8%BF%91%E4%BC%BC"><span class="nav-number">5.3.</span> <span class="nav-text">矩阵近似</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Vincent Qin"
+      src="https://vincentqin.gitee.io/images/qin_small.png">
+  <p class="site-author-name" itemprop="name">Vincent Qin</p>
+  <div class="site-description" itemprop="description">Keep Your Curiosity</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">111</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Vincentqyw" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Vincentqyw" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:realcat@126.com" title="Email → mailto:realcat@126.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>Email</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://vincentqin.gitee.io/images/qrcode_realcat.jpg" title="Wechat → https:&#x2F;&#x2F;vincentqin.gitee.io&#x2F;images&#x2F;qrcode_realcat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>Wechat</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/i_vincent/activities" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;i_vincent&#x2F;activities" rel="noopener" target="_blank"><i class="fab fa-quora fa-fw"></i>Zhihu</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/AlphaRealcat" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;AlphaRealcat" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/18136563" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;18136563" rel="noopener" target="_blank"><i class="fa fa-video-camera fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io/" title="Web3.0 → https:&#x2F;&#x2F;bafybeic2jt62kpyh6cz2g4ngxs4kazojfw3dhx53mco3wc6f56dejty4xm.ipfs.infura-ipfs.io" rel="noopener" target="_blank"><i class="link fa-fw"></i>Web3.0</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-dashboard"></i>
+      Scholar
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://xxx.itp.ac.cn/" title="http:&#x2F;&#x2F;xxx.itp.ac.cn" rel="noopener" target="_blank">Arxiv-Mirror</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://arxiv-sanity.com/" title="http:&#x2F;&#x2F;arxiv-sanity.com&#x2F;" rel="noopener" target="_blank">Arxiv-sanity</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://openaccess.thecvf.com/menu.py" title="http:&#x2F;&#x2F;openaccess.thecvf.com&#x2F;menu.py" rel="noopener" target="_blank">CVF</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://paperswithcode.com/sota" title="https:&#x2F;&#x2F;paperswithcode.com&#x2F;sota" rel="noopener" target="_blank">Paper&Code</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://scihub.wikicn.top/" title="https:&#x2F;&#x2F;scihub.wikicn.top&#x2F;" rel="noopener" target="_blank">Scihub</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://ras.papercept.net/conferences/scripts/start.pl" title="http:&#x2F;&#x2F;ras.papercept.net&#x2F;conferences&#x2F;scripts&#x2F;start.pl" rel="noopener" target="_blank">RAS</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://openreview.net/" title="https:&#x2F;&#x2F;openreview.net&#x2F;" rel="noopener" target="_blank">OpenReview</a>
+        </li>
+    </ul>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-battery-three-quarters fa-fw"></i>
+      Friends Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.wangpengan.com/" title="http:&#x2F;&#x2F;www.wangpengan.com&#x2F;" rel="noopener" target="_blank">Tensorboy</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://simtalk.cn/" title="http:&#x2F;&#x2F;simtalk.cn&#x2F;" rel="noopener" target="_blank">Simshang</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sttomato.github.io/" title="https:&#x2F;&#x2F;sttomato.github.io" rel="noopener" target="_blank">Tomato</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://dfine.tech/" title="http:&#x2F;&#x2F;dfine.tech&#x2F;" rel="noopener" target="_blank">Newdee</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://cs-people.bu.edu/yfhu/" title="http:&#x2F;&#x2F;cs-people.bu.edu&#x2F;yfhu&#x2F;" rel="noopener" target="_blank">WhoIf</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://yulunzhang.com/" title="http:&#x2F;&#x2F;yulunzhang.com&#x2F;" rel="noopener" target="_blank">Yulun</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sanglongbest.github.io/" title="https:&#x2F;&#x2F;sanglongbest.github.io&#x2F;" rel="noopener" target="_blank">YangLiu</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.erenship.com/" title="https:&#x2F;&#x2F;www.erenship.com&#x2F;" rel="noopener" target="_blank">Eren</a>
+        </li>
+    </ul>
+  </div>
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-briefcase"></i>
+      Common Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://comments.vincentqin.tech/ui" title="https:&#x2F;&#x2F;comments.vincentqin.tech&#x2F;ui" rel="noopener" target="_blank">Comments</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://gitee.com/vincentqin/vincentqin" title="https:&#x2F;&#x2F;gitee.com&#x2F;vincentqin&#x2F;vincentqin" rel="noopener" target="_blank">Source</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.notion.so/realcat" title="https:&#x2F;&#x2F;www.notion.so&#x2F;realcat" rel="noopener" target="_blank">Notion</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.matrixcalculus.org/" title="http:&#x2F;&#x2F;www.matrixcalculus.org&#x2F;" rel="noopener" target="_blank">Calculus</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://emojipedia.org/" title="https:&#x2F;&#x2F;emojipedia.org&#x2F;" rel="noopener" target="_blank">Emoji</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://unstoppabledomains.com/" title="https:&#x2F;&#x2F;unstoppabledomains.com&#x2F;" rel="noopener" target="_blank">UD</a>
+        </li>
+    </ul>
+  </div>
+
+
+
+
+        </div>
+
+      <div class="wechat_QR_code">
+      <!-- 二维码 -->
+      <img src ="https://vincentqin.tech/blog-resources/qrcode_realcat.jpg">
+      <span>Follow Me on Wechat</span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://www.vincentqin.tech/posts/slam-common-issues-SVD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://vincentqin.gitee.io/images/qin_small.png">
+      <meta itemprop="name" content="Vincent Qin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="RealCat">
+      <meta itemprop="description" content="Keep Your Curiosity">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解 | RealCat">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-08-18 19:12:28" itemprop="dateCreated datePublished" datetime="2019-08-18T19:12:28+08:00">2019-08-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-05 02:29:10" itemprop="dateModified" datetime="2022-09-05T02:29:10+08:00">2022-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SLAM/" itemprop="url" rel="index"><span itemprop="name">SLAM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="far fa-comment"></i>
+    </span>
+    <span class="post-meta-item-text">Waline: </span>
+  
+    <a title="waline" href="/posts/slam-common-issues-SVD/#waline" itemprop="discussionUrl">
+      <span class="post-comments-count waline-comment-count" data-path="/posts/slam-common-issues-SVD/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-item" title="Views">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">Views: </span>
+      <span class="waline-pageview-count" data-path="/posts/slam-common-issues-SVD/"></span>
+    </span>
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <script src="/assets/js/DPlayer.min.js"> </script><p>SVD分解就是一种矩阵拆解术，它能够把<strong>任意</strong>矩阵<span
+class="math inline">\(A \in \mathbb{R}^{m \times
+n}\)</span>拆解成3个矩阵的乘积形式，即：</p>
+<p><span class="math display">\[
+A = U \Sigma V^T
+\]</span></p>
+<p>其中，<span class="math inline">\(U \in \mathbb{R}^{m \times
+m}\)</span>，<span class="math inline">\(V \in \mathbb{R}^{n \times
+n}\)</span>都是正交矩阵，即<span class="math inline">\(U^T U = I, V^T V
+= I\)</span>，即列向量是正交的单位向量，<span
+class="math inline">\(U\)</span>称为<code>left single vectors</code>，<span
+class="math inline">\(V\)</span>称为<code>right single vectors</code>；<span
+class="math inline">\(\Sigma \in \mathbb{R}^{m \times
+n}\)</span>的对角阵（奇异值），奇异值<span class="math inline">\(\geq
+0\)</span>且按照顺序降序排列。</p>
+<p>MIT <code>Gilbert Strang</code> 教授对 SVD 讲解得很清晰，如下:</p>
+<span id="more"></span>
+<!-- <div id="dplayer0" class="dplayer" style="margin-bottom: 20px;"></div><script>var dplayer0 = new DPlayer({"element":document.getElementById("dplayer0"),"loop":true,"video":{"url":"http://45.76.197.98:888/api/public/dl/0hkAga3Z/Singular-Value-Decomposition.mp4"},"danmaku":{"api":"https://api.prprpr.me/dplayer/","id":"bbe4286bf164ef6w1497f18a7b42ff944e6r4b821","addition":[null]}});</script>
+<p>--&gt;</p>
+<!-- <iframe src="//player.bilibili.com/player.html?aid=93275447&bvid=BV1pE41177ih&cid=159253510&page=15" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe> -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rYz83XPxiZo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>此外，Barry讲解的SVD也很精彩。</p>
+<iframe width="1004" height="574" src="https://www.youtube.com/embed/9U3jx8fEDSA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>刚才说了矩阵<span class="math inline">\(U, \Sigma,
+V\)</span>的形式，视频中还提到了这三个矩阵的物理意义，即SVD分解可以理解为：任意矩阵都可以分解为<strong>(rotation)*(Stretch)*(rotation)</strong>的形式。接下来说明一下这三个矩阵是如何来的。</p>
+<h2 id="形式-skinny-svd-与-full-svd">形式： skinny SVD 与 full SVD</h2>
+<p>一张图可以解释了，上面介绍的SVD形式为<code>skinny SVD</code> 或者
+<code>thin SVD</code>，即仅保留了奇异值矩阵 <span
+class="math inline">\(\Sigma\)</span>
+的非零元素所在的部分，所以它的形状是个方阵。而<code>full SVD</code>保留了奇异值矩阵的非零部分，对应的
+<span class="math inline">\(U\)</span> 和 <span
+class="math inline">\(V\)</span> 为方阵。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources//slam-common-issues-SVD/svd_forms.png" /></p>
+<p>通常情况下，<code>skinny SVD</code>使用较多。</p>
+<p>此外，还有<strong>向量表示</strong>形式，如上图最后一行的表示形式，此处不做赘述。</p>
+<h2 id="计算-ata">计算 <span class="math inline">\(A^TA\)</span></h2>
+<p><span class="math display">\[
+A^TA = (U \Sigma V^T)^TU \Sigma V^T = V{\Sigma}^TU^TU \Sigma V^T =
+V{\Sigma}^T \Sigma V^T
+\]</span> 可见，<span class="math inline">\(V\)</span>正是矩阵<span
+class="math inline">\(A^TA\)</span>的特征向量，而<span
+class="math inline">\({\Sigma}^T \Sigma\)</span>为矩阵<span
+class="math inline">\(A^TA\)</span>的特征值。</p>
+<h2 id="计算-aat">计算 <span class="math inline">\(AA^T\)</span></h2>
+<p><span class="math display">\[
+AA^T = U \Sigma V^T(U \Sigma V^T)^T = U \Sigma V^TV{\Sigma}^TU^T =
+U\Sigma {\Sigma}^T  U^T
+\]</span> 可见，<span class="math inline">\(U\)</span>正是矩阵<span
+class="math inline">\(AA^T\)</span>的特征向量，而<span
+class="math inline">\(\Sigma {\Sigma}^T\)</span>为矩阵<span
+class="math inline">\(AA^T\)</span>的特征值。</p>
+<p>所以<span class="math inline">\(U, \Sigma,
+V\)</span>都可以通过上述方式来计算。</p>
+<h2 id="降维">降维</h2>
+<p><span class="math display">\[
+\Sigma =
+\left[
+    \begin{array}
+    {cccc|cccc}
+    {\sigma_{1}} &amp; {0} &amp; {\dots} &amp; {0} &amp; {0} &amp; {0}
+&amp; {\dots} &amp; {0} \\
+    {0} &amp; {\sigma_{2}} &amp; {\dots} &amp; {0} &amp; {0} &amp; {0}
+&amp; {\dots} &amp; {0} \\ {\vdots} &amp; {\vdots} &amp; {\ddots} &amp;
+{\vdots} &amp; {0} &amp; {0} &amp; {\dots} &amp; {0} \\
+    {0} &amp; {0} &amp; {} &amp; {\sigma_{k}} &amp; {0} &amp; {0} &amp;
+{\dots} &amp; {0} \\
+    \hline
+    {0} &amp; {0} &amp; {\dots} &amp; {0} &amp; {0} &amp; {0} &amp;
+{\dots} &amp; {0} \\
+    {\vdots} &amp; {\vdots} &amp; {} &amp; {\vdots} &amp; {\vdots} &amp;
+{\vdots} &amp; {} &amp; {\vdots} \\
+    {0} &amp; {0} &amp; {\dots} &amp; {0} &amp; {0} &amp; {0} &amp;
+{\dots} &amp; {0}
+    \end{array}
+\right]_{m \times n}
+\Rightarrow
+\left[
+    \begin{array}
+    {cccc}
+    {\sigma_{1}} &amp; {0} &amp; {\dots} &amp; {0} \\
+    {0} &amp; {\sigma_{2}} &amp; {\dots} &amp; {0}  \\
+    {\vdots} &amp; {\vdots} &amp; {\ddots} &amp; {\vdots}  \\
+    {0} &amp; {0} &amp; {} &amp; {\sigma_{k}}
+    \end{array}
+\right]_{k \times k}
+\]</span></p>
+<p>其中<span class="math inline">\({\sigma}_1 \geq {\sigma}_2 \geq ...
+{\sigma}_k &gt; 0\)</span>，将<span
+class="math inline">\(\Sigma\)</span>中主对角线为0的部分删去，同样的<span
+class="math inline">\(U,V\)</span>对应的部分删去，SVD分解就变成了下图的形式。
+<img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/svd.png" /></p>
+<h2 id="实战">实战</h2>
+<h3 id="数字例子">数字例子</h3>
+<p>有矩阵A，对其进行SVD分解，已知：</p>
+<p><span class="math display">\[
+A = \left[
+\begin{matrix}
+​    1 &amp; 4 &amp; 3 &amp; 5 &amp; 6  \cr
+​    2 &amp; 3 &amp; {4} &amp; 5 &amp; 0  \cr
+​    7 &amp; 4 &amp; 0 &amp; 9 &amp; 1  \cr  
+\end{matrix}
+\right]
+\]</span> 计算<span class="math inline">\(A^TA\)</span>以及<span
+class="math inline">\(AA^T\)</span>： <span class="math display">\[
+A^TA = \left[
+\begin{matrix}
+​    {54} &amp; {38} &amp; {11} &amp; {78} &amp; {13}  \cr
+​    {38} &amp; {41} &amp; {24} &amp; {71} &amp; {28}  \cr
+​    {11} &amp; {24} &amp; {25} &amp; {35} &amp; {18}  \cr
+​    {78} &amp; {71} &amp; {35} &amp; {131} &amp; {39}  \cr
+​    {13} &amp; {28} &amp; {18} &amp; {39} &amp; {37}
+\end{matrix}
+\right]
+\\
+AA^T = \left[
+\begin{matrix}
+​    {87} &amp; {51} &amp; {74}   \cr
+​    {51} &amp; {54} &amp; {71}   \cr
+​    {74} &amp; {71} &amp; {147}   \cr
+\end{matrix}
+\right]
+\]</span></p>
+<p>对以上两式做特征值分解得到：</p>
+<figure class="highlight m"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">V <span class="built_in">=</span></span><br><span class="line">    <span class="number">0.4269</span>    <span class="number">0.5222</span>    <span class="number">0.1760</span>   -<span class="number">0.5292</span>   -<span class="number">0.4839</span></span><br><span class="line">    <span class="number">0.4087</span>   -<span class="number">0.1757</span>   -<span class="number">0.0655</span>   -<span class="number">0.5258</span>    <span class="number">0.7221</span></span><br><span class="line">    <span class="number">0.2100</span>   -<span class="number">0.4474</span>   -<span class="number">0.7536</span>   -<span class="number">0.1512</span>   -<span class="number">0.4062</span></span><br><span class="line">    <span class="number">0.7389</span>    <span class="number">0.1520</span>   -<span class="number">0.0603</span>    <span class="number">0.6481</span>    <span class="number">0.0853</span></span><br><span class="line">    <span class="number">0.2464</span>   -<span class="number">0.6879</span>    <span class="number">0.6271</span>   -<span class="number">0.0258</span>   -<span class="number">0.2687</span></span><br><span class="line"></span><br><span class="line">U <span class="built_in">=</span></span><br><span class="line">    <span class="number">0.5095</span>    <span class="number">0.7999</span>    <span class="number">0.3171</span></span><br><span class="line">    <span class="number">0.4285</span>    <span class="number">0.0838</span>   -<span class="number">0.8997</span></span><br><span class="line">    <span class="number">0.7462</span>   -<span class="number">0.5942</span>    <span class="number">0.3001</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>奇异值：</p>
+<p><span class="math inline">\(\Sigma ^T \Sigma = \text{Diag}(238.2878,
+37.3715, 12.3407) \Rightarrow \Sigma = \text{Diag}(15.4366, 6.1132,
+3.5129)\)</span></p>
+<p>这与直接调用<code>svd(A)</code>结果是一致的（可能差个正负号）。</p>
+<h3 id="最小二乘-least-square问题">最小二乘 least square问题</h3>
+<p>MIT <code>Gilbert Strang</code>
+教授介绍了4种方式来求解最小二乘问题。</p>
+<iframe width="1022" height="584" src="https://www.youtube.com/embed/ZUU57Q3CFOU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<p>问题：$ A x = b $，求解 <span class="math inline">\(x\)</span>。</p>
+<p>通常的解法如下：</p>
+<p><span class="math display">\[
+\begin{aligned}
+A x &amp;= b \\
+A^T A x &amp;= A^T b \\
+x &amp;= (A^T A)^{-1}A^T b
+\end{aligned}
+\]</span></p>
+<p>其中<span class="math inline">\((A^T A)^{-1}A^T\)</span>称为<span
+class="math inline">\(A\)</span>的伪逆<span
+class="math inline">\(A^{\dagger}\)</span>，即</p>
+<p><span class="math display">\[
+A^{\dagger} = (A^T A)^{-1}A^T
+\]</span></p>
+<p>我们对A进行SVD分解，即 <span class="math inline">\(A = U \Sigma
+V^T\)</span>，则</p>
+<p><span class="math display">\[
+\begin{aligned}
+A^{\dagger} &amp;= (A^T A)^{-1}A^T \\
+&amp;= (V \Sigma^T U^T U \Sigma V^T)^{-1}V \Sigma^T U^T \\
+&amp;= (V \Sigma^T \Sigma V^T)^{-1}V \Sigma^T U^T \\
+&amp;= (V \Sigma^2 V^T)^{-1}V \Sigma^T U^T \\
+&amp;= V^{-T}\Sigma^{-2}V^{-1}V \Sigma^T U^T \\
+&amp;= V\Sigma^{-1}U^T \\
+&amp;= \sum_{i=1}^{r}\frac{1}{\sigma_i}v_{i}u_{i}^{T}d
+\end{aligned}
+\]</span></p>
+<p>其中<span class="math inline">\(r = rank(A)\)</span>。
+上面使用到了矩阵求逆交换律：<span class="math inline">\((EFG)^{-1} =
+G^{-1}F^{-1}E^{-1}\)</span>以及<span
+class="math inline">\(U\)</span>和<span
+class="math inline">\(V\)</span>的正交矩阵的性质。</p>
+<p>所以以上最小二乘的解为：<span class="math inline">\(\hat{x} =
+A^{\dagger} b = V\Sigma^{-1}U^T b\)</span>。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/geo_least_square.jpg" /></p>
+<p>我们看一下最小二乘的<a
+target="_blank" rel="noopener" href="https://twitter.com/docmilanfar/status/1477838376996769792">error</a>,
+定义 <span class="math inline">\(b\)</span> 的估计值为 <span
+class="math inline">\(\hat{b}\)</span>，它的具体形式如下：</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat{b} &amp;= A\hat{x} b \triangleq P_A b \\
+&amp;= AA^{\dagger} b \\
+&amp;= AV\Sigma^{-1}U^T b \\
+&amp;= U \Sigma V^TV\Sigma^{-1}U^T b \\
+&amp;= UU^T b
+\end{aligned}
+\]</span></p>
+<p>所以<span class="math inline">\(P_A =
+UU^T\)</span>，表示投影矩阵，它将<span
+class="math inline">\(b\)</span>投影到了<span
+class="math inline">\(A\)</span>的列空间的线性组合，或者说是值域即<span
+class="math inline">\(span(A)\)</span>。所以:</p>
+<blockquote>
+<p><strong><span class="math inline">\(A\hat{x}\)</span> 就是 <span
+class="math inline">\(b\)</span> 在 <span
+class="math inline">\(span(A)\)</span> 上的正交投影</strong></p>
+</blockquote>
+<p>再看一下error <span class="math inline">\(e = b -
+\hat{b}\)</span>：</p>
+<p><span class="math display">\[
+\begin{aligned}
+e &amp;= b - \hat{b} \\
+&amp;= b -  UU^T b \\
+&amp;= (I - UU^T) b \triangleq P_{A\perp}b
+\end{aligned}
+\]</span></p>
+<p>由于所奇异矩阵<span class="math inline">\(U\)</span>的full形式为<span
+class="math inline">\(U_{full} = [U | U_{\perp} ]\)</span>，则有：</p>
+<p><span class="math display">\[U_{full}^TU_{full} = U_{full}U_{full}^T
+= I = UU^T + U_{\perp}U_{\perp}^T\]</span></p>
+<p>所以: <span class="math inline">\(P_{A\perp} = I - UU^T =
+U_{\perp}U_{\perp}^T\)</span></p>
+<p>进而最小二乘的误差为 <span class="math inline">\(e =
+U_{\perp}U_{\perp}^Tb\)</span></p>
+<p>参考视频《Solving the Least-Squares Problem Using Geometry》</p>
+<iframe width="1104" height="630" src="https://www.youtube.com/embed/JYfx5SjKb9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+<h3 id="矩阵近似">矩阵近似</h3>
+<p>祭上亲爱的Battle Angel Alita。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/alita_origin.jpg" /></p>
+<p>原始图像尺寸$1440
+$，我们可以对该图像做SVD分解，然后仅保留奇异值的前10，50，100重构图像，比较重构图像与原始图像的质量差异。可见仅仅保留其前10个奇异值时，图像质量遭到了极大破坏（此时仅保留原始图像信息的58.864%），随着奇异值数量的增多，图像质量也会逐渐提升，可以看到当奇异值个数为100时，基本上已经看不出与原图的差异（此时仅保留原始图像信息的87.37%）。由此，我们实现了图像压缩。</p>
+<p><img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/alita_svd1.jpg" /></p>
+<p>下图是保留的奇异值数量与图像质量的关系图，保留的奇异值越多，图像质量越高，图像压缩效果越不明显；反之，奇异值越少，图像质量越差，图像压缩效果越明显。这只是一种非常简单的图像压缩算法，仅作原理验证使用，在实际中用到的概率不是很大。</p>
+<p><img data-src="alita_svd_quality.svg" /></p>
+<h2 id="代码">代码</h2>
+<figure class="highlight m"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% simple test of using SVD decomposistion</span></span><br><span class="line">clear <span class="built_in">all</span>;</span><br><span class="line">close <span class="built_in">all</span>;</span><br><span class="line">clc;</span><br><span class="line"></span><br><span class="line"><span class="comment">% A = [1 4 3 5 6;</span></span><br><span class="line"><span class="comment">%          2 3 4 5 0;</span></span><br><span class="line"><span class="comment">%          7 4 0 9 1]</span></span><br><span class="line"><span class="comment">% A&#x27;*A;</span></span><br><span class="line"><span class="comment">% A*A&#x27;;</span></span><br><span class="line"><span class="comment">% </span></span><br><span class="line"><span class="comment">% [V,Dv] = eig(A&#x27;*A);</span></span><br><span class="line"><span class="comment">% </span></span><br><span class="line"><span class="comment">% lambda = wrev(diag(Dv));</span></span><br><span class="line"><span class="comment">% V = fliplr(V)</span></span><br><span class="line"><span class="comment">% </span></span><br><span class="line"><span class="comment">% [U,Du] = eig(A*A&#x27;);</span></span><br><span class="line"><span class="comment">% </span></span><br><span class="line"><span class="comment">% lambda = wrev(diag(Du));</span></span><br><span class="line"><span class="comment">% U = fliplr(U)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% LOADING IMAGE</span></span><br><span class="line">img <span class="built_in">=</span> imread(<span class="string">&#x27;alita_origin.png&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ENERGE <span class="built_in">=</span> <span class="number">0</span>;</span><br><span class="line">for i <span class="built_in">=</span> <span class="number">1</span>:<span class="number">3</span></span><br><span class="line">    [U(:,:,i) D(:,:,i) V(:,:,i)] <span class="built_in">=</span> svd(double(img(:,:,i)))  ;</span><br><span class="line">    ENERGE <span class="built_in">=</span> ENERGE +sum(diag(D(:,:,i)));</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 10</span></span><br><span class="line">DIM <span class="built_in">=</span> <span class="number">10</span>;</span><br><span class="line">ENERGE10 <span class="built_in">=</span> <span class="number">0</span>;</span><br><span class="line">for i <span class="built_in">=</span> <span class="number">1</span>:<span class="number">3</span></span><br><span class="line">    img_recons10(:,:,i) <span class="built_in">=</span> U(:,<span class="number">1</span>:DIM,i)*D(<span class="number">1</span>:DIM,<span class="number">1</span>:DIM,i)*V(:,<span class="number">1</span>:DIM,i)<span class="string">&#x27;;</span></span><br><span class="line"><span class="string">     ENERGE10 = ENERGE10 +sum(diag(D(1:DIM,1:DIM,i)));</span></span><br><span class="line"><span class="string">end</span></span><br><span class="line"><span class="string">% figure;</span></span><br><span class="line"><span class="string">% imshow(mat2gray(img_recons10))</span></span><br><span class="line"><span class="string">% imwrite(mat2gray(img_recons10),&#x27;</span>alita_10.png<span class="string">&#x27;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">%% 50</span></span><br><span class="line"><span class="string">DIM = 50;</span></span><br><span class="line"><span class="string">ENERGE50 = 0;</span></span><br><span class="line"><span class="string">for i = 1:3</span></span><br><span class="line"><span class="string">    img_recons50(:,:,i) = U(:,1:DIM,i)*D(1:DIM,1:DIM,i)*V(:,1:DIM,i)&#x27;</span>;</span><br><span class="line">     ENERGE50 <span class="built_in">=</span> ENERGE50 +sum(diag(D(<span class="number">1</span>:DIM,<span class="number">1</span>:DIM,i)));</span><br><span class="line">end</span><br><span class="line"><span class="comment">% figure;</span></span><br><span class="line"><span class="comment">% imshow(mat2gray(img_recons50))</span></span><br><span class="line"><span class="comment">% imwrite(mat2gray(img_recons50),&#x27;alita_50.png&#x27;);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 100</span></span><br><span class="line">DIM <span class="built_in">=</span> <span class="number">100</span>;</span><br><span class="line">ENERGE100 <span class="built_in">=</span> <span class="number">0</span>;</span><br><span class="line">for i <span class="built_in">=</span> <span class="number">1</span>:<span class="number">3</span></span><br><span class="line">    img_recons100(:,:,i) <span class="built_in">=</span> U(:,<span class="number">1</span>:DIM,i)*D(<span class="number">1</span>:DIM,<span class="number">1</span>:DIM,i)*V(:,<span class="number">1</span>:DIM,i)<span class="string">&#x27;;</span></span><br><span class="line"><span class="string">    ENERGE100 = ENERGE100 +sum(diag(D(1:DIM,1:DIM,i)));</span></span><br><span class="line"><span class="string">end</span></span><br><span class="line"><span class="string">% figure;</span></span><br><span class="line"><span class="string">% imshow(mat2gray(img_recons100))</span></span><br><span class="line"><span class="string">% imwrite(mat2gray(img_recons100),&#x27;</span>alita_100.png<span class="string">&#x27;);</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">figure;</span></span><br><span class="line"><span class="string">set(gcf,&#x27;</span>pos<span class="string">&#x27;,[ 986 414 1274 826])</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">FONTSIZE = 15;</span></span><br><span class="line"><span class="string">h(1) = subplot(221);imshow(mat2gray(img)); </span></span><br><span class="line"><span class="string">xlabel(&#x27;</span>origin Alita<span class="string">&#x27;);set(gca,&#x27;</span>fontsize<span class="string">&#x27;,FONTSIZE)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">h(2) = subplot(222);imshow(mat2gray(img_recons10));</span></span><br><span class="line"><span class="string">xlabel([&#x27;</span>Using <span class="number">10</span> singular values: <span class="string">&#x27; num2str(ENERGE10/ENERGE)]);set(gca,&#x27;</span>fontsize<span class="string">&#x27;,FONTSIZE)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">h(3) = subplot(223);imshow(mat2gray(img_recons50));</span></span><br><span class="line"><span class="string">xlabel([&#x27;</span>Using <span class="number">50</span> singular values: <span class="string">&#x27; num2str(ENERGE50/ENERGE)]);set(gca,&#x27;</span>fontsize<span class="string">&#x27;,FONTSIZE)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">h(4) = subplot(224);imshow(mat2gray(img_recons100));</span></span><br><span class="line"><span class="string">xlabel([&#x27;</span>Using <span class="number">100</span> singular values: <span class="string">&#x27; num2str(ENERGE100/ENERGE)]);set(gca,&#x27;</span>fontsize<span class="string">&#x27;,FONTSIZE)</span></span><br><span class="line"><span class="string">set(gcf,&#x27;</span>color<span class="string">&#x27;,[1 1 1])</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">%% SHOW ENERGY</span></span><br><span class="line"><span class="string">ENERGY_tmp = zeros(size(img,1),1);</span></span><br><span class="line"><span class="string">for DIM_ = 1:size(img,1)</span></span><br><span class="line"><span class="string">   for i = 1:3</span></span><br><span class="line"><span class="string">     ENERGY_tmp(DIM_,1) = ENERGY_tmp(DIM_,1) +sum(diag(D(1:DIM_,1:DIM_,i)));</span></span><br><span class="line"><span class="string">   end</span></span><br><span class="line"><span class="string">end</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">figure;</span></span><br><span class="line"><span class="string">FONTSIZE = 30;</span></span><br><span class="line"><span class="string">ratio = ENERGY_tmp/ENERGE;</span></span><br><span class="line"><span class="string">X =   1:size(img,1);</span></span><br><span class="line"><span class="string">plot(X,ratio,&#x27;</span>linewidth<span class="string">&#x27;,5,&#x27;</span>color<span class="string">&#x27;,&#x27;</span>r<span class="string">&#x27;);</span></span><br><span class="line"><span class="string">set(gcf,&#x27;</span>color<span class="string">&#x27;,[1 1 1])</span></span><br><span class="line"><span class="string">xlabel(&#x27;</span>Number of Singular values<span class="string">&#x27;);</span></span><br><span class="line"><span class="string">ylabel(&#x27;</span>Image Quality<span class="string">&#x27;);</span></span><br><span class="line"><span class="string">set(gca,&#x27;</span>fontsize<span class="string">&#x27;,FONTSIZE)</span></span><br><span class="line"><span class="string">set(gcf,&#x27;</span>pos<span class="string">&#x27;,[ 986 414 1274 826])</span></span><br><span class="line"><span class="string"></span></span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www-users.math.umn.edu/~lerman/math5467/svd.pdf">A
+Singularly Valuable Decomposition The SVD of a Matrix</a></li>
+<li>Singular Value Decomposition (SVD) <a
+target="_blank" rel="noopener" href="https://youtu.be/gXbThCXjZFM?list=PLMrJAkhIeNNSVjnsviglFoY2nXildDCcv">video1</a>，<a
+target="_blank" rel="noopener" href="https://youtu.be/6rPF-jJo7V8">video2</a></li>
+<li>李宏毅关于SVD的介绍，<a
+target="_blank" rel="noopener" href="http://speech.ee.ntu.edu.tw/~tlkagk/courses/LA_2018/Lecture/SVD.pdf">PPT</a>,<a
+target="_blank" rel="noopener" href="http://speech.ee.ntu.edu.tw/~tlkagk/courses_LA18.html">课程列表</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>Vincent Qin
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="https://www.vincentqin.tech/posts/slam-common-issues-SVD/" title="📝笔记：SLAM常见问题(五)：Singular Value Decomposition（SVD）分解">https://www.vincentqin.tech/posts/slam-common-issues-SVD/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/SLAM/" rel="tag"># SLAM</a>
+              <a href="/tags/%E4%BD%8D%E5%A7%BF/" rel="tag"># 位姿</a>
+              <a href="/tags/SVD/" rel="tag"># SVD</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/slam-common-issues-ICP/" rel="prev" title="📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵">
+                  <i class="fa fa-chevron-left"></i> 📝笔记：SLAM常见问题(四)：求解ICP，利用SVD分解得到旋转矩阵
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/superglue/" rel="next" title="📝笔记：SuperGlue:Learning Feature Matching with Graph Neural Networks论文阅读">
+                  📝笔记：SuperGlue:Learning Feature Matching with Graph Neural Networks论文阅读 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="waline"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Vincent Qin</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+  <script class="next-config" data-name="pdf" type="application/json">{"object_url":{"url":"https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js","integrity":"sha256-tu9j5pBilBQrWSDePOOajCUdz6hWsid/lBNzK4KgEPM="},"url":"/lib/pdf/web/viewer.html"}</script>
+  <script src="/js/third-party/tags/pdf.js"></script>
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="waline" type="application/json">{"lang":"en-US","enable":true,"serverURL":"https://comments.vincentqin.tech","cssUrl":"https://unpkg.com/@waline/client@v2/dist/waline.css","commentCount":true,"pageview":true,"locale":{"placeholder":"Welcome to comment"},"emoji":["https://unpkg.com/@waline/emojis@1.1.0/weibo","https://unpkg.com/@waline/emojis@1.1.0/alus","https://unpkg.com/@waline/emojis@1.1.0/bilibili","https://unpkg.com/@waline/emojis@1.1.0/qq","https://unpkg.com/@waline/emojis@1.1.0/tieba","https://unpkg.com/@waline/emojis@1.1.0/tw-emoji"],"meta":["nick","mail","link"],"requiredMeta":["nick","mail"],"wordLimit":0,"login":"enable","el":"#waline","comment":true,"libUrl":"//unpkg.com/@waline/client@v2/dist/waline.js","path":"/posts/slam-common-issues-SVD/"}</script>
+<link rel="stylesheet" href="https://unpkg.com/@waline/client@v2/dist/waline.css">
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.waline.el).then(() =>
+    NexT.utils.getScript(CONFIG.waline.libUrl, { condition: window.Waline })
+  ).then(() => 
+    Waline.init(Object.assign({}, CONFIG.waline,{ el: document.querySelector(CONFIG.waline.el) }))
+  );
+});
+</script>
+
+</body>
+</html>
