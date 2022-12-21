@@ -29,7 +29,7 @@
 <meta property="og:description" content="经常关注学术界最新动态的同学对arXiv可能会非常熟悉，它是全球最大的学术开放共享平台，目前存储了8个学科领域近200万篇学术文章1，学者们经常会将其即将发表或者未发表的文章挂在arXiv上让同行评议，这极大地促进了学术界的开放性与协作性。 众多的文章让人眼花缭乱，让人无法马上获取自己关注的领域的文章。笔者最近使用arXiv API2 + Github Actions3 实现了每天自动从ar">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-10-24T13:28:05.000Z">
-<meta property="article:modified_time" content="2022-12-21T12:52:28.156Z">
+<meta property="article:modified_time" content="2022-12-21T13:05:17.240Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="arXiv">
 <meta property="article:tag" content="Papers">
@@ -343,7 +343,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-12-21 20:52:28" itemprop="dateModified" datetime="2022-12-21T20:52:28+08:00">2022-12-21</time>
+      <time title="Modified: 2022-12-21 21:05:17" itemprop="dateModified" datetime="2022-12-21T21:05:17+08:00">2022-12-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -636,6 +636,11 @@ that trigger workflows</a>。</p>
 <p>这里使用了<a
 target="_blank" rel="noopener" href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07"><code>cron</code></a>的语法，它有5个字段，分别用空格分开，具体如下：
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌───────────── minute (0 - 59)</span><br><span class="line">│ ┌───────────── hour (0 - 23)</span><br><span class="line">│ │ ┌───────────── day of the month (1 - 31)</span><br><span class="line">│ │ │ ┌───────────── month (1 - 12 or JAN-DEC)</span><br><span class="line">│ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)</span><br><span class="line">│ │ │ │ │</span><br><span class="line">│ │ │ │ │</span><br><span class="line">│ │ │ │ │</span><br><span class="line">* * * * *</span><br></pre></td></tr></table></figure></p>
+<div class="note warning"><p><code>cron</code>的时间是UTC时间，北京时间需要减去8小时，即北京时间12:00对应UTC时间4:00。这里有一个将cron快速翻译成“人话”的<a
+target="_blank" rel="noopener" href="https://crontab.guru/">工具</a>，另外补充一张速查表</p>
+</div>
+<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/cron.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/crontab.png" /></p>
 <p>补充语法：</p>
 <table>
 <colgroup>
@@ -676,10 +681,6 @@ minute 20 through 59 (minutes 20, 35, and 50).</td>
 </tr>
 </tbody>
 </table>
-<div class="note warning"><p><code>cron</code>的时间是UTC时间，北京时间需要减去8小时，即北京时间12:00对应UTC时间4:00。这里有一个将cron快速翻译成“人话”的<a
-target="_blank" rel="noopener" href="https://crontab.guru/">工具</a>，另外补充一张速查表</p>
-</div>
-<p><img data-src="vincentqin.tech/blog-resources/cv-arxiv-daily/cron.jpg" /></p>
 <p>上述 <code>workflow</code> 的要点总结如下：</p>
 <div class="note warning"><ol type="1">
 <li>每天 UTC 时间 12:00
