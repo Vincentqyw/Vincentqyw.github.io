@@ -29,7 +29,7 @@
 <meta property="og:description" content="本文测试了NVIDIA提出的 Instant NeRF">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-04-30T18:28:39.000Z">
-<meta property="article:modified_time" content="2022-08-31T16:15:09.227Z">
+<meta property="article:modified_time" content="2023-03-14T14:54:11.486Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta name="twitter:card" content="summary">
@@ -342,7 +342,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-01 00:15:09" itemprop="dateModified" datetime="2022-09-01T00:15:09+08:00">2022-09-01</time>
+      <time title="Modified: 2023-03-14 22:54:11" itemprop="dateModified" datetime="2023-03-14T22:54:11+08:00">2023-03-14</time>
     </span>
 
   
@@ -435,7 +435,9 @@ target="_blank" rel="noopener" href="https://developer.nvidia.com/rtx/ray-tracin
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone --recursive https://github.com/nvlabs/instant-ngp</span><br><span class="line">$ cd instant-ngp</span><br></pre></td></tr></table></figure>
 <p>由于原项目中有多个依赖项，GitHub限速严重，我上传了一份完整版到<a
 target="_blank" rel="noopener" href="https://drive.google.com/file/d/12Bx02hYsI1fN1SXsVIS7oEd_WUt4lG95/view?usp=sharing">Google
-drive</a>和[Aliyun ]</p>
+drive</a>和百度网盘: <a
+target="_blank" rel="noopener" href="https://pan.baidu.com/s/1zoCgxK8UaAwt9eLIB1vn4g?pwd=qrdr">链接</a>，提取码:
+qrdr 。</p>
 <p>进入<code>Developer Command Prompt</code>终端：</p>
 <p><img data-src="https://user-images.githubusercontent.com/29135514/151631759-ff8538ab-74c6-4c7b-962e-d7b097e819db.png" /></p>
 <p>从终端进入项目目录，进行编译:</p>
@@ -465,7 +467,9 @@ class="math inline">\(1920 \times
 target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1DV6HG-4p-S5X1fKosZmVMRoEz4uhYmuM?usp=sharing">Google
 Drive: tussock_tiny</a>，<a
 target="_blank" rel="noopener" href="https://www.jianguoyun.com/p/DaGDaNwQ1vfFChiZnLwEIAA">备选地址:
-tussock_tiny</a></p>
+tussock_tiny</a>，百度网盘：<a
+target="_blank" rel="noopener" href="https://pan.baidu.com/s/1g2yVawrcTOT2LZLt1bPakA?pwd=ibuz">链接</a>，提取码:
+ibuz。</p>
 <h2 id="真实场景原始数据">真实场景原始数据</h2>
 <p>目录结构：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">📂instant-ngp/ # this is root</span><br><span class="line">├── 📂data/</span><br><span class="line">│	├── 📂toy_truck/</span><br><span class="line">│	│	├── 📜transforms.json # 这是要生成的文件</span><br><span class="line">│	│	├── 📂data/</span><br><span class="line">│	│	│	├── 📜toy_truck_001.jpg</span><br><span class="line">│	│	│	├── 📜toy_truck_002.jpg</span><br><span class="line">│	│	│	│...</span><br><span class="line">│	│	│...</span><br><span class="line">│	│...</span><br><span class="line">│...</span><br><span class="line"></span><br><span class="line">&lt;!-- 或者自采数据集 --&gt;</span><br><span class="line"></span><br><span class="line">📂F:/ # disk F or E or others, 任意位置</span><br><span class="line">├── 📂dataset/</span><br><span class="line">│	├── 📂tussock_tiny/</span><br><span class="line">│	│	├── 📜transforms.json # 这是要生成的文件</span><br><span class="line">│	│	├── 📂data/</span><br><span class="line">│	│	│	├── 📜image_20.png</span><br><span class="line">│	│	│	├── 📜image_40.png</span><br><span class="line">│	│	│	│...</span><br><span class="line">│	│	│...</span><br><span class="line">│	│...</span><br><span class="line">│...</span><br></pre></td></tr></table></figure>
@@ -575,7 +579,7 @@ target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/406131690">R90
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
