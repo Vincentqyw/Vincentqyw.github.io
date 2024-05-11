@@ -28,23 +28,23 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="译者注：这恐怕是全网有关卡尔曼滤波最简单易懂的解释，如果你认真的读完本文，你将对卡尔曼滤波有一个更加清晰的认识，并且可以手推卡尔曼滤波。原文作者使用了漂亮的图片和颜色来阐明它的原理（读起来并不会因公式多而感到枯燥），所以请勇敢地读下去！">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_0.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_1.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_3.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_2.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_7.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_8.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_9.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10a.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10b.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_12.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_0.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_1.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_3.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_2.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_7.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_8.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_9.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_10a.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_10b.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_12.jpg">
 <meta property="og:image" content="https://vincentqin.tech/blog-resources/wechat-qcode.gif">
 <meta property="article:published_time" content="2020-05-24T11:41:50.000Z">
-<meta property="article:modified_time" content="2022-08-29T17:26:29.385Z">
+<meta property="article:modified_time" content="2024-05-11T15:30:54.456Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_0.png">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_0.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/kalman-filter-in-pictures/">
@@ -354,7 +354,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-08-30 01:26:29" itemprop="dateModified" datetime="2022-08-30T01:26:29+08:00">2022-08-30</time>
+      <time title="Modified: 2024-05-11 23:30:54" itemprop="dateModified" datetime="2024-05-11T23:30:54+08:00">2024-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -436,13 +436,13 @@ class="math inline">\(v\)</span>，即可表示为：</p>
 <p><span class="math display">\[\vec{x}=\begin{bmatrix} p\\ v
 \end{bmatrix}\]</span></p>
 <p>某个时刻，我们不知道真实的位置与速度到底是多少，二者存在一个所有可能性的组合，大致如下图所示。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_0.png" ></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_0.png" ></p>
 <p><strong>卡尔曼滤波假设状态所有的变量都是随机的且都服从高斯分布，每个变量都有其对应的均值<span
 class="math inline">\(\mu\)</span>以及方差<span
 class="math inline">\(\sigma^2\)</span>（它代表了不确定性）</strong>。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_1.png" ></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_1.png" ></p>
 <p>在上图中，位置和速度是不相关（<strong>uncorrelated</strong>）的，这意味着某个变量的状态不会告诉你其他变量的状态是怎样的。即虽然我们知道现在的速度，但是无法从现在的速度推测出现在的位置。但实际上并非如此，我们知道速度和位置是有关系的（<strong>correlated</strong>），这样一来二者之间的组合关系变成了如下图所示的情况。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_3.png" ></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_3.png" ></p>
 <p>这种情况是很容易发生的，例如，如果速度很快，我们可能会走得更远，所以我们的位置会更大。如果我们走得很慢，我们就不会走得太远。</p>
 <p>这种状态变量之间的关系很重要，因为它可以为我们提供<strong>更多信息</strong>：One
 measurement tells us something about what the others could
@@ -452,7 +452,7 @@ class="math inline">\(\Sigma_{ij}\)</span>的每个元素是第i个状态变量�
 <span
 class="math inline">\(\Sigma\)</span>”，因此我们将它们的元素称为“<span
 class="math inline">\(\Sigma_{ij}\)</span>”。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_2.png" ></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_2.png" ></p>
 <h2 id="状态预测">状态预测</h2>
 <h3 id="问题的矩阵形式表示">问题的矩阵形式表示</h3>
 <p>我们把状态建模成高斯分布（Gaussian
@@ -474,10 +474,10 @@ class="math inline">\(\mathbf{P_k}\)</span>，我们可以写成下面矩阵形�
 <p>接下来，我们需要某种方式来查看当前状态（<span
 class="math inline">\(k-1\)</span>时刻）并<strong>预测</strong>在时刻<span
 class="math inline">\(k\)</span>处的状态。请记住，我们不知道哪个状态是“真实”状态，但是我们提到的<strong>预测</strong>（prediction）并不在乎这些。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_7.jpg"></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_7.jpg"></p>
 <p>我们可以用一个矩阵<span
 class="math inline">\(\mathbf{F_k}\)</span>来表示这个预测过程：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_8.jpg"></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_8.jpg"></p>
 <p>这个矩阵<span
 class="math inline">\(\mathbf{F_k}\)</span>将原始估计中的每个点移动到新的预测位置。</p>
 <p>那么问题来了，应该如何使用上述矩阵来预测下一时刻的位置和速度呢？为了阐述这个过程，我们使用了一个非常基础的运动学公式（初中物理中就学过）进行描述：</p>
@@ -555,14 +555,14 @@ class="math inline">\(\color{darkorange}{\vec{\mathbf{u}_k}}\)</span>被称为<s
 <p>如果状态仅仅依赖其自身的属性进行演进，那一切都很好。如果状态受到外部因素进行演进，我们只要知道那些外部因素是什么，那么一切仍然很好。</p>
 <p>但在实际使用中，我们有时不知道的那些外部因素到底是如何被建模的。例如，我们要跟踪四轴飞行器，它可能会随风摇晃；如果我们跟踪的是轮式机器人，则车轮可能会打滑，或者因地面颠簸导致其减速。我们无法跟踪这些外部因素，如果发生任何这些情况，我们的预测可能会出错，因为我们并没有考虑这些因素。</p>
 <p>通过在每个预测步骤之后添加一些新的不确定性，我们可以对与“世界”相关的不确定性进行建模（如我们无法跟踪的事物）：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_9.jpg"></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_9.jpg"></p>
 <p>这样一来，由于新增的不确定性<strong>原始估计中的每个状态都可能迁移到多个状态</strong>。
 因为我们非常喜欢用高斯分布进行建模，此时也不例外。我们可以说<span
 class="math inline">\(\color{royalblue}{\mathbf{\hat{x}}_{k-1}}\)</span>的每个点都移动到具有协方差<span
 class="math inline">\(\color{mediumaquamarine}{\mathbf{Q}_k}\)</span>的高斯分布内的某个位置，如下图所示：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10a.jpg"></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_10a.jpg"></p>
 <p>这将产生一个新的高斯分布，其协方差不同（但均值相同）：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_10b.jpg"></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_10b.jpg"></p>
 <p>所以呢，我们在状态量的协方差中增加了额外的协方差<span
 class="math inline">\(\color{mediumaquamarine}{\mathbf{Q}_k}\)</span>，所以预测阶段完整的状态转移方程为：</p>
 <p><span class="math display">\[
@@ -579,10 +579,10 @@ class="math inline">\(\color{mediumaquamarine}{\mathbf{Q}_k}\)</span>，所以�
 <h2 id="状态更新">状态更新</h2>
 <h3 id="利用测量进一步修正状态">利用测量进一步修正状态</h3>
 <p>假设我们有几个传感器，这些传感器可以向我们提供有关系统状态的信息。就目前而言，测量什么量都无关紧要，也许一个读取位置，另一个读取速度。每个传感器都告诉我们有关状态的一些间接信息（换句话说，传感器在状态下运作并产生一组测量读数）。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_12.jpg" ></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_12.jpg" ></p>
 <p>请注意，测量的单位可能与状态量的单位不同。我们使用矩阵<span
 class="math inline">\(\mathbf{H}_k\)</span>对传感器的测量进行建模。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_13.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_13.jpg" /></p>
 <p>所以我们期望传感器的度数可以被建模成如下形式：</p>
 <p><span
 class="math display">\[\begin{equation}  \begin{aligned}  \vec{\mu}_{\text{expected}}
@@ -591,14 +591,14 @@ class="math display">\[\begin{equation}  \begin{aligned}  \vec{\mu}_{\text{expec
 \color{deeppink}{\mathbf{P}_k}
 \mathbf{H}_k^T  \end{aligned}  \end{equation}\]</span></p>
 <p>卡尔曼滤波器的伟大之处就在于它能够处理传感器噪声。换句话说，传感器本身的测量是不准确的，且原始估计中的每个状态都可能导致一定范围的传感器读数，而卡尔曼滤波能够在这些不确定性存在的情况下找到最优的状态。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_14.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_14.jpg" /></p>
 <p>根据传感器的读数，我们会猜测系统正处于某个特定状态。但是由于不确定性的存在，<strong>某些状态比其他状态更可能产生我们看到的读数</strong>：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_11.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_11.jpg" /></p>
 <p>我们将这种不确定性（如传感器噪声）的<strong>协方差</strong>表示为<span
 class="math inline">\(\color{mediumaquamarine}{\mathbf{R}_k}\)</span>，读数的分布<strong>均值</strong>等于我们观察到传感器的读数，我们将其表示为<span
 class="math inline">\(\color{yellowgreen}{\vec{\mathbf{z}_k}}\)</span></p>
 <p>这样一来，我们有了两个高斯分布：一个围绕通过状态转移预测的平均值，另一个围绕实际传感器读数。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_4.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_4.jpg" /></p>
 <p>因此，我们需要将基于预测状态（<strong><font color=deeppink>粉红色</font></strong>）的推测读数与基于实际观察到的传感器读数（<strong><font color=yellowgreen>绿色</font></strong>）进行融合。</p>
 <p>那么融合后<strong>最有可能的新状态</strong>是什么？
 对于任何可能的读数<span
@@ -607,9 +607,9 @@ class="math inline">\(\color{yellowgreen}{\vec{\mathbf{z}_k}}\)</span>是<span
 class="math inline">\((z_1,z_2)\)</span>的（误-）测量值的概率，以及（2）先前估计值的概率认为<span
 class="math inline">\((z_1,z_2)\)</span>是我们应该看到的读数。</p>
 <p>如果我们有两个概率，并且想知道两个概率都为真的机会，则将它们相乘。因此，我们对两个高斯分布进行了相乘处理：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_6a.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_6a.png" /></p>
 <p>两个概率分布相乘得到的就是上图中的重叠部分。而且重叠部分的概率分布会比我们之前的任何一个估计值/读数都精确得多，这个分布的均值就是两种估计最有可能配置（得到的状态）。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_6.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_6.png" /></p>
 <p>事实证明，<strong>两个独立的高斯分布相乘之后会得到一个新的具有其均值和协方差矩阵的高斯分布</strong>！下面开始推公式。</p>
 <h3 id="合并两个高斯分布">合并两个高斯分布</h3>
 <p>首先考虑一维高斯情况：一个均值为<span
@@ -620,7 +620,7 @@ class="math inline">\(\sigma^2\)</span>的高斯分布的形式为：</p>
 -\frac{ (x – \mu)^2 }{ 2\sigma^2 } }
 \end{equation}\]</span></p>
 <p>我们想知道将两个高斯曲线相乘会发生什么。下图中的蓝色曲线表示两个高斯总体的（未归一化）交集：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/gauss_joint.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/gauss_joint.png" /></p>
 <p><span class="math display">\[\begin{equation} \label{gaussequiv}
 \mathcal{N}(x, \color{fuchsia}{\mu_0}, \color{deeppink}{\sigma_0}) \cdot
 \mathcal{N}(x, \color{yellowgreen}{\mu_1},
@@ -729,7 +729,7 @@ class="math inline">\(\mathbf{H}_k^T\)</span>去除，我们可以得到最终�
 <h2 id="图说">图说</h2>
 <p>大功告成，<span
 class="math inline">\(\color{royalblue}{\mathbf{\hat{x}}_k’}\)</span>就是更新后的最优状态！接下来我们可以继续进行预测，然后更新，重复上述过程！下图给出卡尔曼滤波信息流。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/kalman-filter-in-pictures/kalflow.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/kalman-filter-in-pictures/kalflow.png" /></p>
 <h2 id="总结">总结</h2>
 <p>在上述所有数学公式中，你需要实现的只是公式<span
 class="math inline">\(\eqref{kalpredictfull},
@@ -854,7 +854,7 @@ Transactions on
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

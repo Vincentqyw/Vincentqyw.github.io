@@ -28,17 +28,17 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="论文全称：ORB-SLAM3：An Accurate Open-Source Library for Visual, Visual-Inertial and Multi-Map SLAM. 首先回顾一下历史：ORB-SLAM首次在2015年被提出，它的改进版ORB-SLAM2在2017年被提出，同年提出了ORB-SLAM-VI，时隔3年，ORB-SLAM3横空出世，朋友圈、学术群里到处都在热议">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-3.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-4.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-tab-3.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-4.png">
 <meta property="article:published_time" content="2020-07-25T14:19:38.000Z">
-<meta property="article:modified_time" content="2022-09-04T18:33:22.041Z">
+<meta property="article:modified_time" content="2024-05-11T15:30:54.443Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="CV">
 <meta property="article:tag" content="笔记">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-3.png">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-tab-3.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/orb-slam3/">
@@ -357,7 +357,7 @@ adjustment</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="n
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-05 02:33:22" itemprop="dateModified" datetime="2022-09-05T02:33:22+08:00">2022-09-05</time>
+      <time title="Modified: 2024-05-11 23:30:54" itemprop="dateModified" datetime="2024-05-11T23:30:54+08:00">2024-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -418,7 +418,7 @@ target="_blank" rel="noopener" href="https://github.com/Vincentqyw/Recent-Stars-
 <p>本文第二个主要创新点在于提出了<strong>多地图复用系统</strong>，这套系统使用了一种高召回率的场景识别算法。正是依赖于这一点，ORB-SLAM3能够有效应对长时弱纹理的环境：若系统丢失，它重新开始建图并在当经过之前走过的地点时与原来的地图无缝融合。另外，相比于其它仅用到之前一段时间内信息的VO方案，本文提出的方案用到之前所有时刻的信息。这样可以利用到很久之前或者来自不同地图的信息。</p>
 <p>实验表明，本文提出的算法在学术领域已有的SLAM系统中表现最优（这句话说的很严谨，没有提到工业界，因为没开源）。</p>
 <h1 id="系统总览">系统总览</h1>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-1.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-1.png" /></p>
 <p>ORB-SLAM3基于ORB-SLAM2以及ORB-SLAM-VI进行改进，上图是其系统框图。这基本上保持了与ORB-SLAM2类似的框架，同时增加了前述的几个创新点，接下来对其中主要步骤进行简要说明。</p>
 <h2 id="atlas地图集">Atlas(地图集)</h2>
 <p>所谓Atlas就是一种多地图的表示形式，多地图由不相连的地图组成。可以看到，它由active
@@ -527,7 +527,7 @@ j}\right\|_{\Sigma_{i j}}\right)\right)
 <p>其中<span
 class="math inline">\(\mathcal{K}^{j}\)</span>表示观测到第<span
 class="math inline">\(j\)</span>个3D点的关键帧集合。这个优化可以用因子图进行表示，如图2a。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-2.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-2.png" /></p>
 <h2 id="imu初始化">IMU初始化</h2>
 <p>这一步的目的是获取IMU参数较好的初始值：速度/重力向以及Bias。本文的工作重点是设计<strong>一种快速准确的IMU初始化算法</strong>。文中提到如下3个见解：
 1.
@@ -695,7 +695,7 @@ window范围内的所有关键帧进行局部BA优化（见下图）。为了确
 class="math inline">\(M_m\)</span>的那些关键帧需要保持固定</strong>。优化完成后，Welding
 window区域中包含的所有关键帧都可以用于跟踪，实现地图<span
 class="math inline">\(M_m\)</span>的快速/准确复用。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-3a.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-3a.png" /></p>
 <h3 id="位姿图优化">位姿图优化</h3>
 <p>位姿图利用本质图在融合后的地图范围进行优化，Welding
 window范围内的关键帧保持固定。这一步的意义在于分摊误差。</p>
@@ -720,7 +720,7 @@ class="math inline">\(M_m\)</span>中的<span
 class="math inline">\(K_m\)</span>及其前5个时间连续的关键帧的位姿，速度和bias也参与优化，详细见下图。对于<span
 class="math inline">\(M_m\)</span>，优化中包括但不固定在紧接局部窗口之前的那一关键帧位姿，而对于<span
 class="math inline">\(M_a\)</span>，局部窗口之前的那一关键帧，但其姿势仍然参与优化。所有这些关键帧看到的所有地图点以及观测这些地图点的关键帧姿势也都进行优化。所有关键帧和地图点都通过重投影误差项（作为约束因子，下图中的蓝色小方块）进行关联。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-3b.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-3b.png" /></p>
 <h2 id="闭环">闭环</h2>
 <p>闭环校正算法类似于地图融合，但是在这种情况下，当前关键帧以及匹配关键帧都同属于active
 map。welding
@@ -736,13 +736,13 @@ window是由匹配的关键帧组合而成/重复的3D点被融合/更新共视�
 
 <iframe width="2543" height="1128" src="https://www.youtube.com/embed/E-7fsq7en2g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
 <h2 id="euroc单次会话">EuRoC单次会话</h2>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-2.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-tab-2.png" /></p>
 <h2 id="vi-slam以及tum-vi数据集">VI SLAM以及TUM-VI数据集</h2>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-tab-3.png" width ="80%"/></p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-4.png" width ="70%"/></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-tab-3.png" width ="80%"/></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-4.png" width ="70%"/></p>
 <h2 id="多地图">多地图</h2>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-5.png" /></p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-5/orb-slam3/orb-slam3-fig-6.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-5.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam3/orb-slam3-fig-6.png" /></p>
 <h1 id="总结">总结</h1>
 <p>基于ORB-SLAM/ORB-SLAM2以及ORB-SLAM-VI，本文提出了ORB-SLAM3，它是一个功能更加完整，性能更加出众的SLAM系统。这使得该系统更加适合长时/大规模SLAM实际应用。</p>
 <p>实验结果表明，ORB-SLAM3是第一个能够有效利用短期，中期，长期和多地图数据关联的视觉和视觉惯性系统，其精度水平已经超出了现有系统。
@@ -817,7 +817,7 @@ window是由匹配的关键帧组合而成/重复的3D点被融合/更新共视�
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

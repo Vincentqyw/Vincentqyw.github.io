@@ -29,7 +29,7 @@
 <meta property="og:description" content="在许多领域的研究与应用中，往往需要对反映事物的多个变量进行大量的观测，收集大量数据以便进行分析寻找规律。多变量大样本无疑会为研究和应用提供了丰富的信息，但也在一定程度上增加了数据采集的工作量，更重要的是在多数情况下，许多变量之间可能存在相关性，从而增加了问题分析的复杂性，同时对分析带来不便。如果分别对每个指标进行分析，分析往往是孤立的，而不是综合的。盲目减少指标会损失很多信息，容易产生错误的结">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-10-02T05:22:25.000Z">
-<meta property="article:modified_time" content="2022-09-04T16:58:40.045Z">
+<meta property="article:modified_time" content="2024-05-11T15:28:06.699Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="机器学习">
 <meta property="article:tag" content="PCA">
@@ -345,7 +345,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-05 00:58:40" itemprop="dateModified" datetime="2022-09-05T00:58:40+08:00">2022-09-05</time>
+      <time title="Modified: 2024-05-11 23:28:06" itemprop="dateModified" datetime="2024-05-11T23:28:06+08:00">2024-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -420,7 +420,7 @@ Component Analysis，ICA）。
 <p>将一组N维向量降为K维（K大于0，小于N），其目标是选择K个单位（模为1）正交基，使得原始数据变换到这组基上后，各字段两两间协方差为0，而字段的方差则尽可能大（在正交的约束下，取最大的K个方差）。
 注意：PCA的变换矩阵是协方差矩阵，K-L变换的变换矩阵可以有很多种（二阶矩阵、协方差矩阵、总类内离散度矩阵等等）。当K-L变换矩阵为协方差矩阵时，等同于PCA。</p>
 <h2 id="pca原理">PCA原理</h2>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/pca/projection.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pca/projection.png" /></p>
 <p>最大化样本点在基上的投影，使得数据点尽量的分离。令第一主成分的方向是<span
 class="math inline">\(u_1\)</span>，我们的目标就是将样本点在该方向上的投影最大化，即：</p>
 <p><span class="math display">\[
@@ -451,7 +451,7 @@ max||Wx||_2
 s.t.  W^TW=I
 \]</span></p>
 <p>解释：<strong>最大化方差同时最小化协方差</strong>（PCA本质上是将方差最大的方向作为主要特征，并且在各个正交方向上将数据“离相关”）。最大化方差意味着，使得每个样本点在每个维度上与均值有很大差异，就是说非常有个性，有个性才能分辨出来；同时协方差越小的话表明样本之间的互相影响就非常小，如果协方差是0的话，表示两个字段完全独立。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/pca/explain.gif" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pca/explain.gif" /></p>
 <p>寻找协方差矩阵的特征向量和特征值就等价于拟合一条能保留最大方差的直线或主成分。因为特征向量追踪到了主成分的方向，而最大方差和协方差的轴线表明了数据最容易改变的方向。根据上述推导，我们发现达到优化目标就等价于将协方差矩阵对角化：即除对角线外的其它元素化为0，并且在对角线上将特征值按大小从上到下排列。协方差矩阵作为实对称矩阵，其主要性质之一就是可以正交对角化，因此就一定可以分解为特征向量和特征值。</p>
 <h2 id="具体实施步骤">具体实施步骤</h2>
 <p>总结一下PCA的算法步骤，设有<span
@@ -472,11 +472,11 @@ class="math inline">\(C=\frac{1}{m}XX^T\)</span></li>
 <h2 id="去均值化的目的">去均值化的目的</h2>
 <p>下面两幅图是数据做中心化（centering）前后的对比，可以看到其实就是一个平移的过程，平移后所有数据的中心是<span
 class="math inline">\((0,0)\)</span>.</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/pca/centering_1.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pca/centering_1.jpg" /></p>
 <p>在做PCA的时候，我们需要找出矩阵的特征向量，也就是主成分（PC）。比如说找到的第一个特征向量是a
 = [1,
 2]，a在坐标平面上就是从原点出发到点（1，2）的一个向量。如果没有对数据做中心化，那算出来的第一主成分的方向可能就不是一个可以“描述”（或者说“概括”）数据的方向了。还是看图比较清楚。</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/pca/centering_2.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/pca/centering_2.jpg" /></p>
 <p>黑色线就是第一主成分的方向。只有中心化数据之后，计算得到的方向才能比较好的“概括”原来的数据。</p>
 <h2 id="限制">限制</h2>
 <p>PCA虽可以很好的解除线性相关，但是对于高阶相关性就没有办法了，对于存在高阶相关性的数据，可以考虑Kernel
@@ -561,7 +561,7 @@ target="_blank" rel="noopener" href="http://blog.jobbole.com/109015/">主成分�
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

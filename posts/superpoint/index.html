@@ -28,9 +28,17 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="时隔三年，笔者重新研读了这篇论文，仍感觉极富参考价值。笔者更新了这篇于三年前写的文章，主要集中在特征点解码端65通道的解释以及损失函数的理解。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_1.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_3.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_2.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_4.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_5.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_6.png">
 <meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_3.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_4.png">
 <meta property="article:published_time" content="2019-06-23T06:02:06.000Z">
-<meta property="article:modified_time" content="2022-09-04T13:46:09.611Z">
+<meta property="article:modified_time" content="2024-05-11T15:28:22.765Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="SuperPoint">
@@ -39,7 +47,7 @@
 <meta property="article:tag" content="MagicLeap">
 <meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_1.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/superpoint/">
@@ -350,7 +358,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-04 21:46:09" itemprop="dateModified" datetime="2022-09-04T21:46:09+08:00">2022-09-04</time>
+      <time title="Modified: 2024-05-11 23:28:22" itemprop="dateModified" datetime="2024-05-11T23:28:22+08:00">2024-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -416,7 +424,7 @@ target="_blank" rel="noopener" href="https://github.com/MagicLeapResearch/SuperP
 Adaptation</strong></p>
 <h1 id="算法优劣对比">算法优劣对比</h1>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/tab_1.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/tab_1.png"
 alt="fig1_table1" />
 <figcaption aria-hidden="true">fig1_table1</figcaption>
 </figure>
@@ -426,7 +434,7 @@ alt="fig1_table1" />
 </ul>
 <h1 id="网络结构">网络结构</h1>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_3.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_3.png"
 alt="fig3" />
 <figcaption aria-hidden="true">fig3</figcaption>
 </figure>
@@ -442,7 +450,7 @@ W}\)</span>变为张量<span class="math inline">\(\mathcal{B} \in
 \mathbb{R}^{H_c \times W_c \times F}\)</span></p>
 <h2 id="interest-point-decoder">2. Interest Point Decoder</h2>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_10_magicPoint1.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_10_magicPoint1.png"
 alt="fig_10_magicPoint1" />
 <figcaption aria-hidden="true">fig_10_magicPoint1</figcaption>
 </figure>
@@ -501,7 +509,7 @@ class="math inline">\(\mathcal{D} \in \mathbb{R}^{H_c \times W_c \times
 D}\)</span>变为<span class="math inline">\(\mathbb{R}^{H\times W \times
 D}\)</span> 。</p>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_11_des_decoder.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_11_des_decoder.png"
 alt="fig_11_des_decoder" />
 <figcaption aria-hidden="true">fig_11_des_decoder</figcaption>
 </figure>
@@ -513,7 +521,7 @@ target="_blank" rel="noopener" href="https://github.com/pytorch/pytorch/blob/f06
 <li>特征点位置反归一化：根据输入张量的H与W对grid(1,1,0,:)（表示第一个特征点，其余特征点类似）进行反归一化，其实就是按照比例进行缩放+平移，得到反归一化特征点在张量某个slice（通道）上的位置；但是这个位置可能并非为整像素，此时要对其进行双线性插值补齐，然后其余slice按照同样的方式进行双线性插值。注：代码中实际的就是双线性插值，并非文中讲的双三次插值；</li>
 <li>输出维度：1*C*1*K。</li>
 </ul>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/grid_sample.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/grid_sample.png" /></p>
 <p>描述子解码部分代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Compute the dense descriptors</span></span><br><span class="line">cDa = self.relu(self.convDa(x))</span><br><span class="line">descriptors = self.convDb(cDa) <span class="comment"># DIM: N x 256 x H/8 x W/8</span></span><br><span class="line">descriptors = torch.nn.functional.normalize(descriptors, p=<span class="number">2</span>, dim=<span class="number">1</span>) <span class="comment">#按通道进行归一化</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Extract descriptors</span></span><br><span class="line"><span class="comment"># 根据特征点位置插值得到描述子, DIM: N x 256 x M</span></span><br><span class="line"></span><br><span class="line">descriptors = [sample_descriptors(k[<span class="literal">None</span>], d[<span class="literal">None</span>], <span class="number">8</span>)[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">for</span> k, d <span class="keyword">in</span> <span class="built_in">zip</span>(keypoints, descriptors)]</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
 <h2 id="误差构建">4. 误差构建</h2>
 <p><span class="math display">\[
@@ -587,7 +595,7 @@ class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&lt;𝑚_{𝑛1}\)</sp
 class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&gt;𝑚_{𝑛1}\)</span>。</p>
 <h1 id="网络训练">网络训练</h1>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_2.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_2.png"
 alt="fig2" />
 <figcaption aria-hidden="true">fig2</figcaption>
 </figure>
@@ -606,20 +614,20 @@ rotations的原因。</p>
 <p>此处参考作者之前发表的一篇论文<strong>[<a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.07410">Toward Geometric Deep
 SLAM</a>]</strong>，其实就是<code>MagicPoint</code>，它仅仅保留了SuperPoint的主干网络以及特征点解码端，即SuperPoint的检测端就是MagicPoint。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_10_magicPoint1.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_10_magicPoint1.png"
 alt="fig2" /></p>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_4.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_4.png"
 alt="fig4" />
 <figcaption aria-hidden="true">fig4</figcaption>
 </figure>
 <h2 id="homographic-adaptation">Homographic Adaptation</h2>
 <p>算法在虚拟数据集上表现极其优秀，但是在真实场景下表示没有达到预期，此时本文进行了<code>Homographic Adaptation</code>。
 作者使用的数据集是<code>MS-COCO</code>，为了使网络的泛化能力更强，本文不仅使用原始了原始图片，而且对每张图片进行随机的旋转和缩放形成新的图片，新的图片也被用来进行识别。这一步其实就类似于训练里常用的数据增强。经过一系列的单应变换之后特征点的复检率以及普适性得以增强。值得注意的是，在实际训练时，这里采用了迭代使用单应变换的方式，例如使用优化后的特征点检测器重新进行单应变换进行训练，然后又可以得到更新后的检测器，如此迭代优化，这就是所谓的self-supervisd。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_5.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_5.png"
 alt="fig5" /></p>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_9_HA.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_9_HA.png"
 alt="fig_9_HA" />
 <figcaption aria-hidden="true">fig_9_HA</figcaption>
 </figure>
@@ -630,7 +638,7 @@ f_{\theta}\right)\]</span>，可以表示为再所有随机单应变换/反变�
 \mathcal{H}_{i}^{-1} f_{\theta}\left(\mathcal{H}_{i}(I)\right)
 \]</span></p>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/fig_6.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_6.png"
 alt="fig_6" />
 <figcaption aria-hidden="true">fig_6</figcaption>
 </figure>
@@ -644,12 +652,12 @@ alt="fig_8" />
 <figcaption aria-hidden="true">fig_8</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/tab_3.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/tab_3.png"
 alt="tab_3" />
 <figcaption aria-hidden="true">tab_3</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/superpoint/tab_4.png"
+<img data-src="https://vincentqin.tech/blog-resources/superpoint/tab_4.png"
 alt="tab_4" />
 <figcaption aria-hidden="true">tab_4</figcaption>
 </figure>
@@ -745,7 +753,7 @@ target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>的版
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -28,12 +28,12 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="这里鄙人汇总了有关光场（Light Field）一些有用的链接以及光场数据的处理过程。 声明：一切理解都是本人观点，如有疑问，还望在评论中留言。如需转载请与本人联系，谢谢合作! )">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/91252468.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/deer.jpg">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/deer-zoom-in.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/all-views-raw.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/all-views-freq-correction.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/all-views-freq-color-correction.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/91252468.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/deer.jpg">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/deer-zoom-in.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/all-views-raw.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/all-views-freq-correction.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/all-views-freq-color-correction.png">
 <meta property="article:published_time" content="2017-02-16T02:45:54.000Z">
 <meta property="article:modified_time" content="2018-01-28T14:55:30.000Z">
 <meta property="article:author" content="Vincent Qin">
@@ -42,7 +42,7 @@
 <meta property="article:tag" content="光场">
 <meta property="article:tag" content="计算成像">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/91252468.png">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/LightField-Toolbox/91252468.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/LightField-Toolbox/">
@@ -399,7 +399,7 @@ ToolBox(光场工具箱)的使用</span></a><ol class="nav-child"><li class="nav
     
     
     <div class="post-body" itemprop="articleBody">
-        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/91252468.png" alt="Magic Leap">
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/91252468.png" alt="Magic Leap">
 <div class="note success"><p><a
 href="https://www.vincentqin.tech/collections/">这里</a>鄙人汇总了有关光场（Light
 Field）一些有用的链接以及光场数据的处理过程。 <span
@@ -415,7 +415,7 @@ alt="ReadMe Card" /></a></p>
 alt="ReadMe Card" /></a></p>
 <h2 id="光场相机">光场相机</h2>
 <p>大家在刚刚入手光场领域的时候可能会用到目前消费级的手持光场相机，如Lytro或者ILLUM，如图（实验室的设备，鄙人可买不起ILLUM）：
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/LF-cameras.jpg" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/LF-cameras.jpg" /></p>
 <h2 id="获取.lfpor-.lfr原文件">获取.LFP(or .LFR)原文件</h2>
 <p>由Lytro拍摄的图像的原格式是.lfp格式，我们要将其解码成我们需要的格式。
 工具：<strong>Lytro
@@ -423,7 +423,7 @@ Desktop</strong>，<strong>MATLAB光场工具包</strong>（很强大，推荐�
 <p>首先用数据线把设备连接到电脑，打开Lytro
 Desktop，点击想要导入的图片，选中点击右上角立即处理，然后打开我的电脑图片-&gt;Lytro
 Desktop图库.lytrolibrary*，就可以发现有很多文件夹名字是一串很长数字字母云云。点击进去可以发现里面有几个文件，以lytro为例，这几个文件如下形式：
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/lfp_list.png" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/lfp_list.png" /></p>
 <p><strong><font color=red>raw.lfp</font></strong>就是我们需要的原文件，之后我们就要利用Matlab光场工具包对其进行解码操作。</p>
 <h2 id="matlab-light-field-toolbox光场工具箱的使用">Matlab Light Field
 ToolBox(光场工具箱)的使用</h2>
@@ -434,11 +434,11 @@ target="_blank" rel="noopener" href="http://pan.baidu.com/s/1hsDo0ks">链接</a>
 密码：yykc。这是鄙人修改后的一个版本，可以直接运行。</del><strong><font color=red >另外鄙人在Github上传了一个版本，大家可以git
 clone<a
 target="_blank" rel="noopener" href="https://github.com/Vincentqyw/Light_Field_TB">链接</a></font></strong>。下载下来的工具包是这样的：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/LF-TB-main.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/LF-TB-main.png" /></p>
 <p>LFToolbox0.4就是我们需要的工具包，该工具包里包含很多函数，如下图：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/LF-TB-files.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/LF-TB-files.png" /></p>
 <p>在此，鄙人把一些比较常用的函数及文档用红色的框标注出来，其中PDF文档是该工具包的说明书。这个说明书中详细地介绍了该工具包的使用方法，我们完全可以根据该文档的介绍来实现自己想要的功能。如下是该说明书的截图：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/LF-TB.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/LF-TB.png" /></p>
 <p>该说明文档提供了各种函数用于从LFP文件中提取出自己需要的各种信息：白图像(white
 image)，Raw Image，对齐后的图像，以及颜色校正，频域滤波后的图像等。
 <del>因为时间不足没有整理的，感觉大家都对这个过程比较感兴趣，鄙人觉得有必要写一下到底如何读取lfp、lfr、raw文件了。好了言归正传，开写。</del></p>
@@ -447,7 +447,7 @@ image)，Raw Image，对齐后的图像，以及颜色校正，频域滤波后�
 <p><u>如果是直接clone鄙人在github上的<a
 target="_blank" rel="noopener" href="https://github.com/Vincentqyw/Light_Field_TB">工程</a>的话直接跳转<strong>step
 2</strong></u>。如果没有，那就要建立自己的工作目录，便于文件的管理。这一步是必要的，如果建立的目录不一致，可能导致程序无法运行，这也是鄙人当时初次用这个工具包时常常出错的地方。好了，建立这样的目录结构：
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/folder-structure-raw.png" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/folder-structure-raw.png" /></p>
 <h4 id="step-2-根据相机序列号修改文件名">step 2:
 根据相机序列号修改文件名</h4>
 <p><strong><font color=red >Sample_test</font></strong>表示我们的测试目录，里面包含了相机信息以及自己拍摄照片的图像（lfp/lfr）。
@@ -458,11 +458,11 @@ serial_number</u>中找到，这个数字每个相机不一样，大家根据自
 <h4 id="step-3-把白图像文件拷贝到相应的文件夹下">step 3:
 把白图像文件拷贝到相应的文件夹下</h4>
 <p>在每个序列号文件夹下又有一个文件夹<strong><font color=red >WhiteImages</font></strong>，这里面放着由该相机拍摄的白图像。所谓白图像就是一张由光场相机拍摄的白色的图像，当然自己也可以拿着光场相机对着白色的墙面拍几张，但是效果并不一定很好。庆幸的是LYTRO官方提供了白图像，以Lytro为例，我们可以从以下目录找到:<u>
-c: <strong>username</strong>- serial_number</u>。如下图所示： <img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/white-image-files-folders.png" /></p>
+c: <strong>username</strong>- serial_number</u>。如下图所示： <img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/white-image-files-folders.png" /></p>
 <p>我们发现这里有以下4个文件：<strong>data.C.0/1/2/3</strong>，这是官方把白图像压缩成了这种格式，此时需要用工具箱进行解码。我们需要的正是这四个文件，拷贝出这4个文件，放在<strong><font color=red >WhiteImages</font></strong>文件夹里。这一步相当关键，一定要确保拷贝对了目录。<strong><font color=red>注意</font></strong>，Illum相机的白图像与Lytro的白图像的存放位置不一样，在<strong>相机的SD卡</strong>里。
 #### step 4: 将测试文件放到Images目录</p>
 <p><strong><font color=red >Images</font></strong>文件夹下包含我们需要处理的文件们，<strong><font color=red >F01</font></strong>下存放LYTRO系列拍摄的文件，<strong><font color=red >B01</font></strong>下存放ILLUM系列拍摄的文件。以Lytro为例，由于前面已经有了测试文件<strong><font color=red >raw.lfp</font></strong>，我们就把这个文件放在<strong><font color=red >F01</font></strong>下。经过我们上述的过程之后，最后我们的目录会变成这样（注意：<u>Sample_test与LFToolBox0.4为同级目录，各个文件夹的名字务必正确</u>）：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/folder-structure.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/folder-structure.png" /></p>
 <h3 id="测试开始">测试开始</h3>
 <p>鄙人用的是实验室的电脑，配置是：<strong>Intel(R) Core(TM) i7-4790 CPU
 <span class="citation" data-cites="3.60GHz">@3.60GHz</span> 3.60GHz RAM
@@ -471,10 +471,10 @@ CODE了。程序大致可以分为以下几个测试： 1. 处理白图像 2. �
 频域滤波 4. 颜色校正</p>
 <h4 id="处理白图像">处理白图像</h4>
 <p>处理白图像的目的是得到相机的某些参数，鄙人当时是为了获得每幅光场的中心点坐标才进行的这一步。白图像拍摄的场景没有纹理，此时可以清楚的观察到微透镜成像的边界信息。如下图所示：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/white-image-macro-pixels.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/white-image-macro-pixels.png" /></p>
 <p>可以看到的是，微透镜下成像是这种正六边形的网格，类似于蜂窝的结构，感觉很酷有木有。需要注意的是，该过程不是简单地提取出一张白图像来，而是提取几十张白图像对（image
 pairs），这个过程运行起来有点久，以下是运行的截图：</p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/running-process.png" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/running-process.png" /></p>
 <h4 id="解码lfp文件">解码LFP文件</h4>
 <p>如果只是单纯地读出LFP/LFR、RAW文件的数据的话可以分别用工具包提供的如下函数：LFReadLFP、LFReadRaw。注意两个函数的返回值不一样。LFReadLFP返回一个结构体类型的变量，它包含相机的各个信息，我们可以根据自己的需要保留数据。LFReadRaw返回的是一张uint16的灰度图，还没有经过demosaicing操作。去马赛克操作在malatb中有相应的函数，这点不用担心。我们在这里不是直接调用的LFReadLFP而是调用了工具箱提供的LFLytroDecodeImage函数。如果运行有问题（<u>若是直接clone鄙人github上项目的话，不需要修改</u>），将LFLytroDecodeImage中的WhiteImageDatabase路径由以下：</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DecodeOptions = LFDefaultField( <span class="string">&#x27;DecodeOptions&#x27;</span>, <span class="string">&#x27;WhiteImageDatabasePath&#x27;</span>...</span><br><span class="line">,fullfile(<span class="string">&#x27;Cameras&#x27;</span>,<span class="string">&#x27;WhiteImageDatabase.mat&#x27;</span>));<span class="comment">% line 71</span></span><br></pre></td></tr></table></figure>
@@ -482,15 +482,15 @@ pairs），这个过程运行起来有点久，以下是运行的截图：</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">DecodeOptions = LFDefaultField( <span class="string">&#x27;DecodeOptions&#x27;</span>, <span class="string">&#x27;WhiteImageDatabasePath&#x27;</span>...</span><br><span class="line"> ,fullfile(<span class="string">&#x27;Cameras&#x27;</span>,LFMetadata.SerialData.camera.serialNumber,<span class="string">&#x27;WhiteImageDatabase.mat&#x27;</span>));</span><br><span class="line"><span class="comment">%== 注意，这条插在  ---Select appropriate white image---上行，而不是在原来的71行修改==。</span></span><br></pre></td></tr></table></figure>
 经过这样的修改之后，这下应该可以跑了。我们可以得到以下图像：
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/deer.jpg" width="80%" >
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/deer.jpg" width="80%" >
 </center>
 局部放大效果图：
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/deer-zoom-in.png" width="80%">
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/deer-zoom-in.png" width="80%">
 </center>
 所有视角的图像：
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/all-views-raw.png" width="80%">
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/all-views-raw.png" width="80%">
 </center>
 <p>这时候可以看到在边界视角上的图像比较黑，所以我们接下来要进行频域滤波，以及颜色校正。</p>
 <h4 id="频域滤波以及颜色校正">频域滤波以及颜色校正</h4>
@@ -498,11 +498,11 @@ pairs），这个过程运行起来有点久，以下是运行的截图：</p>
 为例子，我们得到的光场图像一种有11*11个视角，但是这个121个视角子孔径图像的质量真的不敢恭维，尤其是边角处的视角(u=1,v=1)时，这个图像时完全变成黑色的。所以嘛，LFFilt4DFFT这个函数是将这些变成黑色的图像或者质量不好的图像进行校正的，具体原理不作展开。LFColourCorrect这个函数是利用gamma变化对原始图像进行颜色校正的，这一点比较简单。总之利用这两个函数能够让我们得到的光场图像的质量更好，当然你也可以选择不用。</p>
 以下是经过滤波之后的所有子孔径图像，可以发现边界的视角相比于频域滤波之前有了很好的可视性。
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/all-views-freq-correction.png" width="80%">
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/all-views-freq-correction.png" width="80%">
 </center>
 以下是经过颜色校正之后的所有所有子孔径图像。
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/all-views-freq-color-correction.png" width="80%">
+<img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/all-views-freq-color-correction.png" width="80%">
 </center>
 <p>经过以上的步骤我们可以学习到白图像的处理，以及光场图像的处理等操作。当然鄙人没有列出这个工具包所有的功能介绍，大家可以根据需要建立自己工程，对自己的数据进行测试，以上！</p>
 <h2
@@ -575,7 +575,7 @@ this is a common question.</p>
 Dansereau的说法进行尝试，如果各位有好的方法，也可以告诉鄙人。（PS：以上为回复@lixiaohao同学邮件部分内容）</p>
 <h3 id="lytro1.0-2d原始图像解码原理">Lytro1.0 2D原始图像解码原理</h3>
 <p>以下是本人研一时做的解码原理解释，各位同学可参考下。</p>
-<div class="pdf-container" data-target="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/decoding_process.pdf" data-height="500px"></div>
+<div class="pdf-container" data-target="https://vincentqin.tech/blog-resources/LightField-Toolbox/decoding_process.pdf" data-height="500px"></div>
 <h3 id="测试代码">测试代码</h3>
 <p>以下是Demo文件的代码，仅供学习使用。</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line">clc;</span><br><span class="line">clear all;</span><br><span class="line">clc;</span><br><span class="line"></span><br><span class="line">addpath(genpath(<span class="string">&#x27;Sample_test&#x27;</span>));</span><br><span class="line">addpath(genpath(<span class="string">&#x27;LFToolbox0.4&#x27;</span>));</span><br><span class="line"></span><br><span class="line">LFMatlabPathSetup;</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Step1: 解压data.C.0/1/2/3---&gt;white,结果存储在Cameras中</span></span><br><span class="line">fprintf(<span class="string">&#x27;===============Step1: Unpack Lytro Files===============\n\n &#x27;</span>);</span><br><span class="line">LFUtilUnpackLytroArchive(<span class="string">&#x27;Sample_test&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Step2: 包含刚刚解压出来的文件的目录</span></span><br><span class="line"></span><br><span class="line">fprintf(<span class="string">&#x27;===============Step2: Process WhiteImages===============\n\n&#x27;</span>);</span><br><span class="line"></span><br><span class="line">WhiteImagesPath=<span class="string">&#x27;Sample_test\Cameras\B5151500510&#x27;</span>; <span class="comment">% 务必要设置这个值 B5151500510   A303134427</span></span><br><span class="line">LFUtilProcessWhiteImages( WhiteImagesPath);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% Step3: 解码光场图像.lfp</span></span><br><span class="line">fprintf(<span class="string">&#x27;=====================Step3: Decode LFP===================\n\n&#x27;</span>);</span><br><span class="line">cd(<span class="string">&#x27;Sample_test&#x27;</span>);  <span class="comment">% 进入Sample_test目录</span></span><br><span class="line"></span><br><span class="line">lfpname=<span class="string">&#x27;baby&#x27;</span>; <span class="comment">%测试图像名称，改成你自己的</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> WhiteImagesPath(<span class="number">21</span>)==<span class="string">&#x27;A&#x27;</span>    <span class="comment">%找到型号  exist(&#x27;LYTRO&#x27;,&#x27;var&#x27;)</span></span><br><span class="line">    version=<span class="string">&#x27;F01&#x27;</span>;</span><br><span class="line"><span class="keyword">elseif</span> WhiteImagesPath(<span class="number">21</span>)==<span class="string">&#x27;B&#x27;</span><span class="comment">%找到型号  exist(&#x27;ILLUM&#x27;,&#x27;var&#x27;)</span></span><br><span class="line">    version=<span class="string">&#x27;B01&#x27;</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">InputFname=[<span class="string">&#x27;Images\&#x27;</span>,version,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;.lfp&#x27;</span>];</span><br><span class="line"></span><br><span class="line">[LF, LFMetadata,WhiteImage,CorrectedLensletImage, ...</span><br><span class="line">WhiteImageMetadata, LensletGridModel, DecodeOptions]...</span><br><span class="line">                              =  LFLytroDecodeImage(InputFname);</span><br><span class="line">cd(<span class="string">&#x27;..&#x27;</span>);</span><br><span class="line"></span><br><span class="line">imshow(CorrectedLensletImage) <span class="comment">%Raw Image</span></span><br><span class="line">mkdir([<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname]);</span><br><span class="line">imwrite(CorrectedLensletImage,[<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;.bmp&#x27;</span>]);</span><br><span class="line">save([<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;.mat&#x27;</span>],<span class="string">&#x27;CorrectedLensletImage&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">%% =======================频域滤波================================</span></span><br><span class="line"><span class="comment">%---Setup for linear filters---</span></span><br><span class="line">tic</span><br><span class="line"><span class="comment">% lytro</span></span><br><span class="line"><span class="keyword">if</span> strcmp(version,<span class="string">&#x27;F01&#x27;</span>)==<span class="number">1</span></span><br><span class="line">    LFPaddedSize = [<span class="number">16</span>, <span class="number">16</span>, <span class="number">400</span>, <span class="number">400</span>];</span><br><span class="line">    BW = <span class="number">0.03</span>;</span><br><span class="line">    FiltOptions = [];</span><br><span class="line">    FiltOptions.Rolloff = <span class="string">&#x27;Butter&#x27;</span>;</span><br><span class="line">    Slope1 = <span class="number">-3</span>/<span class="number">9</span>; <span class="comment">% Lorikeet</span></span><br><span class="line">    Slope2 = <span class="number">4</span>/<span class="number">9</span>;  <span class="comment">% Building</span></span><br><span class="line">    fprintf(<span class="string">&#x27;Building 4D frequency hyperfan... &#x27;</span>);</span><br><span class="line">    [H, FiltOptionsOut] = LFBuild4DFreqHyperfan( LFPaddedSize, Slope1, Slope2, BW, FiltOptions );</span><br><span class="line">    fprintf(<span class="string">&#x27;Applying filter&#x27;</span>);</span><br><span class="line">    [LFFilt, FiltOptionsOut] = LFFilt4DFFT( LF, H, FiltOptionsOut );</span><br><span class="line"></span><br><span class="line"><span class="comment">% illum</span></span><br><span class="line"><span class="keyword">elseif</span> strcmp(version,<span class="string">&#x27;B01&#x27;</span>)==<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    LFSize = <span class="built_in">size</span>(LF);</span><br><span class="line">    LFPaddedSize = LFSize;</span><br><span class="line">    BW = <span class="number">0.04</span>;</span><br><span class="line">    FiltOptions = [];</span><br><span class="line">    <span class="comment">%---Demonstrate 4D Hyperfan filter---</span></span><br><span class="line">    Slope1 = <span class="number">-4</span>/<span class="number">15</span>; <span class="comment">% Lorikeet</span></span><br><span class="line">    Slope2 = <span class="number">15</span>/<span class="number">15</span>; <span class="comment">% Far background</span></span><br><span class="line">    fprintf(<span class="string">&#x27;Building 4D frequency hyperfan... &#x27;</span>);</span><br><span class="line">    [H, FiltOptionsOut] = LFBuild4DFreqHyperfan( LFPaddedSize, Slope1, Slope2, BW, FiltOptions );</span><br><span class="line">    fprintf(<span class="string">&#x27;Applying filter&#x27;</span>);</span><br><span class="line">    [LFFilt, FiltOptionsOut] = LFFilt4DFFT( LF, H, FiltOptionsOut );</span><br><span class="line">    title(sprintf(<span class="string">&#x27;Frequency hyperfan filter, slopes %.3g, %.3g, BW %.3g&#x27;</span>, Slope1, Slope2, BW));</span><br><span class="line">    drawnow</span><br><span class="line">    save([<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;5D.mat&#x27;</span>],<span class="string">&#x27;LFFilt&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% =======================颜色校正参数设置==========================                               </span></span><br><span class="line"></span><br><span class="line">ColMatrix = DecodeOptions.ColourMatrix;</span><br><span class="line">Gamma=DecodeOptions.Gamma;</span><br><span class="line">ColBalance=DecodeOptions.ColourBalance;</span><br><span class="line"></span><br><span class="line"><span class="comment">% 对3280*3280的原始彩色图像进行颜色校正</span></span><br><span class="line">ColorCorrectedImage=LFColourCorrect(CorrectedLensletImage, ColMatrix, ColBalance, Gamma);</span><br><span class="line">imwrite(ColorCorrectedImage,[<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;ColorCorrectedImage.bmp&#x27;</span>]);</span><br><span class="line">save([<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;ColorCorrectedImage.mat&#x27;</span>],<span class="string">&#x27;ColorCorrectedImage&#x27;</span>)</span><br><span class="line">imshow(ColorCorrectedImage);title(<span class="string">&#x27;Corrected Lenslet Image&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">%% 同样是颜色矫正， 为了得到光场数据。得到5-D LFColorCorrectedImage数据</span></span><br><span class="line">LFColorCorrectedImage=<span class="built_in">zeros</span>(<span class="built_in">size</span>(LF,<span class="number">1</span>),<span class="built_in">size</span>(LF,<span class="number">2</span>),<span class="built_in">size</span>(LF,<span class="number">3</span>),<span class="built_in">size</span>(LF,<span class="number">4</span>),<span class="built_in">size</span>(LF,<span class="number">5</span>));</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">size</span>(LF,<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:<span class="built_in">size</span>(LF,<span class="number">2</span>)</span><br><span class="line">        temp =<span class="built_in">squeeze</span>(LFFilt(<span class="built_in">i</span>,<span class="built_in">j</span>,:,:,<span class="number">1</span>:<span class="number">3</span>));</span><br><span class="line">        temp = LFColourCorrect(temp, ColMatrix, ColBalance, Gamma);</span><br><span class="line">        LFColorCorrectedImage(<span class="built_in">i</span>,<span class="built_in">j</span>,:,:,<span class="number">1</span>:<span class="number">3</span>)=temp;</span><br><span class="line">        imshow(temp);</span><br><span class="line">        pause(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">LFColorCorrectedImage(:,:,:,:,<span class="number">4</span>)=LF(:,:,:,:,<span class="number">4</span>);</span><br><span class="line">save([<span class="string">&#x27;Results_saving\&#x27;</span>,lfpname,<span class="string">&#x27;\&#x27;</span>,lfpname,<span class="string">&#x27;RawLFColorCorrectedImage.mat&#x27;</span>],<span class="string">&#x27;LFColorCorrectedImage&#x27;</span>);<span class="comment">% very important</span></span><br><span class="line"></span><br><span class="line">toc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -590,7 +590,7 @@ photo的线上支持，所以以下啥都没有了。
 class="math display">\[
 L_{\alpha}(x,y,u,v)=L_0(x+(1-\frac{1}{\alpha})u,y+(1-\frac{1}{\alpha})v,u,v)
 \]</span></p>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/concatImg.png" />
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/concatImg.png" />
 左图为其中心视角图像，右图为重聚焦（参数 <span
 class="math inline">\(\alpha\)</span> =0.5）之后的图像。</p>
 <p>给出部分测试代码如下，全部代码见<strong><a
@@ -602,23 +602,23 @@ Desktop是曾经的Lytro官方提供的软件，可以处理由Lytro系列相机
 <ul>
 <li>导入需要处理的图像</li>
 </ul>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/lytro-desktop-1.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/lytro-desktop-1.jpg" /></p>
 <ul>
 <li>导出配对数据</li>
 </ul>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/lytro-desktop-3.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/lytro-desktop-3.jpg" /></p>
 <ul>
 <li>导出待处理图像的各种格式</li>
 </ul>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/lytro-desktop-2.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/lytro-desktop-2.jpg" /></p>
 <ul>
 <li>全聚焦彩色图与内置深度图</li>
 </ul>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/color-depth.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/color-depth.jpg" /></p>
 <ul>
 <li>重聚焦</li>
 </ul>
-<p><img data-src="https://vincentqin.gitee.io/blogresource-1/LightField-Toolbox/refocusing.jpg" /></p>
+<p><img data-src="https://vincentqin.tech/blog-resources/LightField-Toolbox/refocusing.jpg" /></p>
 <center>
 以上，如有问题欢迎评论
 </center>
@@ -673,7 +673,7 @@ Desktop是曾经的Lytro官方提供的软件，可以处理由Lytro系列相机
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

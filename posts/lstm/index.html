@@ -28,16 +28,18 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文是我对大神Christopher Olah的Understanding LSTM Networks的译文。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/lstm/RNN-rolled.png">
-<meta property="og:image" content="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-gate.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/lstm/RNN-rolled.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/lstm/RNN-unrolled.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/lstm/LSTM3-chain.png">
+<meta property="og:image" content="https://vincentqin.tech/blog-resources/lstm/LSTM3-gate.png">
 <meta property="article:published_time" content="2017-10-23T13:26:20.000Z">
-<meta property="article:modified_time" content="2022-04-03T05:57:33.392Z">
+<meta property="article:modified_time" content="2024-05-11T15:30:23.983Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="LSTM">
 <meta property="article:tag" content="RNN">
 <meta property="article:tag" content="CNN">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.gitee.io/blogresource-1/lstm/RNN-rolled.png">
+<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/lstm/RNN-rolled.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/lstm/">
@@ -349,7 +351,7 @@ Dependencies）问题</span></a></li><li class="nav-item nav-level-2"><a class="
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-04-03 13:57:33" itemprop="dateModified" datetime="2022-04-03T13:57:33+08:00">2022-04-03</time>
+      <time title="Modified: 2024-05-11 23:30:23" itemprop="dateModified" datetime="2024-05-11T23:30:23+08:00">2024-05-11</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -393,7 +395,7 @@ Dependencies）问题</span></a></li><li class="nav-item nav-level-2"><a class="
     
     
     <div class="post-body" itemprop="articleBody">
-        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/honghong.jpg" /></p>
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.tech/blog-resources/lstm/honghong.jpg" /></p>
 <p>本文是我对大神<a target="_blank" rel="noopener" href="http://colah.github.io/about.html">Christopher
 Olah</a>的<a
 target="_blank" rel="noopener" href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding
@@ -405,7 +407,7 @@ Neural Networks）</h2>
 循环神经网络（Recurrent Neural
 Networks）尝试解决了以上问题。这种网络是一种带有循环结构的网络，可以使得信息得以持久保持。
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/RNN-rolled.png" width="15%" RNN有循环结构>
+<img data-src="https://vincentqin.tech/blog-resources/lstm/RNN-rolled.png" width="15%" RNN有循环结构>
 </center>
 <p>上图是一个RNN模块，<span
 class="math inline">\(A\)</span>读取输入<span
@@ -413,7 +415,7 @@ class="math inline">\(x_i\)</span>，同时输出<span
 class="math inline">\(h_t\)</span>，<span
 class="math inline">\(A\)</span>这个循环允许信息从网络的当前步骤传递到下一步骤。
 上述过程把RNN的过程讲的有些神秘感。但是，如果我们仔细想想，这也不比一个正常的神经网络难以理解。一个RNN可以看成是多个相同网络的拷贝，每一个拷贝都会向后续网络传递信息，下图我们把RNN展开。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/RNN-unrolled.png"
+<img data-src="https://vincentqin.tech/blog-resources/lstm/RNN-unrolled.png"
 alt="展开RNN" />
 这种链式的特性揭示了RNN与序列和列表有关，RNN是对这些数据最自然的表达。RNN目前已经被广泛使用！在过去的几年间，RNN在很多领域都有着出色的表现：语音识别，语言建模，翻译，图像描述...推荐大家阅读大神Andrej
 Karpathy的博文<a
@@ -429,12 +431,12 @@ Dependencies）问题</h2>
 有时，我们仅仅需要离当前任务最近的几个任务信息。例如，我们有一个<strong>语言模型</strong>，它的目标是根据当前已有的词语去预测接下来将要出现的词语。如果我们尝试去预测“the
 clouds are in the
 sky”中的最后一个单词，我们不需要任何更多的语料，很明显最后一个单词将会是“sky”。在这种情况下，相关信息和当前需要预测词的位置的间隔是非常小的，这时RNNs可以去利用过去的信息。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/RNN-shorttermdepdencies.png"
+<img data-src="https://vincentqin.tech/blog-resources/lstm/RNN-shorttermdepdencies.png"
 alt="短期记忆" />
 但是也有一种情况是，我们需要更多的信息才能够做预测。例如我们的<strong>语言模型</strong>需要预测下面句子的最后一个单词“I
 grew up in France… I speak fluent
 French.”。从相邻近的几个单词可以推断最后一个单词可能是一种语言，但如果我们想要知道到底是哪种语言的话，我们需要句子最前面的一个单词“France”。这会使得相关信息以及需要预测词的位置的间隔变得很大。
-遗憾的是，随着间隔的逐渐增大，RNNs不能够去关联有用的信息。 <img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/RNN-longtermdependencies.png"
+遗憾的是，随着间隔的逐渐增大，RNNs不能够去关联有用的信息。 <img data-src="https://vincentqin.tech/blog-resources/lstm/RNN-longtermdependencies.png"
 alt="长期记忆" />
 在理论上，RNNs能够解决长期依赖的问题。人们可以通过仔细选取参数来解决这类问题。但是实际上RNNs并不能去解决这个问题。<a
 target="_blank" rel="noopener" href="http://people.idsia.ch/~juergen/SeppHochreiter1991ThesisAdvisorSchmidhuber.pdf">Hochreiter
@@ -446,21 +448,21 @@ target="_blank" rel="noopener" href="https://www.researchgate.net/publication/13
 &amp; Schmidhuber
 (1997)</a>提出，并由很多后来者完善以及推广。LSTM能够在很多问题上取得优秀的结果，现如今被广泛引用。
 LSTM被设计成防止长期依赖问题的发生。在实践中，LSTM的长期记忆是默认行为，而并非艰苦习得！所有的RNN都有链式重复的神经网络模块。在标准的RNN中，这些重复的模块仅仅有简单的结构，例如<span
-class="math inline">\(tanh\)</span>层。 <img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-SimpleRNN.png"
+class="math inline">\(tanh\)</span>层。 <img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-SimpleRNN.png"
 alt="标准RNN中重复的简单模块" />
 当然，LSTM中也存在这样的链式结构，但是其中的重复模块就大为不同了。LSTM的重复的模块中包含4种不同的层，它们以一种特殊的结构交错着。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-chain.png"
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-chain.png"
 alt="LSTM中重复的模块中包含4种不同层" />
 看不懂，不用担心，细节即将展开。接下来，我们会一步步来讲解LSTM的网络结构。首先我们先明确几个会经常用到的表示方法。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM2-notation.png" />
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM2-notation.png" />
 在以上的图示中，每条实线传输着整个向量，从一个节点的输出到其他节点的输入。粉红色的圆圈表示的是<strong>逐点操作</strong>，例如向量的加法，黄色的方形表示已经学习了的网络层。汇集的线表示<strong>串联</strong>，分叉的线表示<strong>复制</strong>操作，这些复制的内容流向不同的位置。</p>
 <h2 id="lstm背后的核心技术">LSTM背后的核心技术</h2>
 LSTM的关键技术在于细胞（cell）状态，也就是图表中最上方水平穿行的直线。细胞状态可以理解成是一种传送带。它仅仅以少量的线性相交，贯穿整个链式结构上方。信息沿着这条传动带很容易保持不变。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-C-line.png" />
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-C-line.png" />
 LSTM有一种能向细胞增加或者移除信息的能力，这种经过精心设计的结构称作<strong>门</strong>（gates）。所谓的门就是一种让信息选择性通过的方法。它是由一个<span
 class="math inline">\(sigmoid\)</span>层和一个逐点乘法单元构成。如下图：
 <center>
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-gate.png" width="15%" RNN有循环结构>
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-gate.png" width="15%" RNN有循环结构>
 </center>
 <p><span class="math inline">\(sigmoid\)</span>层的输出是<span
 class="math inline">\(0\)</span>-<span
@@ -479,13 +481,13 @@ class="math inline">\(C\_{t-1}\)</span>的数值。<span
 class="math inline">\(1\)</span>表示“完全保留”，<span
 class="math inline">\(0\)</span>表示“完全丢弃”。
 让我们回到之前的的语言模型的例子中，我们还是基于以前的词语来预测后续的单词。在这样一个问题中，细胞状态可能会包含当前主语的性别信息，所以正确的<strong>介词</strong>将会被使用。当我们看到一个新的主语时，我们要遗忘掉旧的的主语。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-focus-f.png" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-focus-f.png" /></p>
 <p>下一步就是决定<strong>啥新信息将要存储在细胞状态中</strong>。这包括两个方面。第一，一个叫做“输入门层”的<span
 class="math inline">\(sigmoid\)</span>层来决定哪些值我们要更新；第二，一个<span
 class="math inline">\(tanh\)</span>层创造了新的候选值<span
 class="math inline">\(\tilde{C}_t\)</span>，这个值将会加入到新的状态中去。进一步，我们要把上述两个方面结合起来来更新细胞状态。
 在我们的语言模型中，我们想要在新的主语对应的细胞状态中加入性别信息，去代替我们遗忘掉的那个旧主语状态。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-focus-i.png" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-focus-i.png" /></p>
 <p>我们现在更新旧的细胞状态，从状态<span
 class="math inline">\(C\_{t-1}\)</span>到状态<span
 class="math inline">\(C\_{t}\)</span>。上述步骤已经详述了具体如何操作，我们现在就开始更新！
@@ -494,7 +496,7 @@ class="math inline">\(f_t\)</span>，目的是忘记我们要忘记的旧状态�
 class="math inline">\(i_t*\tilde{C}_t\)</span>，这就是我们创造新的候选值，这个值根据我们想要更新每个状态值的程度进行伸缩变化（这就是<span
 class="math inline">\(i_t\)</span>的意义）。
 在我们的语言模型中，这就是我们根据最开始确定的目标，丢弃旧主语性别以及增加新主语信息的地方。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-focus-C.png" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-focus-C.png" /></p>
 <p>最后一步我们要决定到底输出什么信息。这个输出信息会基于细胞状态，但将会是一个经过过滤后的结果。首先，我们用一个<span
 class="math inline">\(sigmoid\)</span>层去决定细胞状态的哪一部分将会被输出。然后，我们将细胞状态通过<span
 class="math inline">\(tanh\)</span>（将其值规范到<span
@@ -502,7 +504,7 @@ class="math inline">\(-1\)</span>到<span
 class="math inline">\(1\)</span>之间）。最后我们将这个值与<span
 class="math inline">\(sigmoid\)</span>输出相乘，这样我们仅仅输出我们想要输出的部分。
 还是对于之前提到的语言模型，因为它只看到了一个主语，它可能会输出一个与动词相关的信息。例如，可能输出这个主语是单数还是复数，所以我们会知道紧跟的动词是何种形式。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-focus-o.png" />
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-focus-o.png" />
 至此，基本的LSTM介绍完毕。</p>
 <h2 id="lstm的变体">LSTM的变体</h2>
 <p>我们以上描述的均是最为普通的LSTM。但是并不是所有的LSTM都是以上那个样子。事实上，似乎每一篇涉及LSTMs的论文均对其做了细微的修改。其中的差别不大，以下列举几种LSTM的变体。</p>
@@ -512,18 +514,18 @@ Schmidhuber
 (2000)</a>提出，加入一种<strong>窥视孔连接</strong>（peephole
 connections）的结构。这使得细胞状态可以作为门层（译者：gete layers:<span
 class="math inline">\(sigmoid\)</span> layers &amp; <span
-class="math inline">\(tanh\)</span> layer）输入。 <img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-var-peepholes.png" />
+class="math inline">\(tanh\)</span> layer）输入。 <img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-var-peepholes.png" />
 以上的图示为每个门层加入了窥视孔连接，但是也有一些论文并不是所有的门层都加。</p>
 <p>另外一种变体是加入了双遗忘门（coupled
 forget）以及输入门。我们同时考虑了何时遗忘以及应该加入何种新信息，而并非分别考虑。我们仅仅在我们需要就地输入信息的时候才会遗忘，同时我们仅仅在遗忘掉旧的信息的时候才会加入新的信息（译者：此时<span
 class="math inline">\(f_t=0\)</span>，表示遗忘旧的细胞状态，同时加入新的输入<span
-class="math inline">\(\tilde{C}_t\)</span>）。 <img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-var-tied.png" /></p>
+class="math inline">\(\tilde{C}_t\)</span>）。 <img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-var-tied.png" /></p>
 <p>另外一种改动较大的变体是门控循环单元（Gated Recurrent
 Unit）即GRU。这个算法由<a
 target="_blank" rel="noopener" href="http://arxiv.org/pdf/1406.1078v3.pdf">Cho,et
 al.(2014)</a>提出，它把遗忘门和输入门结合起来构成一个“更新门”（update
 gate）。与此同时，它还将细胞状态和隐含状态合并起来，当然还有一些其他变化在此不一一赘述。最终的变体比标准的LSTM简单，这使得它很受欢迎。
-<img data-src="https://vincentqin.gitee.io/blogresource-1/lstm/LSTM3-var-GRU.png" /></p>
+<img data-src="https://vincentqin.tech/blog-resources/lstm/LSTM3-var-GRU.png" /></p>
 <p>以上均是最近比较劲爆的LSTM变体。当然也有很多其他形式的变体，如<a
 target="_blank" rel="noopener" href="http://arxiv.org/pdf/1508.03790v2.pdf">Yao,et al.
 (2015)</a>提出的<strong>深度门RNN</strong>（Depth Gated
@@ -631,7 +633,7 @@ Cho</a>，这哥们对图表的绘制给了我极大的帮助。
 
 <div class="copyright">
   &copy; 2016 – 
-  <span itemprop="copyrightYear">2023</span>
+  <span itemprop="copyrightYear">2024</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
