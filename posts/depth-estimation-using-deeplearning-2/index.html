@@ -28,17 +28,18 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="最近一段时间一直痴迷于如何将深度学习用于深度估计，看了不少关于该方面的介绍，再次做一个简单的总结。虽说深度学习和深度估计都有深度二字，但是其意义确是完全不一样。一个是deep一个是depth，前者表示网络层纵向的延伸度，后者表示三维场景中物体距离摄像头的距离。这两个差异如此之大的名词是如何结合在一起的呢？且听我慢慢解释。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/flow-net-structure.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/disp-flow.png">
+<meta property="og:image" content="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/flow-net-structure.png">
+<meta property="og:image" content="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/disp-flow.png">
+<meta property="og:image" content="https://images.vincentqin.tech/wechat-qcode.gif">
 <meta property="article:published_time" content="2017-12-10T09:07:19.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:30:34.435Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="disparity">
 <meta property="article:tag" content="Deep Learning">
 <meta property="article:tag" content="depth estimation">
 <meta property="article:tag" content="DispNet">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/flow-net-structure.png">
+<meta name="twitter:image" content="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/flow-net-structure.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/">
@@ -280,7 +281,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -348,7 +349,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:30:34" itemprop="dateModified" datetime="2024-05-11T23:30:34+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -392,7 +393,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/wonderwomanv3.jpg" /></p>
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/wonderwomanv3.jpg" /></p>
 <div class="note success"><p>最近一段时间一直痴迷于如何将深度学习用于深度估计，看了不少关于该方面的介绍，再次做一个简单的总结。虽说<code>深度学习</code>和<code>深度估计</code>都有<code>深度</code>二字，但是其意义确是完全不一样。一个是<code>deep</code>一个是<code>depth</code>，前者表示网络层纵向的延伸度，后者表示三维场景中物体距离摄像头的距离。这两个差异如此之大的名词是如何结合在一起的呢？且听我慢慢解释。</p>
 </div>
 <span id="more"></span>
@@ -405,15 +406,15 @@ Chairs）。最后的测试效果还不错，虽说仅仅在这个数据集上�
 idea is to exploit the ability of convolutional networks to learn strong
 features at multiple levels of scale and abstraction and to help it with
 finding the actual correspondences based on these features</em>”。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/flow-net-structure.png" width=60% alt= "A Encoder-Decoder Network for Disparity Estimation"></p>
+<p><img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/flow-net-structure.png" width=60% alt= "A Encoder-Decoder Network for Disparity Estimation"></p>
 <p>接下来就是网络的设计环节，首先作者回顾了之前的网络设计策略。一种是最简单的“sliding
 window”方式，但这种方式的缺点在于计算量很大，它使用了各种优化包括重用网络的临时输出；另外一种对各个层的临时输出做上采样到全分辨率，然后将这些图叠起来，这行对于每一点而言，都能够得到相应的多级特征向量，这个向量可用来学习想要的信息。</p>
 <h3 id="contrasting-part">Contrasting Part</h3>
 <p>作者受到“per-pixel prediction
 tasks”的相关工作的启发，设计了两种光流网络框架。一种是相对简单的实现：首先将输入的图像对叠加起来作为输入，然后输入一个网络，让网络自己学，最后提取运动信息。
-<img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/flownet-simple.png" /></p>
+<img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/flownet-simple.png" /></p>
 <p>另外一种方式就是将输入的图像pair（左图&amp;右图）分开训练，提取出高维丰富的信息之后再做相关性连接，即增加了<code>correlation layer</code>。
-<img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/flownet-corr.png" />
+<img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/flownet-corr.png" />
 这个correlation
 layer是为了衡量左右图相应位置的相似度而设置的。一个的很直观地理解就是，在左图选取一个patch，同时在右图中的可能的位置选择同样大小的patch进行匹配运算(点积运算或者说是卷积运算)。
 具体而言，分别在左右<code>feature map</code>（<span
@@ -442,7 +443,7 @@ class="math inline">\(w \times h \times D^2\)</span>。</p>
 <p>如下是优化网络的结构，大部分都是结合缩放阶段信息的<strong>反卷积</strong>操作。这里不再赘述，最后得到的结果图像大小是输入图像的<span
 class="math inline">\(1/4\)</span>。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/refinement.png"
+<img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/refinement.png"
 alt="refinement" />
 <figcaption aria-hidden="true">refinement</figcaption>
 </figure>
@@ -458,14 +459,14 @@ Estimation</a></em>便是具体代表性的作品。这篇文章有两个主要�
 datasets），这是当时第一个超大规模的用于视差以及光流场景流训练以及评估的数据集；</li>
 <li>设计了<strong>DispNet</strong>，<strong>SceneFlownet</strong>。</li>
 </ol>
-<p><img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/disp-flow.png" width=50% /></p>
+<p><img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/disp-flow.png" width=50% /></p>
 <h3 id="开篇">开篇</h3>
 <p>文章一开始就说估计场景流这个问题，堪称“皇家赛事”级别的任务（场景流是估计空间三维物体的运动场，相比于光流多了一个深度信息）。然后又提到没有好的数据集无法做到完美的训练，那么这么好的数据集又不是天上掉下来的，那只能自食其力，自力更生，自己造吧，于是他们的超大规模（<strong>35000</strong>
 stereo frames）的数据集便成功诞生！</p>
 <h3 id="模型">模型</h3>
 <p>参考了前方开创性的<strong>FlowNet</strong>工作之后，他们就把<strong>FlowNet</strong>改造成<strong>DispNet</strong>，真是华丽丽的变身。然后对于场景流模型的构建，作者提到：虽然在以往的成千上万的论文中均有涉及到光流的估计，但是仅仅有极少数的工作敢去尝试估计场景流。然后作者就是厉害，他们足够相信CNN具有强大的学习与抽象能力，能够通过某种方式的组合使场景流的估计问题转化成为学习问题。文中提到“相机无关的场景流的学习可以转化成视差，光流以及光流变化学习问题”，于是在实际上文中提到的<strong>SceneFlownet</strong>就是<strong>FlowNet</strong>与<strong>DispNet</strong>的组合。以下重点介绍<strong>DispNet</strong>的实现。</p>
 <h3 id="dispnet-dispnetc">DispNet &amp; DispNetC</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/dispnet.png"
+<p><img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/dispnet.png"
 alt="dispnet" /> 收缩部分从conv1到conv6b；在放大部分，upconvolutions
 (upconvN), convolutions (iconvN, prN)和loss
 layers是交替出现的。从低层提取的特征与高层的特征进行串联，增加特征的多样性。最后的网络输出是pr1。</p>
@@ -484,7 +485,7 @@ class="math inline">\(1/2\)</span>。
 <h3 id="数据增强">数据增强</h3>
 <p>虽然文中提出了一个超大的数据集，但是仍然需要一定的数据增强以获得更加多样的训练数据。具体方法：空间变化（旋转，变形，裁剪，缩放），色度变换（颜色，对比度，明暗）。</p>
 <h3 id="结果">结果</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/dispnet-res.png" />
+<p><img data-src="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/dispnet-res.png" />
 文中比较了Zbontar&amp;LeCun的<a
 target="_blank" rel="noopener" href="https://github.com/jzbontar/mc-cnn">MC-CNN</a>以及opencv中<strong>SGBM</strong>方法。<strong>DispNet</strong>是在<code>FlyingThings3D</code>数据集上做得训练，然后在<code>KITTI 2015</code>数据集上做了优化，注意“K”表示优化之后的网络。</p>
 <h2 id="其他网络">其他网络</h2>
@@ -521,7 +522,7 @@ patches</a></li>
 target="_blank" rel="noopener" href="https://sites.google.com/site/yorkyuhuang/home/research/machine-learning-information-retrieval/disparityestimationbydeeplearning">Blog:
 Disparity Estimation by Deep Learning</a></li>
 <li><a
-target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/depth-estimation-using-deeplearning-2/Unsupervised%20Adaptation%20for%20Deep%20Stereo.pdf">Paper:
+target="_blank" rel="noopener" href="https://images.vincentqin.tech/depth-estimation-using-deeplearning-2/Unsupervised%20Adaptation%20for%20Deep%20Stereo.pdf">Paper:
 Unsupervised Adaptation for Deep Stereo</a></li>
 <li><a
 target="_blank" rel="noopener" href="https://github.com/CVLAB-Unibo/Unsupervised-Adaptation-for-Deep-Stereo">Code:
@@ -534,7 +535,7 @@ Optical Flow with Convolutional Networks）</a></li>
 target="_blank" rel="noopener" href="http://blog.csdn.net/kongfy4307/article/details/75212800">Blog:
 论文阅读笔记之Dispnet</a></li>
 </ul>
-<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+<p><img data-src="https://images.vincentqin.tech/wechat-qcode.gif" /></p>
 
     </div>
 

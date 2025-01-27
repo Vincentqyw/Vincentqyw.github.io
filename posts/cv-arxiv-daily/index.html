@@ -29,7 +29,7 @@
 <meta property="og:description" content="经常关注学术界最新动态的同学对arXiv可能会非常熟悉，它是全球最大的学术开放共享平台，目前存储了8个学科领域近200万篇学术文章1，学者们经常会将其即将发表或者未发表的文章挂在arXiv上让同行评议，这极大地促进了学术界的开放性与协作性。 众多的文章让人眼花缭乱，让人无法马上获取自己关注的领域的文章。笔者最近使用arXiv API2 + Github Actions3 实现了每天自动从ar">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-10-24T13:28:05.000Z">
-<meta property="article:modified_time" content="2022-12-21T13:05:17.240Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="arXiv">
 <meta property="article:tag" content="Papers">
@@ -275,7 +275,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -343,7 +343,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-12-21 21:05:17" itemprop="dateModified" datetime="2022-12-21T21:05:17+08:00">2022-12-21</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -407,7 +407,7 @@ target="_blank" rel="noopener" href="https://github.com/Vincentqyw/cv-arxiv-dail
 <p><a target="_blank" rel="noopener" href="https://github.com/Vincentqyw/cv-arxiv-daily"><img data-src="https://github-readme-stats.vercel.app/api/pin/?username=Vincentqyw&amp;repo=cv-arxiv-daily&amp;show_owner=false&amp;theme=default"
 alt="ReadMe Card" /></a></p>
 <p>首先给出预览图，Github的<code>README.md</code>中以表格的形式列出了关于<code>SLAM</code>最新的文章，这样看起来岂不是一目了然。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/github-actions-fig8.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/cv-arxiv-daily/github-actions-fig8.jpg" /></p>
 <h2 id="arxiv-api-简介">arXiv API 简介</h2>
 <h3 id="基本语法">基本语法</h3>
 <p><code>arXiv API</code><sup id="fnref:2"><a href="#fn:2" rel="footnote"><span
@@ -614,9 +614,9 @@ workflow;</li>
 <p><img data-src="https://docs.github.com/assets/images/help/images/overview-actions-simple.png" /></p>
 <h3 id="部署">部署</h3>
 <p>登陆自己的Github账号，新建一个仓库，如<code>cv-arxiv-daily</code>，点击<code>Actions</code>，然后点击<code>Set up this workflow</code>，如下图所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/github-actions-fig1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/cv-arxiv-daily/github-actions-fig1.jpg" /></p>
 <p>经过上述步骤后，会新建一个名为<code>black.yml</code>的文件（如下图所示），它所在的目录是<code>.github/workflows/</code>，注意这个目录绝对不可改变，这个文件夹下存放了需要执行的<code>workflow</code>，即<code>工作流</code>，<code>GitHub Actions</code>会自动识别这个文件夹下的<code>yml</code>工作流文件并按照规则执行。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/github-actions-fig2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/cv-arxiv-daily/github-actions-fig2.jpg" /></p>
 <p>这个<code>black.yml</code>实现了一个最简单的<code>工作流</code>：打印<code>Hello, world!</code>。</p>
 <div class="note warning"><p>需要注意的是<code>GitHub Actions</code>工作流有自己的一套语法，由于篇幅限制，不在此处细说，具体请参考这里<sup id="fnref:9"><a href="#fn:9" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
@@ -639,8 +639,8 @@ target="_blank" rel="noopener" href="https://pubs.opengroup.org/onlinepubs/96999
 <div class="note warning"><p><code>cron</code>的时间是UTC时间，北京时间需要减去8小时，即北京时间12:00对应UTC时间4:00。这里有一个将cron快速翻译成“人话”的<a
 target="_blank" rel="noopener" href="https://crontab.guru/">工具</a>，另外补充一张速查表</p>
 </div>
-<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/cron.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/crontab.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/cv-arxiv-daily/cron.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/cv-arxiv-daily/crontab.png" /></p>
 <p>补充语法：</p>
 <table>
 <colgroup>
@@ -703,7 +703,7 @@ aria-label="Git commit and push, https://github.com/github-actions-x/commit
 <p><code>workflow</code>成功部署后就会在Github
 repo下生成一个<code>json</code>文件以及<code>README.md</code>文件，同时将会看到如本文开头的文章列表，Github
 Action后台的log如下：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/cv-arxiv-daily/github-actions-fig9.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/cv-arxiv-daily/github-actions-fig9.png" /></p>
 <h2 id="总结">总结</h2>
 <p>本文介绍了一种使用<code>Github Actions</code>实现自动每天获取arXiv论文的方法，可较为方便地获取并预览感兴趣的最新文章。本文列举的例子较为方便修改，各位读者可通过增加keywords的内容来甄选感兴趣的主题。文中所有的代码已开源，地址见文章结尾。最新的代码中增加了获取<code>arXiv</code>论文源代码的功能，增加了几个关键词以及增加了自动部署到一个<code>Github Page</code>页面的功能。</p>
 <p>此外，本文列举的方法存在几个问题：1.

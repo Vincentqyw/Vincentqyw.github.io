@@ -28,17 +28,17 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文将介绍光场领域进行深度估计的相关研究。 In this post, I&#39;ll introduce some depth estimation algorithms using Light field information. Here is some of the code. 研究生阶段的研究方向是光场深度信息的恢复。再此做一些总结，以便于让大家了解光场数据处理的一般步骤以及深度估计">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/light-field-depth-estimation/uvst2images.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/light-field-depth-estimation/2pp-epi-depth.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/light-field-depth-estimation/epi-depth.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/light-field-depth-estimation/viewpoints-effect.png">
+<meta property="og:image" content="https://images.vincentqin.tech/light-field-depth-estimation/uvst2images.png">
+<meta property="og:image" content="https://images.vincentqin.tech/light-field-depth-estimation/2pp-epi-depth.png">
+<meta property="og:image" content="https://images.vincentqin.tech/light-field-depth-estimation/epi-depth.png">
+<meta property="og:image" content="https://images.vincentqin.tech/light-field-depth-estimation/viewpoints-effect.png">
 <meta property="article:published_time" content="2018-05-16T05:35:54.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:27:12.068Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="depth estimation">
 <meta property="article:tag" content="light field">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/light-field-depth-estimation/uvst2images.png">
+<meta name="twitter:image" content="https://images.vincentqin.tech/light-field-depth-estimation/uvst2images.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/light-field-depth-estimation/">
@@ -280,7 +280,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -348,7 +348,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:27:12" itemprop="dateModified" datetime="2024-05-11T23:27:12+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -392,7 +392,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/street.jpg" /></p>
+        <script src="/assets/js/DPlayer.min.js"> </script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/street.jpg" /></p>
 <div class="note success"><p>本文将介绍光场领域进行深度估计的相关研究。 In this post, I'll
 introduce some depth estimation algorithms using Light field
 information. Here is some of the <a
@@ -407,9 +407,9 @@ target="_blank" rel="noopener" href="https://github.com/Vincentqyw/Depth-Estimat
 Light
 Field</strong><sup id="fnref:1"><a href="#fn:1" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Gershun, A. [The Light Field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/1.Gershun-1939-Journal_of_Mathematics_and_Physics.pdf). Studies in Applied Mathematics 18.1-4(1939):51–151.">1</span></a></sup>的鸿篇巨著（感兴趣的同学可以看看那个年代的论文），于是光场的概念就此诞生，但它并没有因此被世人熟知。经过了近六十年的沉寂，1991年Adelson<sup id="fnref:2"><a href="#fn:2" rel="footnote"><span
+aria-label="Gershun, A. [The Light Field](https://images.vincentqin.tech/light-field-depth-estimation/1.Gershun-1939-Journal_of_Mathematics_and_Physics.pdf). Studies in Applied Mathematics 18.1-4(1939):51–151.">1</span></a></sup>的鸿篇巨著（感兴趣的同学可以看看那个年代的论文），于是光场的概念就此诞生，但它并没有因此被世人熟知。经过了近六十年的沉寂，1991年Adelson<sup id="fnref:2"><a href="#fn:2" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Adelson, Edward H, and J. R. Bergen. [The plenoptic function and the elements of early vision](https://vincentqin.tech/blog-resources/light-field-depth-estimation/2.The%20plenoptic%20function%20and%20the%20elements%20of%20early%20vision.pdf).  Computational Models of Visual Processing (1991):3-20.
+aria-label="Adelson, Edward H, and J. R. Bergen. [The plenoptic function and the elements of early vision](https://images.vincentqin.tech/light-field-depth-estimation/2.The%20plenoptic%20function%20and%20the%20elements%20of%20early%20vision.pdf).  Computational Models of Visual Processing (1991):3-20.
 ">2</span></a></sup>等一帮帅小伙将光场表示成了如下的7维函数：</p>
 <p><span class="math display">\[
 P(\theta,\phi,\lambda,t,V_x,V_y,V_z). \tag{1}
@@ -434,33 +434,33 @@ Function）。
 class="math inline">\(\lambda\)</span>，可以通过记录不同帧以简化<span
 class="math inline">\(t\)</span>，这样全光函数就变成了5D。第二个简化是Levoy<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Levoy, Marc. [Light field rendering](https://vincentqin.tech/blog-resources/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
+aria-label="Levoy, Marc. [Light field rendering](https://images.vincentqin.tech/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
 ">3</span></a></sup>等人（1996年）认为5D光场中还有一定的冗余，可以在自由空间（光线在传播过程中能量保持不变）中简化成4D。</p>
 <h2 id="光场参数化表示">光场参数化表示</h2>
 <p>参数化表示要解决的问题包括：1. 计算高效；2. 光线可控；3.
 光线均匀采样。目前比较常用的表示方式是双平面法（<span
 class="math inline">\(2PP\)</span>）<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Levoy, Marc. [Light field rendering](https://vincentqin.tech/blog-resources/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
+aria-label="Levoy, Marc. [Light field rendering](https://images.vincentqin.tech/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
 ">3</span></a></sup>，利用双平面法可以将光场表示为：<span
 class="math inline">\(L(u,v,s,t)\)</span>。其中<span
 class="math inline">\((u,v)\)</span>为第一个平面，<span
 class="math inline">\((s,t)\)</span>是第二个平面。那么一条有方向的直线可以表示为连接<span
 class="math inline">\(uv\)</span>以及<span
 class="math inline">\(st\)</span>平面上任意两点确定的线，如下图所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/2pp-v1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/2pp-v1.png" /></p>
 <p>【注】：Levoy<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Levoy, Marc. [Light field rendering](https://vincentqin.tech/blog-resources/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
+aria-label="Levoy, Marc. [Light field rendering](https://images.vincentqin.tech/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
 ">3</span></a></sup>首先利用双平面法对光场进行表示，光线首先通过<span
 class="math inline">\(uv\)</span>平面，然后再通过<span
 class="math inline">\(st\)</span>平面。但是后来（同年）Gortler<sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Gortler, Steven J., et al. [The Lumigraph](https://vincentqin.tech/blog-resources/light-field-depth-estimation/4.The%20lumigraph.pdf). Proc Siggraph 96(1996):43-54.
+aria-label="Gortler, Steven J., et al. [The Lumigraph](https://images.vincentqin.tech/light-field-depth-estimation/4.The%20lumigraph.pdf). Proc Siggraph 96(1996):43-54.
 ">4</span></a></sup>等人将其传播方向反了过来，导致后续研究者对此表述并不一致。与此同时，也有不少文献中也引入了<span
 class="math inline">\(xy\)</span>坐标，例如著名的光场相机的缔造者N.G.博士的毕业论文。通常情况下，这指的是像平面坐标，即指的是由传感器得到的图像中像素的位置坐标。由于后续处理中都是针对图像而言，而对于光学结构以及光线的传播过程并不感兴趣。所以为了方便起见，我们在本文中统一采用Levoy<sup id="fnref:3"><a href="#fn:3" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Levoy, Marc. [Light field rendering](https://vincentqin.tech/blog-resources/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
+aria-label="Levoy, Marc. [Light field rendering](https://images.vincentqin.tech/light-field-depth-estimation/3.Light_Field_Rendering.pdf). Conference on Computer Graphics and Interactive Techniques ACM, 1996:31-42.
 ">3</span></a></sup>的方式对<strong>光场图像</strong>进行表示，即<span
 class="math inline">\(uv\)</span>表示角度分辨率，<span
 class="math inline">\(xy\)</span>表示空间分辨率，即<span
@@ -475,59 +475,59 @@ class="math inline">\((s,t)\)</span>控制着从某个视角观察到的图像�
 class="math inline">\(uv\)</span>控制角度分辨率，<span
 class="math inline">\(st\)</span>控制空间分辨率（视野）。注意上式描述的是光线的表示方法，并没有涉及图像处理，所以没有<span
 class="math inline">\(xy\)</span>。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/uvst2images.png" width="600" alt="uvst2images"></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/uvst2images.png" width="600" alt="uvst2images"></p>
 <p>接下来讲解，几种常见的可视化方式（图片来源<sup id="fnref:5"><a href="#fn:5" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Wu, Gaochang, et al. [Light Field Image Processing: An Overview](https://vincentqin.tech/blog-resources/light-field-depth-estimation/5.Light-Field-Image-Processing-An%20Overview.pdf). IEEE Journal of Selected Topics in Signal Processing PP.99(2017):1-1.
+aria-label="Wu, Gaochang, et al. [Light Field Image Processing: An Overview](https://images.vincentqin.tech/light-field-depth-estimation/5.Light-Field-Image-Processing-An%20Overview.pdf). IEEE Journal of Selected Topics in Signal Processing PP.99(2017):1-1.
 ">5</span></a></sup>）。首先是<strong>多视图法</strong>。很容易理解，对于最简单的情况，首先固定<span
 class="math inline">\(u=u^*,v=v^*\)</span>，我们可以得到多视角的某个视图<span
 class="math inline">\(L(u^*,v^*,s,t)\)</span>，如下图所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/allviews.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/allviews.png" /></p>
 <p>第二种表示方法是<strong>角度域法</strong>，通过固定<span
 class="math inline">\(s=s^*,t=t^*\)</span>可以得到某个宏像素<span
 class="math inline">\(L(u,v,s^*,t^*)\)</span>，如下图所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/angular-patch.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/angular-patch.png" /></p>
 <p>第三种表示方法是<strong>极线图法</strong>，通过固定<span
 class="math inline">\(v=v^*,t=t^*\)</span>可以得到极线图：<span
 class="math inline">\(L(u,v^*,s,t^*)\)</span>，如下图中水平方向的图所示；同理固定<span
 class="math inline">\(u=u^*,s=s^*\)</span>可以得到极线图：<span
 class="math inline">\(L(u^*,v,s^*,t)\)</span>，如下图中竖直方向的图所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/epi.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/epi.png" /></p>
 <p>最后，给出这几种方式的对应关系图（注意图中，<span
 class="math inline">\(xy\)</span>对应于以上<span
 class="math inline">\(st\)</span>，<span
 class="math inline">\(st\)</span>对应于<span
 class="math inline">\(uv\)</span>）。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/lf-all-view.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/lf-all-view.png" /></p>
 <h1 id="光场的获取">光场的获取</h1>
 <p>我们知道传统的相机只能采集来自场景某个方向的<span
 class="math inline">\(2D\)</span>信息，那怎么才能够采集到光场信息呢？试想一下，当多个相机在多个不同视角同时拍摄时，这样我们就可以得到一个光场的采样（多视角图像）了。当然，这是容易想到的方法，目前已有多种获得光场的方式，如下表格中列举了其中具有代表性的方式<sup id="fnref:5"><a href="#fn:5" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Wu, Gaochang, et al. [Light Field Image Processing: An Overview](https://vincentqin.tech/blog-resources/light-field-depth-estimation/5.Light-Field-Image-Processing-An%20Overview.pdf). IEEE Journal of Selected Topics in Signal Processing PP.99(2017):1-1.
+aria-label="Wu, Gaochang, et al. [Light Field Image Processing: An Overview](https://images.vincentqin.tech/light-field-depth-estimation/5.Light-Field-Image-Processing-An%20Overview.pdf). IEEE Journal of Selected Topics in Signal Processing PP.99(2017):1-1.
 ">5</span></a></sup>。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/lf-acquisition.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/lf-acquisition.png" /></p>
 <h1 id="光场深度估计算法分类">光场深度估计算法分类</h1>
 <p>由上可知，光场图像中包含来自场景的多视角信息，这使得深度估计成为可能。相较于传统的多视角深度估计算法而言，基于光场的深度估计算法无需进行相机标定，这大大简化的深度估计的流程。但是由于光场图像巨大导致了深度估计过程占用大量的计算资源。同时这些所谓的多个视角之间虚拟相机的基线过短，从而可能导致误匹配的问题。以下将对多种深度估计算法进行分类并挑选具有代表性的算法进行介绍。</p>
 <h2 id="多视角立体匹配">多视角立体匹配</h2>
 <p>根据光场相机的成像原理，我们可以将光场图像想像成为多个虚拟相机在多个不同视角拍摄同一场景得到图像的集合，那么此时的深度估计问题就转换成为多视角立体匹配问题。以下列举几种基于多视角立体匹配算法的深度估计算法<sup id="fnref:8"><a href="#fn:8" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Jeon, Hae Gon, et al. [Accurate depth map estimation from a lenslet light field camera](https://vincentqin.tech/blog-resources/light-field-depth-estimation/8.Accurate%20Depth%20Map%20Estimation%20from%20a%20Lenslet%20Light%20Field%20Camera.pdf). Computer Vision and Pattern Recognition IEEE, 2015:1547-1555.
+aria-label="Jeon, Hae Gon, et al. [Accurate depth map estimation from a lenslet light field camera](https://images.vincentqin.tech/light-field-depth-estimation/8.Accurate%20Depth%20Map%20Estimation%20from%20a%20Lenslet%20Light%20Field%20Camera.pdf). Computer Vision and Pattern Recognition IEEE, 2015:1547-1555.
 ">8</span></a></sup>
 <sup id="fnref:9"><a href="#fn:9" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Yu, Zhan, et al. [Line Assisted Light Field Triangulation and Stereo Matching](https://vincentqin.tech/blog-resources/light-field-depth-estimation/9.Line%20Assisted%20Light%20Field%20Triangulation%20and%20Stereo%20Matching.pdf). IEEE International Conference on Computer Vision IEEE, 2014:2792-2799.
+aria-label="Yu, Zhan, et al. [Line Assisted Light Field Triangulation and Stereo Matching](https://images.vincentqin.tech/light-field-depth-estimation/9.Line%20Assisted%20Light%20Field%20Triangulation%20and%20Stereo%20Matching.pdf). IEEE International Conference on Computer Vision IEEE, 2014:2792-2799.
 ">9</span></a></sup>
 <sup id="fnref:10"><a href="#fn:10" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber, Stefan, and T. Pock. [Shape from Light Field Meets Robust PCA](https://vincentqin.tech/blog-resources/light-field-depth-estimation/10.Shape%20from%20Light%20Field%20meets%20Robust%20PCA.pdf). Computer Vision – ECCV 2014. 2014:751-767.
+aria-label="Heber, Stefan, and T. Pock. [Shape from Light Field Meets Robust PCA](https://images.vincentqin.tech/light-field-depth-estimation/10.Shape%20from%20Light%20Field%20meets%20Robust%20PCA.pdf). Computer Vision – ECCV 2014. 2014:751-767.
 ">10</span></a></sup>
 <sup id="fnref:20"><a href="#fn:20" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber, Stefan, R. Ranftl, and T. Pock. [Variational Shape from Light Field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/20.Variational%20Shape%20from%20Light%20Field.pdf). Energy Minimization Methods in Computer Vision and Pattern Recognition. Springer Berlin Heidelberg, 2013:66-79.
+aria-label="Heber, Stefan, R. Ranftl, and T. Pock. [Variational Shape from Light Field](https://images.vincentqin.tech/light-field-depth-estimation/20.Variational%20Shape%20from%20Light%20Field.pdf). Energy Minimization Methods in Computer Vision and Pattern Recognition. Springer Berlin Heidelberg, 2013:66-79.
 ">20</span></a></sup>
 <sup id="fnref:21"><a href="#fn:21" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Chen, Can, et al. [Light Field Stereo Matching Using Bilateral Statistics of Surface Cameras](https://vincentqin.tech/blog-resources/light-field-depth-estimation/21.Light%20Field%20Stereo%20Matching%20Using%20Bilateral%20Statistics%20of%20Surface%20Cameras-Can_CVPR14_stereo.pdf). IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2014:1518-1525.
+aria-label="Chen, Can, et al. [Light Field Stereo Matching Using Bilateral Statistics of Surface Cameras](https://images.vincentqin.tech/light-field-depth-estimation/21.Light%20Field%20Stereo%20Matching%20Using%20Bilateral%20Statistics%20of%20Surface%20Cameras-Can_CVPR14_stereo.pdf). IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2014:1518-1525.
 ">21</span></a></sup>。</p>
 <table>
 <tr>
@@ -576,7 +576,7 @@ Scam: Bilateral Consistency Metric
 </table>
 <p>在这里介绍Jeon等人<sup id="fnref:8"><a href="#fn:8" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Jeon, Hae Gon, et al. [Accurate depth map estimation from a lenslet light field camera](https://vincentqin.tech/blog-resources/light-field-depth-estimation/8.Accurate%20Depth%20Map%20Estimation%20from%20a%20Lenslet%20Light%20Field%20Camera.pdf). Computer Vision and Pattern Recognition IEEE, 2015:1547-1555.
+aria-label="Jeon, Hae Gon, et al. [Accurate depth map estimation from a lenslet light field camera](https://images.vincentqin.tech/light-field-depth-estimation/8.Accurate%20Depth%20Map%20Estimation%20from%20a%20Lenslet%20Light%20Field%20Camera.pdf). Computer Vision and Pattern Recognition IEEE, 2015:1547-1555.
 ">8</span></a></sup>提出的基于相移的亚像素多视角立体匹配算法。</p>
 <h3 id="相移理论">相移理论</h3>
 <p>该算法的核心就是用到了相移理论，即空域的一个小的位移在频域为原始信号的频域表达与位移的指数的幂乘积，即如下公式：</p>
@@ -646,9 +646,9 @@ class="math inline">\(\beta
 \beta (u) = \frac{|u-u_c|}{|u-u_c|+|v-v_c|}.\tag{8}
 \]</span></p>
 <p>至此，代价函数构建完毕。随后对于该代价函数利用边缘保持滤波器进行损失聚合，得到优化后的代价量。紧接着作者建立了一个多标签优化模型（GC求解）以及迭代优化模型对深度图进行优化，再此不做详细介绍。下面是其算法的分部结果：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/jeon-depth-step.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/jeon-depth-step.png" /></p>
 <h2 id="基于epi的方法">基于EPI的方法</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/2pp-epi-depth.png" width="100%"></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/2pp-epi-depth.png" width="100%"></p>
 <p>不同于多视角立体匹配的方式，EPI的方式是通过分析光场数据结构的从而进行深度估计的方式。EPI图像中斜线的斜率就能够反映出场景的深度。上图中点P为空间点，平面<span
 class="math inline">\(\Pi\)</span>为相机平面，平面<span
 class="math inline">\(\Omega\)</span>为像平面。图中<span
@@ -656,7 +656,7 @@ class="math inline">\(\Delta u\)</span>与<span
 class="math inline">\(\Delta
 x\)</span>的关系可以表示为如下公式<sup id="fnref:6"><a href="#fn:6" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Wanner, Sven, and B. Goldluecke. [Variational Light Field Analysis for Disparity Estimation and Super-Resolution](https://vincentqin.tech/blog-resources/light-field-depth-estimation/6.Variational%20Light%20Field%20Analysis%20for%20Disparity%20Estimation%20and%20Super-Resolution.pdf). IEEE Transactions on Pattern Analysis &amp; Machine Intelligence 36.3(2013):1.
+aria-label="Wanner, Sven, and B. Goldluecke. [Variational Light Field Analysis for Disparity Estimation and Super-Resolution](https://images.vincentqin.tech/light-field-depth-estimation/6.Variational%20Light%20Field%20Analysis%20for%20Disparity%20Estimation%20and%20Super-Resolution.pdf). IEEE Transactions on Pattern Analysis &amp; Machine Intelligence 36.3(2013):1.
 ">6</span></a></sup>：</p>
 <p><span class="math display">\[
 \Delta x=- \frac{f}{Z}\Delta u,\tag{9}
@@ -666,30 +666,30 @@ u\)</span>，水平方向位移较大的EPI图中斜线所对应的视差就越�
 class="math inline">\(\Delta x_2\)</span>&gt;<span
 class="math inline">\(\Delta
 x_1\)</span>，那么绿色线所对应的空间点要比红色线所对应的空间点深度小。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/epi-depth.png" width="100%"></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/epi-depth.png" width="100%"></p>
 <p>以下列举几种基于EPI的深度估计算法<sup id="fnref:11"><a href="#fn:11" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Kim, Changil, et al. [Scene reconstruction from high spatio-angular resolution light fields](https://vincentqin.tech/blog-resources/light-field-depth-estimation/11.scene-reconstruction-from-high-spatio-angular-resolution-light-fields-siggraph-2013-compressed-kim-et-al.pdf). Acm Transactions on Graphics 32.4(2017):1-12.
+aria-label="Kim, Changil, et al. [Scene reconstruction from high spatio-angular resolution light fields](https://images.vincentqin.tech/light-field-depth-estimation/11.scene-reconstruction-from-high-spatio-angular-resolution-light-fields-siggraph-2013-compressed-kim-et-al.pdf). Acm Transactions on Graphics 32.4(2017):1-12.
 ">11</span></a></sup>
 <sup id="fnref:12"><a href="#fn:12" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Li, J., M. Lu, and Z. N. Li. [Continuous Depth Map Reconstruction From Light Fields](https://vincentqin.tech/blog-resources/light-field-depth-estimation/12.Continuous%20Depth%20Map%20Reconstruction%20From%20Light%20Fields.pdf). IEEE Transactions on Image Processing A Publication of the IEEE Signal Processing Society 24.11(2015):3257.
+aria-label="Li, J., M. Lu, and Z. N. Li. [Continuous Depth Map Reconstruction From Light Fields](https://images.vincentqin.tech/light-field-depth-estimation/12.Continuous%20Depth%20Map%20Reconstruction%20From%20Light%20Fields.pdf). IEEE Transactions on Image Processing A Publication of the IEEE Signal Processing Society 24.11(2015):3257.
 ">12</span></a></sup>
 <sup id="fnref:13"><a href="#fn:13" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Krolla, Bernd, et al. [Spherical Light Fields](https://vincentqin.tech/blog-resources/light-field-depth-estimation/13.Spherical%20light%20field.pdf). British Machine Vision Conference 2014.
+aria-label="Krolla, Bernd, et al. [Spherical Light Fields](https://images.vincentqin.tech/light-field-depth-estimation/13.Spherical%20light%20field.pdf). British Machine Vision Conference 2014.
 ">13</span></a></sup>
 <sup id="fnref:14"><a href="#fn:14" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Wanner, Sven, C. Straehle, and B. Goldluecke. [Globally Consistent Multi-label Assignment on the Ray Space of 4D Light Fields](https://vincentqin.tech/blog-resources/light-field-depth-estimation/14.Globally%20consistent%20multi-label%20assignment%20on%20the%20ray%20space%20of%204D%20light%20field.pdf). IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2013:1011-1018.
+aria-label="Wanner, Sven, C. Straehle, and B. Goldluecke. [Globally Consistent Multi-label Assignment on the Ray Space of 4D Light Fields](https://images.vincentqin.tech/light-field-depth-estimation/14.Globally%20consistent%20multi-label%20assignment%20on%20the%20ray%20space%20of%204D%20light%20field.pdf). IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2013:1011-1018.
 ">14</span></a></sup>
 <sup id="fnref:15"><a href="#fn:15" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Diebold, Maximilian, B. Jahne, and A. Gatto. [Heterogeneous Light Fields](https://vincentqin.tech/blog-resources/light-field-depth-estimation/15.Heterogeneous%20Light%20Fields.pdf). Computer Vision and Pattern Recognition IEEE, 2016:1745-1753.
+aria-label="Diebold, Maximilian, B. Jahne, and A. Gatto. [Heterogeneous Light Fields](https://images.vincentqin.tech/light-field-depth-estimation/15.Heterogeneous%20Light%20Fields.pdf). Computer Vision and Pattern Recognition IEEE, 2016:1745-1753.
 ">15</span></a></sup>
 <sup id="fnref:24"><a href="#fn:24" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Zhang S, Sheng H, Li C, et al. [Robust depth estimation for light field via spinning parallelogram operator](https://vincentqin.tech/blog-resources/light-field-depth-estimation/24.Robust%20Depth%20Estimation%20for%20Light%20Field%20via%20Spinning%20Parallelogram%20Operator.pdf). Computer Vision and Image Understanding, 2016, 145:148-159.
+aria-label="Zhang S, Sheng H, Li C, et al. [Robust depth estimation for light field via spinning parallelogram operator](https://images.vincentqin.tech/light-field-depth-estimation/24.Robust%20Depth%20Estimation%20for%20Light%20Field%20via%20Spinning%20Parallelogram%20Operator.pdf). Computer Vision and Image Understanding, 2016, 145:148-159.
 ">24</span></a></sup>。</p>
 <table>
 <tr>
@@ -804,26 +804,26 @@ d_{y^*,v^*}=-f/Z=\frac{\Delta x}{\Delta v}=\tan \phi .  \tag{13}
 <h2 id="散焦及融合的方法">散焦及融合的方法</h2>
 <p>光场相机一个很重要的卖点是先拍照后对焦，这其实是根据光场剪切原理<sup id="fnref:31"><a href="#fn:31" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Ng, Ren. [Digital light field photography](https://vincentqin.tech/blog-resources/light-field-depth-estimation/31.Digital%20light%20field%20photography.pdf). 2006, 115(3):38-39.
+aria-label="Ng, Ren. [Digital light field photography](https://images.vincentqin.tech/light-field-depth-estimation/31.Digital%20light%20field%20photography.pdf). 2006, 115(3):38-39.
 ">31</span></a></sup>得到的。通过衡量像素在不同焦栈处的“模糊度”可以得到其对应的深度。以下列举几种基于散焦的深度估计算法<sup id="fnref:7"><a href="#fn:7" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Wang, Ting Chun, A. A. Efros, and R. Ramamoorthi. [Occlusion-Aware Depth Estimation Using Light-Field Cameras](https://vincentqin.tech/blog-resources/light-field-depth-estimation/7.Occlusion-aware%20Depth%20Estimation%20Using%20Light-field%20Cameras.pdf). IEEE International Conference on Computer Vision IEEE, 2016:3487-3495.
+aria-label="Wang, Ting Chun, A. A. Efros, and R. Ramamoorthi. [Occlusion-Aware Depth Estimation Using Light-Field Cameras](https://images.vincentqin.tech/light-field-depth-estimation/7.Occlusion-aware%20Depth%20Estimation%20Using%20Light-field%20Cameras.pdf). IEEE International Conference on Computer Vision IEEE, 2016:3487-3495.
 ">7</span></a></sup>
 <sup id="fnref:16"><a href="#fn:16" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Tao, M. W, et al. [Depth from Combining Defocus and Correspondence Using Light-Field Cameras](https://vincentqin.tech/blog-resources/light-field-depth-estimation/16.Depth%20from%20Combining%20Defocus%20and%20Correspondence%20Using%20Light-Field%20Cameras.pdf). IEEE International Conference on Computer Vision IEEE Computer Society, 2013:673-680.
+aria-label="Tao, M. W, et al. [Depth from Combining Defocus and Correspondence Using Light-Field Cameras](https://images.vincentqin.tech/light-field-depth-estimation/16.Depth%20from%20Combining%20Defocus%20and%20Correspondence%20Using%20Light-Field%20Cameras.pdf). IEEE International Conference on Computer Vision IEEE Computer Society, 2013:673-680.
 ">16</span></a></sup>
 <sup id="fnref:17"><a href="#fn:17" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Tao, Michael W., et al. [Depth from shading, defocus, and correspondence using light-field angular coherence](https://vincentqin.tech/blog-resources/light-field-depth-estimation/17.Depth%20from%20Shading,%20Defocus,%20and%20Correspondence%20Using%20Light-Field%20Angular%20Coherence.pdf). Computer Vision and Pattern Recognition IEEE, 2015:1940-1948.
+aria-label="Tao, Michael W., et al. [Depth from shading, defocus, and correspondence using light-field angular coherence](https://images.vincentqin.tech/light-field-depth-estimation/17.Depth%20from%20Shading,%20Defocus,%20and%20Correspondence%20Using%20Light-Field%20Angular%20Coherence.pdf). Computer Vision and Pattern Recognition IEEE, 2015:1940-1948.
 ">17</span></a></sup>
 <sup id="fnref:22"><a href="#fn:22" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Williem W, Kyu P I. [Robust light field depth estimation for noisy scene with occlusion](https://vincentqin.tech/blog-resources/light-field-depth-estimation/22.Williem_Robust_Light_Field_CVPR_2016_paper.pdf). Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016:4396-4404.
+aria-label="Williem W, Kyu P I. [Robust light field depth estimation for noisy scene with occlusion](https://images.vincentqin.tech/light-field-depth-estimation/22.Williem_Robust_Light_Field_CVPR_2016_paper.pdf). Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016:4396-4404.
 ">22</span></a></sup>
 <sup id="fnref:23"><a href="#fn:23" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Williem W, Park I K, Lee K M. [Robust light field depth estimation using occlusion-noise aware data costs](https://vincentqin.tech/blog-resources/light-field-depth-estimation/23.TPAMI2017_Williem.pdf). IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), 2017(99):1-1.
+aria-label="Williem W, Park I K, Lee K M. [Robust light field depth estimation using occlusion-noise aware data costs](https://images.vincentqin.tech/light-field-depth-estimation/23.TPAMI2017_Williem.pdf). IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), 2017(99):1-1.
 ">23</span></a></sup>。</p>
 <table>
 <tr>
@@ -872,10 +872,10 @@ Angular Entropy(AD, AE, CAD, CAE)
 </table>
 <p>这里介绍一个最具代表性的工作，由Tao等人<sup id="fnref:16"><a href="#fn:16" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Tao, M. W, et al. [Depth from Combining Defocus and Correspondence Using Light-Field Cameras](https://vincentqin.tech/blog-resources/light-field-depth-estimation/16.Depth%20from%20Combining%20Defocus%20and%20Correspondence%20Using%20Light-Field%20Cameras.pdf). IEEE International Conference on Computer Vision IEEE Computer Society, 2013:673-680.
+aria-label="Tao, M. W, et al. [Depth from Combining Defocus and Correspondence Using Light-Field Cameras](https://images.vincentqin.tech/light-field-depth-estimation/16.Depth%20from%20Combining%20Defocus%20and%20Correspondence%20Using%20Light-Field%20Cameras.pdf). IEEE International Conference on Computer Vision IEEE Computer Society, 2013:673-680.
 ">16</span></a></sup>在2013年提出，下图为其算法框架以及分部结果。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/tao2013.png" />
-<img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/tao2013-results-step-by-step.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/tao2013.png" />
+<img data-src="https://images.vincentqin.tech/light-field-depth-estimation/tao2013-results-step-by-step.png" /></p>
 <p>该工作其实就做了2件事情：1. 设计两种深度线索并估计原始深度；2.
 置信度分析及MRF融合。以下对其进行具体介绍。 ### 双线索提取</p>
 <p>首先对光场图像进行重聚焦，然后得到一系列具有不同深度的焦栈。然后对该焦栈分别提取2个线索：散焦量以及匹配量。其中散焦量被定义为：</p>
@@ -913,7 +913,7 @@ All，WTA）得到两张原始深度图。注意：对这两个线索使用WTA�
 \alpha ^{*}_C(x)=\mathop{\arg\min}_{\alpha} \ \ {C}_{\alpha}(x).\tag{19}
 \]</span></p>
 <h3 id="置信度分析及深度融合">置信度分析及深度融合</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/tao2013-confidence-analysis.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/tao2013-confidence-analysis.png" /></p>
 <p>上图中显示了两个线索随着深度层次而变化的曲线。接下来的置信度分析用<strong>主次峰值比例</strong>（Peak
 Ratio）来定义每种线索的置信度，可表示为如下公式，其中的<span
 class="math inline">\(\alpha ^{*2}_D(x)\)</span>以及<span
@@ -954,31 +954,31 @@ target="_blank" rel="noopener" href="https://github.com/Vincentqyw/Depth-Estimat
 href="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-1/">博文1</a>&amp;<a
 href="https://www.vincentqin.tech/posts/depth-estimation-using-deeplearning-2/">博文2</a>中有过对这类算法的介绍。但是将其应用于光场领域进行深度估计的算法还真是寥寥无几。不过总有一些勇敢的践行者去探索如何将二者结合，以下列举几种基于学习的深度估计算法<sup id="fnref:18"><a href="#fn:18" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Johannsen, Ole, A. Sulc, and B. Goldluecke. [Variational Separation of Light Field Layers](https://vincentqin.tech/blog-resources/light-field-depth-estimation/18.Variational%20separation%20of%20light%20field%20layers.pdf). (2015).
+aria-label="Johannsen, Ole, A. Sulc, and B. Goldluecke. [Variational Separation of Light Field Layers](https://images.vincentqin.tech/light-field-depth-estimation/18.Variational%20separation%20of%20light%20field%20layers.pdf). (2015).
 ">18</span></a></sup>
 <sup id="fnref:19"><a href="#fn:19" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber, Stefan, and T. Pock. [Convolutional Networks for Shape from Light Field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/19.Heber_Convolutional_Networks_for_CVPR_2016_paper.pdf). Computer Vision and Pattern Recognition IEEE, 2016:3746-3754.
+aria-label="Heber, Stefan, and T. Pock. [Convolutional Networks for Shape from Light Field](https://images.vincentqin.tech/light-field-depth-estimation/19.Heber_Convolutional_Networks_for_CVPR_2016_paper.pdf). Computer Vision and Pattern Recognition IEEE, 2016:3746-3754.
 ">19</span></a></sup>
 <sup id="fnref:25"><a href="#fn:25" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Johannsen O, Sulc A, Goldluecke B. [What sparse light field coding reveals about scene structure](https://vincentqin.tech/blog-resources/light-field-depth-estimation/25.What%20Sparse%20Light%20Field%20Coding%20Reveals%20about%20Scene%20Structure.pdf). In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016(1/3/4):3262-3270.
+aria-label="Johannsen O, Sulc A, Goldluecke B. [What sparse light field coding reveals about scene structure](https://images.vincentqin.tech/light-field-depth-estimation/25.What%20Sparse%20Light%20Field%20Coding%20Reveals%20about%20Scene%20Structure.pdf). In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016(1/3/4):3262-3270.
 ">25</span></a></sup>
 <sup id="fnref:27"><a href="#fn:27" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber S, Yu W, Pock T. [U-shaped networks for shape from light field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/27.U-shaped%20Networks%20for%20Shape%20from%20Light%20Field.pdf). British Machine Vision Conference, 2016, 37:1-12.
+aria-label="Heber S, Yu W, Pock T. [U-shaped networks for shape from light field](https://images.vincentqin.tech/light-field-depth-estimation/27.U-shaped%20Networks%20for%20Shape%20from%20Light%20Field.pdf). British Machine Vision Conference, 2016, 37:1-12.
 ">27</span></a></sup>
 <sup id="fnref:28"><a href="#fn:28" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber S, Yu W, Pock T. [Neural EPI-Volume networks for shape from light field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/28.Neural%20EPI-volume%20Networks%20for%20Shape%20from%20Light%20Field.pdf). IEEE International Conference on Computer Vision (ICCV), IEEE Computer Society, 2017:2271-2279.
+aria-label="Heber S, Yu W, Pock T. [Neural EPI-Volume networks for shape from light field](https://images.vincentqin.tech/light-field-depth-estimation/28.Neural%20EPI-volume%20Networks%20for%20Shape%20from%20Light%20Field.pdf). IEEE International Conference on Computer Vision (ICCV), IEEE Computer Society, 2017:2271-2279.
 ">28</span></a></sup>
 <sup id="fnref:29"><a href="#fn:29" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Jeon H G, Park J, Choe G, et.al. [Depth from a Light Field Image with Learning-based Matching Costs](https://vincentqin.tech/blog-resources/light-field-depth-estimation/29.Depth%20from%20a%20Light%20Field%20Image%20with%20Learning-based%20Matching%20Costs.pdf). IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), 2018.
+aria-label="Jeon H G, Park J, Choe G, et.al. [Depth from a Light Field Image with Learning-based Matching Costs](https://images.vincentqin.tech/light-field-depth-estimation/29.Depth%20from%20a%20Light%20Field%20Image%20with%20Learning-based%20Matching%20Costs.pdf). IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), 2018.
 ">29</span></a></sup>
 <sup id="fnref:30"><a href="#fn:30" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Shin C, Jeon H G, Yoon Y. [EPINET: A Fully-Convolutional Neural Network for Light Field Depth Estimation Using Epipolar Geometry](https://vincentqin.tech/blog-resources/light-field-depth-estimation/30.EPINET%20A%20fully-Convolutional%20Neural%20Network%20Using%20Epipolar%20Geometry%20for%20Depth%20from%20Light%20Field%20Images.pdf). Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
+aria-label="Shin C, Jeon H G, Yoon Y. [EPINET: A Fully-Convolutional Neural Network for Light Field Depth Estimation Using Epipolar Geometry](https://images.vincentqin.tech/light-field-depth-estimation/30.EPINET%20A%20fully-Convolutional%20Neural%20Network%20Using%20Epipolar%20Geometry%20for%20Depth%20from%20Light%20Field%20Images.pdf). Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
 ">30</span></a></sup>。</p>
 <table>
 <tr>
@@ -1032,29 +1032,29 @@ target="_blank" rel="noopener" href="https://arxiv.org/abs/1804.02379">EPINET: A
 Neural Network Using Epipolar Geometry for Depth from Light Field
 Images</a><sup id="fnref:30"><a href="#fn:30" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Shin C, Jeon H G, Yoon Y. [EPINET: A Fully-Convolutional Neural Network for Light Field Depth Estimation Using Epipolar Geometry](https://vincentqin.tech/blog-resources/light-field-depth-estimation/30.EPINET%20A%20fully-Convolutional%20Neural%20Network%20Using%20Epipolar%20Geometry%20for%20Depth%20from%20Light%20Field%20Images.pdf). Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
+aria-label="Shin C, Jeon H G, Yoon Y. [EPINET: A Fully-Convolutional Neural Network for Light Field Depth Estimation Using Epipolar Geometry](https://images.vincentqin.tech/light-field-depth-estimation/30.EPINET%20A%20fully-Convolutional%20Neural%20Network%20Using%20Epipolar%20Geometry%20for%20Depth%20from%20Light%20Field%20Images.pdf). Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
 ">30</span></a></sup>算法进行介绍，下图为该算法在各个指标上的表现情况。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/epinet-architecture.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/epinet-architecture.png" /></p>
 <p>算法摘要：光场相机能够同时采集空间光线的空域以及角度域信息，因此可以根据这种特性恢复出空间场景的涉深度。在本文中，作者提出了一种基于CNN的快速准确的光场深度估计算法。作者在设计网络时将光场的几何结构加入考虑，同时提出了一种新的数据增强算法以克服训练数据不足的缺陷。作者提出的算法能够在HCI
 4D-LFB上在多个指标上取得Top1的成绩。作者指出，光场相机存在优势的同时也有诸多缺点，例如：基线超级短且空间&amp;角度分辨率有一定的权衡关系。目前已有很多工作去克服这些问题，这样一来，深度图像的精度提升了，但是带来的后果就是计算量超级大，无法快速地估计出深度。因此作者为了解决精度以及速度之间权衡关系设计了该算法（感觉很有意义吧）。</p>
 <p>上面表格中提到的诸如Johannsen<sup id="fnref:18"><a href="#fn:18" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Johannsen, Ole, A. Sulc, and B. Goldluecke. [Variational Separation of Light Field Layers](https://vincentqin.tech/blog-resources/light-field-depth-estimation/18.Variational%20separation%20of%20light%20field%20layers.pdf). (2015).
+aria-label="Johannsen, Ole, A. Sulc, and B. Goldluecke. [Variational Separation of Light Field Layers](https://images.vincentqin.tech/light-field-depth-estimation/18.Variational%20separation%20of%20light%20field%20layers.pdf). (2015).
 ">18</span></a></sup>
 <sup id="fnref:25"><a href="#fn:25" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Johannsen O, Sulc A, Goldluecke B. [What sparse light field coding reveals about scene structure](https://vincentqin.tech/blog-resources/light-field-depth-estimation/25.What%20Sparse%20Light%20Field%20Coding%20Reveals%20about%20Scene%20Structure.pdf). In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016(1/3/4):3262-3270.
+aria-label="Johannsen O, Sulc A, Goldluecke B. [What sparse light field coding reveals about scene structure](https://images.vincentqin.tech/light-field-depth-estimation/25.What%20Sparse%20Light%20Field%20Coding%20Reveals%20about%20Scene%20Structure.pdf). In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016(1/3/4):3262-3270.
 ">25</span></a></sup>以及Heber<sup id="fnref:19"><a href="#fn:19" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber, Stefan, and T. Pock. [Convolutional Networks for Shape from Light Field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/19.Heber_Convolutional_Networks_for_CVPR_2016_paper.pdf). Computer Vision and Pattern Recognition IEEE, 2016:3746-3754.
+aria-label="Heber, Stefan, and T. Pock. [Convolutional Networks for Shape from Light Field](https://images.vincentqin.tech/light-field-depth-estimation/19.Heber_Convolutional_Networks_for_CVPR_2016_paper.pdf). Computer Vision and Pattern Recognition IEEE, 2016:3746-3754.
 ">19</span></a></sup>
 <sup id="fnref:27"><a href="#fn:27" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber S, Yu W, Pock T. [U-shaped networks for shape from light field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/27.U-shaped%20Networks%20for%20Shape%20from%20Light%20Field.pdf). British Machine Vision Conference, 2016, 37:1-12.
+aria-label="Heber S, Yu W, Pock T. [U-shaped networks for shape from light field](https://images.vincentqin.tech/light-field-depth-estimation/27.U-shaped%20Networks%20for%20Shape%20from%20Light%20Field.pdf). British Machine Vision Conference, 2016, 37:1-12.
 ">27</span></a></sup>
 <sup id="fnref:28"><a href="#fn:28" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Heber S, Yu W, Pock T. [Neural EPI-Volume networks for shape from light field](https://vincentqin.tech/blog-resources/light-field-depth-estimation/28.Neural%20EPI-volume%20Networks%20for%20Shape%20from%20Light%20Field.pdf). IEEE International Conference on Computer Vision (ICCV), IEEE Computer Society, 2017:2271-2279.
+aria-label="Heber S, Yu W, Pock T. [Neural EPI-Volume networks for shape from light field](https://images.vincentqin.tech/light-field-depth-estimation/28.Neural%20EPI-volume%20Networks%20for%20Shape%20from%20Light%20Field.pdf). IEEE International Conference on Computer Vision (ICCV), IEEE Computer Society, 2017:2271-2279.
 ">28</span></a></sup>等人设计的算法仅仅考虑到了一个极线方向，从而容易导致低置信度的深度估计。为了解决他们算法中存在的问题，作者通过一种多流网络将不同的极线图像分别进行编码去预测深度。因为，每个极线图都有属于自己的集合特征，将这些极线图放入网络训练能够充分地利用其提供的信息。</p>
 <h3 id="光场图像几何特征">光场图像几何特征</h3>
 <p>由于光场图像可以等效成多个视角图像的集合，这里的视角数目通常要比传统的立体匹配算法需要的视角数目多得多。所以，如果利用全部的视角做深度估计将会相当耗时，所以在实际情况下并不需要用到全部的视角。作者的思路就是想办法尽量减少实际要使用的视角数目，所以作者探究了不同角度域方向光场图像的特征。中心视角图像与其余视角的关系可以表示成如下公式：</p>
@@ -1077,17 +1077,17 @@ target="_blank" rel="noopener" href="https://www.cs.toronto.edu/~urtasun/publica
 Deep Learning for Stereo
 Matching</a><sup id="fnref:32"><a href="#fn:32" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
-aria-label="Luo, Wenjie, A. G. Schwing, and R. Urtasun. [Efficient Deep Learning for Stereo Matching](https://vincentqin.tech/blog-resources/light-field-depth-estimation/32.Efficient%20deep%20learning%20for%20stereo%20matching.pdf). IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2016:5695-5703.
+aria-label="Luo, Wenjie, A. G. Schwing, and R. Urtasun. [Efficient Deep Learning for Stereo Matching](https://images.vincentqin.tech/light-field-depth-estimation/32.Efficient%20deep%20learning%20for%20stereo%20matching.pdf). IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer Society, 2016:5695-5703.
 ">32</span></a></sup>），其输入为4个不同方向视角图像集合，每个方向对应于一路网络，每一路都可以对其对应方向上图像进行编码提取特征。每一路网络都由3个全卷积模块组成，因为全卷积层对逐点稠密预测问题卓有成效，所以作者将每一个全卷积模块定义为这样的卷积层的集合：<strong>Conv-ReLU-Conv-BN-ReLU</strong>，这样的话就可以在局部块中预逐点预测视差。为了解决基线短的问题，作者设计了非常小的卷积核：<span
 class="math inline">\(2\times 2\)</span>，同时stride =
 1，这样的话就可以测量<span class="math inline">\(\pm
 4\)</span>的视差。为了验证这种多路网络的有效性，作者同单路的网络做了对比试验，其结果如下表所示，可见多路网络相对于单路网络有10%的误差降低。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/viewpoints-effect.png" width="60%"></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/viewpoints-effect.png" width="60%"></p>
 <p>在完成多路编码之后，网络将这些特征串联起来组成更维度更高的特征。后面的融合网络包含8个卷积块，其目的是寻找经多路编码之后特征之间的相关性。注意除了最后一个卷积块之外，其余的卷积块全部相同。为了推断得到亚像素精度的视差图，作者将最后一个卷积块设计为<strong>Conv-ReLU-Conv</strong>结构。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/data-augmentation.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/data-augmentation.png" /></p>
 <p>最后，图像增强方式包括视角偏移（从9<em>9视角中选7</em>7，可扩展3*3倍数据），图像旋转（90<sup>o</sup>，180<sup>o</sup>，270<sup>o</sup>），图像缩放（[0.25,1]），色彩值域变化（[0.5,2]），随机灰度变化，gamma变换（[0.8,1.2]）以及翻转，最终扩充了288倍。</p>
 <p>以下为其各个指标上的性能表现：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-depth-estimation/benchmark-ranking.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-depth-estimation/benchmark-ranking.png" /></p>
 <p>以上介绍了目前已有的深度估计算法不同类别中具有代表性的算法，它们不一定是最优的，但绝对是最容易理解其精髓的。到目前为止，光场领域已经有一大波人做深度估计的工作，利用传统的方式其精度很难再往上提高。随着深度学习的大热，已经有一批先驱开始用深度学习做深度估计，虽然在仿真数据上可以表现得很好，但实际场景千变万化，即使是深度学习的策略也不敢保证对所有的场景都有效。路漫漫其修远兮，深度估计道路阻且长。我认为以后的趋势应该是从EPI图像下手，然后利用CNN提feature（或者响应）；此时可供选择的工具有<a
 target="_blank" rel="noopener" href="http://www.cvlibs.net/datasets/kitti/eval_scene_flow.php?benchmark=stereo">KITTI
 Stereo</a>/<a
@@ -1104,7 +1104,7 @@ Stereo</a>中较好的几种算法，我们需要总结其算法优势并迁移�
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Gershun,
 A.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/1.Gershun-1939-Journal_of_Mathematics_and_Physics.pdf">The
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/1.Gershun-1939-Journal_of_Mathematics_and_Physics.pdf">The
 Light Field</a>. Studies in Applied Mathematics
 18.1-4(1939):51–151.<a href="#fnref:1" rev="footnote">↩︎</a></span>
 </li>
@@ -1113,7 +1113,7 @@ Light Field</a>. Studies in Applied Mathematics
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Adelson,
 Edward H, and J. R. Bergen.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/2.The%20plenoptic%20function%20and%20the%20elements%20of%20early%20vision.pdf">The
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/2.The%20plenoptic%20function%20and%20the%20elements%20of%20early%20vision.pdf">The
 plenoptic function and the elements of early vision</a>. Computational
 Models of Visual Processing
 (1991):3-20.<a href="#fnref:2" rev="footnote">↩︎</a></span>
@@ -1123,7 +1123,7 @@ Models of Visual Processing
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Levoy,
 Marc.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/3.Light_Field_Rendering.pdf">Light
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/3.Light_Field_Rendering.pdf">Light
 field rendering</a>. Conference on Computer Graphics and Interactive
 Techniques ACM,
 1996:31-42.<a href="#fnref:3" rev="footnote">↩︎</a></span>
@@ -1133,7 +1133,7 @@ Techniques ACM,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Gortler,
 Steven J., et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/4.The%20lumigraph.pdf">The
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/4.The%20lumigraph.pdf">The
 Lumigraph</a>. Proc Siggraph
 96(1996):43-54.<a href="#fnref:4" rev="footnote">↩︎</a></span>
 </li>
@@ -1142,7 +1142,7 @@ Lumigraph</a>. Proc Siggraph
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Wu,
 Gaochang, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/5.Light-Field-Image-Processing-An%20Overview.pdf">Light
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/5.Light-Field-Image-Processing-An%20Overview.pdf">Light
 Field Image Processing: An Overview</a>. IEEE Journal of Selected Topics
 in Signal Processing
 PP.99(2017):1-1.<a href="#fnref:5" rev="footnote">↩︎</a></span>
@@ -1152,7 +1152,7 @@ PP.99(2017):1-1.<a href="#fnref:5" rev="footnote">↩︎</a></span>
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Wanner,
 Sven, and B. Goldluecke.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/6.Variational%20Light%20Field%20Analysis%20for%20Disparity%20Estimation%20and%20Super-Resolution.pdf">Variational
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/6.Variational%20Light%20Field%20Analysis%20for%20Disparity%20Estimation%20and%20Super-Resolution.pdf">Variational
 Light Field Analysis for Disparity Estimation and Super-Resolution</a>.
 IEEE Transactions on Pattern Analysis &amp; Machine Intelligence
 36.3(2013):1.<a href="#fnref:6" rev="footnote">↩︎</a></span>
@@ -1162,7 +1162,7 @@ IEEE Transactions on Pattern Analysis &amp; Machine Intelligence
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">7.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Wang,
 Ting Chun, A. A. Efros, and R. Ramamoorthi.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/7.Occlusion-aware%20Depth%20Estimation%20Using%20Light-field%20Cameras.pdf">Occlusion-Aware
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/7.Occlusion-aware%20Depth%20Estimation%20Using%20Light-field%20Cameras.pdf">Occlusion-Aware
 Depth Estimation Using Light-Field Cameras</a>. IEEE International
 Conference on Computer Vision IEEE,
 2016:3487-3495.<a href="#fnref:7" rev="footnote">↩︎</a></span>
@@ -1172,7 +1172,7 @@ Conference on Computer Vision IEEE,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">8.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Jeon,
 Hae Gon, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/8.Accurate%20Depth%20Map%20Estimation%20from%20a%20Lenslet%20Light%20Field%20Camera.pdf">Accurate
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/8.Accurate%20Depth%20Map%20Estimation%20from%20a%20Lenslet%20Light%20Field%20Camera.pdf">Accurate
 depth map estimation from a lenslet light field camera</a>. Computer
 Vision and Pattern Recognition IEEE,
 2015:1547-1555.<a href="#fnref:8" rev="footnote">↩︎</a></span>
@@ -1182,7 +1182,7 @@ Vision and Pattern Recognition IEEE,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">9.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Yu,
 Zhan, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/9.Line%20Assisted%20Light%20Field%20Triangulation%20and%20Stereo%20Matching.pdf">Line
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/9.Line%20Assisted%20Light%20Field%20Triangulation%20and%20Stereo%20Matching.pdf">Line
 Assisted Light Field Triangulation and Stereo Matching</a>. IEEE
 International Conference on Computer Vision IEEE,
 2014:2792-2799.<a href="#fnref:9" rev="footnote">↩︎</a></span>
@@ -1192,7 +1192,7 @@ International Conference on Computer Vision IEEE,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">10.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Heber,
 Stefan, and T. Pock.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/10.Shape%20from%20Light%20Field%20meets%20Robust%20PCA.pdf">Shape
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/10.Shape%20from%20Light%20Field%20meets%20Robust%20PCA.pdf">Shape
 from Light Field Meets Robust PCA</a>. Computer Vision – ECCV 2014.
 2014:751-767.<a href="#fnref:10" rev="footnote">↩︎</a></span>
 </li>
@@ -1201,7 +1201,7 @@ from Light Field Meets Robust PCA</a>. Computer Vision – ECCV 2014.
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">11.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Kim,
 Changil, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/11.scene-reconstruction-from-high-spatio-angular-resolution-light-fields-siggraph-2013-compressed-kim-et-al.pdf">Scene
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/11.scene-reconstruction-from-high-spatio-angular-resolution-light-fields-siggraph-2013-compressed-kim-et-al.pdf">Scene
 reconstruction from high spatio-angular resolution light fields</a>. Acm
 Transactions on Graphics
 32.4(2017):1-12.<a href="#fnref:11" rev="footnote">↩︎</a></span>
@@ -1211,7 +1211,7 @@ Transactions on Graphics
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">12.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Li,
 J., M. Lu, and Z. N. Li.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/12.Continuous%20Depth%20Map%20Reconstruction%20From%20Light%20Fields.pdf">Continuous
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/12.Continuous%20Depth%20Map%20Reconstruction%20From%20Light%20Fields.pdf">Continuous
 Depth Map Reconstruction From Light Fields</a>. IEEE Transactions on
 Image Processing A Publication of the IEEE Signal Processing Society
 24.11(2015):3257.<a href="#fnref:12" rev="footnote">↩︎</a></span>
@@ -1221,7 +1221,7 @@ Image Processing A Publication of the IEEE Signal Processing Society
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">13.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Krolla,
 Bernd, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/13.Spherical%20light%20field.pdf">Spherical
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/13.Spherical%20light%20field.pdf">Spherical
 Light Fields</a>. British Machine Vision Conference
 2014.<a href="#fnref:13" rev="footnote">↩︎</a></span>
 </li>
@@ -1230,7 +1230,7 @@ Light Fields</a>. British Machine Vision Conference
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">14.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Wanner,
 Sven, C. Straehle, and B. Goldluecke.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/14.Globally%20consistent%20multi-label%20assignment%20on%20the%20ray%20space%20of%204D%20light%20field.pdf">Globally
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/14.Globally%20consistent%20multi-label%20assignment%20on%20the%20ray%20space%20of%204D%20light%20field.pdf">Globally
 Consistent Multi-label Assignment on the Ray Space of 4D Light
 Fields</a>. IEEE Conference on Computer Vision and Pattern Recognition
 IEEE Computer Society,
@@ -1241,7 +1241,7 @@ IEEE Computer Society,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">15.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Diebold,
 Maximilian, B. Jahne, and A. Gatto.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/15.Heterogeneous%20Light%20Fields.pdf">Heterogeneous
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/15.Heterogeneous%20Light%20Fields.pdf">Heterogeneous
 Light Fields</a>. Computer Vision and Pattern Recognition IEEE,
 2016:1745-1753.<a href="#fnref:15" rev="footnote">↩︎</a></span>
 </li>
@@ -1250,7 +1250,7 @@ Light Fields</a>. Computer Vision and Pattern Recognition IEEE,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">16.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Tao,
 M. W, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/16.Depth%20from%20Combining%20Defocus%20and%20Correspondence%20Using%20Light-Field%20Cameras.pdf">Depth
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/16.Depth%20from%20Combining%20Defocus%20and%20Correspondence%20Using%20Light-Field%20Cameras.pdf">Depth
 from Combining Defocus and Correspondence Using Light-Field Cameras</a>.
 IEEE International Conference on Computer Vision IEEE Computer Society,
 2013:673-680.<a href="#fnref:16" rev="footnote">↩︎</a></span>
@@ -1260,7 +1260,7 @@ IEEE International Conference on Computer Vision IEEE Computer Society,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">17.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Tao,
 Michael W., et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/17.Depth%20from%20Shading,%20Defocus,%20and%20Correspondence%20Using%20Light-Field%20Angular%20Coherence.pdf">Depth
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/17.Depth%20from%20Shading,%20Defocus,%20and%20Correspondence%20Using%20Light-Field%20Angular%20Coherence.pdf">Depth
 from shading, defocus, and correspondence using light-field angular
 coherence</a>. Computer Vision and Pattern Recognition IEEE,
 2015:1940-1948.<a href="#fnref:17" rev="footnote">↩︎</a></span>
@@ -1270,7 +1270,7 @@ coherence</a>. Computer Vision and Pattern Recognition IEEE,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">18.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Johannsen,
 Ole, A. Sulc, and B. Goldluecke.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/18.Variational%20separation%20of%20light%20field%20layers.pdf">Variational
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/18.Variational%20separation%20of%20light%20field%20layers.pdf">Variational
 Separation of Light Field Layers</a>.
 (2015).<a href="#fnref:18" rev="footnote">↩︎</a></span>
 </li>
@@ -1279,7 +1279,7 @@ Separation of Light Field Layers</a>.
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">19.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Heber,
 Stefan, and T. Pock.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/19.Heber_Convolutional_Networks_for_CVPR_2016_paper.pdf">Convolutional
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/19.Heber_Convolutional_Networks_for_CVPR_2016_paper.pdf">Convolutional
 Networks for Shape from Light Field</a>. Computer Vision and Pattern
 Recognition IEEE,
 2016:3746-3754.<a href="#fnref:19" rev="footnote">↩︎</a></span>
@@ -1289,7 +1289,7 @@ Recognition IEEE,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">20.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Heber,
 Stefan, R. Ranftl, and T. Pock.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/20.Variational%20Shape%20from%20Light%20Field.pdf">Variational
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/20.Variational%20Shape%20from%20Light%20Field.pdf">Variational
 Shape from Light Field</a>. Energy Minimization Methods in Computer
 Vision and Pattern Recognition. Springer Berlin Heidelberg,
 2013:66-79.<a href="#fnref:20" rev="footnote">↩︎</a></span>
@@ -1299,7 +1299,7 @@ Vision and Pattern Recognition. Springer Berlin Heidelberg,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">21.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Chen,
 Can, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/21.Light%20Field%20Stereo%20Matching%20Using%20Bilateral%20Statistics%20of%20Surface%20Cameras-Can_CVPR14_stereo.pdf">Light
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/21.Light%20Field%20Stereo%20Matching%20Using%20Bilateral%20Statistics%20of%20Surface%20Cameras-Can_CVPR14_stereo.pdf">Light
 Field Stereo Matching Using Bilateral Statistics of Surface Cameras</a>.
 IEEE Conference on Computer Vision and Pattern Recognition IEEE Computer
 Society, 2014:1518-1525.<a href="#fnref:21" rev="footnote">↩︎</a></span>
@@ -1309,7 +1309,7 @@ Society, 2014:1518-1525.<a href="#fnref:21" rev="footnote">↩︎</a></span>
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">22.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Williem
 W, Kyu P I.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/22.Williem_Robust_Light_Field_CVPR_2016_paper.pdf">Robust
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/22.Williem_Robust_Light_Field_CVPR_2016_paper.pdf">Robust
 light field depth estimation for noisy scene with occlusion</a>.
 Proceedings of the IEEE Conference on Computer Vision and Pattern
 Recognition (CVPR),
@@ -1320,7 +1320,7 @@ Recognition (CVPR),
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">23.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Williem
 W, Park I K, Lee K M.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/23.TPAMI2017_Williem.pdf">Robust
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/23.TPAMI2017_Williem.pdf">Robust
 light field depth estimation using occlusion-noise aware data costs</a>.
 IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI),
 2017(99):1-1.<a href="#fnref:23" rev="footnote">↩︎</a></span>
@@ -1330,7 +1330,7 @@ IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI),
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">24.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Zhang
 S, Sheng H, Li C, et al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/24.Robust%20Depth%20Estimation%20for%20Light%20Field%20via%20Spinning%20Parallelogram%20Operator.pdf">Robust
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/24.Robust%20Depth%20Estimation%20for%20Light%20Field%20via%20Spinning%20Parallelogram%20Operator.pdf">Robust
 depth estimation for light field via spinning parallelogram
 operator</a>. Computer Vision and Image Understanding, 2016,
 145:148-159.<a href="#fnref:24" rev="footnote">↩︎</a></span>
@@ -1340,7 +1340,7 @@ operator</a>. Computer Vision and Image Understanding, 2016,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">25.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Johannsen
 O, Sulc A, Goldluecke B.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/25.What%20Sparse%20Light%20Field%20Coding%20Reveals%20about%20Scene%20Structure.pdf">What
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/25.What%20Sparse%20Light%20Field%20Coding%20Reveals%20about%20Scene%20Structure.pdf">What
 sparse light field coding reveals about scene structure</a>. In
 Proceedings of the IEEE Conference on Computer Vision and Pattern
 Recognition (CVPR),
@@ -1351,7 +1351,7 @@ Recognition (CVPR),
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">26.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Wanner
 S, Goldluecke B.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/26.Reconstructing%20reflective%20and%20transparent%20surfaces%20from%20epipolar%20plane%20images.pdf">Reconstructing
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/26.Reconstructing%20reflective%20and%20transparent%20surfaces%20from%20epipolar%20plane%20images.pdf">Reconstructing
 reflective and transparent surfaces from epipolar plane images</a>. In
 German Conference on Pattern Recognition (Proc. GCPR),
 2013:1-10.<a href="#fnref:26" rev="footnote">↩︎</a></span>
@@ -1361,7 +1361,7 @@ German Conference on Pattern Recognition (Proc. GCPR),
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">27.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Heber
 S, Yu W, Pock T.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/27.U-shaped%20Networks%20for%20Shape%20from%20Light%20Field.pdf">U-shaped
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/27.U-shaped%20Networks%20for%20Shape%20from%20Light%20Field.pdf">U-shaped
 networks for shape from light field</a>. British Machine Vision
 Conference, 2016,
 37:1-12.<a href="#fnref:27" rev="footnote">↩︎</a></span>
@@ -1371,7 +1371,7 @@ Conference, 2016,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">28.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Heber
 S, Yu W, Pock T.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/28.Neural%20EPI-volume%20Networks%20for%20Shape%20from%20Light%20Field.pdf">Neural
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/28.Neural%20EPI-volume%20Networks%20for%20Shape%20from%20Light%20Field.pdf">Neural
 EPI-Volume networks for shape from light field</a>. IEEE International
 Conference on Computer Vision (ICCV), IEEE Computer Society,
 2017:2271-2279.<a href="#fnref:28" rev="footnote">↩︎</a></span>
@@ -1381,7 +1381,7 @@ Conference on Computer Vision (ICCV), IEEE Computer Society,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">29.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Jeon
 H G, Park J, Choe G, et.al.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/29.Depth%20from%20a%20Light%20Field%20Image%20with%20Learning-based%20Matching%20Costs.pdf">Depth
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/29.Depth%20from%20a%20Light%20Field%20Image%20with%20Learning-based%20Matching%20Costs.pdf">Depth
 from a Light Field Image with Learning-based Matching Costs</a>. IEEE
 Transactions on Pattern Analysis and Machine Intelligence (TPAMI),
 2018.<a href="#fnref:29" rev="footnote">↩︎</a></span>
@@ -1391,7 +1391,7 @@ Transactions on Pattern Analysis and Machine Intelligence (TPAMI),
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">30.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Shin
 C, Jeon H G, Yoon Y.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/30.EPINET%20A%20fully-Convolutional%20Neural%20Network%20Using%20Epipolar%20Geometry%20for%20Depth%20from%20Light%20Field%20Images.pdf">EPINET:
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/30.EPINET%20A%20fully-Convolutional%20Neural%20Network%20Using%20Epipolar%20Geometry%20for%20Depth%20from%20Light%20Field%20Images.pdf">EPINET:
 A Fully-Convolutional Neural Network for Light Field Depth Estimation
 Using Epipolar Geometry</a>. Proceedings of the IEEE Conference on
 Computer Vision and Pattern Recognition (CVPR),
@@ -1402,7 +1402,7 @@ Computer Vision and Pattern Recognition (CVPR),
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">31.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Ng,
 Ren.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/31.Digital%20light%20field%20photography.pdf">Digital
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/31.Digital%20light%20field%20photography.pdf">Digital
 light field photography</a>. 2006,
 115(3):38-39.<a href="#fnref:31" rev="footnote">↩︎</a></span>
 </li>
@@ -1411,7 +1411,7 @@ light field photography</a>. 2006,
 style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">32.</span><span
 style="display: inline-block; vertical-align: top; margin-left: 10px;">Luo,
 Wenjie, A. G. Schwing, and R. Urtasun.
-<a target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/light-field-depth-estimation/32.Efficient%20deep%20learning%20for%20stereo%20matching.pdf">Efficient
+<a target="_blank" rel="noopener" href="https://images.vincentqin.tech/light-field-depth-estimation/32.Efficient%20deep%20learning%20for%20stereo%20matching.pdf">Efficient
 Deep Learning for Stereo Matching</a>. IEEE Conference on Computer
 Vision and Pattern Recognition IEEE Computer Society,
 2016:5695-5703.<a href="#fnref:32" rev="footnote">↩︎</a></span>

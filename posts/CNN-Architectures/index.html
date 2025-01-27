@@ -28,16 +28,21 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文来自于CS231N（2017 Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet比赛的冠军之作，我们将从网络结构，参数规模，运算量等来描述各个网络的特点。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/CNN-Architectures/9721733.png">
+<meta property="og:image" content="https://images.vincentqin.tech/CNN-Architectures/9721733.png">
+<meta property="og:image" content="https://images.vincentqin.tech/CNN-Architectures/33818113.png">
+<meta property="og:image" content="https://images.vincentqin.tech/CNN-Architectures/89475867.png">
+<meta property="og:image" content="https://images.vincentqin.tech/CNN-Architectures/33298717.png">
+<meta property="og:image" content="https://images.vincentqin.tech/CNN-Architectures/95592762.png">
+<meta property="og:image" content="https://images.vincentqin.tech/CNN-Architectures/82101608.png">
 <meta property="article:published_time" content="2017-11-06T16:24:45.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:29:26.465Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="AlexNet">
 <meta property="article:tag" content="VGG">
 <meta property="article:tag" content="GoogLeNet">
 <meta property="article:tag" content="ResNet">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/CNN-Architectures/9721733.png">
+<meta name="twitter:image" content="https://images.vincentqin.tech/CNN-Architectures/9721733.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/CNN-Architectures/">
@@ -279,7 +284,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -347,7 +352,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:29:26" itemprop="dateModified" datetime="2024-05-11T23:29:26+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -392,7 +397,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <script src="/assets/js/DPlayer.min.js"> </script><center>
-<img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/9721733.png" width="75%" Dense-Net>
+<img data-src="https://images.vincentqin.tech/CNN-Architectures/9721733.png" width="75%" Dense-Net>
 </center>
 <div class="note "><p>本文来自于CS231N（2017
 Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet比赛的冠军之作，我们将从网络结构，参数规模，运算量等来描述各个网络的特点。</p>
@@ -417,7 +422,7 @@ Spring），将介绍几种较为常见的CNN结构。以下网络均是ImageNet
 <p>以下是正文。</p>
 <h2 id="alexnet">AlexNet</h2>
 <h3 id="网络结构">网络结构</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/99013631.png"
+<p><img data-src="https://images.vincentqin.tech/CNN-Architectures/99013631.png"
 alt="AlexNet" />
 网络的输入大小为：227*227*3，每一层的结构以及参数设置如下：</p>
 <table>
@@ -547,7 +552,7 @@ data-cites="3">@3</span>*3</td>
 class="math inline">\(\frac{N-Conv+2\times
 Pading}{stride}+1\)</span></p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/33818113.png"
+<img data-src="https://images.vincentqin.tech/CNN-Architectures/33818113.png"
 alt="AlexNet-details" />
 <figcaption aria-hidden="true">AlexNet-details</figcaption>
 </figure>
@@ -559,9 +564,9 @@ DL 工具包</a>补充Alexnet实验...</em></p>
 (ILSVRC) 2014. ### 网络结构 <strong>small filters, deeper
 networks</strong>。
 将原来8层的AlexNet扩展到了16&amp;19层。卷积层的大小仅仅有3*3，stride=1，pad=1；池化层仅仅有stride=2的2*2的MAXPOOL。以下是其与AlexNet的结构对比图。
-<img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/89475867.png"
+<img data-src="https://images.vincentqin.tech/CNN-Architectures/89475867.png"
 alt="VGG" /></p>
-<p>更加具体的，VGG16的网络的参数个数以及内存消耗如下： <img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/31257061.png"
+<p>更加具体的，VGG16的网络的参数个数以及内存消耗如下： <img data-src="https://images.vincentqin.tech/CNN-Architectures/31257061.png"
 alt="VGG-details" /></p>
 <p>Q：为何采用更小的CONV？
 A：几个3*3的CONV叠加后的接受域和一个7*7大小的CONV的接受域一致，但是与此同时，<strong>网络层数变深，引入了更多的非线性，参数数量更少</strong>。（Stack
@@ -599,19 +604,19 @@ efficiency</strong>。GoogLeNet是ILSVRC'14的图像分类冠军网络，它加�
 a good local network topology (network within a network) and then stack
 these modules on top of each other）。
 Inception包含几个接受域不同的CONV核（1*1，3*3，5*5）以及池化操作（3*3）；最终将这些操作后的输出在depth方向串联。以下是两种两种不同的实现方式，左图时原始的inception模块，右图是改进版的inception模块。
-<img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/33298717.png"
+<img data-src="https://images.vincentqin.tech/CNN-Architectures/33298717.png"
 alt="inception" /> 对于naive
 inception而言，它面临这运算量巨大的问题。由于池化层的输出会保留原始输入的depth，所以经过CONV&amp;MAXPOOL过后的输出的feature
-map势必比原始输入的depth更深。 <img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/53626485.png"
+map势必比原始输入的depth更深。 <img data-src="https://images.vincentqin.tech/CNN-Architectures/53626485.png"
 alt="inception-naive" />
 那么如何去解决以上问题呢，一个通常的方式就是降维。我们在每个CONV前加上1*1的CONV（“bottleneck”
 layers）来减少feature
 map的维度。所谓的1*1CONV就是在保持输入的空间分辨率不变的情况下来减小depth维度，即通过将不同depth上的feature
 map进行组合，从而将输入的feature
 map映射到更低的depth维度上。经过以上操作就可以将运算的操作次数大大降低。
-<img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/95592762.png"
+<img data-src="https://images.vincentqin.tech/CNN-Architectures/95592762.png"
 alt="inception-improve" /></p>
-<p>于是GoogLeNet的全貌如下： <img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/75689322.jpg"
+<p>于是GoogLeNet的全貌如下： <img data-src="https://images.vincentqin.tech/CNN-Architectures/75689322.jpg"
 alt="googlenet" /></p>
 <h2 id="resnet">ResNet</h2>
 <p>利用<strong>残差</strong>连接成的超级深网络。
@@ -628,7 +633,7 @@ deep-residual-networks</a></p>
 and COCO' 15!</li>
 </ul>
 <h3 id="深度增加带来的问题">深度增加带来的问题</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/22279699.png"
+<p><img data-src="https://images.vincentqin.tech/CNN-Architectures/22279699.png"
 alt="deeper-nets-problems" />
 从上图可以发现，当网络层数增加时，训练误差和测试误差都有所下降。这并不符合以往的经验，我们会想，既然网络层数增加了，那么模型参数势必增多，此时会造成过拟合。然而过拟合的表现是：训练误差减小，测试误差增大。但是事实和分析并不吻合。
 何凯明认为：<strong>The problem is an optimization problem, deeper
@@ -636,7 +641,7 @@ models are harder to
 optimize</strong>。这是一个优化问题，更深的网络更难优化。并且，更深的网络应该至少比浅层网络不差，这是因为我们可以通过拷贝浅层网络+identity
 mapping（恒等映射）来构造一个更深的网络，这个结构化的方案表明深层网络可以达到和浅层网络一致的性能。</p>
 <h3 id="解决方案">解决方案</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/resnet.png"
+<p><img data-src="https://images.vincentqin.tech/CNN-Architectures/resnet.png"
 alt="resnet-layer" /> Use network layers to fit a residual mapping
 instead of directly trying to fit a desired underlying mapping.
 作者假设：<strong>相较于最优化最初的无参照映射（残差函数以输入x作为参照），最优化残差映射是更容易的</strong>。利用网络去拟合残差<span
@@ -644,7 +649,7 @@ class="math inline">\(F(x)\)</span>，并非直接拟合<span
 class="math inline">\(H(x)\)</span>。</p>
 <h3 id="整个resnet框架">整个ResNet框架</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/82101608.png"
+<img data-src="https://images.vincentqin.tech/CNN-Architectures/82101608.png"
 alt="resnet-structure" />
 <figcaption aria-hidden="true">resnet-structure</figcaption>
 </figure>
@@ -660,7 +665,7 @@ stride 2 (/2 in each dimension)</li>
 <h2 id="总结">总结</h2>
 <p>论文<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1605.07678.pdf">An Analysis of
 Deep Neural Network Models for Practical Applications</a>
-比较了2016年以来的一些神经网络的规模、运算量、能耗以及精度等项目。 <img data-src="https://vincentqin.tech/blog-resources/CNN-Architectures/40479799.png"
+比较了2016年以来的一些神经网络的规模、运算量、能耗以及精度等项目。 <img data-src="https://images.vincentqin.tech/CNN-Architectures/40479799.png"
 alt="complexity-compare" /> 可以从上图总结出以下几点： - GoogLeNet: most
 efficient - VGG: Highest memory, most operations - AlexNet: Smaller
 compute, still memory heavy, lower accuracy - ResNet: Moderate

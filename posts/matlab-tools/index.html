@@ -28,15 +28,15 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/issues-Matlab/matlab-logo.jpg">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/issues-Matlab/issue-matlab-1.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/issues-Matlab/issue-matlab-2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/issues-Matlab/matlab-logo.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/issues-Matlab/issue-matlab-1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/issues-Matlab/issue-matlab-2.png">
 <meta property="article:published_time" content="2017-01-16T02:43:01.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:30:23.937Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.205Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="Matlab">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/issues-Matlab/matlab-logo.jpg">
+<meta name="twitter:image" content="https://images.vincentqin.tech/issues-Matlab/matlab-logo.jpg">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/matlab-tools/">
@@ -278,7 +278,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -346,7 +346,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:30:23" itemprop="dateModified" datetime="2024-05-11T23:30:23+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -390,12 +390,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://vincentqin.tech/blog-resources/issues-Matlab/matlab-logo.jpg" width=1000px></p>
+        <script src="/assets/js/DPlayer.min.js"> </script><p><img data-src="https://images.vincentqin.tech/issues-Matlab/matlab-logo.jpg" width=1000px></p>
 <p>以下是我在使用Matlab编程时遇到的问题以及解决方法，最后彩蛋随时补充。
 <span id="more"></span></p>
 <h2 id="多个不同维度的箱线图画在一起">多个不同维度的箱线图画在一起</h2>
 <figure class="highlight m"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">%%  GENERATE RANDOM DATA</span></span><br><span class="line"></span><br><span class="line">dataA <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">100</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(121);boxplot(dataA)</span></span><br><span class="line"></span><br><span class="line">dataB <span class="built_in">=</span> <span class="number">10</span> *rand(<span class="number">200</span>,<span class="number">1</span>) - <span class="number">5</span>*rand(<span class="number">200</span>,<span class="number">1</span>);</span><br><span class="line"><span class="comment">% subplot(122);boxplot(dataB)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%% CONSTRUCT MPGs</span></span><br><span class="line"></span><br><span class="line">MPGs&#123;<span class="number">1</span>&#125; <span class="built_in">=</span> dataA;</span><br><span class="line">MPGs&#123;<span class="number">2</span>&#125; <span class="built_in">=</span> dataB;</span><br><span class="line"></span><br><span class="line">figure;</span><br><span class="line">data <span class="built_in">=</span> [MPGs&#123;<span class="number">1</span>&#125; ;MPGs&#123;<span class="number">2</span>&#125; ];</span><br><span class="line"></span><br><span class="line">s_groupA <span class="built_in">=</span> repmat(&#123;<span class="string">&#x27;item 1&#x27;</span>&#125;,numel(MPGs&#123;<span class="number">1</span>&#125;),<span class="number">1</span>);</span><br><span class="line">s_groupB <span class="built_in">=</span> repmat(&#123;<span class="string">&#x27;item 2&#x27;</span>&#125;,numel(MPGs&#123;<span class="number">2</span>&#125;),<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">group <span class="built_in">=</span> [s_groupA;s_groupB];</span><br><span class="line"></span><br><span class="line"><span class="comment">%% BEGIN DRAW</span></span><br><span class="line">boxplot(data,group);</span><br><span class="line"></span><br><span class="line">FONTSIZE <span class="built_in">=</span> <span class="number">30</span>;</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span> <span class="number">1</span> <span class="number">1</span>])</span><br><span class="line">ylabel(<span class="string">&#x27;items value&#x27;</span>);</span><br><span class="line">set(gca,<span class="string">&#x27;fontsize&#x27;</span>,FONTSIZE)</span><br><span class="line">set(gcf,<span class="string">&#x27;pos&#x27;</span>,[ <span class="number">986</span>,  <span class="number">414</span>, <span class="number">1274</span>, <span class="number">826</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><img data-src="https://vincentqin.tech/blog-resources/issues-Matlab/multi-boxplot.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/issues-Matlab/multi-boxplot.png" /></p>
 <h2 id="matlab绘制gif动图">Matlab绘制GIF动图</h2>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">input_file_path=<span class="string">&#x27;your image folder&#x27;</span>;</span><br><span class="line">out_name = <span class="string">&#x27;out&#x27;</span>; <span class="comment">%output name</span></span><br><span class="line"></span><br><span class="line">img_path_list=dir(strcat(input_file_path,<span class="string">&#x27;*.jpg&#x27;</span>)); <span class="comment">%image format</span></span><br><span class="line">[~, ind] = <span class="built_in">sort</span>([img_path_list(:).datenum], <span class="string">&#x27;ascend&#x27;</span>);</span><br><span class="line">img_path_list = img_path_list(ind);</span><br><span class="line">img_num=<span class="built_in">length</span>(img_path_list);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> img_num == <span class="number">0</span></span><br><span class="line">    <span class="built_in">disp</span>(<span class="string">&#x27;No images in the folder!&#x27;</span>);</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">j</span>=<span class="number">1</span>:img_num</span><br><span class="line">        image_name = img_path_list(<span class="built_in">j</span>).name;</span><br><span class="line">        read_image = imread(strcat(input_file_path,image_name));</span><br><span class="line">        imshow(read_image,<span class="string">&#x27;border&#x27;</span>,<span class="string">&#x27;tight&#x27;</span>,<span class="string">&#x27;initialmagnification&#x27;</span>,<span class="string">&#x27;fit&#x27;</span>);</span><br><span class="line">        axis normal;</span><br><span class="line">        <span class="built_in">true</span><span class="built_in">size</span>;</span><br><span class="line"></span><br><span class="line">        n=<span class="built_in">j</span>;</span><br><span class="line">        frame(n)=getframe(gcf); <span class="comment">% get the frame</span></span><br><span class="line">        image=frame(n).cdata;</span><br><span class="line">        [image,map]     =  rgb2ind(image,<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> n==<span class="number">1</span></span><br><span class="line"><span class="comment">%              imwrite(image,map,outname,&#x27;gif&#x27;);</span></span><br><span class="line">             imwrite(image,map,[out_name <span class="string">&#x27;.gif&#x27;</span>],<span class="string">&#x27;gif&#x27;</span>,<span class="string">&#x27;Loopcount&#x27;</span>,<span class="built_in">inf</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">             imwrite(image,map,[out_name <span class="string">&#x27;.gif&#x27;</span>],<span class="string">&#x27;WriteMode&#x27;</span>,<span class="string">&#x27;append&#x27;</span>,<span class="string">&#x27;DelayTime&#x27;</span>,<span class="number">0.2</span>);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="matlab-局部放大图像">Matlab 局部放大图像</h2>
@@ -414,8 +414,8 @@
 <h3 id="解决之道">解决之道</h3>
 <p>xlswrite函数在调用时会占用Excel的com端口，所以要保证在调用时这个端口是开放的，也就是没有被其他程序占用。打开任意一个Excel（我的是16版）文档，点击<strong>文件</strong>--<strong>选项</strong>，弹出Excel选项卡，在<strong>加载项</strong>中可以看到，活动应用程序加载项，以及非活动应用程序加载项；
 由于我的系统中装了一个福昕阅读器，该程序占用了Excel的com端口，所以当Matlab再去调用这个端口时就会出现异常。具体解决方法：点击管理旁边的下拉菜单，选择COM加载项，点击转到，把福昕阅读器的前面的勾去掉，然后确定。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/issues-Matlab/issue-matlab-1.png" width="100%">
-<img data-src="https://vincentqin.tech/blog-resources/issues-Matlab/issue-matlab-2.png" width="100%"></p>
+<p><img data-src="https://images.vincentqin.tech/issues-Matlab/issue-matlab-1.png" width="100%">
+<img data-src="https://images.vincentqin.tech/issues-Matlab/issue-matlab-2.png" width="100%"></p>
 <h2 id="matlab设置绘图坐标轴信息">Matlab设置绘图坐标轴信息</h2>
 <h3 id="问题描述-1">问题描述</h3>
 <blockquote>
@@ -450,11 +450,11 @@ target="_blank" rel="noopener" href="http://blogs.mathworks.com/graphics/">戳�
 target="_blank" rel="noopener" href="http://pan.baidu.com/s/1geIRi2R">猛戳这里</a>！<a
 target="_blank" rel="noopener" href="http://blog.csdn.net/whoispo/article/details/50383362">原文地址</a></li>
 <li><a
-target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/cv-books/matlab-cmex.pdf">Matlab与C混合编程</a></li>
+target="_blank" rel="noopener" href="https://images.vincentqin.tech/cv-books/matlab-cmex.pdf">Matlab与C混合编程</a></li>
 <li><a
-target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/cv-books/matlab-parallel.pdf">Matlab并行</a></li>
+target="_blank" rel="noopener" href="https://images.vincentqin.tech/cv-books/matlab-parallel.pdf">Matlab并行</a></li>
 <li><a
-target="_blank" rel="noopener" href="https://vincentqin.tech/blog-resources/cv-books/Writing-Fast-Matlab-Code.pdf">Matlab代码优化：教你写出漂亮的Matlab代码</a></li>
+target="_blank" rel="noopener" href="https://images.vincentqin.tech/cv-books/Writing-Fast-Matlab-Code.pdf">Matlab代码优化：教你写出漂亮的Matlab代码</a></li>
 </ul>
 
     </div>

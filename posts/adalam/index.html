@@ -28,13 +28,19 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="AdaLAM的全称是Adaptive Locally-Affine Matching(自适应局部仿射匹配)，本文提出了一种高效快速外点滤除算法。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.vincentqin.tech/adalam/fig-1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/adalam/tab-1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/adalam/fig-2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/adalam/fig-3.png">
+<meta property="og:image" content="https://images.vincentqin.tech/wechat-qcode.gif">
 <meta property="article:published_time" content="2020-08-17T12:37:12.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:28:54.740Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.210Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="Matching">
 <meta property="article:tag" content="CV">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.vincentqin.tech/adalam/fig-1.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/adalam/">
@@ -276,7 +282,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -344,7 +350,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:28:54" itemprop="dateModified" datetime="2024-05-11T23:28:54+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
 
   
@@ -395,7 +401,7 @@ matching），提出了现有的鲁棒快速的图像一致性空域验证算法
 <li>本框架基于一种几何假设（局部仿射），场景实用性较强；经实验验证，该算法目前达到了SOTA（很自信啊）。</li>
 </ol>
 <h2 id="新技术主要框架以及关键技术点">新技术主要框架以及关键技术点</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/adalam/fig-1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/adalam/fig-1.png" /></p>
 <p>总共分四步：</p>
 <ol type="1">
 <li>找到初始匹配（最近邻top1）;</li>
@@ -472,10 +478,10 @@ aria-label="">36</span></a></sup>，设计了置信度<span
 class="math inline">\(c_{k}\)</span>（不展开讲），当置信度大于某个阈值，表示该模型对该匹配关系拟合的较好，视该匹配被视为内点；否则为外点。</p>
 <p>注意每次迭代需要更新上述残差/置信度以及内点，后一次利用前一次得到的内点去拟合新的仿射矩阵，然后做校验，直至达到最大迭代次数，最后输出内点。</p>
 <h2 id="实验">实验</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/adalam/tab-1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/adalam/tab-1.png" /></p>
 <p>看到没，竟然超过了效果极好的<strong>GMS</strong>。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/adalam/fig-2.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/adalam/fig-3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/adalam/fig-2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/adalam/fig-3.png" /></p>
 <p>实时性：在RTX2080Ti平台下处理4000-8000个点耗时15-25ms。</p>
 <h2 id="借鉴意义">借鉴意义</h2>
 <p>本文提出了一种高效快速的外点滤除算法，可加入到任何特征匹配算法中，预期能够提高位姿解算的精度。但上述实验结果中对GPU的要求较高，目前不清楚在低配版GPU或者在CPU平台下的表现。</p>
@@ -485,7 +491,7 @@ class="math inline">\(c_{k}\)</span>（不展开讲），当置信度大于某�
 Revisiting Handcrafted Outlier Detection</a></strong>
 <!-- 2. [Github Code](https://github.com/cavalli1234/AdaLAM)： --></li>
 </ol>
-<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+<p><img data-src="https://images.vincentqin.tech/wechat-qcode.gif" /></p>
 
     </div>
 

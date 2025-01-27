@@ -28,17 +28,18 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="时隔三年，笔者重新研读了这篇论文，仍感觉极富参考价值。笔者更新了这篇于三年前写的文章，主要集中在特征点解码端65通道的解释以及损失函数的理解。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_1.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_3.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_2.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_4.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_5.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_6.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_3.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_4.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/tab_1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_3.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_4.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_5.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_9_HA.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_6.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/fig_8.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/tab_3.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superpoint/tab_4.png">
 <meta property="article:published_time" content="2019-06-23T06:02:06.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:28:22.765Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.204Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="SuperPoint">
@@ -47,7 +48,7 @@
 <meta property="article:tag" content="MagicLeap">
 <meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/superpoint/tab_1.png">
+<meta name="twitter:image" content="https://images.vincentqin.tech/superpoint/tab_1.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/superpoint/">
@@ -290,7 +291,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -358,7 +359,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:28:22" itemprop="dateModified" datetime="2024-05-11T23:28:22+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -424,7 +425,7 @@ target="_blank" rel="noopener" href="https://github.com/MagicLeapResearch/SuperP
 Adaptation</strong></p>
 <h1 id="算法优劣对比">算法优劣对比</h1>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/tab_1.png"
+<img data-src="https://images.vincentqin.tech/superpoint/tab_1.png"
 alt="fig1_table1" />
 <figcaption aria-hidden="true">fig1_table1</figcaption>
 </figure>
@@ -434,7 +435,7 @@ alt="fig1_table1" />
 </ul>
 <h1 id="网络结构">网络结构</h1>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_3.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_3.png"
 alt="fig3" />
 <figcaption aria-hidden="true">fig3</figcaption>
 </figure>
@@ -450,7 +451,7 @@ W}\)</span>变为张量<span class="math inline">\(\mathcal{B} \in
 \mathbb{R}^{H_c \times W_c \times F}\)</span></p>
 <h2 id="interest-point-decoder">2. Interest Point Decoder</h2>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_10_magicPoint1.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_10_magicPoint1.png"
 alt="fig_10_magicPoint1" />
 <figcaption aria-hidden="true">fig_10_magicPoint1</figcaption>
 </figure>
@@ -471,7 +472,7 @@ target="_blank" rel="noopener" href="https://blog.csdn.net/leviopku/article/deta
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Compute the dense keypoint scores</span></span><br><span class="line">cPa    = self.relu(self.convPa(x))</span><br><span class="line">scores = self.convPb(cPa)   <span class="comment"># DIM: N x 65 x H/8 x W/8</span></span><br><span class="line">scores = torch.nn.functional.softmax(scores, <span class="number">1</span>)[:, :-<span class="number">1</span>]     <span class="comment"># DIM: N x 64 x H/8 x W/8</span></span><br><span class="line">b, _, h, w = scores.shape</span><br><span class="line">scores = scores.permute(<span class="number">0</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>).reshape(b, h, w, <span class="number">8</span>, <span class="number">8</span>)  <span class="comment"># DIM: N x H/8 x W/8 x 8 x 8</span></span><br><span class="line">scores = scores.permute(<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>).reshape(b, h*<span class="number">8</span>, w*<span class="number">8</span>) <span class="comment"># DIM: N x H x W</span></span><br></pre></td></tr></table></figure>
 <p>这个过程看似比较繁琐，但是这其实就是一个由<code>depth to space</code>的过程，以N
 = 1为例，上述过程如下图所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-dustbin-2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/superpoint-dustbin-2.png" /></p>
 <p>上图中所示的3个蓝色小块的就是对应的一个cell经过<code>depth to space</code>后得到的，易知其尺寸是<span
 class="math inline">\(8 \times 8\)</span>。</p>
 <blockquote>
@@ -479,13 +480,13 @@ class="math inline">\(8 \times 8\)</span>。</p>
 </mark></strong>：这里解释一下为何此作者设置选择增加一个dustbin通道，以及为何先进行softmax再进行slice操作，先进行slice再进行softmax是否可行？（<code>scores = torch.nn.functional.softmax(scores, 1)[:, :-1]</code>）</p>
 </blockquote>
 <p>之所以要设置65个通道，这是因为算法要应对不存在特征点的情况。注意到之后的一步中使用了softmax，也就是说沿着通道维度把各个数值通过运算后加和为1。如果没有Dustbin通道，这里就会产生一个问题：若该cell处没有特征点，此时经过softmax后，每个通道上的响应就会出现受到噪声干扰造成异常随机，在随后的特征点选择一步中会将非特征点判定为特征，这个过程由下图左图所示。在添加Dustbin之后，在没有特征的情况下，只有在Dustbin通道的响应值很大，在后续的特征点判断阶段，此时该图像块的响应都很小，会成功判定为无特征点，这个过程由下图右图所示。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-dustbin-3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/superpoint-dustbin-3.png" /></p>
 <p>上述过程中得到的<code>scores</code>就是图像上特征点的概率（或者叫做特征响应，后文中响应值即表示概率值），概率越大，该点越有可能是特征点。之后作者进行了一步nms，即非极大值抑制（<code>simple_nms</code>的实现见文末），随后选择响应值较大的位置作为特征点。
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scores    = simple_nms(scores, self.config[<span class="string">&#x27;nms_radius&#x27;</span>])</span><br><span class="line">keypoints = [ torch.nonzero(s &gt; self.config[<span class="string">&#x27;keypoint_threshold&#x27;</span>]) <span class="keyword">for</span> s <span class="keyword">in</span> scores]</span><br></pre></td></tr></table></figure>
 nms的效果如下，左图是未使用nms时score的样子，响应值极大的位置周围也聚集着响应较大的点，如果不进行nms，特征点将会很集中；右图是进行nms操作后的score，响应值极大的位置周围的响应为0。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-nms.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/superpoint-nms.png" /></p>
 <p>nms前后对应的特征点的位置如下所示，可见nms对于避免特征点位置过于集中起到了比较大的作用。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-nms-2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/superpoint-nms-2.png" /></p>
 <p>熟悉SuperPoint的同学应该注意到了，<a
 target="_blank" rel="noopener" href="https://github.com/ddetone">Daniel</a>在CVPR
 2018公开的实现中nms在特征点提取之后，而<a
@@ -501,7 +502,7 @@ target="_blank" rel="noopener" href="https://github.com/magicleap/SuperGluePretr
 target="_blank" rel="noopener" href="https://github.com/Skydes">Sarlin</a>，如下是他的回复，总结起来就重构后的代码优势有两点：<strong>1.
 更加快速，能够在GPU上运行，常数级时间复杂度；2.
 支持多图像输入。</strong></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-nms-3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/superpoint-nms-3.png" /></p>
 <h2 id="descriptor-decoder">3. Descriptor Decoder</h2>
 <p>首先利用类似于UCN的网络得到一个半稠密的描述子（此处参考文献<a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/1606.03558">UCN</a>），这样可以减少算法训练内存开销同时减少算法运行时间。之后通过双三次多项式插值得到其余描述，然后通过<code>L2-normalizes</code>归一化描述子得到统一的长度描述。特征维度由<span
@@ -509,7 +510,7 @@ class="math inline">\(\mathcal{D} \in \mathbb{R}^{H_c \times W_c \times
 D}\)</span>变为<span class="math inline">\(\mathbb{R}^{H\times W \times
 D}\)</span> 。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_11_des_decoder.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_11_des_decoder.png"
 alt="fig_11_des_decoder" />
 <figcaption aria-hidden="true">fig_11_des_decoder</figcaption>
 </figure>
@@ -521,7 +522,7 @@ target="_blank" rel="noopener" href="https://github.com/pytorch/pytorch/blob/f06
 <li>特征点位置反归一化：根据输入张量的H与W对grid(1,1,0,:)（表示第一个特征点，其余特征点类似）进行反归一化，其实就是按照比例进行缩放+平移，得到反归一化特征点在张量某个slice（通道）上的位置；但是这个位置可能并非为整像素，此时要对其进行双线性插值补齐，然后其余slice按照同样的方式进行双线性插值。注：代码中实际的就是双线性插值，并非文中讲的双三次插值；</li>
 <li>输出维度：1*C*1*K。</li>
 </ul>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/grid_sample.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/grid_sample.png" /></p>
 <p>描述子解码部分代码如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Compute the dense descriptors</span></span><br><span class="line">cDa = self.relu(self.convDa(x))</span><br><span class="line">descriptors = self.convDb(cDa) <span class="comment"># DIM: N x 256 x H/8 x W/8</span></span><br><span class="line">descriptors = torch.nn.functional.normalize(descriptors, p=<span class="number">2</span>, dim=<span class="number">1</span>) <span class="comment">#按通道进行归一化</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Extract descriptors</span></span><br><span class="line"><span class="comment"># 根据特征点位置插值得到描述子, DIM: N x 256 x M</span></span><br><span class="line"></span><br><span class="line">descriptors = [sample_descriptors(k[<span class="literal">None</span>], d[<span class="literal">None</span>], <span class="number">8</span>)[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">for</span> k, d <span class="keyword">in</span> <span class="built_in">zip</span>(keypoints, descriptors)]</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
 <h2 id="误差构建">4. 误差构建</h2>
 <p><span class="math display">\[
@@ -584,7 +585,7 @@ class="math inline">\(\mathbf{d}^T\mathbf{d}^{\prime}\)</span>大于<span
 class="math inline">\(m_p\)</span>时，此时不需要惩罚；但如果该相似度较小时，此时就要惩罚了；负样本时我们的目标是让<span
 class="math inline">\(\mathbf{d}^T\mathbf{d}^{\prime}\)</span>变小，但网络性能不佳时可能这个值很大(大于上式中的<span
 class="math inline">\(m_n\)</span>)，此时要惩罚这种现象，网络权重经过调整后使得该loss降低，对应的描述子相似度降低；</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superpoint/superpoint-loss.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superpoint/superpoint-loss.png" /></p>
 <p>让我们再看一下这个所谓的<code>Double margin Siamese loss</code>，上图示中的连线表示<span
 class="math inline">\(dist\)</span>函数。想象一下，我们希望正例<span
 class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})\)</span>越小越好，如果<span
@@ -595,7 +596,7 @@ class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&lt;𝑚_{𝑛1}\)</sp
 class="math inline">\(𝑑𝑖𝑠𝑡(𝑑,𝑑^{\prime})&gt;𝑚_{𝑛1}\)</span>。</p>
 <h1 id="网络训练">网络训练</h1>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_2.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_2.png"
 alt="fig2" />
 <figcaption aria-hidden="true">fig2</figcaption>
 </figure>
@@ -614,20 +615,20 @@ rotations的原因。</p>
 <p>此处参考作者之前发表的一篇论文<strong>[<a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.07410">Toward Geometric Deep
 SLAM</a>]</strong>，其实就是<code>MagicPoint</code>，它仅仅保留了SuperPoint的主干网络以及特征点解码端，即SuperPoint的检测端就是MagicPoint。
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_10_magicPoint1.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_10_magicPoint1.png"
 alt="fig2" /></p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_4.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_4.png"
 alt="fig4" />
 <figcaption aria-hidden="true">fig4</figcaption>
 </figure>
 <h2 id="homographic-adaptation">Homographic Adaptation</h2>
 <p>算法在虚拟数据集上表现极其优秀，但是在真实场景下表示没有达到预期，此时本文进行了<code>Homographic Adaptation</code>。
 作者使用的数据集是<code>MS-COCO</code>，为了使网络的泛化能力更强，本文不仅使用原始了原始图片，而且对每张图片进行随机的旋转和缩放形成新的图片，新的图片也被用来进行识别。这一步其实就类似于训练里常用的数据增强。经过一系列的单应变换之后特征点的复检率以及普适性得以增强。值得注意的是，在实际训练时，这里采用了迭代使用单应变换的方式，例如使用优化后的特征点检测器重新进行单应变换进行训练，然后又可以得到更新后的检测器，如此迭代优化，这就是所谓的self-supervisd。
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_5.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_5.png"
 alt="fig5" /></p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_9_HA.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_9_HA.png"
 alt="fig_9_HA" />
 <figcaption aria-hidden="true">fig_9_HA</figcaption>
 </figure>
@@ -638,7 +639,7 @@ f_{\theta}\right)\]</span>，可以表示为再所有随机单应变换/反变�
 \mathcal{H}_{i}^{-1} f_{\theta}\left(\mathcal{H}_{i}(I)\right)
 \]</span></p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_6.png"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_6.png"
 alt="fig_6" />
 <figcaption aria-hidden="true">fig_6</figcaption>
 </figure>
@@ -647,17 +648,17 @@ id="构建残差迭代优化描述子以及检测器">构建残差，迭代优�
 <p>利用上面网络得到的关键点位置以及描述子表示构建残差，利用<code>ADAM</code>进行优化。</p>
 <h1 id="实验结果">实验结果</h1>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/fig_8.jpg"
+<img data-src="https://images.vincentqin.tech/superpoint/fig_8.jpg"
 alt="fig_8" />
 <figcaption aria-hidden="true">fig_8</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/tab_3.png"
+<img data-src="https://images.vincentqin.tech/superpoint/tab_3.png"
 alt="tab_3" />
 <figcaption aria-hidden="true">tab_3</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superpoint/tab_4.png"
+<img data-src="https://images.vincentqin.tech/superpoint/tab_4.png"
 alt="tab_4" />
 <figcaption aria-hidden="true">tab_4</figcaption>
 </figure>

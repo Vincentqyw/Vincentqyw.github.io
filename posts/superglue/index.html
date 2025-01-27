@@ -28,8 +28,16 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="ETHZ ASL与Magicleap联名之作，CVPR 2020 Oral（论文见文末），一作是来自ETHZ的实习生，二作是当年CVPR2018 SuperPoint的作者Daniel DeTone。Sarlin小伙之前在MagicLeap实习，在ETHZ（苏黎世联邦理工） ASL 完成硕士，目前在 ETHZ CVG就读博士，不是TUM（慕尼黑工业大学）的CVG。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_front.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_arch.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_fig_4.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_fig_7.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_tb_1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_tb_2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_tb_3.png">
+<meta property="og:image" content="https://images.vincentqin.tech/superglue/superglue_fig_11.png">
 <meta property="article:published_time" content="2020-04-17T17:21:56.000Z">
-<meta property="article:modified_time" content="2023-07-20T05:30:27.381Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.204Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="特征提取">
@@ -40,6 +48,7 @@
 <meta property="article:tag" content="MagicLeap">
 <meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.vincentqin.tech/superglue/superglue_front.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/superglue/">
@@ -282,7 +291,7 @@ layer）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a cla
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -350,7 +359,7 @@ layer）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a cla
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-07-20 13:30:27" itemprop="dateModified" datetime="2023-07-20T13:30:27+08:00">2023-07-20</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -420,7 +429,7 @@ target="_blank" rel="noopener" href="https://vincentqin.gitee.io/posts/superpoin
 optimal transport
 problem）来解决；本文基于注意力机制提出了一种将2D特征点以及聚合机制，这使得SuperGlue能够同时感知潜在的3D场景以及进行特征匹配。该算法与传统的，手工设计的特征相比，能够在室内外环境中位姿估计任务中取得最好的结果，该网络能够在GPU上达到实时，预期能够集成到sfm以及slam算法中。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_front.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_front.png"
 alt="superglue_front" />
 <figcaption aria-hidden="true">superglue_front</figcaption>
 </figure>
@@ -428,7 +437,7 @@ alt="superglue_front" />
 <p>作者认为学习特征匹配可以被视为找到两簇点的局部分配关系。作者受到了Transformer的启发，同时将self-和cross-attention利用特征点位置以及其视觉外观进行匹配。</p>
 <h2 id="相关工作">相关工作</h2>
 <h3 id="局部特征匹配">局部特征匹配</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_pre-1.png" />
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue_pre-1.png" />
 传统的特征可分5步走：1)提取特征点；2)计算描述子；3)最近邻匹配；4)滤除外点；5)求解几何约束；其中滤除外点一步包括点方法有：计算最优次优比，RANSAC，交叉验证以及neighborhood
 consensus。</p>
 <p>最近的一些工作主要集中在设计特异性更好的稀疏特征上，而它们的匹配算法仍然依赖于NN等策略：在做匹配时并没有考虑特征的结构相似性以及外观相似性。</p>
@@ -447,7 +456,7 @@ transport</em>”问题，<strong>它是一种有效但简单的近似解的广�
 </blockquote>
 <p>一个成熟的特征匹配模型应该做到：既能够找到特征之间的正确匹配，又可以鉴别错误匹配。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_arch.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_arch.png"
 alt="superglue_arch" />
 <figcaption aria-hidden="true">superglue_arch</figcaption>
 </figure>
@@ -456,7 +465,7 @@ class="math inline">\(L\)</span>次）这个向量<span
 class="math inline">\(\mathbf{f}\)</span>的特征匹配性能；随后进入最优匹配层，通过计算特征匹配向量的内积得到匹配度得分矩阵，然后通过Sinkhorn算法（迭代<span
 class="math inline">\(T\)</span>次）解算出最优特征分配矩阵。</p>
 <h3 id="公式化">公式化</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_problem-definition.png" />
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue_problem-definition.png" />
 该部分对特征匹配问题建模。给定两张图片<span
 class="math inline">\(A,B\)</span>，每张图片上都有特征点位置<span
 class="math inline">\(\mathbf{p}\)</span>以及对应的描述子<span
@@ -480,7 +489,7 @@ class="math display">\[
 \mathbf{P} \mathbf{1}_{N} \leq \mathbf{1}_{M} \quad \text { and } \quad
 \mathbf{P}^{\top} \mathbf{1}_{M} \leq \mathbf{1}_{N}
 \]</span></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-ot-1.jpg" /></p>
 <blockquote>
 <p>为何上式中使用 "<span class="math inline">\(\leq\)</span>" 而非
 "<span class="math inline">\(=\)</span>"？这里值得说明一下。</p>
@@ -508,7 +517,7 @@ class="math inline">\(A\)</span>与图<span
 class="math inline">\(B\)</span>中的所有特征都可以在对方的图像上找到对应关系。但是实际情况下，可能存在遮挡/视角变化/检测噪声等因素的干扰，大概率会出现图<span
 class="math inline">\(A\)</span>在图<span
 class="math inline">\(B\)</span>中找不到对应的匹配点，反之亦然。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-ot-2.jpg" /></p>
 <p>如上图所示，对于<span
 class="math inline">\(\mathbf{P}\)</span>的第3列，即图<span
 class="math inline">\(B\)</span>的第3号特征而言，它并没有找到于其对应的特征匹配，所以对应的第3列之和是小于1的，确切来说对于一个调校的特别好的网络而言，第3列之和接近于0。</p>
@@ -612,12 +621,12 @@ class="math inline">\(\mathbf{m}_{\mathcal{E} \rightarrow
 i}\)</span>，这就是所谓的<strong>特征聚合</strong>。</p>
 <p>上面提到的这些概念有些难以理解，作者特意对上述过程进行了可视化，self-attention就是一张图像内部的边相连进行聚合，它能够更加关注具有特异性的所有点，且并不仅局限于其邻域位置特征（心心相依，何惧千里，逃...）；cross-attention做的就是匹配那些外观相似的两张图像见的特征。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_fig_4.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_fig_4.png"
 alt="superglue_fig_4" />
 <figcaption aria-hidden="true">superglue_fig_4</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_fig_7.jpg"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_fig_7.jpg"
 alt="superglue_fig_7" />
 <figcaption aria-hidden="true">superglue_fig_7</figcaption>
 </figure>
@@ -625,7 +634,7 @@ alt="superglue_fig_7" />
 class="math inline">\({\alpha_{i
 j}}\)</span>的结果。按照匹配从难到易，文中画出了3个不同的特征点作为演示，绿色特征点（容易），蓝色特征点（中等）以及红色特征点（困难）。对于self-attention，初始时它（某个特征）关联了图像上所有的点（首行），然后逐渐地关注在与该特征相邻近的特征点（尾行）。同样地，cross-attention主要关注去匹配可能的特征点，随着层的增加，它逐渐减少匹配点集直到收敛。绿色特征点在第9层就已经趋近收敛，而红色特征直到最后才能趋紧收敛（匹配）。可以看到无论是self还是cross，它们关注的区域都会随着网络层深度的增加而逐渐缩小。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_fig_15_1.jpg"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_fig_15_1.jpg"
 alt="superglue_fig_15" />
 <figcaption aria-hidden="true">superglue_fig_15</figcaption>
 </figure>
@@ -648,7 +657,7 @@ j}\)</span>即可得到这个分配矩阵<span
 class="math inline">\(\mathbf{P}\)</span>，其中要注意的是<span
 class="math inline">\(\mathbf{P}\)</span>是有约束的。</p>
 <h4 id="匹配得分预测">匹配得分预测</h4>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-sh-score.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-ot-sh-score.jpg" /></p>
 <p>作者使用GNN聚合得到的<span
 class="math inline">\(\mathbf{f}_{i}^{A}\)</span>以及<span
 class="math inline">\(\mathbf{f}_{i}^{B}\)</span>计算内积得到得分：
@@ -693,7 +702,7 @@ constraint"），同时可以比较好的应对没有匹配的特征或者错误
 target="_blank" rel="noopener" href="https://blog.csdn.net/shizhuoduao/article/details/107120805">这篇文章</a>的解释。）</del></p>
 <h4 id="sinkhorn-algorithm">Sinkhorn Algorithm</h4>
 <p>求解最大化总体得分可由“Sinkhorn Algorithm”[52,12]进行求解。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-sh-1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-ot-sh-1.png" /></p>
 <p>此处有必要对optimal tranport问题做一下解释，有关optimal
 tranport问题的介绍可参考这篇文章<a
 target="_blank" rel="noopener" href="https://michielstock.github.io/posts/2017/2017-11-5-OptimalTransport/">Notes
@@ -719,16 +728,16 @@ class="math inline">\(\lambda\)</span>（越大表示分配越均匀，默认为
 class="math inline">\(\mathbf{\bar{P}}
 =\mathbf{\bar{S}}\)</span>，实际情况下是<span
 class="math inline">\(\mathbf{\bar{P}} = \exp^{-\lambda
-\mathbf{\bar{S}}}\)</span>） <img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-sh-2.png" /></p>
+\mathbf{\bar{S}}}\)</span>） <img data-src="https://images.vincentqin.tech/superglue/superglue-ot-sh-2.png" /></p>
 <p>步骤1：计算目前的行之和；
 步骤2：对于P矩阵的每一行，分别除以上述行之和并乘目标行之和a；</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-sh-3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-ot-sh-3.png" /></p>
 <p>步骤3：计算目前的列之和；
 步骤4：对于P矩阵的每一列，分别除以上述列之和并乘目标列之和b；</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-sh-4.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-ot-sh-4.png" /></p>
 <p>对行列重复执行1-4步，经过4次迭代后分配矩阵的行之和就与<span
 class="math inline">\(\mathbf{a}\)</span>一致，列之和与<span
-class="math inline">\(\mathbf{b}\)</span>一致。 <img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-ot-sh-5.png" /></p>
+class="math inline">\(\mathbf{b}\)</span>一致。 <img data-src="https://images.vincentqin.tech/superglue/superglue-ot-sh-5.png" /></p>
 <p>下面笔者使用matlab重写了一个<code>sinkhorn algorithm</code>的demo，感兴趣的同学可以运行一下，然后check下最后的分配矩阵P的行之和是否为1/列之和是否为1。</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">clear all;</span><br><span class="line">close all;</span><br><span class="line">clc;</span><br><span class="line"></span><br><span class="line">lam = <span class="number">1</span>;</span><br><span class="line">epslion = <span class="number">1e-6</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">% S_  = rand(3,4);</span></span><br><span class="line"></span><br><span class="line">S  = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>;</span><br><span class="line">         <span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>;</span><br><span class="line">         <span class="number">2</span>,<span class="number">6</span>,<span class="number">1</span>,<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">[m,n] = <span class="built_in">size</span>(S);</span><br><span class="line"></span><br><span class="line">a  = <span class="built_in">ones</span>(m,<span class="number">1</span>);</span><br><span class="line">b  = <span class="built_in">ones</span>(<span class="number">1</span>,n);</span><br><span class="line"></span><br><span class="line">[P_bar, error] = SinkhornAlgorithm(S,a,b,lam,epslion);</span><br><span class="line"></span><br><span class="line"><span class="built_in">figure</span>;</span><br><span class="line">axis equal</span><br><span class="line">imagesc(P_bar)</span><br><span class="line">set(gcf,<span class="string">&#x27;color&#x27;</span>,[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]);</span><br><span class="line">box off;</span><br><span class="line">axis off</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[P_bar, error]</span> = <span class="title">SinkhornAlgorithm</span><span class="params">(S,a,b,lam,epslion)</span></span></span><br><span class="line">    </span><br><span class="line"><span class="comment">%     Computes the optimal transport matrix and Slinkhorn distance using the</span></span><br><span class="line"><span class="comment">%     Sinkhorn-Knopp algorithm</span></span><br><span class="line"><span class="comment">% </span></span><br><span class="line"><span class="comment">%     Inputs:</span></span><br><span class="line"><span class="comment">%         - S : cost matrix (mxn)</span></span><br><span class="line"><span class="comment">%         - a: vector of marginals (m, )</span></span><br><span class="line"><span class="comment">%         - b : vector of marginals (n, )</span></span><br><span class="line"><span class="comment">%         - lam : strength of the entropic regularization</span></span><br><span class="line"><span class="comment">%         - epslion : convergence parameter</span></span><br><span class="line"><span class="comment">% </span></span><br><span class="line"><span class="comment">%     Outputs:</span></span><br><span class="line"><span class="comment">%         - P : optimal transport matrix (mxn)</span></span><br><span class="line"><span class="comment">%         - dist : Sinkhorn distance</span></span><br><span class="line"><span class="comment">%     Author: realcat </span></span><br><span class="line"><span class="comment">%     Date:    2022.04.03</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment">% add dustbin channel</span></span><br><span class="line">  dust= <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">  [m,n] = <span class="built_in">size</span>(S);</span><br><span class="line"></span><br><span class="line">  S_bar = [S,dust * <span class="built_in">ones</span>(m,<span class="number">1</span>);</span><br><span class="line">          dust *<span class="built_in">ones</span>(<span class="number">1</span>,n+<span class="number">1</span>)];</span><br><span class="line">    </span><br><span class="line">  a  = [a;n];</span><br><span class="line">  b  = [b,m];</span><br><span class="line"></span><br><span class="line">  <span class="comment">%% OT BEGIN</span></span><br><span class="line"></span><br><span class="line">  [m,n] = <span class="built_in">size</span>(S_bar);</span><br><span class="line">  P_bar = <span class="built_in">exp</span>(-lam * S_bar);</span><br><span class="line">  P_bar = P_bar / sum(P_bar(:));</span><br><span class="line"></span><br><span class="line">  max_iters = <span class="number">100</span>;</span><br><span class="line">  counter   = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> <span class="number">1</span></span><br><span class="line">    u     = sum(P_bar,<span class="number">2</span>);                 <span class="comment">% sum of rows</span></span><br><span class="line">    P_bar = P_bar .* <span class="built_in">repmat</span>(a./ u,[<span class="number">1</span>,n]); <span class="comment">% scale rows</span></span><br><span class="line">    v     = sum(P_bar,<span class="number">1</span>);                 <span class="comment">% sum of cols</span></span><br><span class="line">    P_bar = P_bar .* <span class="built_in">repmat</span>(b./ v,[m,<span class="number">1</span>]); <span class="comment">% scale cols</span></span><br><span class="line">    </span><br><span class="line">    error = <span class="built_in">max</span>((sum(P_bar,<span class="number">2</span>) - a));      <span class="comment">% check error</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">disp</span>([<span class="string">&#x27;error = &#x27;</span>, num2str(error)]);</span><br><span class="line">    <span class="keyword">if</span>(error &lt; epslion || counter &gt; max_iters)</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    counter = counter + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span> <span class="comment">%end function</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>值得注意的是作者采用<strong>对数空间</strong>的<code>sinkhorn algorithm</code>算法，所以在完成算法迭代之后需要对<strong>结果进行指数运算才能得到分配矩阵</strong>。</p>
@@ -752,19 +761,19 @@ class="math inline">\(。当给定真值标签，就可以去最小化分配矩�
 <h3 id="单应矩阵估计">单应矩阵估计</h3>
 <p>能够获得非常高的匹配召回率（98.3%）同时获得超高的精度，比传统的暴力匹配都好了一大截。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_tb_1.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_tb_1.png"
 alt="superglue_tb_1" />
 <figcaption aria-hidden="true">superglue_tb_1</figcaption>
 </figure>
 <h3 id="室内外位姿估计">室内外位姿估计</h3>
 <p>下表看来，大基线室内位姿估计也是相当棒，完胜传统算法。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_tb_2.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_tb_2.png"
 alt="superglue_tb_2" />
 <figcaption aria-hidden="true">superglue_tb_2</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_tb_3.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_tb_3.png"
 alt="superglue_tb_3" />
 <figcaption aria-hidden="true">superglue_tb_3</figcaption>
 </figure>
@@ -772,16 +781,16 @@ alt="superglue_tb_3" />
 <p>接下来放出大家比较关心的网络耗时，下图是在NVIDIA GeForce GTX 1080
 GPU跑了500次的结果，512个点69ms（14.5fps），1024个点87ms（11.5fps）。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_fig_11.png"
+<img data-src="https://images.vincentqin.tech/superglue/superglue_fig_11.png"
 alt="superglue_tb_3" />
 <figcaption aria-hidden="true">superglue_tb_3</figcaption>
 </figure>
 <h3 id="更多匹配结果">更多匹配结果</h3>
 <p>第一列是SuperPoint+暴力匹配结果，第二列是SuperPoint+OAnet（ICCV
 2019）结果，第三列是SuperPoint+SuperGlue结果。能看到SuperGlue惊人的特征匹配能力，尤其是在大视角变化时优势明显（红线表示错误匹配，绿线表示正确匹配）。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_res_3.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_res_1.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue_res_2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue_res_3.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue_res_1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue_res_2.jpg" /></p>
 <h2 id="结论">结论</h2>
 <p>本文展示了基于注意力的图神经网络对局部特征匹配的强大功能。
 SuperGlue的框架使用两种注意力：（i）自我注意力，可以增强局部描述符的接受力；以及（ii）交叉注意力，可以实现跨图像交流，并受到人类来回观察方式的启发进行匹配图像。文中方法通过解决<strong>最优运输问题</strong>，优雅地处理了特征分配问题以及遮挡点。实验表明，SuperGlue与现有方法相比有了显着改进，可以在极宽的基线室内和室外图像对上进行高精度的相对姿势估计。此外，SuperGlue可以实时运行，并且可以同时使用经典和深度学习特征。</p>
@@ -790,7 +799,7 @@ combined with a deep front-end, SuperGlue is a major milestone towards
 end-to-end deep SLAM）</p>
 <p>这真是鼓舞SLAM研究人员的士气！</p>
 <p>顺便给个SuperGlue代码的流程框图：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/superglue/superglue-workflow.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/superglue/superglue-workflow.jpg" /></p>
 <h2 id="改进点-update-2022.05.17">改进点 (Update: 2022.05.17)</h2>
 <p>主要从<strong>改进特征编码形式，attention形式，改进最优传输问题的求解策略</strong>等角度进行展开。</p>
 <ul>

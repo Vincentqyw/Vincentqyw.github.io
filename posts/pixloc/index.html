@@ -28,18 +28,18 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="今天要介绍的文章是“Back to the Feature: Learning Robust Camera Localization from Pixels to Pose”，发表于CVPR 2021，本文的一作正是SuperGlue的作者，本文实现一种端到端场景无关的相机定位网络，在公开数据集上表现优异。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab1.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab2.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab3.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig7.png">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig6.png">
+<meta property="og:image" content="https://images.vincentqin.tech/pixloc/pixloc-tab1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/pixloc/pixloc-tab2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/pixloc/pixloc-tab3.png">
+<meta property="og:image" content="https://images.vincentqin.tech/pixloc/pixloc-fig7.png">
+<meta property="og:image" content="https://images.vincentqin.tech/pixloc/pixloc-fig6.png">
 <meta property="article:published_time" content="2021-10-17T15:00:08.000Z">
-<meta property="article:modified_time" content="2022-08-31T16:16:27.695Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.205Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="Paper">
 <meta property="article:tag" content="Localization">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab1.png">
+<meta name="twitter:image" content="https://images.vincentqin.tech/pixloc/pixloc-tab1.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/pixloc/">
@@ -281,7 +281,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -349,7 +349,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-01 00:16:27" itemprop="dateModified" datetime="2022-09-01T00:16:27+08:00">2022-09-01</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -398,12 +398,12 @@ Camera Localization from Pixels to Pose</strong>”，发表于CVPR
 2021，本文的一作正是SuperGlue的作者，本文实现一种端到端场景无关的相机定位网络，在公开数据集上表现优异。</p>
 </div>
 <span id="more"></span>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-title.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixloc/pixloc-title.png" /></p>
 <p>代码：<a href="github.com/cvg/pixloc">github.com/cvg/pixloc</a></p>
 <p>论文：<a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/2103.09213">https://arxiv.org/abs/2103.09213</a></p>
 <h2 id="摘要">摘要</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig1.png" /></p>
 <p>最近在相机位姿估计任务中涌现了不少基于学习的算法。其中很多是回归出某些几何量（如位姿回归或者3D坐标回归）来实现定位，但这些方法的泛化性在视角变化或者模型参数变换后会大打折扣。</p>
 <p>本文提出了一种<strong>场景无关的算法</strong>PixLoc，输入为一张图像以及3D模型，输出图像对应的相机位姿。本文方法基于直接对齐多尺度深度特征，将相机定位问题转换成度量学习。<strong>PixLoc端到端地学习了从像素到位姿的数据先验</strong>，这种能力可以在新的场景以及模型下表现优异。本文算法不仅能够在给定粗略姿先验的情况下定位，而且能够对位姿以及特征点进行联合优化。</p>
 <h2 id="原有技术问题">原有技术问题</h2>
@@ -414,7 +414,7 @@ regression）通常是场景相关的，无法有效地拓展到新的场景，�
 <p>作者提到，端到端的视觉定位算法应该着重于表征学习，<strong>不是让网络学习基本的几何关系亦或编码的3D图，而是让网络能够较好地理解几何原则以及鲁棒地应对外观以及结构变化</strong>。</p>
 <p>本文作者提出的PixLoc能够做到场景无关的端到端学习位姿，且能够较好地做到跨场景（室外到室内）的相机定位。</p>
 <h2 id="关键技术点">关键技术点</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig3.png" /></p>
 <p>总览：利用已知的3D模型将query图与reference图像直接对齐对位姿进行解算，其中对齐过程中用了一种面向深度特征的非线性优化。</p>
 <p>输入：稀疏3D模型（如SfM稀疏模型），粗略的初始位姿<span
 class="math inline">\(\left(\mathbf{R}_{0},
@@ -467,7 +467,7 @@ u_{k}^{i}=\frac{1}{1+\mathbf{U}_{q}^{l}\left[\mathbf{p}_{q}^{i}\right]}
 \frac{1}{1+\mathbf{U}_{k}^{l}\left[\mathbf{p}_{k}^{i}\right]}
 \in[0,1]\]</span></p>
 <p>如果3D点重投影的不确定性小，那么这个权重会趋向于1，若该不确定性较大，这个权重趋近于0；</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig4.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig4.png" /></p>
 <p><strong>将优化器与数据相匹配</strong>：LM是一种通用的优化算法，其中包括很多启发式的操作，例如代价函数<span
 class="math inline">\(\rho\)</span>的选择，阻尼参数<span
 class="math inline">\(\lambda\)</span>的选择等。作者认为上述参数的选择会极大地削弱模型推广到新的数据的能力，因为它将优化器与训练数据进行了“绑定”（笔者：即优化器与数据相关，泛化能力就会变弱）。所以，<strong>若优化器能够具有泛化性，就要让优化器适应姿势或残差的分布，而不是场景的语义内容</strong>。本文的方法是将阻尼因子<span
@@ -481,7 +481,7 @@ class="math inline">\({\theta}_l\)</span>没有明确表示什么）：</p>
 }+\operatorname{sigmoid}\left(\boldsymbol{\theta}_{l}\right)\left(\lambda_{\max
 }-\lambda_{\min }\right)\]</span></p>
 <p>该方法在训练过程中调整各个姿态参数的曲率，直接从数据中学习运动先验知识。例如，当相机安装在汽车或一个基本直立的机器人上时，我们期望平面内旋转的阻尼很大。相反，普通的启发式算法对所有姿态参数一视同仁，不允许每个参数拥有不同阻尼量。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig8.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig8.png" /></p>
 <h3 id="从位姿中学习">从位姿中学习</h3>
 <p>这部分实际上对应着对已有的位姿进行优化，即后文介绍的PoseLocalizer。</p>
 <p>由于CNN本身是不关注3D点的类型的，无论是通过视觉SfM来的，或者来自RGBD传感器/LiDAR扫描等，PixLoc可以用于以上各种3D点云的输入（笔者：如何做到异构特征的数据关联，如LiDAR地图与视觉图像？）。</p>
@@ -506,7 +506,7 @@ Stumberg等人最近也提出了一些使用直接对齐的跨季节定位算法
 <p>配合图像检索（即首先要做一步图像召回），PixLoc可以是一个独立的定位模块，但也可以对之前方法估计的姿势进行优化。因为该算法只需要一个三维模型和一个粗略的初始姿势。</p>
 <h3 id="初始化">初始化</h3>
 <p>初始位姿的精度应该取决于对齐过程中收敛域的大小，经过深度CNN处理后一个特征点的感受野可以保证是非常大的，如下图所示，左图红色的点位于参考图像，右侧的高亮区域表示查询图像的多尺度收敛域，可见这个范围是比较大的。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig5.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig5.png" /></p>
 <h3 id="d结构">3D结构</h3>
 <p>本文使用了用HLoc+COLMAP重建的稀疏SfM模型，对于召回的参考图像，如top5～10，将它们观测的3D点云收集起来并在其对应的2D点提取多尺度特征图（对于每个3D点至少有一个内点），详见Fig3。</p>
 <h2 id="实验">实验</h2>
@@ -515,7 +515,7 @@ class="math inline">\(L=3\)</span>,<span
 class="math inline">\(D_l=32,128,128\)</span>。算法使用Pytorch实现，特征提取耗时100ms，位姿优化200ms~1s。</p>
 <h3 id="端到端算法对比">端到端算法对比</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab1.png"
+<img data-src="https://images.vincentqin.tech/pixloc/pixloc-tab1.png"
 alt="Cambridge Landmarks以及7Scenes datasets定位效果" />
 <figcaption aria-hidden="true">Cambridge Landmarks以及7Scenes
 datasets定位效果</figcaption>
@@ -524,7 +524,7 @@ datasets定位效果</figcaption>
 datasets定位精度对比，数字表示在给定阈值（5cm/5deg）条件下的召回率以及平移和旋转误差中值。可以看到PixLoc能够与复杂的特征匹配（FM）的流程定位效果相当，与几何回归模型的定位效果相近；以上标红的算法表示模型针对每个场景进行了训练，而本文算法仅在室外场景中训练了一次，便可以很好地泛化到没有见过的室内外场景。</p>
 <h3 id="大场景定位算法比较">大场景定位算法比较</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab2.png"
+<img data-src="https://images.vincentqin.tech/pixloc/pixloc-tab2.png"
 alt="在 Aachen, RobotCar, CMU dataset大尺度场景定位对比" />
 <figcaption aria-hidden="true">在 Aachen, RobotCar, CMU
 dataset大尺度场景定位对比</figcaption>
@@ -537,19 +537,19 @@ dataset大尺度场景定位对比</figcaption>
 <p><strong>消融实验</strong>：作者也尝试了 Gauss-Newton
 loss，但是模型没有收敛；作者比较了添加每个改进后的AUC，可以看到每个小改进都有一定作用。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-tab3.png"
+<img data-src="https://images.vincentqin.tech/pixloc/pixloc-tab3.png"
 alt="pixloc-tab3" />
 <figcaption aria-hidden="true">pixloc-tab3</figcaption>
 </figure>
 <p><strong>局限性</strong>：PixLoc受限于CNN感受野的大小，如果初始位姿的重投影误差较大，模型预测会陷入局部最优；因此，PixLoc容易受到视角变化/遮挡物的影响，也对错误的相机标定敏感。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig7.png"
+<img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig7.png"
 alt="pixloc-fig7" />
 <figcaption aria-hidden="true">pixloc-fig7</figcaption>
 </figure>
 <p><strong>可解释性</strong>：对权重图进行可视化可以帮助我们理解PixLoc到底关注场景的何种线索。A-D为室外驾驶场景，PixLoc可以忽略动态物体如车辆，同时也可以忽略掉短期的特征如雪(A)，落叶(B)，垃圾桶(C)以及影子等；PixLoc更加关注于柱子，树干，路标，电线以及建筑轮廓。重复的纹理如窗户在一开始会被忽略但到后期会被用来做优化。不同是，对于城市场景E，网络更加关注于固定的建筑物而不是大树。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/pixloc/pixloc-fig6.png"
+<img data-src="https://images.vincentqin.tech/pixloc/pixloc-fig6.png"
 alt="pixloc-fig6" />
 <figcaption aria-hidden="true">pixloc-fig6</figcaption>
 </figure>

@@ -30,7 +30,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.vincentqin.tech/posts/slam-common-issues-SVD/alita_svd_quality.svg">
 <meta property="article:published_time" content="2019-08-18T11:12:28.000Z">
-<meta property="article:modified_time" content="2022-09-04T18:29:10.369Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.197Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="位姿">
@@ -278,7 +278,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -346,7 +346,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-05 02:29:10" itemprop="dateModified" datetime="2022-09-05T02:29:10+08:00">2022-09-05</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -407,7 +407,7 @@ n}\)</span>的对角阵（奇异值），奇异值<span class="math inline">\(\g
 0\)</span>且按照顺序降序排列。</p>
 <p>MIT <code>Gilbert Strang</code> 教授对 SVD 讲解得很清晰，如下:</p>
 <span id="more"></span>
-<!-- <div id="dplayer0" class="dplayer" style="margin-bottom: 20px;"></div><script>var dplayer0 = new DPlayer({"element":document.getElementById("dplayer0"),"loop":true,"video":{"url":"http://45.76.197.98:888/api/public/dl/0hkAga3Z/Singular-Value-Decomposition.mp4"},"danmaku":{"api":"https://api.prprpr.me/dplayer/","id":"bbe4286bf164ef6w1497f18a7b42ff944e6r4b821","addition":[null]}});</script>
+<!-- <div id="dplayer1" class="dplayer" style="margin-bottom: 20px;"></div><script>var dplayer1 = new DPlayer({"element":document.getElementById("dplayer1"),"loop":true,"video":{"url":"http://45.76.197.98:888/api/public/dl/0hkAga3Z/Singular-Value-Decomposition.mp4"},"danmaku":{"api":"https://api.prprpr.me/dplayer/","id":"bbe4286bf164ef6w1497f18a7b42ff944e6r4b821","addition":[null]}});</script>
 <p>--&gt;</p>
 <!-- <iframe src="//player.bilibili.com/player.html?aid=93275447&bvid=BV1pE41177ih&cid=159253510&page=15" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe> -->
 <iframe width="560" height="315" src="https://www.youtube.com/embed/rYz83XPxiZo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -424,7 +424,7 @@ class="math inline">\(\Sigma\)</span>
 的非零元素所在的部分，所以它的形状是个方阵。而<code>full SVD</code>保留了奇异值矩阵的非零部分，对应的
 <span class="math inline">\(U\)</span> 和 <span
 class="math inline">\(V\)</span> 为方阵。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources//slam-common-issues-SVD/svd_forms.png" /></p>
+<p><img data-src="https://images.vincentqin.tech//slam-common-issues-SVD/svd_forms.png" /></p>
 <p>通常情况下，<code>skinny SVD</code>使用较多。</p>
 <p>此外，还有<strong>向量表示</strong>形式，如上图最后一行的表示形式，此处不做赘述。</p>
 <h2 id="计算-ata">计算 <span class="math inline">\(A^TA\)</span></h2>
@@ -482,7 +482,7 @@ V\)</span>都可以通过上述方式来计算。</p>
 {\sigma}_k &gt; 0\)</span>，将<span
 class="math inline">\(\Sigma\)</span>中主对角线为0的部分删去，同样的<span
 class="math inline">\(U,V\)</span>对应的部分删去，SVD分解就变成了下图的形式。
-<img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/svd.png" /></p>
+<img data-src="https://images.vincentqin.tech/slam-common-issues-SVD/svd.png" /></p>
 <h2 id="实战">实战</h2>
 <h3 id="数字例子">数字例子</h3>
 <p>有矩阵A，对其进行SVD分解，已知：</p>
@@ -561,7 +561,7 @@ class="math inline">\(U\)</span>和<span
 class="math inline">\(V\)</span>的正交矩阵的性质。</p>
 <p>所以以上最小二乘的解为：<span class="math inline">\(\hat{x} =
 A^{\dagger} b = V\Sigma^{-1}U^T b\)</span>。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/geo_least_square.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/slam-common-issues-SVD/geo_least_square.jpg" /></p>
 <p>我们看一下最小二乘的<a
 target="_blank" rel="noopener" href="https://twitter.com/docmilanfar/status/1477838376996769792">error</a>,
 定义 <span class="math inline">\(b\)</span> 的估计值为 <span
@@ -607,10 +607,10 @@ U_{\perp}U_{\perp}^Tb\)</span></p>
 </iframe>
 <h3 id="矩阵近似">矩阵近似</h3>
 <p>祭上亲爱的Battle Angel Alita。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/alita_origin.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/slam-common-issues-SVD/alita_origin.jpg" /></p>
 <p>原始图像尺寸$1440
 $，我们可以对该图像做SVD分解，然后仅保留奇异值的前10，50，100重构图像，比较重构图像与原始图像的质量差异。可见仅仅保留其前10个奇异值时，图像质量遭到了极大破坏（此时仅保留原始图像信息的58.864%），随着奇异值数量的增多，图像质量也会逐渐提升，可以看到当奇异值个数为100时，基本上已经看不出与原图的差异（此时仅保留原始图像信息的87.37%）。由此，我们实现了图像压缩。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/slam-common-issues-SVD/alita_svd1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/slam-common-issues-SVD/alita_svd1.jpg" /></p>
 <p>下图是保留的奇异值数量与图像质量的关系图，保留的奇异值越多，图像质量越高，图像压缩效果越不明显；反之，奇异值越少，图像质量越差，图像压缩效果越明显。这只是一种非常简单的图像压缩算法，仅作原理验证使用，在实际中用到的概率不是很大。</p>
 <p><img data-src="alita_svd_quality.svg" /></p>
 <h2 id="代码">代码</h2>

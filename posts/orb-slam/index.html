@@ -30,7 +30,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://www.vincentqin.tech/posts/orb-slam/MH01-traj.png">
 <meta property="article:published_time" content="2018-11-30T15:14:30.000Z">
-<meta property="article:modified_time" content="2022-09-04T18:16:31.553Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.205Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta name="twitter:card" content="summary">
@@ -276,7 +276,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -344,7 +344,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-05 02:16:31" itemprop="dateModified" datetime="2022-09-05T02:16:31+08:00">2022-09-05</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -394,7 +394,7 @@
 SLAM”。</p>
 <span id="more"></span>
 <p>先来张图，下图就是利用相机作为传感器在环境中采集一系列的图像，经过SLAM系统建立的点云图以及相机轨迹。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam/MH01-traj.gif" /></p>
+<p><img data-src="https://images.vincentqin.tech/orb-slam/MH01-traj.gif" /></p>
 <p>SLAM自1986年提出之后，一直以来是机器人领域的热点问题。这里总结一些常用开源SLAM方案。</p>
 <style>
 table th:nth-of-type(1) {
@@ -564,7 +564,7 @@ ORB-SLAM
 <p>整个ORB-SLAM系统包括三个部分组成，分别是跟踪（Tracking）、局部建图（Local
 Mapping）以及回环检测（Loop
 Closing）模块，它们分别被三个线程并行地进行处理。接下来对这个系统进行介绍。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/orb-slam/orb-slam2-mainflow.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/orb-slam/orb-slam2-mainflow.png" /></p>
 <h1 id="理论篇">理论篇</h1>
 <h2 id="跟踪模块">跟踪模块</h2>
 <p>跟踪（Tracking）是在每帧中粗略地定位相机位姿以及决定何时插入新的关键帧。算法设计了运动模型以及跟踪参考帧模型去大致预测出相机的位姿。如相机跟踪失败（由于遮挡、大幅度运动等），就启动重定位模块对相机进行位置查找。如果已经有了初始位姿以及特征匹配，利用关键帧的Covisibility

@@ -29,7 +29,7 @@
 <meta property="og:description" content="论文题目“Pixel-Perfect Structure-from-Motion with Featuremetric Reﬁnement”（通过在特征尺度优化进行高精度 SFM），获得 ICCV 2021 最佳学生论文。 本文的优化框架可在任何基于局部特征点的 SFM 流程中使用，使用 CNN 提取图像特征图(dense features)，根据稀疏的特征匹配得到初始的 tracks，">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-10-17T08:41:53.000Z">
-<meta property="article:modified_time" content="2022-08-29T16:54:54.875Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.205Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SFM">
 <meta property="article:tag" content="Paper">
@@ -275,7 +275,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -343,7 +343,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-08-30 00:54:54" itemprop="dateModified" datetime="2022-08-30T00:54:54+08:00">2022-08-30</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -398,13 +398,13 @@ BA 优化残差由重投影误差变为 Featuremetric 误差。</p>
 </div>
 <span id="more"></span>
 <h2 id="背景">背景</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-title.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-title.jpg" /></p>
 <p>注意到本文的作者是<a href="主页：https://psarlin.com"
 title="Paul‑Edouard Sarlin">Paul‑Edouard
 Sarlin</a>，该作者近两年发表了几项高质量的成果，如<strong>superglue</strong>(CVPR
 2020)/<strong>pixloc</strong>(CVPR 2021)。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-author1.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-author2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-author1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-author2.jpg" /></p>
 <p>本文算法开源：<a
 target="_blank" rel="noopener" href="https://github.com/cvg/pixel-perfect-sfm">https://github.com/cvg/pixel-perfect-sfm</a>
 ， 该算法后续会集成到视觉定位工具包<a
@@ -417,7 +417,7 @@ target="_blank" rel="noopener" href="https://psarlin.com/pixsfm">https://psarlin
 <p>SLIDES: <a
 target="_blank" rel="noopener" href="https://psarlin.com/pixsfm/assets/pixsfm_slides.pdf">https://psarlin.com/pixsfm/assets/pixsfm_slides.pdf</a></p>
 <h2 id="摘要">摘要</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-fig1.jpg" /></p>
 <p>在 3D 重建任务中，跨视角的可复检的特征点检测尤为重要。原有的 SFM
 框架中，特征提取之后其位置并不会发生改变，若这个过程中出现了一定误差，势必造成后续几何结构的误差累计。</p>
 <p>本文针对以上 SFM 框架中的两个步骤进行了优化：1. 特征匹配后使用
@@ -425,7 +425,7 @@ Featuremetric 对特征点位置进行优化；2. 增量重建过程中通过类
 Featuremetric 进行 BA（重投影误差变为 Featuremetric
 误差）。本文算法通过大量实验验证，其在 SFM 任务中表现非常优秀。</p>
 <h2 id="关键技术点">关键技术点</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-fig2.jpg" /></p>
 <p>总览：本文的优化框架可在任何基于局部特征点的 SFM 流程中使用，首先使用
 CNN 提取图像特征图(dense features)，根据稀疏的特征匹配得到初始的
 tracks，调整每一个 track
@@ -478,7 +478,7 @@ class="math inline">\(k\)</span>。但是上式中将特征图的下标都写成
 class="math inline">\(\mathbf{F}_{i}\)</span>，这显然是有问题的。针对该问题，我在GitHub提交了一个<a
 target="_blank" rel="noopener" href="https://github.com/cvg/pixel-perfect-sfm/issues/31">#issue31</a>咨询了作者的看法，作者认同了我的理解。以下是作者的回复截图：</p>
 </blockquote>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-eq4.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-eq4.png" /></p>
 <h3 id="ba-优化">BA 优化</h3>
 <p>上述过程完成了特征点位置的优化，随后进行几何校验以及增量或者全局重建。对于重建过程，本文设计了如下误差函数：</p>
 <p><span class="math display">\[E_{\mathrm{FBA}}=\sum_{j} \sum_{(i, u)
@@ -500,18 +500,18 @@ class="math inline">\(j\)</span> 观测均值特征最近点那个向量。</p>
 <p>实验平台：8 CPU cores (Intel Xeon E5-2630v4) and one NVIDIA RTX 1080
 Ti。</p>
 <h3 id="d-三角化">3D 三角化</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-tab1.jpg" /></p>
 <p>在给定相机内参与位姿的情况下评价本文算法的生成的地图点精度。上述表格中
 Accuracy 表示 3D 点满足不同阈值的比例，Completeness 表示有 3D
 点被成功三角化并满足阈值的比例（类似于召回率）。本文算法相比于 Patch
 Flow，能够提升在严格阈值下的精度与完整度，且均比未优化的精度与完整度高。</p>
 <h3 id="相机位姿估计">相机位姿估计</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-tab2.jpg" /></p>
 <p>上述表格展示了平移量的 AUC 精度曲线，本文算法相比于未优化与 Patch
 Flow 均有很大优势，SuperPoint
 特征相比于其他特征点提取器提升力度明显。</p>
 <h3 id="sfm-性能">SFM 性能</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab3.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-tab3.jpg" /></p>
 <p>本文算法在两个任务中获得显著的性能提升，其中 stereo
 任务评价的是图像之间的相对位姿精度，这对于全局 SFM
 的位姿初值计算尤为重要；multi-view 任务是针对包含 <span
@@ -519,16 +519,16 @@ class="math inline">\(N\)</span>
 张图像的集合进行增量位姿优化，该任务评价的是该集合内部相机的相对位姿。</p>
 <p>下图是算法优化前后特征点位置的分布，可以看到本文方法得到的特征点位置(绿点)在不同视角间是保持一致的，而原始的特征点(蓝点)容易受到提取噪声的干扰，导致了
 SFM 重投影的 2D 点(红点)出现了非一致。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig4.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-fig4.jpg" /></p>
 <h3 id="其他">其他</h3>
 <ol type="1">
 <li>消融实验</li>
 </ol>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-tab4.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-tab4.jpg" /></p>
 <ol start="2" type="1">
 <li>耗时</li>
 </ol>
-<p><img data-src="https://vincentqin.tech/blog-resources/pixel-perfect-sfm/pixel-perfect-sfm-fig3.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/pixel-perfect-sfm/pixel-perfect-sfm-fig3.jpg" /></p>
 <p>上图展示了本文算法进行 SFM 的耗时统计，相比
 Patch-Flow，本文算法耗时大幅度降低；在 Aachen Day-Night v1.1
 数据集测试，7K 图像规模耗时小于 2 小时。</p>

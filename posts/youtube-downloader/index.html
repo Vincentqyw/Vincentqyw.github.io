@@ -29,7 +29,7 @@
 <meta property="og:description" content="&quot;Parsing failure: YouTube downloads are not available&quot;  用了两年的Free Download Manager前阵子突然不支持下载Youtube视频，本以为只有我存在这个问题，逛了下论坛的这个问题，发现大家都遇到这个问题。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-10-31T13:48:18.000Z">
-<meta property="article:modified_time" content="2022-05-17T14:32:52.002Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.204Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="Youtube">
 <meta name="twitter:card" content="summary">
@@ -274,7 +274,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -342,7 +342,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-05-17 22:32:52" itemprop="dateModified" datetime="2022-05-17T22:32:52+08:00">2022-05-17</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -392,14 +392,14 @@
 <p>用了两年的<code>Free Download Manager</code>前阵子突然不支持下载Youtube视频，本以为只有我存在这个问题，逛了下论坛的这个<a
 target="_blank" rel="noopener" href="https://www.freedownloadmanager.org/board/viewtopic.php?f=1&amp;t=18610&amp;hilit=youtube">问题</a>，发现大家都遇到这个问题。</p>
 <span id="more"></span>
-<p><img data-src="https://vincentqin.tech/blog-resources/youtube-downloader/yt-dl-fig2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/youtube-downloader/yt-dl-fig2.jpg" /></p>
 <p>开发者给出的解释如下：</p>
 <blockquote>
 <p>We've got a claim from Google regarding this functional (download
 from YouTube). We had to turn if off temporarily until we resolve this
 issue with Google.</p>
 </blockquote>
-<p><img data-src="https://vincentqin.tech/blog-resources/youtube-downloader/yt-dl-fig3.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/youtube-downloader/yt-dl-fig3.jpg" /></p>
 <p>好吧，那就静候佳音，另寻他法吧。</p>
 <h2 id="yt-dlp">YT-DLP</h2>
 <p>GitHub 上一个比较有名的 repo <a
@@ -407,7 +407,7 @@ target="_blank" rel="noopener" href="https://yt-dl.org">youtube-dl</a>
 可以一试，不过最近又寻得一个基于<a
 target="_blank" rel="noopener" href="https://yt-dl.org">youtube-dl</a> 开发的 <a
 target="_blank" rel="noopener" href="https://github.com/yt-dlp/yt-dlp"><code>YT-DLP</code></a></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/youtube-downloader/yt-dl-banner.svg" /></p>
+<p><img data-src="https://images.vincentqin.tech/youtube-downloader/yt-dl-banner.svg" /></p>
 <h3 id="下载安装">下载安装</h3>
 <table>
 <colgroup>
@@ -443,9 +443,9 @@ sites</a></p>
 <p>如下载这个视频<code>https://youtu.be/95Eysm0IeB0</code>，可使用如下命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yt-dlp --proxy 127.0.0.1:1080 -f best https://youtu.be/95Eysm0IeB0</span><br></pre></td></tr></table></figure>
 <p>其中<code>--proxy</code>表示添加代理，<code>-f</code>表示下载格式，<code>best</code>表示视频+音频效果最优。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/youtube-downloader/yt-dl-fig8.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/youtube-downloader/yt-dl-fig8.jpg" /></p>
 <p>另外可以通过<code>--list-formats</code>查看支持的下载格式，如上述视频可下载的格式有：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/youtube-downloader/yt-dl-fig9.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/youtube-downloader/yt-dl-fig9.jpg" /></p>
 <p>可以看到，<code>best</code>对应于上图中的<code>ID = 22</code>，若想下载其它格式的视频可以用<code>-f ID</code>。</p>
 <p>此外，使用Python脚本代替命令行进行下载也是比较简单，脚本如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> yt_dlp</span><br><span class="line"></span><br><span class="line">ydl_opts = &#123;</span><br><span class="line">    <span class="string">&#x27;proxy&#x27;</span>: <span class="string">&#x27;127.0.0.1:1080&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;format&#x27;</span>: <span class="string">&#x27;best&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;restrict-filenames&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> yt_dlp.YoutubeDL(ydl_opts) <span class="keyword">as</span> ydl:</span><br><span class="line">    ydl.download([<span class="string">&#x27;https://youtu.be/95Eysm0IeB0&#x27;</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>

@@ -29,7 +29,7 @@
 <meta property="og:description" content="笔者跟踪这项比赛较长时间，去年和前年已经写过两篇 2021, 2020, 主页, 比赛地址">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-07-09T16:36:27.000Z">
-<meta property="article:modified_time" content="2023-07-19T17:06:42.685Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="Image Matching">
 <meta name="twitter:card" content="summary">
@@ -274,7 +274,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -342,7 +342,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-07-20 01:06:42" itemprop="dateModified" datetime="2023-07-20T01:06:42+08:00">2023-07-20</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
 
   
@@ -386,7 +386,7 @@ target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/image-m
 <p>其实，本来去年的比赛就要放在<code>Kaggle</code>上进行的，但是由于疫情以及数据准备较为耗时，于是这个决定就被推迟到了今年。</p>
 <p>今年比赛共有3846人参与，共计642个队伍，其中128个用户是他们首次参与比赛（Top20中占有18个新用户），这些参与者来自60个国家，另外共有14170次提交记录。</p>
 <p>通过下图可以看出：超过25倍的参与者以及150倍的提交记录：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/imc2022/att_00001.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/imc2022/att_00001.png" /></p>
 <p>Fun fact: 冠军方案在deadline前48小时才完成。</p>
 <h2 id="不同之处">不同之处</h2>
 <p>相比往年的比赛，今年的不同之处具体表现在如下几个方面：</p>
@@ -402,13 +402,13 @@ target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/image-m
 <li>时间限制。总计算时长被限制在9小时（计算平台：Kaggle GPU virtual
 instance）以内，不能超时！这让参赛者要思考，什么算法能用什么算法不能用。一个简单的例子：使用语义分割mask对提升指标可能是有帮助的，但是需要的算力太大，那就不能使用！</li>
 </ol>
-<p><img data-src="https://vincentqin.tech/blog-resources/imc2022/att_00002.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/imc2022/att_00002.png" /></p>
 <h2 id="top-solutions">Top solutions</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources//imc2022/imc2022-rank.png" /></p>
+<p><img data-src="https://images.vincentqin.tech//imc2022/imc2022-rank.png" /></p>
 <p>与以往不同，今年几乎所有排名靠前的队伍都使用了相似的流程，虽然实现细节不同，但是核心思想是相似的...</p>
 <p>最终排名第二的方案（hkchkc）采用了不同的方案，该方案并没有使用任何前/后处理，并且在比赛过程中该算法曾经“霸占”Top1很长一段时间。</p>
 <p>如下所示为一个通用的特征匹配流程（被诸多参赛者使用）：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/imc2022/imc-workflow.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/imc2022/imc-workflow.jpg" /></p>
 <ol type="1">
 <li>第一步使用 off-the-shelf 模型获得初始匹配。这些模型包括
 <code>LoFTR</code><sup id="fnref:5"><a href="#fn:5" rel="footnote"><span
@@ -460,7 +460,7 @@ aria-label="DKM, Deep Kernelized Dense Geometric Matching, arxiv 2022, code: htt
 ">8</span></a></sup>)
 组合达到该名次，不可思议！取得该名次另外一个关键原因在于，该方案使用了多尺度图像裁剪后进行匹配的
 "2-stage" 策略。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/imc2022/solution-framework.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/imc2022/solution-framework.png" /></p>
 <p>具体的步骤如下： 1. 图像初始匹配:
 <code>LoFTR</code><sup id="fnref:5"><a href="#fn:5" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
@@ -530,7 +530,7 @@ aria-label="DISK: Learning local features with policy gradient, NeurIPS 2020, co
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="ALIKE: Accurate and Lightweight Keypoint Detection and Descriptor Extraction, Transactions on Multimedia 2022, code: https://github.com/Shiaoming/ALIKE, pdf: https://arxiv.org/abs/2112.02906
 ">12</span></a></sup> 等；</li>
-<li>语义分割掩码（天空/人）也不奏效； <img data-src="https://vincentqin.tech/blog-resources//imc2022/att_00006.png"
+<li>语义分割掩码（天空/人）也不奏效； <img data-src="https://images.vincentqin.tech//imc2022/att_00006.png"
 alt="Refinement by ECO-TR" /></li>
 </ol>
 <h2 id="总结">总结</h2>

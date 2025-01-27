@@ -28,12 +28,21 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="本文是J. L. Sconberger等人于2016年发表在CVPR的文章COLMAP。本文针对增量式SFM中三角化&#x2F;BA等步骤进行了改进，能够比较明显地提升SFM的精确率&#x2F;鲁棒性以及重建完整性。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/fig-1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/fig-2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/fig-3.png">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/tab-2.png">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/fig-8.png">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/fig-7.png">
+<meta property="og:image" content="https://images.vincentqin.tech/colmap/tab-1.png">
+<meta property="og:image" content="https://images.vincentqin.tech/wechat-qcode.gif">
 <meta property="article:published_time" content="2020-10-29T14:28:26.000Z">
-<meta property="article:modified_time" content="2022-09-04T18:41:54.296Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SFM">
 <meta property="article:tag" content="Paper">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.vincentqin.tech/colmap/fig-1.png">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/colmap/">
@@ -275,7 +284,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -343,7 +352,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-05 02:41:54" itemprop="dateModified" datetime="2022-09-05T02:41:54+08:00">2022-09-05</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
 
   
@@ -382,7 +391,7 @@
 Sconberger等人于2016年发表在CVPR的文章COLMAP。本文针对增量式SFM中三角化/BA等步骤进行了改进，能够比较明显地提升SFM的精确率/鲁棒性以及重建完整性。</p>
 </div>
 <span id="more"></span>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/fig-1.png" /></p>
 <p>首先给出论文<a
 target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2016/papers/Schonberger_Structure-From-Motion_Revisited_CVPR_2016_paper.pdf">PDF</a>,<a
 target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2016/html/Schonberger_Structure-From-Motion_Revisited_CVPR_2016_paper.html">Paper
@@ -391,7 +400,7 @@ target="_blank" rel="noopener" href="https://colmap.github.io/">使用教程</a>
 <p><a target="_blank" rel="noopener" href="https://github.com/colmap/colmap"><img data-src="https://github-readme-stats.vercel.app/api/pin/?username=colmap&amp;repo=colmap&amp;show_owner=false&amp;theme=default"
 alt="ReadMe Card" /></a></p>
 <h2 id="sfm-基本套路回顾">SFM 基本套路回顾</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/fig-2.png" /></p>
 <p>SFM通常首先进行特征提取/匹配以及后续的几何校验滤出外点，经过上述步骤可以得到所谓的场景图（Scene
 Graph），该场景图是后续的增量式的基础（提供数据关联等信息）。增量式重建中需要非常仔细地挑选两帧进行重建，在图像进行注册（即定位当前帧在地图中的位姿）之前，需要进行三角化场景点/滤出外点以及BA优化当前的模型。</p>
 <h3 id="检索匹配">检索匹配</h3>
@@ -465,7 +474,7 @@ panoramic, planar)。模型类型用于仅从非全景和已标定图像才参�
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="V. Lepetit, F. Moreno-Noguer, and P. Fua. EPnP: An accurate O(n) solution to the PnP problem. IJCV, 2009. 2, 4.
 ">1</span></a></sup>已经通过实验验证<strong>PNP位姿解算多精度不仅与观测点数量相关而且与观测点在图像上的分布有关</strong>：若点分布越均匀，位姿解算精度越高。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/fig-3.png" /></p>
 <p>作者认为：可见点的数量越多且分布越均匀得分<span
 class="math inline">\(S\)</span>越高，得分越高点的图像越会被先注册。于是作者设计了一种多尺度统计点分布点算法，具体见上图。将图像划分成<span
 class="math inline">\(L\)</span>层，每层划分为<span
@@ -558,20 +567,20 @@ E}(3)\)</span>表示该组的外参变换，<span
 class="math inline">\(\mathbf{P}_{c}\)</span>表示组的固定位姿。全局的损失函数是所有组/非组的BA损失之和。经过上面一顿操作之后，BA优化的效率得到了大幅度提升。</p>
 <h2 id="实验">实验</h2>
 <h3 id="模块测试">模块测试</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/tab-2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/tab-2.png" /></p>
 <p>可以看到三角化采样的数量有了大幅度减少。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-8.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/fig-8.png" /></p>
 <p>增加GroupBA之后，GBA的次数大幅度减少。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/fig-7.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/fig-7.png" /></p>
 <p>三角化以及GBA耗时下降。</p>
 <h3 id="系统测试">系统测试</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/colmap/tab-1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/colmap/tab-1.png" /></p>
 <h2 id="总结">总结</h2>
 <p>本文提出了一套集精度/鲁棒性以及完整性为一体的通用SfM框架，实验表明该方法能够获得非常好重建效果。该框架进行了模块化实现，且开源，到目前为止很多视觉三维重建的任务(如视觉定位<sup id="fnref:4"><a href="#fn:4" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="Long-Term Visual Localization, https://www.visuallocalization.net/">4</span></a></sup>)基于此项目完成(框架不变，提升模块性能)，可谓“功德无量”。</p>
 <h2 id="参考">参考</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+<p><img data-src="https://images.vincentqin.tech/wechat-qcode.gif" /></p>
 <div id="footnotes">
 <hr>
 <div id="footnotelist">

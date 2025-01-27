@@ -28,13 +28,15 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="最近有几个同学问我光场相机是否能够用在SLAM中，我的第一感觉是不可能。 本人研究生期间一直进行光场相机深度恢复的工作，深知其优势与不足。SLAM是我参加工作以来从事的研究方向，经过两年多的摸爬滚打算是入门了。目前视觉SLAM理论上虽已比较成熟，但在实际使用中仍会遇到诸多问题，如容易受到外界因素如光照&#x2F;动态物体&#x2F;稀疏纹理&#x2F;室外大场景&#x2F;快速运动等因素的影响，这些问题仅使用传统相机似乎无法有效解决。">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.vincentqin.tech/wechat-qcode.gif">
 <meta property="article:published_time" content="2021-01-31T06:49:51.000Z">
-<meta property="article:modified_time" content="2024-05-11T15:30:54.444Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.206Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="Light Field">
 <meta property="article:tag" content="光场">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.vincentqin.tech/wechat-qcode.gif">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/light-field-slam/">
@@ -276,7 +278,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -344,7 +346,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-05-11 23:30:54" itemprop="dateModified" datetime="2024-05-11T23:30:54+08:00">2024-05-11</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -395,7 +397,7 @@
 <p>但本人还是本着求真务实的态度，在Google搜索框中输入“light field
 slam”，于是出现了如下结果。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/google-search-light-field-slam.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/google-search-light-field-slam.png"
 alt="检索结果" />
 <figcaption aria-hidden="true">检索结果</figcaption>
 </figure>
@@ -416,7 +418,7 @@ target="_blank" rel="noopener" href="https://www.researchgate.net/publication/33
 </ol>
 <p>接下来的内容将简要地介绍这几篇文章是如何做到光场与SLAM结合的。</p>
 <h2 id="光场辅助slam恢复尺度">光场辅助SLAM恢复尺度</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-slam/zeller-eccv2018-title.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-slam/zeller-eccv2018-title.png" /></p>
 <p>第一篇文章，作者来自慕尼黑工业大学(TUM)以及卡尔斯鲁厄应用技术大学(Karlsruhe
 University of Applied
 Sciences)，发表在2018年的ECCV。作者提到，本文是当时第一个使用光场相机子图像进行追踪建图的算法。</p>
@@ -433,7 +435,7 @@ target="_blank" rel="noopener" href="https://www.iwi.hs-karlsruhe.de/ResearchGro
 <p>这使得利用单个光场相机就有尺度恢复的可能性。</p>
 <h3 id="创新点">创新点</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/zeller-eccv2018-fig3.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/zeller-eccv2018-fig3.png"
 alt="算法框架" />
 <figcaption aria-hidden="true">算法框架</figcaption>
 </figure>
@@ -444,24 +446,24 @@ alt="算法框架" />
 </ol>
 <h3 id="关键结果">关键结果</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/zeller-arxiv-2018-fig1.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/zeller-arxiv-2018-fig1.png"
 alt="数据采集设备搭载一颗Raytrix相机以及两个工业相机" />
 <figcaption
 aria-hidden="true">数据采集设备搭载一颗Raytrix相机以及两个工业相机</figcaption>
 </figure>
 <p>算法在其自采的光场数据集进行测试，结果如下：</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/zeller-eccv2018-fig7.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/zeller-eccv2018-fig7.png"
 alt="累积尺度误差比较" />
 <figcaption aria-hidden="true">累积尺度误差比较</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/zeller-eccv2018-fig8.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/zeller-eccv2018-fig8.png"
 alt="算法生成的点云图" />
 <figcaption aria-hidden="true">算法生成的点云图</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/zeller-eccv2018-fig9.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/zeller-eccv2018-fig9.png"
 alt="点云图比较" />
 <figcaption aria-hidden="true">点云图比较</figcaption>
 </figure>
@@ -480,7 +482,7 @@ odometry, JSTSP 2017</li>
 <li>Direct sparse odometry, TPAMI 2018</li>
 </ol>
 <h2 id="光场提高位姿解算能力">光场提高位姿解算能力</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-slam/lf-slam-2019-title.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-slam/lf-slam-2019-title.png" /></p>
 <p>第二篇文章，作者来西工大计算机学院的王庆教授组，发表于2019年的SPIE。本文提出了LF-SLAM
 (light field
 SLAM)，与传统相机进行SLAM最大区别在于该算法将特征点重投影误差转换成了光场中的
@@ -489,7 +491,7 @@ ray-ray损失函数，提高了位姿解算的精度。</p>
 <p>作者提到，传统相机进行SLAM，特征点匹配是稀疏的，且并不鲁棒。而不同的<strong>光场相机之间捕捉的光线信息能够为位姿解算提供更多的约束，预期能够提高位姿解算精度</strong>。</p>
 <h3 id="创新点-1">创新点</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/lf-slam-2019-algorithm1.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/lf-slam-2019-algorithm1.png"
 alt="算法伪代码" />
 <figcaption aria-hidden="true">算法伪代码</figcaption>
 </figure>
@@ -502,12 +504,12 @@ model)下的位姿解算的约束形式，主要改变了SLAM中的初始化过�
 <h3 id="关键结果-1">关键结果</h3>
 <p>以下结果是通过仿真数据集进行的验证。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/lf-slam-2019-fig2.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/lf-slam-2019-fig2.png"
 alt="初始特征图" />
 <figcaption aria-hidden="true">初始特征图</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/lf-slam-2019-fig5.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/lf-slam-2019-fig5.png"
 alt="预测轨迹与真值轨迹对比" />
 <figcaption aria-hidden="true">预测轨迹与真值轨迹对比</figcaption>
 </figure>
@@ -519,7 +521,7 @@ alt="预测轨迹与真值轨迹对比" />
 <li>Ray-space projection model for light ﬁeld camera, CVPR 2019</li>
 </ol>
 <h2 id="光场提高动态场景定位鲁棒性">光场提高动态场景定位鲁棒性</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-arxiv2020-title.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-arxiv2020-title.png" /></p>
 <p>第三篇文章，作者来自西北大学，主要利用光场图像合成视角图像(SAI,
 Synthetic Aperture
 Imaging)去除场景中的动态物体，本文提出的算法能够提高SLAM算法在动态场景中的鲁棒性以及定位精度。</p>
@@ -527,12 +529,12 @@ Imaging)去除场景中的动态物体，本文提出的算法能够提高SLAM�
 <p>SLAM假设世界是静止的，然而实际上并非如此，现实世界中存在大量的动态物体，如行人/车等。动态物体会影响定位过程中的特征关联，若不进行处理，会导致定位异常。解决动态物体传统的方式包括光流/RANSAC等方式，但如果场景中的动态物体占比较大时，这些方法稍显力不能及。现有的处理方式只能使前端不去追踪被动态物体遮挡的区域，而本文想做的是用<strong>光场技术合成被遮挡的静态物体，从而使已经被遮挡的静态物体也能参与追踪</strong>。</p>
 <h3 id="创新点-2">创新点</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-arxiv2020-fig1.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-arxiv2020-fig1.png"
 alt="算法框架" />
 <figcaption aria-hidden="true">算法框架</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-arxiv2020-fig2.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-arxiv2020-fig2.png"
 alt="虚拟视角合成" />
 <figcaption aria-hidden="true">虚拟视角合成</figcaption>
 </figure>
@@ -552,18 +554,18 @@ class="math inline">\(x^k\)</span>。这样的话只要知道参考帧图像上�
 <p>对于数据集的采集，作者采用了自己搭建的5个线性相机阵列(手持式的光场相机虚拟视角间的视差极小，无法满足需求)采集图像，相机之间的标定采用Kalibr工具箱。</p>
 <p>如下图所示，第一行是参考帧的图像，第二行表示合成的虚拟视角图像，可见动态物体已经被“去除”。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-arxiv2020-fig5.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-arxiv2020-fig5.png"
 alt="动态物体去除前后对比" />
 <figcaption aria-hidden="true">动态物体去除前后对比</figcaption>
 </figure>
 <p>与ORB-SLAM2单双目比较发现，本算法的优势在于能够在多动态物体的场景中获得较好的定位效果。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-arxiv2020-tab1.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-arxiv2020-tab1.png"
 alt="动态场景下算法精度对比" />
 <figcaption aria-hidden="true">动态场景下算法精度对比</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-arxiv2020-fig6.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-arxiv2020-fig6.png"
 alt="动态场景下算法轨迹对比" />
 <figcaption aria-hidden="true">动态场景下算法轨迹对比</figcaption>
 </figure>
@@ -574,28 +576,28 @@ alt="动态场景下算法轨迹对比" />
 Autonomous
 Robotics</strong>》中也采用了类似的线形相机阵列光场采集设备<strong>实现遮挡物去除/图像低照度增强/去除高光反射以及去雾</strong>的功能。这些应用预期可辅助视觉SLAM的定位与建图。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-iros2018-fig1.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-iros2018-fig1.png"
 alt="数据采集设备:5个相机+2个雷达" />
 <figcaption aria-hidden="true">数据采集设备:5个相机+2个雷达</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-iros2018-fig7.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-iros2018-fig7.png"
 alt="仿真实验表明5个线性排列的相机去遮挡效果尚可" />
 <figcaption
 aria-hidden="true">仿真实验表明5个线性排列的相机去遮挡效果尚可</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-iros2018-fig8.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-iros2018-fig8.png"
 alt="遮挡物去除效果" />
 <figcaption aria-hidden="true">遮挡物去除效果</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-iros2018-fig9.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-iros2018-fig9.png"
 alt="弱光图像增强前后比较" />
 <figcaption aria-hidden="true">弱光图像增强前后比较</figcaption>
 </figure>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/light-field-slam/light-field-dyna-iros2018-fig10.png"
+<img data-src="https://images.vincentqin.tech/light-field-slam/light-field-dyna-iros2018-fig10.png"
 alt="去除高光前后对比" />
 <figcaption aria-hidden="true">去除高光前后对比</figcaption>
 </figure>
@@ -609,7 +611,7 @@ focus and robust measures, CVPR 2006</li>
 <p>以上内容列举了几个关于光场技术与SLAM结合的手段，从现有手段来看，光场能够在一定程度上<strong>辅助单目SLAM恢复尺度/提供位姿解算更多约束/去除场景动态物体，去高光/低照度图像增强以及去雾</strong>等，SLAM在以上措施的加持下能够恢复尺度，亦或提高定位鲁棒性以及精度。但从解决问题的角度来看，动态物体问题可以用广角或鱼眼相机进行缓解，单目无尺度问题可以用单目+惯性导航或者双目来解决。多传感器融合进行是目前SLAM的趋势，多相机阵列的光场设备在解决以上问题上并非最好的选择，但不可否认的是以上手段都是不错的尝试。</p>
 <p>回到文章一开始提到问题：光场是否能用于SLAM？我的结论是：<strong>可做研究但并不实用</strong>。​这个结论具有时效性，不能排除一切来自未来的可能性。光场的理论可为多相机建模提供思路，利用光场阐述多相机间的成像之间的联系，辅助算法设计。但传输及处理多相机数据本身将付出极大的算力/时间成本，违背了实时定位建图的初衷，不过对实时性要求不高的三维重建任务，光场似乎有用武之地。总之，光场只是一种建模手段，而非为了用而用，否则得不偿失。</p>
 <p><em>注：以上看法仅代表我个人观点，仅作参考。</em></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/wechat-qcode.gif" /></p>
+<p><img data-src="https://images.vincentqin.tech/wechat-qcode.gif" /></p>
 
     </div>
 

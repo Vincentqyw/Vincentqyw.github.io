@@ -28,17 +28,17 @@
 <meta property="og:site_name" content="RealCat">
 <meta property="og:description" content="关注港大MARS实验室的小伙伴应该都听过 R2LIVE (Robust, Realtime)，它以紧耦合的方式融合相机，雷达，IMU数据，能够较好地应对设备故障以及环境因素导致的视觉或激光退化现象。这几天MARS实验室又有大动作，他们在Github新建了一个叫 R3LIVE (Robust, Realtime, RGB-colored)的项目，这个项目在之前的版本的基础上改进了VIO算法">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/r3live/r3live-fig1.jpg">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/r3live/r3live-fig2.jpg">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/r3live/r2live-fig2.jpg">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/r3live/r3live-fig5.jpg">
-<meta property="og:image" content="https://vincentqin.tech/blog-resources/r3live/r3live-fig9.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/r3live/r3live-fig1.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/r3live/r3live-fig2.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/r3live/r2live-fig2.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/r3live/r3live-fig5.jpg">
+<meta property="og:image" content="https://images.vincentqin.tech/r3live/r3live-fig9.jpg">
 <meta property="article:published_time" content="2021-10-17T09:59:36.000Z">
-<meta property="article:modified_time" content="2022-05-17T14:32:52.009Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.205Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://vincentqin.tech/blog-resources/r3live/r3live-fig1.jpg">
+<meta name="twitter:image" content="https://images.vincentqin.tech/r3live/r3live-fig1.jpg">
 
 
 <link rel="canonical" href="https://www.vincentqin.tech/posts/r3live/">
@@ -280,7 +280,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -348,7 +348,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-05-17 22:32:52" itemprop="dateModified" datetime="2022-05-17T22:32:52+08:00">2022-05-17</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -405,7 +405,7 @@ target="_blank" rel="noopener" href="https:github.com/hku-mars/r3live">github.co
 论文链接: <a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/2109.07982">https://arxiv.org/abs/2109.07982</a></p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig1.jpg"
+<img data-src="https://images.vincentqin.tech/r3live/r3live-fig1.jpg"
 alt="Fig1. (a): R3LIVE能够实时重建一个密集的、三维RGB彩色的环境点云。白色的路径是我们收集数据的行驶轨迹。(b): 用我们提供的离线工具重建的mesh图。(c): 用顶点颜色进行纹理处理后的mesh，这由VIO子系统进行渲染完成" />
 <figcaption aria-hidden="true">Fig1. (a):
 R3LIVE能够实时重建一个密集的、三维RGB彩色的环境点云。白色的路径是我们收集数据的行驶轨迹。(b):
@@ -420,14 +420,14 @@ R3LIVE能够实时重建一个密集的、三维RGB彩色的环境点云。白�
 R3LIVE。它包含两个子系统，即激光雷达-惯性测距（LIO）和视觉-惯性测距（VIO）。LIO子系统（FAST-LIO）利用LiDAR和惯性传感器的测量结果，建立全局地图的几何结构（即三维点的位置）。VIO子系统利用视觉-惯性传感器的数据，渲染地图的纹理（即三维点的颜色）。更为具体地，VIO子系统为了避免特征提取与匹配过程，通过类似直接法最小化光度误差的方式实现frame-to-map的数据关联（此为本文的改进点）。R3LIVE
 是在 R2LIVE 的基础上开发的，该系统有更高的鲁棒性和准确性。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig2.jpg"
+<img data-src="https://images.vincentqin.tech/r3live/r3live-fig2.jpg"
 alt="Fig1. R3LIVE框架图" />
 <figcaption aria-hidden="true">Fig1. R3LIVE框架图</figcaption>
 </figure>
 <h2 id="关键步骤原理">关键步骤原理</h2>
 <p>为方便对比，将R2LIVE框架图放在下方。</p>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/r3live/r2live-fig2.jpg"
+<img data-src="https://images.vincentqin.tech/r3live/r2live-fig2.jpg"
 alt="Fig2. R2LIVE框架图" />
 <figcaption aria-hidden="true">Fig2. R2LIVE框架图</figcaption>
 </figure>
@@ -435,14 +435,14 @@ alt="Fig2. R2LIVE框架图" />
 map），另外VIO分为帧间追踪（frame-to-frame）与帧与地图之间追踪（frame-to-map）。</p>
 <p>LIO部分基本复用，此处省去，接下来对VIO以及地图颜色渲染过程进行简单讲解。</p>
 <h3 id="帧间追踪">帧间追踪</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig3.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig3.jpg" /></p>
 <p>对于帧间追踪，假设上一帧追踪到<span
 class="math inline">\(m\)</span>个地图点<span
 class="math inline">\(\mathcal{P}=\left\{\mathbf{P}_{1}, \ldots,
 \mathbf{P}_{m}\right\}\)</span>，它们在上一帧图像平面上的投影点也是知道的，通过LK光流可以得到这些投影点在当前帧上的估计位置。随后构建重投影误差，通过ESIKF的方式更新状态<span
 class="math inline">\({\mathbf{x}}_{k}\)</span>。</p>
 <h3 id="帧追踪地图">帧追踪地图</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig4.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig4.jpg" /></p>
 <p>对于帧与地图之间的追踪，利用帧间追踪之后的状态<span
 class="math inline">\(\check{\mathbf{x}}_{k}\)</span>以及追踪到的第<span
 class="math inline">\(s\)</span>个地图点<span
@@ -456,43 +456,43 @@ class="math inline">\(\mathbf{c}_{s}\)</span>表示全局地图点中保存的RG
 class="math inline">\(\gamma_{s}\)</span>表示当前帧上的观测颜色，同样地采用ESIKF的方式最小化上述光度误差以更新状态。</p>
 <h3 id="地图点颜色更新">地图点颜色更新</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig5.jpg"
+<img data-src="https://images.vincentqin.tech/r3live/r3live-fig5.jpg"
 alt="地图点颜色更新" />
 <figcaption aria-hidden="true">地图点颜色更新</figcaption>
 </figure>
 <p>还有一步就是给全局地图渲染颜色（即地图点颜色更新）：同样以某个地图点为例，若它被当前帧观测到，通过优化后的位姿以及内参投影到当前帧的位置可能非整数点（这会造成该点没有对应的观测颜色），此时通过邻域插值得到的该观测颜色，之后通过贝叶斯更新过程将这两个颜色进行“融合”。（最后一步是更新VIO追踪的地图点，此时会删除一些光度误差较大的点，并将地图点投影到当前帧新增追踪到的点）</p>
 <h2 id="实验结果">实验结果</h2>
 <h3 id="硬件">硬件</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig6.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig6.jpg" /></p>
 <h3 id="实验1弱纹理鲁棒性测试">实验1：弱纹理鲁棒性测试</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig7.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig8.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig7.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig8.jpg" /></p>
 <h3 id="实验2室内外大场景重建">实验2：室内外大场景重建</h3>
 <figure>
-<img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig9.jpg"
+<img data-src="https://images.vincentqin.tech/r3live/r3live-fig9.jpg"
 alt="将R3LIVE得到的地图与谷歌地球卫星图像合并，它们对齐的很好" />
 <figcaption
 aria-hidden="true">将R3LIVE得到的地图与谷歌地球卫星图像合并，它们对齐的很好</figcaption>
 </figure>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig10.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig11.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig12.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-tab2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig10.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig11.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig12.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-tab2.jpg" /></p>
 <h3 id="实验3重建精度定量分析">实验3：重建精度定量分析</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-tab3.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-tab3.jpg" /></p>
 <h3 id="实验3耗时分析">实验3：耗时分析</h3>
 <p>PC配置：Intel i7-9700K CPU + 32GB RAM;</p>
 <p>UAV配置：Intel i7-8550u CPU + 8GB RAM；</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-tab4.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-tab4.jpg" /></p>
 <h2 id="应用">应用</h2>
 <h3 id="mesh重建与贴图">Mesh重建与贴图</h3>
 <p>作者还开发了一套用于mesh化和贴图的工具，可以导出一些通用格式的文件，如“pcd”,
 “ply”, “obj”等。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig13.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig13.jpg" /></p>
 <h3 id="d游戏应用">3D游戏应用</h3>
 <p>如下两图，作者使用AirSim模拟器以及R3LIVE重建的mesh图搭建了两款游戏。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig14.jpg" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/r3live/r3live-fig15.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig14.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/r3live/r3live-fig15.jpg" /></p>
 <p>这里是作者公布的视频：</p>
 <iframe src="//player.bilibili.com/player.html?aid=420429802&amp;bvid=BV1e3411q7Di&amp;cid=405664511&amp;page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">
 </iframe>

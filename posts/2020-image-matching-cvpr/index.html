@@ -29,7 +29,7 @@
 <meta property="og:description" content="从一系列的图像中恢复物体的3D结构是计算机视觉研究中一个热门课题，这使得我们可以相隔万里从google map中看到复活节岛的风景。这得益于图像来自于可控的条件，使得最终的重建效果一致性且质量都很高，但是这却限制了采集设备以及视角。畅想一下，假如我们不使用专业设备，而是利用sfm技术根据互联网上大量的图片重建出这个复杂世界。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-05-17T04:23:09.000Z">
-<meta property="article:modified_time" content="2022-09-04T13:14:20.730Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.220Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="SLAM">
 <meta property="article:tag" content="SIFT">
@@ -278,7 +278,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -346,7 +346,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-04 21:14:20" itemprop="dateModified" datetime="2022-09-04T21:14:20+08:00">2022-09-04</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
 
   
@@ -386,8 +386,8 @@ map中看到复活节岛的风景。这得益于图像来自于可控的条件�
 </div>
 <span id="more"></span>
 <!-- ![A 3D reconstruction generated from over 3000 images, including those from the previous figure](https://1.bp.blogspot.com/-loSqCB3NnM0/XoTiOGP9SYI/AAAAAAAAFlE/rs8iCTq63FYapA7HbljF8iWa7fyHvh3UgCLcBGAsYHQ/s400/image3.gif) -->
-<!-- ![](https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/image_sfm.gif) -->
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/image_sfm.gif" /></p>
+<!-- ![](https://images.vincentqin.tech/2020-image-matching-cvpr/image_sfm.gif) -->
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/image_sfm.gif" /></p>
 <p>为了加快这个领域的研究，更好地利用图像数据有效信息，谷歌联合 <a
 target="_blank" rel="noopener" href="https://www.uvic.ca/">UVIC</a>, <a
 target="_blank" rel="noopener" href="https://www.cvut.cz/en">CTU</a>以及EPFL发表了这篇文章 “<a
@@ -445,7 +445,7 @@ aria-label="D. Detone, T. Malisiewicz, and A. Rabinovich. Toward Geometric Deep 
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="D. Detone, T. Malisiewicz, and A. Rabinovich. Superpoint: Self-Supervised Interest Point Detection and Description. CVPR Workshop on Deep Learning for Visual SLAM, 2018. 1, 2, 3, 8">31</span></a></sup>等在内的诸多研究领域都会用到特征匹配。这个问题已经研究了几十年，但仍未被很好地解决。特征匹配面临的问题很多，主要包括以下挑战：视角，尺度，旋转，光照，遮挡以及相机渲染等。</p>
 <p>近些年来，研究者开始将视线转移到端到端的学习方法（图像-&gt;位姿），但是这些方法甚至没有达到传统的方法（图像-&gt;匹配-&gt;BA优化）的性能。我们可以看到，传统的方法将3D重建问题拆分成为2个子问题：特征匹配与位姿解算。解决每个子问题的新方法，诸如特征匹配/位姿解算，都使用了“临时指标”，但是单独地评价单个子问题的性能不足以说明整体性能。例如，一些研究仅在某个数据集上展现了相较于手工特征SIFT的优势，但是这些算法是否能够在真实应用中仍然展现出优势呢？我们通过后续实验说明传统算法经过调整之后也可匹敌现有的标称“sota”的算法（着实打脸）。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig1.png" /></p>
 <p>是时候换一种方式进行评价了，本文不去过多关注在临时指标上的表现，而关注在下游任务上的表现。本文贡献：</p>
 <ol type="1">
 <li>30k图像+深度图+真实位姿（posed image）</li>
@@ -584,7 +584,7 @@ aria-label="Changchang Wu. Towards Linear-Time Incremental Structure from Motion
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR, 2016. 1, 2, 3, 4, 6">79</span></a></sup>（作为真值）。</p>
 <h3 id="数据集和标准">数据集和标准</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig2.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig2.jpg" /></p>
 <p>以前的特征匹配数据集如下：</p>
 <ul>
 <li>Oxford dataset
@@ -644,10 +644,10 @@ aria-label="B. Thomee, D.A. Shamma, G. Friedland, B. Elizalde, K. Ni, D. Poland,
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. In CVPR, 2016. 1, 2, 3, 4, 6">79</span></a></sup>对其进行求解位姿以及点云和深度，通过建立好的模型去除遮挡物。</p>
 <p>具体地，如下2个表格所示：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab1.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/tab1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/tab2.png" /></p>
 <h2 id="处理流程图pipeline">处理流程图Pipeline</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig7.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig7.png" /></p>
 <p>流程如上图，蓝色框就是要进行的几个处理，分别介绍一下。</p>
 <h3 id="特征提取">特征提取</h3>
 <p>作者选择了3大类特征： 1. 完全手工特征: SIFT
@@ -743,7 +743,7 @@ aria-label="K. M. Yi, E. Trulls, Y. Ono, V. Lepetit, M. Salzmann, and P. Fua. Le
 <sup id="fnref:85"><a href="#fn:85" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="Weiwei Sun, Wei Jiang, Eduard Trulls, Andrea Tagliasacchi, and Kwang Moo Yi. Attentive Context Normalization for Robust Permutation-Equivariant Learning. In arXiv Preprint, 2019. 2, 4, 8">85</span></a></sup>，简称CNe，效果如下：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig3.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig3.png" /></p>
 <h3 id="stereo-task">Stereo task</h3>
 <p>给定图像<span class="math inline">\(\mathbf{I}_i\)</span>以及<span
 class="math inline">\(\mathbf{I}_j\)</span>，解算基础矩阵 <span
@@ -779,21 +779,21 @@ aria-label="J.L. Sch¨onberger and J.M. Frahm. Structure-From-Motion Revisited. 
 </ol>
 <h2 id="实验开始配置细节很重要">实验开始——配置细节很重要</h2>
 <p>首先比较了RANSAC在不同参数配置（置信度，极线对齐误差阈值以及最大迭代次数）下的表现：
-<img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig8.png" />
+<img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig8.png" />
 总体来说，MAGSAC表现最好，DEGENSAC表现次之。另外，作者提到“default
 settings can be woefully inadequate. For example, OpenCV sets τ = 0.99
 and η = 3 pixels, which results in a mAP at 10o of 0.5292 on the
 validation set – a performance drop of 23.9% relative.”
 所以在日常使用OpenCV的RANSAC函数时需要自己调整下参数。</p>
 <p>作者认为RANSAC的内点阈值对于每种局部特征也是不同的，作者做了如下实验。
-<img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig9.png"
+<img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig9.png"
 alt="Figure 5. RANSAC – Inlier threshold \eta" />
 上图可以直观看到从DOG学习的特征都聚集在了一起，其它特征比较分散，这也是太难选择了，于是作者使用了其他论文作者推荐的配置参数或者一些合理的参数作为内点阈值。</p>
 <h2 id="结果">结果</h2>
 <p>作者列出了很多结果以及结论，我们仅去关注几个感兴趣的。</p>
 <h3 id="k特征">8k特征</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab5.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab6.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/tab5.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/tab6.png" /></p>
 <p>大家期待已久的真的sota到底是谁呢？作者在以上特征的超参调整到最优后进行了实验，测试结果如下：
 1.
 mAA指标上DoG特征点占据了Top的位置，其中SOSNet排名#1，紧随其后的是HardNet。
@@ -817,24 +817,24 @@ R2D2是表现最好的端到端方法，同样在multi-view任务中表现较好
 适当调整参数后的SIFT尤其是RootSIFT能够在stereo任务中排名#9，multi-view任务中排名#9，与所谓sota相差13.1%以及4.9%.（真为咱传统特征争气！）</p>
 <h3 id="k特征-1">2k特征</h3>
 <p>这样做的理由是能够与LF-Net与Superpoint进行比较，结果如下图：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab7.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/tab8.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/tab7.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/tab8.png" /></p>
 <p>结论： 1. Key.Net+HardNet获得最好的表现，第二名是LogPolarDesc； 2.
 R2D2在stereo任务中排名#2，multi-view任务中排名#7</p>
 <h3 id="k-vs.-2k">8k vs. 2k</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig16.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig17.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig16.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig17.png" /></p>
 <p>结论： 1.
 <strong>基于DoG的方法容易受益于多个特征，而学习的方法收益于重新训练</strong>（该结论来自于Key.Net+Hardnet的组合，作者进行了重新训练，表现优异）
 2. 整体来说基于学习的特征KeyNet, SuperPoint, R2D2,
 LF-Net在multi-view任务配置下比stereo任务配置下表现更好；(作者的假设是它们的鲁棒性好，但定位精度低)</p>
 <h3 id="光照变化">光照变化</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig26.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig26.png" /></p>
 <p>作者用了直方图均衡化（CLAHE<sup id="fnref:66"><a href="#fn:66" rel="footnote"><span
 class="hint--top hint--error hint--medium hint--rounded hint--bounce"
 aria-label="Stephen M. Pizer, E. Philip Amburn, John D. Austin, Robert Cromartie, Ari Geselowitz, Trey Greer, Bart ter Haar Romeny, John B. Zimmerman, and Karel Zuiderveld. Adaptive histogram equalization and its variations. Computer vision, graphics, and image processing, 1987. 15">66</span></a></sup>）去调整图像光度，结果如上图，可以看到几乎所有的基于学习的方法的测试效果都下降了，这可能由于没有专门地在这种场景中进行训练。而SIFT也没有得到明显提升，可能在于SIFT描述子是在某些假设条件下最佳表现。</p>
 <h3 id="新指标-vs.-传统指标">新指标 vs. 传统指标</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/fig18.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/fig18.png" /></p>
 <p>这里要说明的是传统的评价方式与本文提出方式的关系。 1. matching
 score的选择还是比较明智的，它似乎与mAA相关，但也很难保证高的匹配得分就一定有助于提升mAA，例如RootSIFT
 vs ContextDesc； 2.
@@ -848,10 +848,10 @@ target="_blank" rel="noopener" href="https://vision.uvic.ca/image-matching-chall
 DEGENSAC），所以比较关注它的表现。感觉在2k特征阵营，它的表现并不好（屈居#35,目前共52个算法），然而SuperPoint
 + SuperGlue + DEGENSAC以及SuperPoint+GIFT+Graph Motion Coherence
 Network+DEGENSAC分别位列#1以及#2，这也是结果很让人欣慰！</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/leadboard_superglue.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/2020-image-matching-cvpr/leadboard_superpoint.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/leadboard_superglue.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/2020-image-matching-cvpr/leadboard_superpoint.png" /></p>
 <h2 id="references">References</h2>
-<!-- ![](https://vincentqin.tech/blog-resources/wechat-qcode.gif) -->
+<!-- ![](https://images.vincentqin.tech/wechat-qcode.gif) -->
 <div id="footnotes">
 <hr>
 <div id="footnotelist">

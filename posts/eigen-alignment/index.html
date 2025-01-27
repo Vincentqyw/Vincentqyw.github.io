@@ -29,7 +29,7 @@
 <meta property="og:description" content="Eigen是一个非常常用的矩阵运算库，至少对于SLAM的研究者来说不可或缺。然而，向来乖巧的Eigen近来却频频闹脾气，把我的程序折腾得死去活来，我却是丈二和尚摸不着头脑。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2021-10-17T09:17:08.000Z">
-<meta property="article:modified_time" content="2022-05-17T14:32:52.017Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.168Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="Eigen">
 <meta name="twitter:card" content="summary">
@@ -274,7 +274,7 @@
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -342,7 +342,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-05-17 22:32:52" itemprop="dateModified" datetime="2022-05-17T22:32:52+08:00">2022-05-17</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -461,7 +461,7 @@ TX2上运行正常而在服务器上挂掉了？因为TX2中是ARM处理器，�
 <p>这段代码中，宏定义<code>ALIGNED_OPERATOR_NEW</code>包含了<code>operator new</code>和<code>operator delete</code>，它们对所有需要内存对齐的类都适用。因此，无论是需要内存对齐的类，还是包含了这些类的类，都需要添加这个宏。</p>
 <h2 id="再谈eigen">再谈Eigen</h2>
 <p>在Eigen官方文档中有这么一页内容:</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/eigen-alignment/eigen-alignment-fig1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/eigen-alignment/eigen-alignment-fig1.png" /></p>
 <p>有没有觉得似曾相识？Eigen对该问题的解决方案与我们不谋而合(<code>EIGEN_MAKE_ALIGNED_OPERATOR_NEW</code>)。这当然不是巧合，事实上，本文的灵感正是来源于Eigen。但Eigen只告诉了我们应该怎么做，没有详细讲解其原理。本文则从问题的提出，到具体的解决方案，一一剖析，希望可以给大家一些更深的理解。</p>
 <h2 id="总结">总结</h2>
 <p>最后做一个简短的总结。对于基本数据类型和自定义类型，我们需要用<strong>预编译指令来保证栈内存的对齐</strong>，用重写<code>operator new</code>的方式保证<strong>堆内存对齐</strong>。对于<strong>嵌套</strong>的自定义类型，申请栈内存时会自动保证其内部数据类型的对齐，而申请堆内存时仍然需要重写<code>operator new</code>。</p>

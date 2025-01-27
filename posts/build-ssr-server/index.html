@@ -29,7 +29,7 @@
 <meta property="og:description" content="关于科学上网，食用别人调配的酸酸乳总觉味道不对，自食其力心里才会感到踏实。受Newdee老贼指点，鄙人成功在服务器上开启了酸酸乳服务。详细过程Newdee已经在博文“SS服务器搭建”介绍地相当详细。本人记性不好，遂本文将记录几个关键步骤，以备后续不时之需。 注意：本文仅供个人学习使用，不可用于商业或者违法行为！">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2019-03-31T05:56:15.000Z">
-<meta property="article:modified_time" content="2023-10-18T16:11:09.074Z">
+<meta property="article:modified_time" content="2025-01-27T14:24:02.168Z">
 <meta property="article:author" content="Vincent Qin">
 <meta property="article:tag" content="科学上网">
 <meta name="twitter:card" content="summary">
@@ -275,7 +275,7 @@ x-ui（推荐，多协议支持）</span></a><ol class="nav-child"><li class="na
 
       <div class="wechat_QR_code">
       <!-- 二维码 -->
-      <img src ="https://vincentqin.tech/blog-resources/qrcode_wechat.jpg">
+      <img src ="https://images.vincentqin.tech/qrcode_wechat.jpg">
       <span>Follow Me on Wechat</span>
       </div>
     </div>
@@ -343,7 +343,7 @@ x-ui（推荐，多协议支持）</span></a><ol class="nav-child"><li class="na
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-10-19 00:11:09" itemprop="dateModified" datetime="2023-10-19T00:11:09+08:00">2023-10-19</time>
+      <time title="Modified: 2025-01-27 22:24:02" itemprop="dateModified" datetime="2025-01-27T22:24:02+08:00">2025-01-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -426,20 +426,20 @@ target="_blank" rel="noopener" href="https://ping.chinaz.com/">ping工具（检�
 target="_blank" rel="noopener" href="https://lightsail.aws.amazon.com">https://lightsail.aws.amazon.com</a>
 ，注册一个账号，需要用到<strong>信用卡</strong>。</p>
 <h3 id="登录页面">登录页面</h3>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_homepage.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_homepage.png" /></p>
 <h3 id="创建实例">创建实例</h3>
 <p>推荐选择使用美区或者日本服务器。选择仅 <code>Os Only</code>，系统选择
 <code>Ubuntu20.04</code>，套餐选择最便宜的
 <code>$3.5</code>足够了。最后点击 <code>Create instance</code>
 即可。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_1.jpg" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_1.jpg" /></p>
 <h3 id="防火墙设置">防火墙设置</h3>
 <p>点击申请好的服务器，开启所有协议，分别点击：<code>Networking</code>
 -&gt; <code>IPv4 Firewall</code> -&gt; <code>Add rule</code> -&gt;
 <code>All protocols</code> -&gt; <code>Create</code>。具体如下图：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_3.png" />
-<img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_4.png" />
-<img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_5.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_3.png" />
+<img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_4.png" />
+<img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_5.png" /></p>
 <h3 id="本地测试">本地测试</h3>
 <p>打开终端，输入 <code>ping YOUR_PUBLIC_IP</code>,
 <code>YOUR_PUBLIC_IP</code>
@@ -450,8 +450,8 @@ target="_blank" rel="noopener" href="https://lightsail.aws.amazon.com">https://l
 <code>HOSTNAME</code> 分别为 <code>aaa</code>,
 <code>www.aaa</code>，<code>IPV4 ADDRESS</code> 为
 <code>YOUR_PUBLIC_IP</code>。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_6.png" />
-<img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_8.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_6.png" />
+<img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_8.png" /></p>
 <p>等待10-20分钟之后，就可以通过域名 <code>aaa.test.com</code> 访问
 <code>YOUR_PUBLIC_IP</code>。使用 <a
 target="_blank" rel="noopener" href="https://ping.chinaz.com/">ping工具（检测解析域名是否生效）</a>
@@ -462,7 +462,7 @@ target="_blank" rel="noopener" href="https://ping.chinaz.com/">ping工具（检�
 <code>ssh -i xxx.pem ubuntu@YOUR_PUBLIC_IP</code>，<code>YOUR_PUBLIC_IP</code>
 为服务器IP，用户名默认为
 <code>ubuntu</code>，<code>xxx.pem</code>为服务器私钥，可用从服务器即可登录。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_key.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_key.png" /></p>
 <p>可选的，测试一下服务器性能，脚本：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -qO- --no-check-certificate https://raw.githubusercontent.com/oooldking/script/master/superbench.sh | bash</span><br></pre></td></tr></table></figure>
 <h3 id="申请证书">申请证书</h3>
@@ -480,27 +480,27 @@ x-ui（推荐，多协议支持）</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo -i</span><br><span class="line">apt update -y &amp;&amp; apt install -y curl socat wget</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一键安装</span></span><br><span class="line">bash &lt;(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install.sh)</span><br></pre></td></tr></table></figure>
 <p>过程中需要设置登录账号与密码以及端口。登录该服务器IP+端口，输入设置的账号密码，即可登录。</p>
 <p><strong>将acme证书以及私钥配置在x-ui</strong>。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_xui1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_xui1.png" /></p>
 <p>注意首次设置时候会随机生成一个根目录，将前文生成的证书地址以及私钥地址填在上面。</p>
 <h4 id="设置协议">设置协议</h4>
 <p>设置入站，随便起个名字，使用<code>reality</code>协议，注意开启控流，其他参数保持默认即可。
-<img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_xui2.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_xui3.png" /></p>
+<img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_xui2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_xui3.png" /></p>
 <h4 id="本地连接">本地连接</h4>
 <p>完成上面步骤之后，点击<code>操作</code> -&gt;
 <code>二维码</code>，即可出现二维码，然后使用<code>v2rayN</code>在PC端连接，连接时选择<code>扫描屏幕上的二维码</code>即可。
-<img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_xui4.png" />
-<img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_xui6.png" /></p>
+<img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_xui4.png" />
+<img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_xui6.png" /></p>
 <h3 id="协议2trojan">协议2：Trojan</h3>
 <h4 id="安装-trojan">安装 trojan</h4>
 <p>这里介绍第二种协议<code>Trojan</code>。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一键脚本</span></span><br><span class="line">curl -O https://raw.githubusercontent.com/xiaochaib/trojan_atrandys/edit/trojan_mult.sh &amp;&amp; <span class="built_in">chmod</span> +x trojan_mult.sh &amp;&amp; ./trojan_mult.sh</span><br></pre></td></tr></table></figure>
 <p>安装过程中，需要输入之前申请的域名。</p>
 <p>安装完成之后，可以查看trojan账号密码（记住域名，端口，密码）：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan.png" /></p>
 <h4 id="本地连接-1">本地连接</h4>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_v2ray1.png" /></p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/aws_lightsail_trojan_v2ray2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_v2ray1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/aws_lightsail_trojan_v2ray2.png" /></p>
 <p>起飞！</p>
 <details>
 <summary>
@@ -512,40 +512,40 @@ x-ui（推荐，多协议支持）</h3>
 <li>购买服务器(支持alipay &amp; wechat pay)，地址: <a
 target="_blank" rel="noopener" href="https://www.vultr.com/?ref=7996819">https://www.vultr.com/</a></li>
 </ul>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/vultr.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/vultr.png" /></p>
 <ul>
 <li>经过几个步骤：1. Server Location, 2. Server Type, 3. Server Size, 4.
 Additional Features,5,6,7可以忽略，最后点击右下角的<strong>Deploy
 New</strong>即可部署。</li>
 </ul>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/buy-vultr.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/buy-vultr.png" /></p>
 <p>后台是这样的：</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/vultr-backend.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/vultr-backend.png" /></p>
 <p>然后根据IP以及用户名利用SSH在本地进行远程连接，进行以下步骤。</p>
 <h2 id="安装ssr">安装SSR</h2>
 <p>如果是单用户使用，进入服务器直接执行下述命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https://raw.githubusercontent.com/Vincentqyw/doubi/master/ssr.sh &amp;&amp; <span class="built_in">chmod</span> +x ssr.sh &amp;&amp; bash ssr.sh</span><br></pre></td></tr></table></figure>
-<p>关于加密协议以及混淆的设置参见下图： <img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/account.png" /></p>
+<p>关于加密协议以及混淆的设置参见下图： <img data-src="https://images.vincentqin.tech/build-ssr-server/account.png" /></p>
 <p>多用户使用的版本（可配置多个账号）：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/ssrmu.sh &amp;&amp; <span class="built_in">chmod</span> +x ssrmu.sh &amp;&amp; bash ssrmu.sh</span><br></pre></td></tr></table></figure>
 <p>设置完毕之后，后续进行管理直接运行<code>bash ssrmu.sh</code>选择不同的功能项即可。</p>
 <h2 id="封禁某些端口可选">封禁某些端口(可选)</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N --no-check-certificate https://raw.githubusercontent.com/Vincentqyw/doubi/master/ban_iptables.sh &amp;&amp; <span class="built_in">chmod</span> +x ban_iptables.sh &amp;&amp; bash ban_iptables.sh</span><br></pre></td></tr></table></figure>
-<p>选择封禁垃圾邮件端口就行。 <img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/ban-mails.png" /></p>
+<p>选择封禁垃圾邮件端口就行。 <img data-src="https://images.vincentqin.tech/build-ssr-server/ban-mails.png" /></p>
 <h2 id="bbr加速可选">BBR加速(可选)</h2>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/bbr.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/bbr.png" /></p>
 <h2 id="安装ssrr可选">安装SSRR(可选)</h2>
 <p>接下来的链接给出了SSRR的安装教程，不再赘述，<a
 target="_blank" rel="noopener" href="https://gist.github.com/biezhi/45fac901f02f7c867e46aecd41076d70#kcp-%E5%AE%A2%E6%88%B7%E7%AB%AF">Link</a>。</p>
 <h2 id="建立快照">建立快照</h2>
 <p>建立系统快照就是将系统某个状态下的各种数据记录在一个文件里，下一次新建完主机后恢复快照就能够恢复成之前系统的样子。</p>
 <p>若已有了主机，点击下图所示的<code>Snapshots</code>对该系统建立快照。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/snapshots-step1.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/snapshots-step1.png" /></p>
 <p>随后就会出现下图所示的页面，在<code>Label</code>一栏输入这个快照的标签，方便区分不同的快照。</p>
-<p><img data-src="https://vincentqin.tech/blog-resources/build-ssr-server/snapshots-step2.png" /></p>
+<p><img data-src="https://images.vincentqin.tech/build-ssr-server/snapshots-step2.png" /></p>
 <p>若想对新建的系统恢复以前建立的快照，可以点击上图中的类似于<code>循环</code>的标志。</p>
 <h2 id="不可描述">不可描述</h2>
-<!-- - [不可描述](https://vincentqin.tech/blog-resources/build-ssr-server/SSR-WIN-ANDROID-IOS.7z) -->
+<!-- - [不可描述](https://images.vincentqin.tech/build-ssr-server/SSR-WIN-ANDROID-IOS.7z) -->
 <ul>
 <li>PC终端可自行挑选，鄙人推荐<a
 target="_blank" rel="noopener" href="https://www.termius.com/windows">termius</a>, <a
